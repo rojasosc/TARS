@@ -1,0 +1,127 @@
+html,
+body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+#page-wrapper {
+    min-height: 100%;
+    position: relative;
+	width: 100%;
+	height: 100%;
+}
+#header {
+    background-image: url('header-logo.png');
+    height: 100px;
+    background-repeat: no-repeat;
+    background-color: #011227;
+    background-position: center;
+    padding: 10px;
+    color: #a2c2db;
+    margin: 0;
+}
+#contact-us {
+    list-style-type: none;
+    padding: 10px;
+}
+#contact-us lh {
+    font-size: 15px;
+    font-weight: bold;
+}
+#content {
+    padding: 10px;
+    margin-top: 80px;
+    overflow: hidden;
+}
+#footer {
+    background-image: url('meliora_challenge_330x60.png');
+    height: 200px;
+    bottom: 0;
+    left: 0;
+    background-repeat: no-repeat;
+    background-color: #474747;
+    background-position: center;
+    color: #ffffff;
+}
+#navbar-theme {
+    background-color: #334d6c;
+    padding-right: 75px;
+    padding-left: 75px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color: #a2c2db;
+    height: 52px;
+    margin-top: 90px;
+}
+/*
+ * Everything below is NavBar coloring
+ */
+.navbar-default {
+    background-color: #334d6c;
+    border-color: #334d6c;
+}
+.navbar-default .navbar-brand {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #fed100;
+}
+.navbar-default .navbar-text {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #fed100;
+    background-color: #011227;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #fed100;
+    background-color: #011227;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #fed100;
+    background-color: #011227;
+}
+.navbar-default .navbar-toggle {
+    border-color: #011227;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #011227;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ecf0f1;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+    border-color: #ecf0f1;
+}
+.navbar-default .navbar-link {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-link:hover {
+    color: #150b0b;
+}
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #150b0b;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #150b0b;
+        background-color: #011227;
+    }
+}

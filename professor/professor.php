@@ -18,25 +18,18 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 -->
 <!DOCTYPE html>
 <html lang="en">
-
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<title>TARS</title>
-		
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="index.css" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1">		
+		<title>Home</title>		
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	</head>
-  
+	</head> 
 	<body>
-
-		<!-- BEGIN page-wrapper -->
-            
-		<div id="page-wrapper">
-			
+		<!-- BEGIN page-wrapper -->      
+		<div id="page-wrapper">			
 			<!-- BEGIN Page Header -->
 			<div id="header">
 				<div class="row" id="navbar-theme">
@@ -49,20 +42,20 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="#"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="#"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
+									<li class="active"><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
+									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
 									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="#">Action</a></li>
-											<li><a href="#">Action</a></li>
-											<li><a href="#">Action</a></li>
+											<li><a href="#">Lecture Assistants</a></li>
+											<li><a href="#">Lab Assistants</a></li>
+											<li><a href="#">Workshop Assistants</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li><a href="#"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -72,21 +65,18 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 					</nav>
 				</div> <!-- End navbar-theme -->
 			</div>		
-			<!--END Page Header -->	  
-	  
+			<!--END Page Header -->	    
 			<!-- BEGIN Page Content -->
-			<div id="content">
-			    
+			<div id="content">						
 			    <div class="row">
-			    
-			      <div class="col-md-6">
-			      </div> <!-- End column -->
-			    
-			    </div> <!--End Row -->
-			    
+					<div class="container">
+						<div class="jumbotron">
+							<h2>Welcome Professor Pawlicki!</h2>
+						</div> <!-- End jumbotron -->
+					</div> <!-- End container -->
+			    </div> <!--End Row -->			    
 			</div>
-			<!-- END Page Content --> 
-	    
+			<!-- END Page Content --> 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
 				<div class="container">
@@ -120,3 +110,4 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<!-- END Scripts -->
 	</body>
 </html>
+	

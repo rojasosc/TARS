@@ -24,10 +24,10 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>TARS</title>
+		<title>My Profile</title>
 		
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="index.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</head>
   
@@ -49,14 +49,14 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="#"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="#"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
+									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
+									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
 										<ul class="dropdown-menu">
@@ -75,15 +75,64 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">
-			    
-			    <div class="row">
-			    
-			      <div class="col-md-6">
-			      </div> <!-- End column -->
-			    
-			    </div> <!--End Row -->
-			    
+			<div id="content">			    
+				<div class="row">
+					<form action="editProfile.php" method="post">
+						<div class="container">
+							<div class="jumbotron">
+								<fieldset>
+									<legend>Edit Profile</legend>
+									<div class="row">
+										<div class="col-md-4">
+											<label>First Name</label>
+											<input type="text" class="form-control" name="firstName" place-holder="place holder">
+										</div> <!--End column-->
+										<div class="col-md-4">
+											<label>Last Name</label>
+											<input type="text" class="form-control" name="firstName" place-holder="place holder">
+										</div> <!--End column-->
+									</div> <!-- End row -->
+									<div class="row">
+										<div class="col-md-4">
+											<label>Email</label>
+											<input type="email" class="form-control" name="email" place-holder="place holder">
+										</div> <!-- End column -->
+										<div class="col-md-4">
+											<label>Re-Enter Email</label>
+											<input type="email" class="form-control" name="emailConfirm" place-holder="place holder">									
+										</div> <!-- End column -->									
+									</div> <!-- End row -->
+									<div class="row">
+										<div class="col-md-4">
+											<label>Password</label>
+											<input type="password" class="form-control" name="password" place-holder="place holder">
+										</div> <!--End column-->
+										<div class="col-md-4">
+											<label>Re-Enter Password</label>
+											<input type="password" class="form-control" name="passwordConfirm" place-holder="place holder">
+										</div> <!--End column-->
+									</div> <!-- End row -->
+									<div class="row">
+										<div class="col-md-4">
+											<label>Home Phone</label>
+											<input type="tel" class="form-control" name="homePhone" place-holder="place holder">
+										</div> <!--End column-->
+										<div class="col-md-4">
+											<label>Cell Phone</label>
+											<input type="tel" class="form-control" name="cellPhone" place-holder="place holder">
+										</div> <!--End column-->
+									</div> <!-- End row -->
+									<br>
+									<div class="row">
+										<div class="col-md-3">
+											<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-refresh"></span> Update</button>
+										</div> <!-- End column -->
+									</div> <!-- End row --> 
+								</fieldset> <!-- End fieldset -->
+							</div> <!-- End jumbotron -->
+						</div> <!-- End container -->				
+					</form> <!-- End form -->
+				</div> <!-- End row -->	
 			</div>
 			<!-- END Page Content --> 
 	    

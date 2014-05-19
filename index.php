@@ -76,6 +76,12 @@
 							</div> <!-- End row -->	
 							<br>
 							<div class="row">
+								<div class="col-md-3">
+									<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-hand-right"></span> Login</button>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<br>
+							<div class="row">
 								<div class="col-md-4">
 									<a href="signup.php">Register</a>
 								</div> <!-- End column -->

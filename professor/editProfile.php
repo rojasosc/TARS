@@ -65,7 +65,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											<li><a href="#">Action</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
-									<li><a href="#"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
 							</div> <!-- End navbar-collapse collapse -->        
 						</div> <!-- End container-fluid -->

@@ -81,7 +81,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 
-	    
+	     
 			<!--BEGIN Page Footer -->
 			<div id="footer">
 				<div class="container">

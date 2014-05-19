@@ -1,27 +1,20 @@
+<?php  
+    include('../dbinterface.php');
+  
+    session_start();
 
-<!-- A template for TARS.
+    if (!isset($_SESSION['auth'])) {
+    // if not redirect to login screen. 
+		header('Location: ../index2.php');
+    } else {
+		$firstName = $_SESSION['firstName'];
+		$lastName = $_SESSION['lastName'];
+	}  
+?>
 
-This template consists of a wrapper div tag that encloses
-a set of header, content, and footer div tags.
-
-There are three ids inside the css file that provide the 
-necessary styling for the three components. 
-
-Using this structure we can fix the footer at the bottom and 
-maintain a solid structure through scrolling.
-
-The images are background images and not img tags. 
-
-The navbar is collapsable and seems to work pretty well. However,
-the navbar-brand does seem to run out of space if the window is shrunk enough. 
-
--->
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD
-=======
 
->>>>>>> db8c6231bb1cefdfc4dea0e2df1d8e31f177b9fa
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,16 +22,9 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		
 		<title>TARS</title>
 		
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="index.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../index.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<<<<<<< HEAD
-	</head> 
-	<body>
-		<!-- BEGIN page-wrapper -->
-            
-		<div id="page-wrapper">			
-=======
 	</head>
   
 	<body>
@@ -47,7 +33,6 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
             
 		<div id="page-wrapper">
 			
->>>>>>> db8c6231bb1cefdfc4dea0e2df1d8e31f177b9fa
 			<!-- BEGIN Page Header -->
 			<div id="header">
 				<div class="row" id="navbar-theme">
@@ -60,23 +45,15 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
+								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $firstname[0] ?>. <?= $lastname ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="#"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="#"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-											<li><a href="#">Action</a></li>
-											<li><a href="#">Action</a></li>
-											<li><a href="#">Action</a></li>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
-									<li><a href="#"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+									<li><a href="student.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li  class="active"><a href="cur_pos.php"><span class="glyphicon glyphicon-th-list"></span> Current Positions</a></li>
+									<li><a href="search.php"><span class="glyphicon glyphicon-inbox"></span> Position Search</a></li>
+									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
 							</div> <!-- End navbar-collapse collapse -->        
 						</div> <!-- End container-fluid -->
@@ -88,12 +65,39 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!-- BEGIN Page Content -->
 			<div id="content">
 			    
-			    <div class="row">
-			    
-			      <div class="col-md-6">
-			      </div> <!-- End column -->
-			    
-			    </div> <!--End Row -->
+				<div class = "container">
+					<div class="panel panel-primary">      
+						<div class = "panel-body">
+							<h2>My Current Positions</h2>   	
+							<table class="table table-striped">
+								<tr>
+									<th>ID</th>
+									<th>Course</th>
+									<th>Type</th>
+									<th>Location</th>
+									<th>Time</th>
+									<th>Compensation</th>
+								</tr>
+								<tr>
+									<td>1</td>
+									<td>CSC 210</td>
+									<td>Lab TA</td>
+									<td>Hark 172</td>
+									<td>3:30pm - 4:45pm</td>
+									<td>Paid</td>
+								</tr>
+								<tr>
+									<td>2</td>
+									<td>CSC 280</td>
+									<td>Workshop Leader</td>
+									<td>CSB 610</td>
+									<td>2:00pm - 3:15pm</td>
+									<td>Credit</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
 			    
 			</div>
 			<!-- END Page Content --> 
@@ -127,11 +131,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<<<<<<< HEAD
 		<script src="../js/bootstrap.min.js"></script>
-=======
-		<script src="js/bootstrap.min.js"></script>
->>>>>>> db8c6231bb1cefdfc4dea0e2df1d8e31f177b9fa
 		<!-- END Scripts -->
 	</body>
 </html>

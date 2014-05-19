@@ -5,7 +5,7 @@
 
     if (!isset($_SESSION['auth'])) {
     // if not redirect to login screen. 
-		header('Location: ../index2.php');
+		header('Location: ../index.php');
     } else {
 		$firstName = $_SESSION['firstName'];
 		$lastName = $_SESSION['lastName'];
@@ -23,8 +23,10 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../index.css" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<link href="../template.css" rel="stylesheet">
+		<link href="student.css" rel="stylesheet">
+		<link href="cur_pos.css" rel="stylesheet">
+		
 	</head>
   
 	<body>
@@ -45,7 +47,7 @@
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $firstname[0] ?>. <?= $lastname ?></a>
+								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $firstName[0].". ".$lastName ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">

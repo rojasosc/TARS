@@ -1,0 +1,43 @@
+h1{
+	text-align: center;
+}
+
+.sidebar-offcanvas
+{
+	width: 20%;
+	float: left;
+	
+}
+
+.panel-default
+{
+	width: 80%;
+	height: 60%; 
+	float: right;
+}
+
+.modal-body {
+    max-height: 100px;
+}
+
+.navbar-right
+{
+	align: center;
+}
+#searchbtn
+{
+	position: right;
+}
+#tainfo
+{
+float: right;
+}
+.btn-group
+{
+	padding: 5px;
+	float: right;
+}
+.pagination
+{
+	float: center;
+}

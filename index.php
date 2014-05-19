@@ -1,21 +1,32 @@
+<?php
 
-<!-- A template for TARS.
+	include ("dbinterface.php");
 
-This template consists of a wrapper div tag that encloses
-a set of header, content, and footer div tags.
+	$account = $_POST[email];
+	$pw = $_POST[pw];
+	
+	$validate = login($account, $pw);
 
-There are three ids inside the css file that provide the 
-necessary styling for the three components. 
+	if($validate){
+	
+	    if($validate[3] == 1){
+	    
+	      $type = "admin";
+	      header('Location: admin/admin.html');
+	    
+	    }elseif($validate[3] == 2){
+	      header('Location: professor/professor.php');
+	    
+	    }elseif($validate[3] == 3){
+	    
+	      header('Location: student/student.php');
+	      
+	    }
 
-Using this structure we can fix the footer at the bottom and 
-maintain a solid structure through scrolling.
+	    
+	}
+?>
 
-The images are background images and not img tags. 
-
-The navbar is collapsable and seems to work pretty well. However,
-the navbar-brand does seem to run out of space if the window is shrunk enough. 
-
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,7 +50,9 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			
 			<!-- BEGIN Page Header -->
 			<div id="header">
-
+				<div class="row" id="navbar-theme">
+					
+				</div> <!-- End navbar-theme -->
 			</div>		
 			<!--END Page Header -->	  
 	  
@@ -81,7 +94,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 
-	     
+	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
 				<div class="container">

@@ -22,12 +22,8 @@ html,body{
 }
 #content {
     padding: 10px;
+    margin-top: 80px;
     padding-bottom: 250px;
-    background-image: url('background.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 984px;
-
 }
 #footer {
     width: 100%;
@@ -59,27 +55,7 @@ html,body{
     color: #a2c2db;
     height: 52px;
     margin-top: 90px;
-}
 
-#login{
-	background-color: #000000;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 100px;
-	width: 500px;
-	padding: 50px;
-	border-radius: 25px;
-	opacity: .8;
-	z-index: 0;
-}
-
-.center{
-	text-align: center;	
-}
-
-#colorWhite{
-	
-	color: white;
 }
 /*
  * Everything below is NavBar coloring

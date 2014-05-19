@@ -45,14 +45,40 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-			    
-			    <div class="row">
-			    
-			      <div class="col-md-6">
-			      </div> <!-- End column -->
-			    
-			    </div> <!--End Row -->
-			    
+				<div id="login">
+					<form action="index.php" method="post">
+						<fieldset>
+							<h2 class="center" id="colorWhite">Sign In</h2>
+							<div class="row">
+								<div class="col-md-10">
+									<label id="colorWhite">Email</label>
+									<input type="email" name="email" class="form-control" place-holder="">
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-md-10">
+									<label id="colorWhite">Password</label>
+									<input type="password" name="password" class="form-control" place-holder="">
+								</div> <!-- End column -->
+							</div> <!-- End row -->	
+							<br>
+							<div class="row">
+								<div class="col-md-4">
+									<a href="signup.php">Register</a>
+								</div> <!-- End column -->
+								<div class="col-md-6">
+									<a href="#">Forgot Password?</a>
+								</div> <!-- End column -->								
+							</div> <!-- End row -->
+							<br>
+							<div class="row">
+								<div class="col-md-4">
+									<a href="#">Report A Bug</a>
+								</div> <!-- End column -->							
+							</div> <!-- End row -->							
+						</fieldset> <!-- End fieldset -->
+					</form> <!-- End form -->
+				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 
 	    

@@ -3,7 +3,7 @@
 	include ("dbinterface.php");
 
 	$account = $_POST[email];
-	$pw = $_POST[pw];
+	$pw = $_POST[password];
 	
 	$validate = login($account, $pw);
 

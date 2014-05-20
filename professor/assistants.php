@@ -1,4 +1,38 @@
+<?php
+  
+    include('../dbinterface.php');
+  
+    session_start();
+    
+    
+    if (!isset($_SESSION['auth'])) {
 
+    // if not redirect to login screen. 
+    
+    header('Location: ../index.php');
+
+
+    }else{
+  
+    $firstName = $_SESSION['firstName'];
+    $lastName = $_SESSION['lastName']; 
+    
+    $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
+    $firstLetter .= ".";
+    $name = $firstLetter . " " . $lastName;    
+    
+ 
+    
+    //Grab lists of TAs
+    $email = $_SESSION['email'];
+    $lectureTAs = getTAs($email,"Lecture TA");
+    $labTAs = getTAs($email,"Lab TA");
+    $workshopTAs = getTAs($email,"Workshop Leader");
+    $profilesMade = array();    
+  
+  }
+
+?>
 <!-- A template for TARS.
 
 This template consists of a wrapper div tag that encloses
@@ -28,7 +62,178 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</head> 
 	<body>
-<!-- Begin Email Modal -->
+	
+ <?php  
+    foreach($lectureTAs as $taProfile){
+    
+      if(!(in_array($taProfile[0],$profilesMade))){
+
+      $myProfileID = "myProfile" . $taProfile[0];
+      $student = getStudentByID($taProfile[0]);
+    
+      $studentB = getStudentByID2($taProfile[0]);
+      
+      $profilesMade[] = $taProfile[0];
+
+    ?>
+    
+
+      <!-- Profile Modal -->
+<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myProfileLabel"> <?= $taProfile[1]?>'s Profile</h4>
+      </div>
+      <div class="modal-body">
+      
+	<h3>Personal Information</h3>
+	<div class="container">
+	<p>Major: <?=$student[major]?></p>
+	<p>GPA: <?=$student[GPA]?></p>
+	<p>Class Year: <?=$student[classYear]?></p>
+	</div>
+	
+	<h3>Contact Information</h3>
+	<div class="container">
+	<p>Email: <?=$studentB[email]?></p>
+	<p>Mobile Phone: <?=$studentB[phone]?> </p>
+	<p>Home Phone: <?=$studentB[homePhone]?> </p>
+	</div>
+	
+	<h3>About Me</h3>
+	<div class="container">
+	<p><?=$student[about]?></p>
+	
+	</div>
+	
+      </div>
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End Profile Modal -->
+
+    <?php } } ?> 
+    
+   
+  <?php  
+    foreach($workshopTAs as $taProfile){
+    
+      if(!(in_array($taProfile[0],$profilesMade))){
+
+      $myProfileID = "myProfile" . $taProfile[0];
+      $student = getStudentByID($taProfile[0]);
+    
+      $studentB = getStudentByID2($taProfile[0]);
+      
+      $profilesMade[] = $taProfile[0];
+
+    ?>
+      <!-- Profile Modal -->
+<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myProfileLabel"> <?= $taProfile[1]?>'s Profile</h4>
+      </div>
+      <div class="modal-body">
+      
+	<h3>Personal Information</h3>
+	<div class="container">
+	<p>Major: <?=$student[major]?></p>
+	<p>GPA: <?=$student[GPA]?></p>
+	<p>Class Year: <?=$student[classYear]?></p>
+	</div>
+	
+	<h3>Contact Information</h3>
+	<div class="container">
+	<p>Email: <?=$studentB[email]?></p>
+	<p>Mobile Phone: <?=$studentB[phone]?> </p>
+	<p>Home Phone: <?=$studentB[homePhone]?> </p>
+	</div>
+	
+	<h3>About Me</h3>
+	<div class="container">
+	<p><?=$student[about]?></p>
+	
+	</div>
+	
+      </div>
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End Profile Modal -->
+
+    <?php } } ?> 
+ 
+ <?php  
+    foreach($labTAs as $taProfile){
+    
+      if(!(in_array($taProfile[0],$profilesMade))){
+
+      $myProfileID = "myProfile" . $taProfile[0];
+      $student = getStudentByID($taProfile[0]);
+    
+      $studentB = getStudentByID2($taProfile[0]);
+      
+      $profilesMade[] = $taProfile[0];
+
+    ?>
+	<!-- Profile Modal -->
+<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myProfileLabel"> <?= $taProfile[1]?>'s Profile</h4>
+      </div>
+      <div class="modal-body">
+      
+	<h3>Personal Information</h3>
+	<div class="container">
+	<p>Major: <?=$student[major]?></p>
+	<p>GPA: <?=$student[GPA]?></p>
+	<p>Class Year: <?=$student[classYear]?></p>
+	</div>
+	
+	<h3>Contact Information</h3>
+	<div class="container">
+	<p>Email: <?=$studentB[email]?></p>
+	<p>Mobile Phone: <?=$studentB[phone]?> </p>
+	<p>Home Phone: <?=$studentB[homePhone]?> </p>
+	</div>
+	
+	<h3>About Me</h3>
+	<div class="container">
+	<p><?=$student[about]?></p>
+	
+	</div>
+	
+      </div>
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End Profile Modal -->
+
+    <?php } } ?> 
+	<!-- Begin Email Modal -->
 <div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -80,7 +285,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $name ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -118,6 +323,18 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										
 									<table class="table table-striped">
 										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>View Profile</th> </tr>
+									<?php 
+										foreach($lectureTAs as $ta){ 
+										
+										$myProfileID = "myProfile" . $ta[0];
+										
+										?>
+										<tr><td><?= $ta[0] ?></td> <td><?= $ta[1] ?></td> <td><?= $ta[2] ?></td> <td><?= $ta[3] ?></td><td><?= $ta[4] ?></td> <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+										<span class="glyphicon glyphicon-user"></span> Profile
+										</a>
+										</td> </tr>    
+									
+									<?php } ?>									
 									</table> <!-- End table -->
 								</div> <!-- End panel-body -->
 							</div> <!-- End collapse panel-collapse -->
@@ -141,6 +358,18 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 								<div class="panel-body">										
 									<table class="table table-striped">
 										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>View Profile</th> </tr>
+									<?php 
+										foreach($labTAs as $ta){ 
+										$myProfileID = "myProfile" . $ta[0];
+										?>
+										
+										
+										<tr><td><?= $ta[0] ?></td> <td><?= $ta[1] ?></td> <td><?= $ta[2] ?></td> <td><?= $ta[3] ?></td><td><?= $ta[4] ?></td> <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+										<span class="glyphicon glyphicon-user"></span> Profile
+										</a>
+										</td> </tr>    
+									
+									<?php } ?>										
 									</table> <!-- End table -->
 								</div> <!-- End panel-body -->
 							</div> <!-- End collapse panel-collapse -->
@@ -163,6 +392,16 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										
 									<table class="table table-striped">
 										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>View Profile</th> </tr>
+									<?php 
+										foreach($workshopTAs as $ta){ 
+										$myProfileID = "myProfile" . $ta[0];
+										?>		
+										<tr><td><?= $ta[0] ?></td> <td><?= $ta[1] ?></td> <td><?= $ta[2] ?></td> <td><?= $ta[3] ?></td><td><?= $ta[4] ?></td> <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+										<span class="glyphicon glyphicon-user"></span> Profile
+										</a>
+										</td> </tr>    
+					
+									<?php } ?>				
 									</table> <!-- End table -->
 								</div> <!-- End panel-body -->
 							</div> <!-- End collapse panel-collapse -->

@@ -1,4 +1,25 @@
+<?php
+  
+    include('../dbinterface.php');
+    session_start();   
+    if (!isset($_SESSION['auth'])) {
+    
+    // if not redirect to login screen.  
+    header('Location: ../index.php');
 
+    }else{
+  
+    $firstName = $_SESSION['firstName'];
+    $lastName = $_SESSION['lastName'];
+    
+    $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
+    $firstLetter .= ".";
+    $name = $firstLetter . " " . $lastName;
+    
+  
+  }
+
+?>
 <!-- A template for TARS.
 
 This template consists of a wrapper div tag that encloses
@@ -23,7 +44,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<title>Home</title>		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel= "stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</head> 
@@ -42,7 +63,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $name ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -71,7 +92,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			    <div class="row">
 					<div class="container">
 						<div class="jumbotron">
-							<h2>Welcome Professor Pawlicki!</h2>
+							<h2>Welcome Professor <?= $lastName ?>!</h2>
 						</div> <!-- End jumbotron -->
 					</div> <!-- End container -->
 			    </div> <!--End Row -->			    

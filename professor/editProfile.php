@@ -1,4 +1,27 @@
+<?php 
+    include('../dbinterface.php');
+    session_start(); 
+    if (!isset($_SESSION['auth'])) {
 
+    // if not redirect to login screen. 
+    
+    header('Location: ../index.php');
+
+    }else{
+  
+    $firstName = $_SESSION['firstName'];
+    $lastName = $_SESSION['lastName'];
+    
+    $firstName = $_SESSION['firstName'];
+    $lastName = $_SESSION['lastName'];
+    
+    $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
+    $firstLetter .= ".";
+    $name = $firstLetter . " " . $lastName;
+    
+  }
+
+?>
 <!-- A template for TARS.
 
 This template consists of a wrapper div tag that encloses
@@ -49,7 +72,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> R. McDonald</a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $name ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -58,11 +81,11 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
 									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
 									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="#">Action</a></li>
-											<li><a href="#">Action</a></li>
-											<li><a href="#">Action</a></li>
+											<li><a href="#">Lecture Assistants</a></li>
+											<li><a href="#">Lab Assistants</a></li>
+											<li><a href="#">Workshop Assistants</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>

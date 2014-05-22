@@ -473,6 +473,19 @@ function getStudent($email) {
 	closeTARS($connect);
 	return $stu;
 }
+/* Function getCurPosInfo
+ * Purpose: Retrieves information about the student's current TA positions
+ * Returns: A 2-D associative array of strings.
+ */
+
+function getCurPosInfo($email) {
+	$connect = openTARS();
+	$result = mysqli_query($connect, "SELECT * FROM User INNER JOIN TA ON User.UID = TA.UID INNER JOIN TAship ON TA.TID = TAship.TID INNER JOIN Course ON TA.CID = Course.CID WHERE email = '$email'");
+	$info = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	
+	closeTARS($connect);
+	return $info;
+}
 
 
 /********************

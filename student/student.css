@@ -5,3 +5,10 @@ text-align: center;
 .submitbutton {
 	margin: 10px;
 }
+
+.panel {
+	margin: 52px;
+}
+.panel-title {
+	font-size: 32px;
+}

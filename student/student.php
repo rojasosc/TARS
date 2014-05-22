@@ -23,7 +23,7 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../template.css" rel="stylesheet">
+		<link href="../index.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 
 	</head>
@@ -65,22 +65,17 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-			    
-			    <div class="row">
-			    
-					<div class="col-md-6 col-md-offset-3">
-						<div class="container-fluid">
-							<h1>Student Home Page</h1>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h1 class="panel-title">Student Home Page</h1>
+					</div>
+					<div class="panel-body">
+						<div class="jumbotron">
+							<h2>Welcome to TARS!</h2>
+							<p>
+								This is your home page, click on the tabs in the navigation bar above to go to more useful pages.
+							</p>
 						</div>
-					</div> <!-- End column -->
-			    
-				</div> <!--End Row -->
-				<div class="row">
-					<div class="jumbotron">
-						<h2>Welcome to TARS!</h2>
-						<p>
-							This is your home page, click on the tabs in the navigation bar above to go to more useful pages.
-						</p>
 					</div>
 				</div>
 			    

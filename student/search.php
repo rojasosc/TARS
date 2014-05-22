@@ -55,7 +55,7 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../template.css" rel="stylesheet">
+		<link href="../index.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 		<link href="search.css" rel="stylesheet">
 		
@@ -119,6 +119,7 @@
 					</div>
 				</div>
 				<!-- End Profile Modal -->
+				<div class="panel panel-primary">
 				<div class = "container">  
 					<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
 						<form class="navbar-form navbar-right" action="student_search.php" method="post">
@@ -188,6 +189,7 @@
 						</div>
 					</div>
 				</div>
+					</div>
 			</div>
 			<!-- END Page Content --> 
 	    

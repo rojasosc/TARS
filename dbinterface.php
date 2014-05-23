@@ -467,7 +467,7 @@ function setPosition($email,$positionID){
 **/
 function getStudent($email) {
 	$connect = openTARS();
-	$stu = mysqli_query($connect, "SELECT * FROM User INNER JOIN Student ON User.UID = Student.UID WHERE email = '$email'" );
+	$stu = mysqli_query($connect, "SELECT * FROM User INNER JOIN Student ON User.UID = Student.UID WHERE email = '$email';" );
 	$stu = mysqli_fetch_array($stu);
 	
 	closeTARS($connect);
@@ -480,11 +480,25 @@ function getStudent($email) {
 
 function getCurPosInfo($email) {
 	$connect = openTARS();
-	$result = mysqli_query($connect, "SELECT * FROM User INNER JOIN TA ON User.UID = TA.UID INNER JOIN TAship ON TA.TID = TAship.TID INNER JOIN Course ON TA.CID = Course.CID WHERE email = '$email'");
+	$result = mysqli_query($connect, "SELECT * FROM User INNER JOIN TA ON User.UID = TA.UID INNER JOIN TAship ON TA.TID = TAship.TID INNER JOIN Course ON TA.CID = Course.CID WHERE email = '$email';");
 	$info = mysqli_fetch_all($result, MYSQLI_ASSOC);
 	
 	closeTARS($connect);
 	return $info;
+}
+
+/* Function writeProfile
+ * Purpose: Update the database with new profile information from the student
+ * Returns: Nothing
+ */
+
+function updateProfile($email, $firstname, $lastname, $phone, $major, $classyear, $gpa, $qualifications) {
+	$connect = openTARS();
+	
+	mysqli_query($connect, "UPDATE User SET firstName = '$firstname', lastName = '$lastname', phone = '$phone'; WHERE email = '$email' ");
+	mysqli_query($connect, "UPDATE Student SET major = '$major', GPA = '$gpa', classYear = '$classyear', about = '$qualifications' WHERE ;");
+	
+	closeTARS($connect);
 }
 
 

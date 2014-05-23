@@ -77,49 +77,49 @@
 						<form role="form" action="profile.php" method="post">
 							<fieldset>
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-xs-6">
 										<label>First Name:
-											<input class="form-control" type="text" name="fn" placeholder="<?=$student[firstName]?>" />
+											<input class="form-control" type="text" id="fn" size="32" placeholder="<?=$student[firstName]?>" />
 										</label>
 									</div>
-									<div class="col-md-6">
+									<div class="col-xs-6">
 										<label>Last Name:
-											<input class="form-control" type="text" name="ln" placeholder="<?=$student[lastName]?>" />
+											<input class="form-control" type="text" id="ln" size="32" placeholder="<?=$student[lastName]?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-xs-6">
 										<label>E-mail:
-											<input class="form-control" type="email" name="email" placeholder="<?=$student[email]?>" />
+											<input class="form-control" type="email" id="email" size="64" placeholder="<?=$student[email]?>" />
 										</label>
 									</div>
-									<div class="col-md-6">
+									<div class="col-xs-6">
 										<label>Phone Number:
-											<input class="form-control" type="text" name="pn" placeholder="<?=$student[phone]?>" />
+											<input class="form-control" type="text" id="pn" size="11" placeholder="<?=$student[phone]?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-4">
+									<div class="col-xs-4">
 										<label>Major:
-											<input class="form-control" type="text" name="mjr" placeholder="<?=$student[major]?>" />
+											<input class="form-control" type="text" id="mjr" size="32" placeholder="<?=$student[major]?>" />
 										</label>		
 									</div>
-									<div class="col-md-4">
+									<div class="col-xs-4">
 										<label>Class Year:
-											<input class="form-control" type="text" name="year" placeholder="<?=$student[classYear]?>" />
+											<input class="form-control" type="text" id="year" size="32" placeholder="<?=$student[classYear]?>" />
 										</label>
 									</div>
-									<div class="col-md-4">
+									<div class="col-xs-4">
 										<label>Cumulative GPA:
-											<input class="form-control" type="text" name="gpa" placeholder="<?=$student[GPA]?>" />
+											<input class="form-control" type="text" id="gpa" size="32" placeholder="<?=$student[GPA]?>" />
 										</label>
 									</div>
 								</div>
-								<div class="row col-md-12">
+								<div class="row col-xs-12">
 									<label>Qualifications and TA-ing history: <br />
-										<textarea class="form-control" rows="15" cols="100" name="qual-hist" form="profile" placeholder="<?=$student[about]?>"></textarea>
+										<textarea class="form-control" rows="10" cols="100" id="qual-hist" form="profile" placeholder="<?=$student[about]?>"></textarea>
 									</label>
 								</div>
 								<div class="row">

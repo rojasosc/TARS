@@ -27,7 +27,8 @@ html,body{
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100%;
-    height: 984px;
+    height: auto;
+
 
 }
 #footer {

@@ -5,8 +5,11 @@
 
     if (!isset($_SESSION['auth'])) {
     // if not redirect to login screen. 
-		header('Location: ../index2.php');
+		header('Location: ../index.php');
     } else {
+		if($_POST['email']) {
+			updateProfile($_POST['email'], $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'],  $_POST['gpa'], $_POST['qual-hist']);
+		}
 		$firstName = $_SESSION['firstName'];
 		$lastName = $_SESSION['lastName']; 
 		$email = $_SESSION['email'];
@@ -25,8 +28,9 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../template.css" rel="stylesheet">
+		<link href="../index.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
+		<link href="profile.css" rel="stylesheet">
 		
 	</head>
   
@@ -67,69 +71,68 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				    
-				<div class="container">
-					<form role="form" action="profile-edit.php" method="post">
-						<div class="container">
-							<div class="jumbotron">
-								<fieldset>
-									<legend>Edit Profile</legend>
-									<hr />
-									<div class="row">
-										<div class="col-md-6">
-											<label>First Name:
-												<input class="form-control" type="text" name="fn" placeholder="<?=$student[firstName]?>" />
-											</label>
-										</div>
-										<div class="col-md-6">
-											<label>Last Name:
-												<input class="form-control" type="text" name="ln" placeholder="<?=$student[lastName]?>" />
-											</label>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label>E-mail:
-												<input class="form-control" type="email" name="email" placeholder="<?=$student[email]?>" />
-											</label>
-										</div>
-										<div class="col-md-6">
-											<label>Phone Number:
-												<input class="form-control" type="text" name="pn" placeholder="<?=$student[phone]?>" />
-											</label>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-4">
-											<label>Major:
-												<input class="form-control" type="text" name="mjr" placeholder="<?=$student[major]?>" />
-											</label>		
-										</div>
-										<div class="col-md-4">
-											<label>Class Year:
-												<input class="form-control" type="text" name="year" placeholder="<?=$student[classYear]?>" />
-											</label>
-										</div>
-										<div class="col-md-4">
-											<label>Cumulative GPA:
-												<input class="form-control" type="text" name="gpa" placeholder="<?=$student[GPA]?>" />
-											</label>
-										</div>
-									</div>
-									<div class="row col-md-12">
-										<label>Qualifications and TA-ing history: <br />
-											<textarea class="form-control" rows="15" cols="100" name="qual-hist" form="profile" placeholder="<?=$student[about]?>"></textarea>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h1 class="panel-title">Edit Profile</h1>
+					</div>
+					<div class="panel-body">
+					<div class="container-fluid display-area">
+						<form role="form" action="profile.php" method="post" id="profile">
+							<fieldset>
+								<div class="row">
+									<div class="col-xs-6">
+										<label>First Name:
+											<input class="form-control" type="text" name="fn" size="32" value="<?=$student[firstName]?>" />
 										</label>
 									</div>
-									<div class="row">
-										<input class="btn btn-primary btn-lg submitbutton" type="submit" value="Save" />
+									<div class="col-xs-6">
+										<label>Last Name:
+											<input class="form-control" type="text" name="ln" size="32" value="<?=$student[lastName]?>" />
+										</label>
 									</div>
-								</fieldset>
-							</div>
-						</div>
-					</form>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<label>E-mail:
+											<input class="form-control" readonly="readonly" type="email" name="email" size="64" value="<?=$student[email]?>" />
+										</label>
+									</div>
+									<div class="col-xs-6">
+										<label>Phone Number:
+											<input class="form-control" type="text" name="pn" size="11" value="<?=$student[phone]?>" />
+										</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-4">
+										<label>Major:
+											<input class="form-control" type="text" name="mjr" size="32" value="<?=$student[major]?>" />
+										</label>		
+									</div>
+									<div class="col-xs-4">
+										<label>Class Year:
+											<input class="form-control" type="text" name="year" size="32" value="<?=$student[classYear]?>" />
+										</label>
+									</div>
+									<div class="col-xs-4">
+										<label>Cumulative GPA:
+											<input class="form-control" type="text" name="gpa" size="32" value="<?=$student[GPA]?>" />
+										</label>
+									</div>
+								</div>
+								<div class="row col-xs-12">
+									<label>Qualifications and TA-ing history: <br />
+										<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student[about]?></textarea>
+									</label>
+								</div>
+								<div class="row">
+									<input class="btn btn-primary btn-lg submitbutton" type="submit" value="Save" />
+								</div>
+							</fieldset>
+						</form>
+					</div>
 				</div>
-			    
+					</div>
 			</div>
 			<!-- END Page Content --> 
 	    

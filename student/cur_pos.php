@@ -9,6 +9,8 @@
     } else {
 		$firstName = $_SESSION['firstName'];
 		$lastName = $_SESSION['lastName'];
+		$email = $_SESSION['email'];
+		$info = getCurPosInfo($email);
 	}  
 ?>
 
@@ -23,7 +25,7 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../template.css" rel="stylesheet">
+		<link href="../index.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 		<link href="cur_pos.css" rel="stylesheet">
 		
@@ -65,42 +67,42 @@
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">
-			    
-				<div class = "container">
-					<div class="panel panel-primary">      
-						<div class = "panel-body">
-							<h2>My Current Positions</h2>   	
+			<div id="content">	    
+					<div class="panel panel-primary"> 
+						<div class="panel-heading">
+							<h1 class="panel-title">My Current Positions</h1>
+						</div>
+						<div class="panel-body">	
+							<!-- BEGIN Current Positions Table -->
 							<table class="table table-striped">
 								<tr>
 									<th>ID</th>
-									<th>Course</th>
+									<th>Course Number</th>
+									<th>Course Name</th>
 									<th>Type</th>
 									<th>Location</th>
 									<th>Time</th>
 									<th>Compensation</th>
 								</tr>
-								<tr>
-									<td>1</td>
-									<td>CSC 210</td>
-									<td>Lab TA</td>
-									<td>Hark 172</td>
-									<td>3:30pm - 4:45pm</td>
-									<td>Paid</td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td>CSC 280</td>
-									<td>Workshop Leader</td>
-									<td>CSB 610</td>
-									<td>2:00pm - 3:15pm</td>
-									<td>Credit</td>
-								</tr>
+								<?php
+									foreach($info as $row) {
+								?>
+									<tr>
+										<td><?= $row[CID]?></td>
+										<td><?= $row[ClassName]?></td>
+										<td><?= $row[ClassTitle]?></td>
+										<td><?= $row[type]?></td>
+										<td><?= $row[classRoom]?></td>
+										<td><?= $row[startTime]." - ".$row[endTime]?></td>
+										<td><?= $row[compensation]?></td>
+									</tr>
+								<?php
+									}
+								?>
 							</table>
+							<!-- END Current Positions Table -->
 						</div>
 					</div>
-				</div>
-			    
 			</div>
 			<!-- END Page Content --> 
 	    

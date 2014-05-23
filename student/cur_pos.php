@@ -25,7 +25,6 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../index.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 		<link href="cur_pos.css" rel="stylesheet">
 		

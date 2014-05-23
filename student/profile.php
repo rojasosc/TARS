@@ -7,7 +7,7 @@
     // if not redirect to login screen. 
 		header('Location: ../index.php');
     } else {
-		if($_POST['email']) {
+		if(!empty($_POST)) {
 			updateProfile($_POST['email'], $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'],  $_POST['gpa'], $_POST['qual-hist']);
 		}
 		$firstName = $_SESSION['firstName'];
@@ -28,7 +28,6 @@
 		<title>TARS</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../index.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 		<link href="profile.css" rel="stylesheet">
 		

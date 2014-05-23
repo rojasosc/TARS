@@ -457,6 +457,15 @@ function setPosition($email,$positionID){
 
 }
 
+function approveStudent($UID, $TID, $status){
+
+	$conn = openTARS();
+	$str = "UPDATE TAship SET status = '$status' WHERE TID = '$TID' AND UID = '$UID'";
+	mysqli_query($conn,$str);
+	
+	closeTARS();
+}
+
 /********************
 *STUDENT FUNCTIONS
 *********************/ 
@@ -515,6 +524,63 @@ function getApplicants($profEmail,$type){
   return $rows; // returns an array of rows. To acces every row just traverse using a foreach loop. Indicies will match the exact UI Indicies
 
 }
+
+function pendingApplicants($email){
+
+	$count = 0; 
+	$count += count(getApplicants($email,"Lecture TA"));
+	$count += count(getApplicants($email,"Lab TA"));
+	$count += count(getApplicants($email,"Workshop Leader"));
+	
+	return $count;
+}
+
+
+function getTotalLecturePos($email){
+  $count = 0;	
+  $conn = openTARS();
+  $sql = "SELECT User.UID, TA.TID\n"
+    . "FROM User, TA\n"
+    . "WHERE User.UID = TA.UID AND TA.type = 'Lecture TA' AND User.email = '$email'";
+
+  $courses = mysqli_query($conn,$sql);  
+  $rows = mysqli_fetch_all($courses,MYSQLI_NUM); // Fetch all the rows
+  
+  closeTARS($conn);
+  $count = count($rows);
+  return  $count; // returns an array of rows. To acces every row just traverse using a foreach loop. Indicies will match the exact UI Indicies
+
+}
+function getTotalLabPos($email){
+  $count = 0;
+  $conn = openTARS();
+  $sql = "SELECT User.UID, TA.TID\n"
+    . "FROM User, TA\n"
+    . "WHERE User.UID = TA.UID AND TA.type = 'Lab TA' AND User.email = '$email'";
+
+  $courses = mysqli_query($conn,$sql);  
+  $rows = mysqli_fetch_all($courses,MYSQLI_NUM); // Fetch all the rows
+  
+  closeTARS($conn);
+  $count = count($rows);
+  return $count; // returns an array of rows. To acces every row just traverse using a foreach loop. Indicies will match the exact UI Indicies
+
+}
+function getTotalWorkshopPos($email){
+  $count = 0;
+  $conn = openTARS();
+  $sql = "SELECT User.UID, TA.TID\n"
+    . "FROM User, TA\n"
+    . "WHERE User.UID = TA.UID AND TA.type = 'Workshop Leader' AND User.email = '$email'";
+
+  $courses = mysqli_query($conn,$sql);  
+  $rows = mysqli_fetch_all($courses,MYSQLI_NUM); // Fetch all the rows
+  
+  closeTARS($conn);
+  $count = count($rows);
+  return $count; // returns an array of rows. To acces every row just traverse using a foreach loop. Indicies will match the exact UI Indicies
+
+}
  
 /* Function getTAs
 *  Purpose: Finds all the positions of a specified type associated to a professor. 
@@ -523,7 +589,7 @@ function getApplicants($profEmail,$type){
 function getTAs($profEmail,$type){
  
   $conn = openTARS();
-  $sql = "SELECT User.UID,User.firstName,User.lastName,User.email,Course.ClassName FROM User, Course, User u, TA t, TAship ta WHERE u.UID = t.UID AND Course.CID = t.CID AND t.TID = ta.TID AND t.type = '$type' AND User.UID = ta.UID AND u.userType = 2 AND u.email = '$profEmail'";  
+  $sql = "SELECT User.UID,User.firstName,User.lastName,User.email,Course.ClassName FROM User, Course, User u, TA t, TAship ta WHERE u.UID = t.UID AND Course.CID = t.CID AND t.TID = ta.TID AND ta.status = '1' AND t.type = '$type' AND User.UID = ta.UID AND u.userType = 2 AND u.email = '$profEmail'";  
   $courses = mysqli_query($conn,$sql); 
   $rows = mysqli_fetch_all($courses,MYSQLI_NUM); // Fetch all the rows
   

@@ -15,7 +15,8 @@
     }else{
   
     $firstName = $_SESSION['firstName'];
-    $lastName = $_SESSION['lastName']; 
+    $lastName = $_SESSION['lastName'];
+    $email = $_SESSION['email'];
     
     $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
     $firstLetter .= ".";
@@ -27,8 +28,8 @@
     
     $email = $_SESSION['email'];
     $lectureApps = getApplicants($email,"Lecture TA");
-    $currentLectureAssistants = 7;
-    $maximumLecturePositions = 10;
+    $currentLectureAssistants = count(getTAs($email,"Lecture TA"));
+    $maximumLecturePositions = getTotalLecturePos($email);
     
     $lectureRatio = $currentLectureAssistants/$maximumLecturePositions;
     $lectureBarStatus = "danger";
@@ -44,8 +45,8 @@
     }
     
     $labApps = getApplicants($email,"Lab TA");
-    $currentLabAssistants = 5;
-    $maximumLabPositions = 10;
+    $currentLabAssistants = count(getTAs($email,"Lab TA"));
+    $maximumLabPositions = getTotalLabPos($email);
     
     $labRatio = $currentLabAssistants/$maximumLabPositions;
     $labBarStatus = "danger";
@@ -62,8 +63,8 @@
     
     
     $workshopApps = getApplicants($email,"Workshop Leader");
-    $currentWorkshopAssistants = 2;
-    $maximumWorkshopPositions = 10;
+    $currentWorkshopAssistants = count(getTAs($email,"Workshop Leader"));
+    $maximumWorkshopPositions = getTotalWorkshopPos($email);
     
     $workshopRatio = $currentWorkshopAssistants/$maximumWorkshopPositions;
     $workshopBarStatus = "danger";
@@ -111,6 +112,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="applicants.js"></script>
 		
 	</head>
   
@@ -369,7 +371,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 								<div class="panel-body">
 									<form action="selections.php" method="post" id="formid"> 	
 									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th># Positions</th> <th>GPA</th> <th>View Profile</th> <th>Action</th></tr>											
+										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Position ID</th> <th>GPA</th> <th>View Profile</th> <th>Action</th></tr>											
 									        <?php 
 											
 									        foreach($lectureApps as $app){ 
@@ -381,19 +383,19 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 					  
 										?>
 										
-										<tr><td><?= $app[0] ?></td> <td><?= $app[1] ?></td> <td><?= $app[2] ?></td> <td><?= $app[3] ?></td><td><?= $app[4] ?></td><td> 2 </td> <td><?= $academic[GPA] ?></td>  <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+										<tr><td><?= $app[0] ?></td> <td><?= $app[1] ?></td> <td><?= $app[2] ?></td> <td><?= $app[3] ?></td><td><?= $app[4] ?></td><td><?= $app[5] ?></td> <td><?= $academic[GPA] ?></td>  <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
 										<span class="glyphicon glyphicon-user"></span> Profile</a>
 										</td>
 										<td>
 											<div class="btn-group" data-toggle="buttons">
 												<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="approve"><span class="glyphicon glyphicon-ok"></span>
+												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="1 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-ok"></span>
 												</label>
 												<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $app[0] ?>" value="reject"><span class="glyphicon glyphicon-remove"></span>
+												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $app[0] ?>" value="2 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-remove"></span>
 												</label>
 												<label name="lectureSelections" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-												<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="undecided"><span class="glyphicon glyphicon-time"></span>												
+												<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="0 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-time"></span>												
 												</label>
 											</div> <!-- End btn-group -->
 										</td>
@@ -437,7 +439,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 								<div class="panel-body">
 									<form action="selections.php" method="post"> 	
 									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th># Positions</th> <th>GPA</th> <th>View Profile</th> <th>Action</th></tr>											
+										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Position ID</th> <th>GPA</th> <th>View Profile</th> <th>Action</th></tr>											
 									        <?php 
 											
 									        foreach($labApps as $app){ 
@@ -449,19 +451,19 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 					  
 										?>
 										
-										<tr><td><?= $app[0] ?></td> <td><?= $app[1] ?></td> <td><?= $app[2] ?></td> <td><?= $app[3] ?></td><td><?= $app[4] ?></td><td> 2 </td> <td><?= $academic[GPA] ?></td>  <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+										<tr><td><?= $app[0] ?></td> <td><?= $app[1] ?></td> <td><?= $app[2] ?></td> <td><?= $app[3] ?></td><td><?= $app[4] ?></td><td><?= $app[5] ?></td> <td><?= $academic[GPA] ?></td>  <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
 										<span class="glyphicon glyphicon-user"></span> Profile</a>
 										</td>
 										<td>
 											<div class="btn-group" data-toggle="buttons">
 												<label name="labSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="approve"><span class="glyphicon glyphicon-ok"></span>
+												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="1 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-ok"></span>
 												</label>
 												<label name="labSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $app[0] ?>" value="reject"><span class="glyphicon glyphicon-remove"></span>
+												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $app[0] ?>" value="2 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-remove"></span>
 												</label>
 												<label name="labSelections" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-												<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="undecided"><span class="glyphicon glyphicon-time"></span>												
+												<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="0 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-time"></span>												
 												</label>
 											</div> <!-- End btn-group -->
 										</td>
@@ -505,7 +507,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 								<div class="panel-body">
 									<form action="selections.php" method="post"> 	
 									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th># Positions</th> <th>GPA</th> <th>View Profile</th> <th>Action</th></tr>											
+										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Position ID</th> <th>GPA</th> <th>View Profile</th> <th>Action</th></tr>											
 									        <?php 
 											
 									        foreach($workshopApps as $app){ 
@@ -517,19 +519,19 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 					  
 										?>
 										
-										<tr><td><?= $app[0] ?></td> <td><?= $app[1] ?></td> <td><?= $app[2] ?></td> <td><?= $app[3] ?></td><td><?= $app[4] ?></td><td> 2 </td> <td><?= $academic[GPA] ?></td>  <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+										<tr><td><?= $app[0] ?></td> <td><?= $app[1] ?></td> <td><?= $app[2] ?></td> <td><?= $app[3] ?></td><td><?= $app[4] ?></td><td><?= $app[5] ?></td> <td><?= $academic[GPA] ?></td>  <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
 										<span class="glyphicon glyphicon-user"></span> Profile</a>
 										</td>
 										<td>
 											<div class="btn-group" data-toggle="buttons">
 												<label name="workshopSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="approve"><span class="glyphicon glyphicon-ok"></span>
+												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="1 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-ok"></span>
 												</label>
 												<label name="workshopSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $app[0] ?>" value="reject"><span class="glyphicon glyphicon-remove"></span>
+												<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $app[0] ?>" value="2 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-remove"></span>
 												</label>
 												<label name="workshopSelections" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-												<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="undecided"><span class="glyphicon glyphicon-time"></span>												
+												<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $app[0] ?>" value="0 <?= $app[0] ?> <?= $app[5] ?>"><span class="glyphicon glyphicon-time"></span>												
 												</label>
 											</div> <!-- End btn-group -->
 										</td>

@@ -11,6 +11,7 @@
   
     $firstName = $_SESSION['firstName'];
     $lastName = $_SESSION['lastName'];
+    $email = $_SESSION['email'];
     
     $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
     $firstLetter .= ".";
@@ -93,6 +94,13 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 					<div class="container">
 						<div class="jumbotron">
 							<h2>Welcome Professor <?= $lastName ?>!</h2>
+							
+							<h3>Notifications</h3> 
+							<p> You have <?= pendingApplicants($email);?> <a href="applicants.php" >applications</a> pending!</p> 
+							
+							<h3>Announcements</h3>
+							<p>Remember to submit feedback for your assistants by (date).</p>
+							<p>Your feedback helps rank assistants by their past experience.</p>
 						</div> <!-- End jumbotron -->
 					</div> <!-- End container -->
 			    </div> <!--End Row -->			    

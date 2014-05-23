@@ -11,13 +11,18 @@
   
     $firstName = $_SESSION['firstName'];
     $lastName = $_SESSION['lastName'];
+    $email = $_SESSION['email'];
     
-    $firstName = $_SESSION['firstName'];
-    $lastName = $_SESSION['lastName'];
-    
+    $professor = getProfessor($email);
+	
     $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
     $firstLetter .= ".";
     $name = $firstLetter . " " . $lastName;
+    
+    
+    /*Remove password and email session variables*/
+    
+
     
   }
 
@@ -52,6 +57,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="editProfile.js"></script>
 	</head>
   
 	<body>
@@ -105,45 +111,65 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 							<div class="jumbotron">
 								<fieldset>
 									<legend>Edit Profile</legend>
+									
 									<div class="row">
 										<div class="col-md-4">
+											<label>Current Password</label>
+											<input type="password" class="form-control" name="currentPassword" place-holder="Enter Current Password">
+										</div>
+									</div>
+									
+									<div class="row first" id="m">
+										<div class="col-md-4">
 											<label>First Name</label>
-											<input type="text" class="form-control" name="firstName" place-holder="place holder">
+											<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $firstName ?>" >
 										</div> <!--End column-->
 										<div class="col-md-4">
 											<label>Last Name</label>
-											<input type="text" class="form-control" name="firstName" place-holder="place holder">
+											<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $lastName ?>">
 										</div> <!--End column-->
+										<div class="col-md-4">
+											<span id="first" class="glyphicon glyphicon-edit"></span> 
+										</div>
 									</div> <!-- End row -->
-									<div class="row">
+									<div class="row second">
 										<div class="col-md-4">
 											<label>Email</label>
-											<input type="email" class="form-control" name="email" place-holder="place holder">
+											<input type="email" class="form-control" disabled="disabled" name="email" value="<?= $email ?>">
 										</div> <!-- End column -->
 										<div class="col-md-4">
 											<label>Re-Enter Email</label>
-											<input type="email" class="form-control" name="emailConfirm" place-holder="place holder">									
+											<input type="email" class="form-control" disabled="disabled" name="emailConfirm" >									
 										</div> <!-- End column -->									
-									</div> <!-- End row -->
-									<div class="row">
 										<div class="col-md-4">
-											<label>Password</label>
-											<input type="password" class="form-control" name="password" place-holder="place holder">
+											<span id="second" class="glyphicon glyphicon-edit"></span> 
+										</div>									
+									</div> <!-- End row -->
+									<div class="row third">
+										<div class="col-md-4">
+											<label>New Password</label>
+											<input type="password" class="form-control" disabled="disabled" name="password" place-holder="Enter your new password.">
 										</div> <!--End column-->
 										<div class="col-md-4">
-											<label>Re-Enter Password</label>
-											<input type="password" class="form-control" name="passwordConfirm" place-holder="place holder">
+											<label>Re-Enter New Password</label>
+											<input type="password" class="form-control" disabled="disabled" name="passwordConfirm" place-holder="Re-enter your new password">
 										</div> <!--End column-->
+										<div class="col-md-4">
+											<span id="third" class="glyphicon glyphicon-edit"></span> 
+										</div>									
 									</div> <!-- End row -->
-									<div class="row">
+									<div class="row fourth">
 										<div class="col-md-4">
 											<label>Home Phone</label>
-											<input type="tel" class="form-control" name="homePhone" place-holder="place holder">
+											<input type="tel" class="form-control" disabled="disabled" name="homePhone" value="<?= $professor['homePhone']?>">
 										</div> <!--End column-->
 										<div class="col-md-4">
 											<label>Cell Phone</label>
-											<input type="tel" class="form-control" name="cellPhone" place-holder="place holder">
+											<input type="tel" class="form-control" disabled="disabled" name="cellPhone" value="<?= $professor['phone']?>">
 										</div> <!--End column-->
+										<div class="col-md-4">
+											<span id="fourth" class="glyphicon glyphicon-edit"></span> 
+										</div>									
 									</div> <!-- End row -->
 									<br>
 									<div class="row">

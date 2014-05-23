@@ -7,6 +7,9 @@
     // if not redirect to login screen. 
 		header('Location: ../index.php');
     } else {
+		if($_POST['email']) {
+			updateProfile($_POST['email'], $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'],  $_POST['gpa'], $_POST['qual-hist']);
+		}
 		$firstName = $_SESSION['firstName'];
 		$lastName = $_SESSION['lastName']; 
 		$email = $_SESSION['email'];
@@ -74,52 +77,52 @@
 					</div>
 					<div class="panel-body">
 					<div class="container-fluid display-area">
-						<form role="form" action="profile.php" method="post">
+						<form role="form" action="profile.php" method="post" id="profile">
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-6">
 										<label>First Name:
-											<input class="form-control" type="text" id="fn" size="32" placeholder="<?=$student[firstName]?>" />
+											<input class="form-control" type="text" name="fn" size="32" value="<?=$student[firstName]?>" />
 										</label>
 									</div>
 									<div class="col-xs-6">
 										<label>Last Name:
-											<input class="form-control" type="text" id="ln" size="32" placeholder="<?=$student[lastName]?>" />
+											<input class="form-control" type="text" name="ln" size="32" value="<?=$student[lastName]?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-6">
 										<label>E-mail:
-											<input class="form-control" type="email" id="email" size="64" placeholder="<?=$student[email]?>" />
+											<input class="form-control" readonly="readonly" type="email" name="email" size="64" value="<?=$student[email]?>" />
 										</label>
 									</div>
 									<div class="col-xs-6">
 										<label>Phone Number:
-											<input class="form-control" type="text" id="pn" size="11" placeholder="<?=$student[phone]?>" />
+											<input class="form-control" type="text" name="pn" size="11" value="<?=$student[phone]?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-4">
 										<label>Major:
-											<input class="form-control" type="text" id="mjr" size="32" placeholder="<?=$student[major]?>" />
+											<input class="form-control" type="text" name="mjr" size="32" value="<?=$student[major]?>" />
 										</label>		
 									</div>
 									<div class="col-xs-4">
 										<label>Class Year:
-											<input class="form-control" type="text" id="year" size="32" placeholder="<?=$student[classYear]?>" />
+											<input class="form-control" type="text" name="year" size="32" value="<?=$student[classYear]?>" />
 										</label>
 									</div>
 									<div class="col-xs-4">
 										<label>Cumulative GPA:
-											<input class="form-control" type="text" id="gpa" size="32" placeholder="<?=$student[GPA]?>" />
+											<input class="form-control" type="text" name="gpa" size="32" value="<?=$student[GPA]?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row col-xs-12">
 									<label>Qualifications and TA-ing history: <br />
-										<textarea class="form-control" rows="10" cols="100" id="qual-hist" form="profile" placeholder="<?=$student[about]?>"></textarea>
+										<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student[about]?></textarea>
 									</label>
 								</div>
 								<div class="row">

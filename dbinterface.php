@@ -495,8 +495,7 @@ function getCurPosInfo($email) {
 function updateProfile($email, $firstname, $lastname, $phone, $major, $classyear, $gpa, $qualifications) {
 	$connect = openTARS();
 	
-	mysqli_query($connect, "UPDATE User SET firstName = '$firstname', lastName = '$lastname', phone = '$phone'; WHERE email = '$email' ");
-	mysqli_query($connect, "UPDATE Student SET major = '$major', GPA = '$gpa', classYear = '$classyear', about = '$qualifications' WHERE ;");
+	mysqli_query($connect, "UPDATE FROM User INNER JOIN Student ON User.UID = Student.UID SET firstName = '$firstname', lastName = '$lastname', phone = '$phone', major = '$major', GPA = '$gpa', classYear = '$classyear', about = '$qualifications' WHERE email = '$email';");
 	
 	closeTARS($connect);
 }
@@ -726,7 +725,7 @@ function getStatus($UID) {
 function search($email) {
   $conn = openTARS();    
   $student = mysqli_query($conn,"Select * FROM User u WHERE u.email='$email'");
-  $student = mysqli_fetch_all($student,MYSQLI_NUM);
+  $student = mysqli_fetch_all($student, MYSQLI_NUM);
   
   closeTARS($conn); 
   return $student; 

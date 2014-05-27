@@ -56,8 +56,10 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
+		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="editProfile.js"></script>
+		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
 	</head>
   
 	<body>
@@ -108,7 +110,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				<div class="row">
 						<div class="container">
 							<div class="jumbotron">
-								<form action="signup.php" method="post">
+								<form action="signup.php" method="post" id="editProfileForm">
 									<fieldset>
 										<legend>Edit Profile</legend>
 										
@@ -117,29 +119,36 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 												<label>Current Password</label>
 												<input type="password" class="form-control" name="currentPassword" place-holder="Enter Current Password">
 											</div>
-										</div>
-										
-										<div class="row first" id="m">
+										</div>				
+										<div class="row first">
 											<div class="col-md-4">
-												<label>First Name</label>
-												<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $firstName ?>" >
+												<div class="form-group">
+													<label class="control-label" for="firstname">First Name</label>
+													<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $firstName ?>" />													
+												</div> <!-- End form-group -->
 											</div> <!--End column-->
 											<div class="col-md-4">
-												<label>Last Name</label>
-												<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $lastName ?>">
+												<div class="form-group">
+													<label>Last Name</label>
+													<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $lastName ?>">											
+												</div> <!-- End form-group -->
 											</div> <!--End column-->
 											<div class="col-md-4">
 												<span id="first" class="glyphicon glyphicon-edit"></span> 
-											</div>
+											</div> <!-- End column -->
 										</div> <!-- End row -->
 										<div class="row second">
 											<div class="col-md-4">
-												<label>Email</label>
-												<input type="email" class="form-control" disabled="disabled" name="email" value="<?= $email ?>">
+												<div class="form-group">
+													<label>Email</label>
+													<input type="email" class="form-control" disabled="disabled" name="email" value="<?= $email ?>">												
+												</div> <!-- End form-group -->																						
 											</div> <!-- End column -->
 											<div class="col-md-4">
-												<label>Re-Enter Email</label>
-												<input type="email" class="form-control" disabled="disabled" name="emailConfirm" >									
+												<div class="form-group">
+													<label>Re-Enter Email</label>
+													<input type="email" class="form-control" disabled="disabled" name="emailConfirm" >													
+												</div> <!-- End form-group -->																				
 											</div> <!-- End column -->									
 											<div class="col-md-4">
 												<span id="second" class="glyphicon glyphicon-edit"></span> 
@@ -147,25 +156,33 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										</div> <!-- End row -->
 										<div class="row third">
 											<div class="col-md-4">
-												<label>New Password</label>
-												<input type="password" class="form-control" disabled="disabled" name="password" place-holder="Enter your new password.">
+												<div class="form-group">
+													<label>New Password</label>
+													<input type="password" class="form-control" disabled="disabled" name="password" place-holder="Enter your new password.">												
+												</div> <!-- End form-group -->											
 											</div> <!--End column-->
 											<div class="col-md-4">
-												<label>Re-Enter New Password</label>
-												<input type="password" class="form-control" disabled="disabled" name="passwordConfirm" place-holder="Re-enter your new password">
+												<div class="form-group">
+													<label>Re-Enter New Password</label>
+													<input type="password" class="form-control" disabled="disabled" name="passwordConfirm" place-holder="Re-enter your new password">
 											</div> <!--End column-->
+												</div> <!-- End form-group -->											
 											<div class="col-md-4">
 												<span id="third" class="glyphicon glyphicon-edit"></span> 
 											</div>									
 										</div> <!-- End row -->
 										<div class="row fourth">
 											<div class="col-md-4">
-												<label>Home Phone</label>
-												<input type="tel" class="form-control" disabled="disabled" name="homePhone" value="<?= $professor['homePhone']?>">
+												<div class="form-group">
+													<label>Home Phone</label>
+													<input type="tel" class="form-control" disabled="disabled" name="homePhone" value="<?= $professor['homePhone']?>">												
+												</div> <!-- End form-group -->											
 											</div> <!--End column-->
 											<div class="col-md-4">
-												<label>Cell Phone</label>
-												<input type="tel" class="form-control" disabled="disabled" name="cellPhone" value="<?= $professor['phone']?>">
+												<div class="form-group">
+													<label>Cell Phone</label>
+													<input type="tel" class="form-control" disabled="disabled" name="cellPhone" value="<?= $professor['phone']?>">												
+												</div> <!-- End form-group -->											
 											</div> <!--End column-->
 											<div class="col-md-4">
 												<span id="fourth" class="glyphicon glyphicon-edit"></span> 

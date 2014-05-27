@@ -58,7 +58,12 @@ $(document).ready(function() {
                     },
                     emailAddress: {
                         message: 'Your input is not a valid email address'
-                    }
+                    },
+		    identical: {
+			field: 'email',
+			message: 'Email addresses don\'t match'
+			 
+		    }		    
                 }
             },
             password: {
@@ -92,7 +97,13 @@ $(document).ready(function() {
                     regexp: {
                         regexp: /^[a-zA-Z0-9]+$/,
                         message: 'Your password can only consist of alphabetical and numerical characters'
-                    }
+                    },
+		    identical: {
+			field: 'password',
+			message: 'Passwords don\'t match'
+			 
+		    }
+
                 }
             },
             homePhone: {
@@ -144,6 +155,7 @@ $(document).ready(function() {
                         regexp: /^[0.0-5]+$/,
                         message: 'Your gpa can only consist of numerical digits'
                     }
+
                 }
             },	    
  

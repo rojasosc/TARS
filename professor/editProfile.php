@@ -110,7 +110,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				<div class="row">
 						<div class="container">
 							<div class="jumbotron">
-								<form action="signup.php" method="post" id="editProfileForm">
+								<form action="editProfile.php" method="post" id="editProfileForm">
 									<fieldset>
 										<legend>Edit Profile</legend>
 										

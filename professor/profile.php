@@ -57,7 +57,6 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="editProfile.js"></script>
 	</head>
   
 	<body>
@@ -104,84 +103,41 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">			    
-				<div class="row">
-						<div class="container">
-							<div class="jumbotron">
-								<form action="signup.php" method="post">
-									<fieldset>
-										<legend>Edit Profile</legend>
-										
-										<div class="row">
-											<div class="col-md-4">
-												<label>Current Password</label>
-												<input type="password" class="form-control" name="currentPassword" place-holder="Enter Current Password">
-											</div>
-										</div>
-										
-										<div class="row first" id="m">
-											<div class="col-md-4">
-												<label>First Name</label>
-												<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $firstName ?>" >
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<label>Last Name</label>
-												<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $lastName ?>">
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<span id="first" class="glyphicon glyphicon-edit"></span> 
-											</div>
-										</div> <!-- End row -->
-										<div class="row second">
-											<div class="col-md-4">
-												<label>Email</label>
-												<input type="email" class="form-control" disabled="disabled" name="email" value="<?= $email ?>">
-											</div> <!-- End column -->
-											<div class="col-md-4">
-												<label>Re-Enter Email</label>
-												<input type="email" class="form-control" disabled="disabled" name="emailConfirm" >									
-											</div> <!-- End column -->									
-											<div class="col-md-4">
-												<span id="second" class="glyphicon glyphicon-edit"></span> 
-											</div>									
-										</div> <!-- End row -->
-										<div class="row third">
-											<div class="col-md-4">
-												<label>New Password</label>
-												<input type="password" class="form-control" disabled="disabled" name="password" place-holder="Enter your new password.">
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<label>Re-Enter New Password</label>
-												<input type="password" class="form-control" disabled="disabled" name="passwordConfirm" place-holder="Re-enter your new password">
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<span id="third" class="glyphicon glyphicon-edit"></span> 
-											</div>									
-										</div> <!-- End row -->
-										<div class="row fourth">
-											<div class="col-md-4">
-												<label>Home Phone</label>
-												<input type="tel" class="form-control" disabled="disabled" name="homePhone" value="<?= $professor['homePhone']?>">
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<label>Cell Phone</label>
-												<input type="tel" class="form-control" disabled="disabled" name="cellPhone" value="<?= $professor['phone']?>">
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<span id="fourth" class="glyphicon glyphicon-edit"></span> 
-											</div>									
-										</div> <!-- End row -->
-										<br>
-										<div class="row">
-											<div class="col-md-3">
-												<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-refresh"></span> Update</button>
-											</div> <!-- End column -->
-										</div> <!-- End row --> 
-									</fieldset> <!-- End fieldset -->
-								</form> <!-- End form -->
-							</div> <!-- End jumbotron -->
-						</div> <!-- End container -->				
-				</div> <!-- End row -->	
+			<div id="content">
+				<div class="container">
+					<div class="jumbotron">
+						<div class="row">
+							<div class="col-md-4">
+							
+							<h2>Your Profile</h2>
+							</div>
+						</div> <!-- End row -->	
+						
+						<div class="row">
+							<div class="col-md-4">
+							<p> <strong>First Name: </strong><?= $firstName ?> </p>
+							</div>
+							<div class="col-md-4">
+							<p> <strong>Last Name: </strong><?= $lastName ?> </p>
+							</div>							
+						</div> <!-- End row -->
+						
+						<div class="row">
+							<div class="col-md-4">
+							<p> <strong>Home Phone: </strong><?= $professor['homePhone'] ?> </p>
+							</div>
+							<div class="col-md-4">
+							<p> <strong>Cell Phone: </strong><?= $professor['phone'] ?> </p>
+							</div>
+						</div> <!-- End row -->	
+						
+						<div class="row">
+							<div class="col-md-4">
+							<p> <strong>Email: </strong><?= $email ?> </p>
+							</div>
+						</div> <!-- End row -->						
+					</div> <!-- End jumbotron -->
+				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 
 	    

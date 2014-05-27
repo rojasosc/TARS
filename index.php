@@ -50,9 +50,7 @@
 			
 			<!-- BEGIN Page Header -->
 			<div id="header">
-				<div class="row" id="navbar-theme">
-					
-				</div> <!-- End navbar-theme -->
+
 			</div>		
 			<!--END Page Header -->	  
 	  
@@ -83,7 +81,7 @@
 							<br>
 							<div class="row">
 								<div class="col-md-4">
-									<a href="signup.php">Register</a>
+									<a href="signup.php">Sign Up</a>
 								</div> <!-- End column -->
 								<div class="col-md-6">
 									<a href="#">Forgot Password?</a>

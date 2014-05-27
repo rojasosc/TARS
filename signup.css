@@ -23,12 +23,7 @@ html,body{
 #content {
     padding: 25px;
     padding-bottom: 250px;
-    background-image: url('background.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    height: auto;
-    width: auto;
-    background-size: cover;
+    background-size: 100%;
 }
 #footer {
     width: 100%;
@@ -64,7 +59,9 @@ html,body{
 
 #login{
 	background-color: #000000;
-	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 100px;
 	width: 500px;
 	padding: 50px;
 	border-radius: 25px;
@@ -80,6 +77,12 @@ html,body{
 	
 	color: white;
 }
+
+.col-md-4{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 /*
  * Everything below is NavBar coloring
  */

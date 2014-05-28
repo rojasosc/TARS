@@ -264,15 +264,15 @@ function checkStatus(){
 function login($email, $inputPassword){
 
   $conn = openTARS();
-  $email = mysqli_real_escape_string($conn,$email);
-  $inputPassword = mysqli_real_escape_string($conn,$inputPassword); // Entered Password
+  $email = mysqli_real_escape_string($conn, $email);
+  $inputPassword = mysqli_real_escape_string($conn, $inputPassword); // Entered Password
   $userAccount = mysqli_query($conn, "SELECT * FROM User WHERE email = '$email'");
   $userAccount = mysqli_fetch_array($userAccount);
   $password = $userAccount[2];
  
   /*Check if login was validated */
   closeTARS($conn);
-  if(password_verify($inputPassword,$password)){
+  if(password_verify($inputPassword, $password)){
 	beginSession($userAccount);
 	return $userAccount;
     } else {
@@ -504,7 +504,7 @@ function getCurPosInfo($email) {
 function updateProfile($email, $firstname, $lastname, $phone, $major, $classyear, $gpa, $qualifications) {
 	$connect = openTARS();
 	
-	mysqli_query($connect, "UPDATE FROM User INNER JOIN Student ON User.UID = Student.UID SET firstName = '$firstname', lastName = '$lastname', phone = '$phone', major = '$major', GPA = '$gpa', classYear = '$classyear', about = '$qualifications' WHERE email = '$email';");
+	mysqli_query($connect, "UPDATE User INNER JOIN Student ON User.UID = Student.UID SET firstName = '$firstname', lastName = '$lastname', phone = '$phone', major = '$major', GPA = '$gpa', classYear = '$classyear', about = '$qualifications' WHERE email = '$email';");
 	
 	closeTARS($connect);
 }
@@ -668,7 +668,7 @@ function getStudentByID($id){
   $conn = openTARS();
   
   /* escape variables to avoid  injection attacks. */ 
-  $email = mysqli_real_escape_string($id);
+  $email = mysqli_real_escape_string($conn, $id);
 
   $sql = "SELECT * FROM Student WHERE UID = '$id'";
   $student = mysqli_query($conn,$sql);
@@ -688,7 +688,7 @@ function getStudentByID2($id){
   $conn = openTARS();
   
   /* escape variables to avoid  injection attacks. */ 
-  $email = mysqli_real_escape_string($id);
+  $email = mysqli_real_escape_string($conn, $id);
 
   $sql = "SELECT * FROM User WHERE UID = '$id'";
   $student = mysqli_query($conn,$sql);

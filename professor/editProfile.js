@@ -139,25 +139,7 @@ $(document).ready(function () {
                         message: 'Your mobile phone can only consist of numerical digits'
                     }
                 }
-            },	  
-            gpa: {
-                message: 'Your gpa is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your gpa is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 3,
-                        max: 6,
-                        message: 'Your gpa must be a decimal between 2 and 5 digits long'
-                    },
-                    regexp: {
-                        regexp: /^[0.0-5]+$/,
-                        message: 'Your gpa can only consist of numerical digits'
-                    }
-
-                }
-            },	    
+            }	  
  
         } /* close fields */
 	

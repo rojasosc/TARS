@@ -802,10 +802,32 @@ function search($email) {
 *  Returns: 
 **/
 function modify($firstname, $lastname, $email, $mobile, $homePhone){
-
+	
   $conn = openTARS();  
   mysqli_query($conn,"update User set firstname = '$firstname', lastname='$lastname', phone='$mobile', homePhone = '$homePhone' where email='$email'");
   closeTARS($conn);
+
+}
+
+/* Function modify
+*  Purpose:  
+*  Returns: 
+**/
+function updateUser($newFirstName, $newLastName, $newEmail, $newMobilePhone, $newHomePhone,$newPassword,$email,$inputPassword){
+  
+  $professor = login($email,$inputPassword);
+  if($professor){
+  
+	print_r($professor);
+  }else{
+	
+	//The current password entered was incorrect
+	//prompt the user. 
+  
+  }
+//   $conn = openTARS();  
+//   mysqli_query($conn,"Update User SET firstname = '$newFirstName', lastname='$newLastName', email= '$newEmail',phone='$newMobilePhone', homePhone = '$newHomePhone' where email='$email'");
+//   closeTARS($conn);
 
 }
 

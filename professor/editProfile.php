@@ -123,14 +123,14 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										<div class="row first">
 											<div class="col-md-4">
 												<div class="form-group">
-													<label class="control-label" for="firstname">First Name</label>
+													<label class="control-label" for="firstName">First Name</label>
 													<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $firstName ?>" />													
 												</div> <!-- End form-group -->
 											</div> <!--End column-->
 											<div class="col-md-4">
 												<div class="form-group">
 													<label>Last Name</label>
-													<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $lastName ?>">											
+													<input type="text" class="form-control" disabled="disabled" name="lastName" value="<?= $lastName ?>">											
 												</div> <!-- End form-group -->
 											</div> <!--End column-->
 											<div class="col-md-4">
@@ -180,8 +180,8 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											</div> <!--End column-->
 											<div class="col-md-4">
 												<div class="form-group">
-													<label>Cell Phone</label>
-													<input type="tel" class="form-control" disabled="disabled" name="cellPhone" value="<?= $professor['phone']?>">												
+													<label>Mobile Phone</label>
+													<input type="tel" class="form-control" disabled="disabled" name="mobilePhone" value="<?= $professor['phone']?>">												
 												</div> <!-- End form-group -->											
 											</div> <!--End column-->
 											<div class="col-md-4">
@@ -191,7 +191,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										<br>
 										<div class="row">
 											<div class="col-md-3">
-												<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-refresh"></span> Update</button>
+												<button type="submit" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-refresh"></span> Update</button>
 											</div> <!-- End column -->
 										</div> <!-- End row --> 
 									</fieldset> <!-- End fieldset -->

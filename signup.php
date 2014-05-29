@@ -1,15 +1,3 @@
-<?php
-	include ("dbinterface.php");
-// 	if(isset($_POST['submitButton'])){
-// 		echo "sdfsdfa";
-// 	}else{
-// 		echo "not set";
-// 	}
-// 	
-// 	print_r($_POST);
-	
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,8 +12,8 @@
 		<link href="signup.css" rel="stylesheet"/>
 		<link rel="stylesheet" href="bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script rel="text/javascript" src="signup.js"></script>
 		<script rel="text/javascript" src="bootstrapValidator.min.js"></script>
+		<script rel="text/javascript" src="signup.js"></script>
 
 
 	</head>
@@ -46,9 +34,9 @@
 			
 			<div id="content">
 				<div class="container">
-					<div class="jumbotron" id="signupForm">
+					<div class="jumbotron" id="formBox">
 						<h2>Sign Up</h2>
-						<form action="signup2.php" class="form-horizontal" id="signupForm" method="post">
+						<form action="process.php" class="form-horizontal" id="signupForm" method="post">
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
@@ -141,10 +129,18 @@
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="aboutMe">About Me</label>
+										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."></textarea>
+									</div> <!-- End form-group -->
+								</div> <!-- End row -->
+							</div> <!-- End row -->
 							<br>
 							<div class="row">
 								<div class="col-md-3">
-									<button id="formButton" type="submit" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Sign Up</button>
+									<button type = "submit"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Sign Up</button>
 								</div> <!-- End column -->
 							</div> <!-- End row -->								
 						</form>

@@ -1,10 +1,21 @@
 $(document).ready(function() {
-    $('#signupForm').bootstrapValidator({
+	
+  /*Attach a bootstrapValidator to the form*/	
+  $('#signupForm').bootstrapValidator({
         message: 'This value is not valid',
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
+        },
+	submitHandler: function(validator, form, submitButton) {
+	    // Ajax post(url,data,callback function)
+	    var url = $('#signupForm').attr('action');
+	    var data = $('#signupForm :input').serializeArray();
+	    $.post(url,data,function (info){ 
+		clearInput(); 		//Clear all fields.
+		displayConfirmation();  //Remove the form and display a confirmation message. 
+		});
         },
         fields: {
             firstName: {
@@ -152,7 +163,7 @@ $(document).ready(function() {
                         message: 'Your gpa must be a decimal between 2 and 5 digits long'
                     },
                     regexp: {
-                        regexp: /^[0.0-5]+$/,
+                        regexp: /^\d+(.\d+){0,1}$/,
                         message: 'Your gpa can only consist of numerical digits'
                     }
 
@@ -163,4 +174,36 @@ $(document).ready(function() {
 	
 	
     });
+    
+ $('#submitButton').click(function(){
+	    // Ajax post(url,data,callback function)
+	    var url = $('#signupForm').attr('action');
+	    var data = $('#signupForm :input').serializeArray();
+	    $.post(url,data,function (info){ 
+		clearInput(); 
+		displayConfirmation();
+	});
 });
+
+});
+
+/*Clears all the fields in the registration form*/
+function clearInput() {
+	$("#signupForm :input").each( function() {
+	   $(this).val('');
+	});
+}
+/*Removes the form and displays a confirmation message*/
+function displayConfirmation(){
+	var message ="<p>We have sent you an email confirmation.</p> <p> Start seeking available positions by <a href=\"index.php\">signing in</a> with your email address.</p>";
+	$('#signupForm').fadeOut(600);
+	$('#formBox').html(message).fadeIn();
+	
+}
+
+/*Prevents a page redirection to the php page.*/
+$("#signupForm").submit(function(event){
+		
+  return false;
+});
+

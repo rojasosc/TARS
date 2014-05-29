@@ -37,10 +37,84 @@
 		
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="index.css" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
 	</head>
   
 	<body>
+		<!-- BEGIN Forgot Password -->
+		<div class="modal fade" id="passmodal" tabindex="-1" role="dialog" aria-labelledby="passModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Password Recovery</h1>
+					</div>
+					<div class="modal-body">
+						<p>Enter the email address you used to register for your account and further instructions will be sent to that address.
+							This would probably be your school E-mail address.</p>
+						<form action="passrecov.php" method="post" id="passrecov">
+							<fieldset>
+								<div class="row">
+									<div class="col-xs-6">
+										E-mail: <input type="email" name="passrecov" class="form-control" size="64"/>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" form="passrecov" value="Submit">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END Forgot Password -->
+		<!-- BEGIN Report a Bug -->
+		<div class="modal fade" id="bugmodal" tabindex="-1" role="dialog" aria-labelledby="bugModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Bug Report</h1>
+					</div>
+					<div class="modal-body">
+						<p>
+							Enter your information so we can verify your identity.<br/>
+							In the space provided, detail the bug that you have encountered as clearly and concisely as you can muster.
+						</p>
+						<form action="bugrep.php" method="post" id="bugrep">
+							<fieldset>
+								<div class="row">
+									<div class="col-xs-5 col-xs-offset-1">
+										<label>
+											E-mail: <input class="form-control" type="email" name="bugrep" size="32"/>
+										</label>
+									</div>
+									<div class="col-xs-5">
+										<label>
+											Password: <input class="form-control" type="password" name="bugreppass" size="32"/>
+										</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-10 col-xs-offset-1">
+										<label>
+											<textarea class="form-control" rows="4" cols="64"></textarea>
+										</label>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" form="bugrep" value="Submit">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END Report a Bug -->
 
 		<!-- BEGIN page-wrapper -->
             
@@ -54,53 +128,6 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				<!-- BEGIN Forgot Password -->
-				<div class="modal fade">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h1 class="modal-title">Password Recovery</h1>
-							</div>
-							<div class="modal-body">
-								<p>Enter the email address you used to register for your account and further instructions will be sent to that address.
-								This would probably be your school E-mail address.</p>
-								<form action="#" method="post" id="passrecov">
-									E-mail: <input type="email" name="passrecov"/>
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-primary" form="passrecov" value="Submit">Submit</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- END Forgot Password -->
-				<!-- BEGIN Report a Bug -->
-				<div class="modal fade">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h1 class="modal-title">Bug Report</h1>
-							</div>
-							<div class="modal-body">
-								<p>Enter your information so we can verify your identity.<br/>
-								In the space provided, detail the bug that you have encountered as clearly and concisely as you can muster.</p>
-								<form action="#" method="post" id="bugrep">
-									E-mail: <input type="email" name="bugrep"/> <br/>
-									Password: <input type="password" name="bugreppass"/>
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-primary" form="bugrep" value="Submit">Submit</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- END Report a Bug -->
 				<div id="login">
 					<form action="index.php" method="post">
 						<fieldset>
@@ -129,13 +156,19 @@
 									<a href="signup.php">Sign Up</a>
 								</div> <!-- End column -->
 								<div class="col-md-6">
-									<a href="#">Forgot Password?</a>
+									<div class="form-group">
+										<a href="#passmodal" data-toggle="modal">
+											Forgot Password?
+										</a>
+									</div>
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
 							<br>
 							<div class="row">
 								<div class="col-md-4">
-									<a href="#">Report A Bug</a>
+									<a href="#bugmodal" data-toggle="modal">
+										Report A Bug
+									</a>
 								</div> <!-- End column -->							
 							</div> <!-- End row -->							
 						</fieldset> <!-- End fieldset -->
@@ -173,7 +206,7 @@
 		
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 		<!-- END Scripts -->
 	</body>
 </html>

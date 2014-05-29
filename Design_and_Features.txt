@@ -110,7 +110,37 @@ Feedback
 ADMIN PAGES
 ********************************
 ================================
-NEEDS TO BE PLANNED
+
+================
+Home
+================
+-Notifications (similar to professor home page)
+
+================
+Manage Terms
+================
+-Create new terms (either from XML or a previous term)
+-Edit existing terms
+
+================
+Manage Professors
+================
+-Create new professors
+-Assign courses to professors
+-Notify professors of vacant TA positions in their courses
+
+================
+Manage TAs
+================
+-Edit information about the student
+-Fire button with comments
+-Prescreen TAs with comments
+
+================
+Payroll
+================
+-Bring up a list of all TAs with all information and download as an xls
+
 
 ================================
 ********************************

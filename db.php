@@ -26,6 +26,7 @@
 	const REJECTED = 2;
 	const APPROVED = 3;
 
+	
 	/******************
 	*DATABASE UTILITIES
 	*******************/	
@@ -115,8 +116,8 @@
 		$professor = mysqli_query($conn,$sql);
 		$professor = mysqli_fetch_array($professor);
 		
-		
 		close_database($conn);
+
 		return $professor;
 	
 	}	
@@ -160,17 +161,14 @@
 		$email = mysqli_real_escape_string($conn, $email);
 		$inputPassword = mysqli_real_escape_string($conn, $inputPassword); // Entered Password
 		$user = mysqli_query($conn, "SELECT * FROM Users WHERE email = '$email'");
-		
-	
+
 		$user = mysqli_fetch_array($user);
 		$password = $user['password'];
 
-		
-		
 		/* Determine the type of user and verify password */
 		
 		if(password_verify($inputPassword,$password)){
-			beginSession();
+			beginSession($email);
 			return $user;
 			
 		}else{
@@ -185,16 +183,15 @@
 	*  Purpose:  Initializes a new session.
 	*  Returns: nothing.
 	**/
-	function beginSession(){
+	function beginSession($email){
 	
 		session_start(); // begin the session
 		session_regenerate_id(true);  // regenerate a new session id on each log in
 		$_SESSION['auth'] =  "Authorized";
-	
+		$_SESSION['email'] = $email;
 		
 	}
-	
-	
+
 	/* Function endSession
 	*  Purpose: Terminates an existing session.  
 	*  Returns: nothing. 
@@ -216,8 +213,7 @@
 		// Finally, destroy the session.
 		session_destroy(); 
 	}
- 
-	
+
 	/* Function emailExists
 	*  Purpose: Checks if an email is in use.
 	*  Returns: True if in use and false otherwise.
@@ -389,10 +385,12 @@
 		
 		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status <=". STAFF_VERIFIED. "AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = '0' ASC";		
-		$apps = mysqli_query($conn,$sql);  
-		$apps = mysqli_fetch_all($apps,MYSQLI_NUM); // Fetch all the applications
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ASC";		
 		
+		$apps = mysqli_query($conn,$sql);
+		/* Fetch every application */
+		$apps = mysqli_fetch_all($apps,MYSQLI_NUM); 
+
 		close_database($conn);
 	
 		return $apps; 
@@ -407,13 +405,14 @@
 		$conn = open_database();
 		
 		$professorID = getUserID($email);
-		
-		
+			
 		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status =" .APPROVED. "AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = '0' ASC";		
-		$apps = mysqli_query($conn,$sql);  
-		$apps = mysqli_fetch_all($apps,MYSQLI_NUM); // Fetch all the applications
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = " .APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ORDER BY `Course`.`courseNumber` ASC";		
+		$apps = mysqli_query($conn,$sql); 
+		
+		/* Fetch every assistant */
+		$apps = mysqli_fetch_all($apps,MYSQLI_NUM); 
 		
 		close_database($conn);
 	
@@ -424,8 +423,7 @@
 
 		$count = 0; 
 		$count += count(getApplicants($email));
-		
-		echo $count;
+
 		return $count;
 	
 	}
@@ -511,7 +509,7 @@
 		
 		$sql = "SELECT Users.userID, Course.courseNumber, Course.courseTitle, Positions.type, Place.building, Place.room, Course.startTime, Course.endTime, Assistantship.compensation\n"
 			. "FROM Users,Course,Positions,Place,Assistantship\n"
-			. "WHERE Users.userID = '$studentID' AND Positions.courseID = Course.courseID AND Assistantship.positionID = Positions.positionID AND Assistantship.status =" .APPROVED. "AND Assistantship.studentID = Users.userID AND Course.placeID = Place.placeID";
+			. "WHERE Users.userID = '$studentID' AND Positions.courseID = Course.courseID AND Assistantship.positionID = Positions.positionID AND Assistantship.status = " .APPROVED. " AND Assistantship.studentID = Users.userID AND Course.placeID = Place.placeID ORDER BY `Course`.`courseNumber` ASC";
 		
 		
 		$result = mysqli_query($conn,$sql);

@@ -1,11 +1,8 @@
 <?php
-
 	include ("db.php");
 
 	$userName = $_POST['email'];
 	$password = $_POST['password'];
-	
-
 	$user = login($userName, $password);
 
 	if(isset($_POST['submit'])){
@@ -17,25 +14,19 @@
 			
 			if($type == STUDENT){
 				
-				header('Location: student/student.php');
-				
+				header('Location: student/student.php');	
 			}elseif($type == PROFESSOR){
 			
-				header('Location: professor/professor.php');
-			
-			}else{
+				header('Location: professor/professor.php');	
+			}else{	
 			
 				header('Location: staff/staff.php');
-
-			}
-	
+			}	
 		}else{
 
 			header('Location: index.php');
 		}
 	}
-	
-
 ?>
 
 <!DOCTYPE html>

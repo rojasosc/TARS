@@ -162,41 +162,22 @@
 		$user = mysqli_query($conn, "SELECT * FROM Users WHERE email = '$email'");
 		
 	
-		$verified = false;
 		$user = mysqli_fetch_array($user);
 		$password = $user['password'];
-		$userType = $user['type'];
+
 		
 		
 		/* Determine the type of user and verify password */
 		
 		if(password_verify($inputPassword,$password)){
+			beginSession();
+			return $user;
 			
-			$verified = true;
 		}else{
 			
 			return false;
 		}
 
-		if($userType == STUDENT){
-			
-			$user = getStudent($email);
-
-		}elseif($userType == PROFESSOR){
-			
-			$user = getProfessor($email);
-
-		}elseif($userType == STAFF){
-		
-			$user = getStaff($email);
-
-		}else{
-			
-			return false;
-		}
-		
-		beginSession($user,$email);
-		return $user;
 	}
 
 
@@ -204,7 +185,7 @@
 	*  Purpose:  Initializes a new session.
 	*  Returns: nothing.
 	**/
-	function beginSession($user,$email){
+	function beginSession(){
 	
 		session_start(); // begin the session
 		session_regenerate_id(true);  // regenerate a new session id on each log in

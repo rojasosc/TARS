@@ -1,28 +1,41 @@
 <?php
 
-	include ("dbinterface.php");
+	include ("db.php");
 
-	$account = $_POST[email];
-	$pw = $_POST[password];
+	$userName = $_POST['email'];
+	$password = $_POST['password'];
 	
-	$validate = login($account, $pw);
 
-	if($validate){
+	$user = login($userName, $password);
+
+	if(isset($_POST['submit'])){
 	
-	    if($validate[3] == 1){
-	    
-	      $type = "admin";
-	      header('Location: admin/admin.html');
-	    
-	    }elseif($validate[3] == 2){
-	      header('Location: professor/professor.php');
-	    
-	    }elseif($validate[3] == 3){
-	    
-	      header('Location: student/student.php');
-	      
-	    }	    
+		if($user){
+		
+			/* User type */
+			$type = $user['type'];
+			
+			if($type == STUDENT){
+				
+				header('Location: student/student.php');
+				
+			}elseif($type == PROFESSOR){
+			
+				header('Location: professor/professor.php');
+			
+			}else{
+			
+				header('Location: staff/staff.php');
+
+			}
+	
+		}else{
+
+			header('Location: index.php');
+		}
 	}
+	
+
 ?>
 
 <!DOCTYPE html>

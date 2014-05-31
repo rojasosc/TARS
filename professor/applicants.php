@@ -224,7 +224,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											<td>
 												<div class="btn-group" data-toggle="buttons">
 													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $application[0] ?>" value="1 <?= $application[0] ?> <?= $application[5] ?>"><span class="glyphicon glyphicon-ok"></span>
+													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $application[0] ?>" value="3 <?= $application[0] ?> <?= $application[5] ?>"><span class="glyphicon glyphicon-ok"></span>
 													</label>
 													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
 													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $application[0] ?>" value="2 <?= $application[0] ?> <?= $application[5] ?>"><span class="glyphicon glyphicon-remove"></span>
@@ -238,11 +238,12 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											<?php
 											/* Table entry closing brace */
+											$tableEntry++;
 											}
 											
 											?>
 											</table> <!-- End table -->
-										</form> <!-- End form -->
+										
 									</div> <!-- End panel-body -->									
 								</div> <!-- End collapse panel-collapse -->
 								<div class="panel-footer">
@@ -250,7 +251,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										<div class="col-md-3">
 											<button name="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-circle"></span> Confirm</button>
 										</div> <!-- End column -->
-										</form>									
+										</form> <!-- End form -->								
 									</div> <!-- End row -->
 									<strong>Positions Filled</strong>
 									<div class="progress progress-striped active">

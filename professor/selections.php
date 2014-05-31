@@ -1,17 +1,20 @@
 <?php
 
-	 	 
-	 include('../dbinterface.php');
+	include('../db.php');
 	 
 	 foreach($_POST as $action){
 		$IDs = explode(" ",$action);
-		//print_r($IDs);
-		$status = $IDs[0];	// (pending => 0) (approved => 1) (rejected => 2)
-		$UID = $IDs[1];		// student ID 
-		$TID = $IDs[2];		// TAship ID
-		approveStudent($UID,$TID,$status);
+		
+		$status = $IDs[0];
+		$studentID = $IDs[1];
+		$positionID = $IDs[2];
+		
+		//echo $status. " " . $studentID . " ". $positionID . " ";
+		
+		setPositionStatus($studentID,$positionID,$status);
+		
+		header('Location: applicants.php');
 	 }
 	 
-	 header ('Location: applicants.php');
 
 ?>

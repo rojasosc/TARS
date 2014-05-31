@@ -1,36 +1,9 @@
 <?php
-  
-    include('../dbinterface.php');
-  
-    session_start();
-    
-    
-    if (!isset($_SESSION['auth'])) {
+	include('professorSession.php');
 
-    // if not redirect to login screen. 
-    
-    header('Location: ../index.php');
-
-
-    }else{
-  
-    $firstName = $_SESSION['firstName'];
-    $lastName = $_SESSION['lastName']; 
-    
-    $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
-    $firstLetter .= ".";
-    $name = $firstLetter . " " . $lastName;    
-    
- 
-    
-    //Grab lists of TAs
-    $email = $_SESSION['email'];
-    $lectureTAs = getTAs($email,"Lecture TA");
-    $labTAs = getTAs($email,"Lab TA");
-    $workshopTAs = getTAs($email,"Workshop Leader");
-    $profilesMade = array();    
-  
-  }
+	/* Obtain a CRN and a courseNumber */
+	
+	$courses = getCourses($email);
 
 ?>
 <!-- A template for TARS.
@@ -62,177 +35,75 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</head> 
 	<body>
+  <?php
+	$profilesMade = array();
 	
- <?php  
-    foreach($lectureTAs as $taProfile){
-    
-      if(!(in_array($taProfile[0],$profilesMade))){
-
-      $myProfileID = "myProfile" . $taProfile[0];
-      $student = getStudentByID($taProfile[0]);
-    
-      $studentB = getStudentByID2($taProfile[0]);
-      
-      $profilesMade[] = $taProfile[0];
-
-    ?>
-    
-
-      <!-- Profile Modal -->
-<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myProfileLabel"> <?= $taProfile[1]?>'s Profile</h4>
-      </div>
-      <div class="modal-body">
-      
-	<h3>Personal Information</h3>
-	<div class="container">
-	<p>Major: <?=$student[major]?></p>
-	<p>GPA: <?=$student[GPA]?></p>
-	<p>Class Year: <?=$student[classYear]?></p>
-	</div>
+	foreach($courses as $course){
 	
-	<h3>Contact Information</h3>
-	<div class="container">
-	<p>Email: <?=$studentB[email]?></p>
-	<p>Mobile Phone: <?=$studentB[phone]?> </p>
-	<p>Home Phone: <?=$studentB[homePhone]?> </p>
-	</div>
-	
-	<h3>About Me</h3>
-	<div class="container">
-	<p><?=$student[about]?></p>
-	
-	</div>
-	
-      </div>
-      <div class="modal-footer">
-        
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+		$courseID = $course[0];
+		$assistants = getApplicationsByCourseID($email,$courseID);
+		
+		foreach($assistants as $assistant){
+			
+			/*Get studentID */
+			$studentID = $assistant[0];
+			
+			/*Get profile array representation */
+			$student = getStudent($assistant[3]);
+			
+			if(!in_array($studentID,$profilesMade)){
+			
+				$myProfileID = "myProfile". $studentID;
+				$profilesMade[] = $studentID;
+			?>
+			
+			<!-- Profile Modal -->
+			<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
+			<div class="modal-dialog">
+			<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myProfileLabel"> <?= $assistant[1]?>'s Profile</h4>
+			</div>
+			<div class="modal-body">
+			
+				<h3>Personal Information</h3>
+				<div class="container">
+				<p>Major: <?=$student['major']?></p>
+				<p>GPA: <?=$student['gpa']?></p>
+				<p>Class Year: <?=$student['classYear']?></p>
+				</div>
+				
+				<h3>Contact Information</h3>
+				<div class="container">
+				<p>Email: email </p>
+				<p>Mobile Phone: <?=$student['homePhone']?> </p>
+				<p>Home Phone: <?=$student['mobilePhone']?> </p>
+				</div>
+				
+				<h3>About Me</h3>
+				<div class="container">
+				<p><?=$student['aboutMe']?></p>
+				
+				</div>
+				
+			</div>
+			<div class="modal-footer">
+				
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			</div>
+			</div>
+			</div>
+			</div>
 
-<!-- End Profile Modal -->
-
-    <?php } } ?> 
-    
-   
-  <?php  
-    foreach($workshopTAs as $taProfile){
-    
-      if(!(in_array($taProfile[0],$profilesMade))){
-
-      $myProfileID = "myProfile" . $taProfile[0];
-      $student = getStudentByID($taProfile[0]);
-    
-      $studentB = getStudentByID2($taProfile[0]);
-      
-      $profilesMade[] = $taProfile[0];
+			<!-- End Profile Modal -->
+			
+			<?php
+			}
+		}	
+	}
 
     ?>
-      <!-- Profile Modal -->
-<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myProfileLabel"> <?= $taProfile[1]?>'s Profile</h4>
-      </div>
-      <div class="modal-body">
-      
-	<h3>Personal Information</h3>
-	<div class="container">
-	<p>Major: <?=$student[major]?></p>
-	<p>GPA: <?=$student[GPA]?></p>
-	<p>Class Year: <?=$student[classYear]?></p>
-	</div>
-	
-	<h3>Contact Information</h3>
-	<div class="container">
-	<p>Email: <?=$studentB[email]?></p>
-	<p>Mobile Phone: <?=$studentB[phone]?> </p>
-	<p>Home Phone: <?=$studentB[homePhone]?> </p>
-	</div>
-	
-	<h3>About Me</h3>
-	<div class="container">
-	<p><?=$student[about]?></p>
-	
-	</div>
-	
-      </div>
-      <div class="modal-footer">
-        
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- End Profile Modal -->
-
-    <?php } } ?> 
- 
- <?php  
-    foreach($labTAs as $taProfile){
-    
-      if(!(in_array($taProfile[0],$profilesMade))){
-
-      $myProfileID = "myProfile" . $taProfile[0];
-      $student = getStudentByID($taProfile[0]);
-    
-      $studentB = getStudentByID2($taProfile[0]);
-      
-      $profilesMade[] = $taProfile[0];
-
-    ?>
-	<!-- Profile Modal -->
-<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myProfileLabel"> <?= $taProfile[1]?>'s Profile</h4>
-      </div>
-      <div class="modal-body">
-      
-	<h3>Personal Information</h3>
-	<div class="container">
-	<p>Major: <?=$student[major]?></p>
-	<p>GPA: <?=$student[GPA]?></p>
-	<p>Class Year: <?=$student[classYear]?></p>
-	</div>
-	
-	<h3>Contact Information</h3>
-	<div class="container">
-	<p>Email: <?=$studentB[email]?></p>
-	<p>Mobile Phone: <?=$studentB[phone]?> </p>
-	<p>Home Phone: <?=$studentB[homePhone]?> </p>
-	</div>
-	
-	<h3>About Me</h3>
-	<div class="container">
-	<p><?=$student[about]?></p>
-	
-	</div>
-	
-      </div>
-      <div class="modal-footer">
-        
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- End Profile Modal -->
-
-    <?php } } ?> 
 	<!-- Begin Email Modal -->
 <div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -285,7 +156,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $name ?></a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $nameBrand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -311,107 +182,78 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!--END Page Header -->	  	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				<!-- Lecture Assistants Section -->
+				<!-- Course Panels -->
+				<?php
+				/*Obtain positionIDS that are in the Assistantship table
+				and that match a particular CRN	
+				Pack these assistants into a panel... repeat.
+				*/
+				$tableEntry = 0;
+				foreach($courses as $course){
+							
+				$courseID = $course[0];
+				$courseTitle = $course[2];
+
+				/* assistants for this particular course */
+				$assistants = getFilledPositionsForCourse($email,$courseID);
+								
+				/* create a new panel */ 
+				$panelID = "coursePanel" . $courseID;
+
+				$coursePanelName = $courseTitle . " " . $couseNumber . "\tCRN: " . $courseID;
+				
+				?>
+				
 				<div class="row">
 					<div class="container">					
 						<div class="panel panel-primary">
 							<div class="panel-heading">
-								<h4 data-toggle="collapse" data-target="#lectureTAs">Lecture Assistants</h4>
+								<h4 data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
 							</div> <!-- End panel-heading -->
-							<div class="collapse panel-collapse" id = "lectureTAs">
-								<div class="panel-body">
-										
-									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>View Profile</th> </tr>
-									<?php 
-										foreach($lectureTAs as $ta){ 
-										
-										$myProfileID = "myProfile" . $ta[0];
-										
-										?>
-										<tr><td><?= $ta[0] ?></td> <td><?= $ta[1] ?></td> <td><?= $ta[2] ?></td> <td><?= $ta[3] ?></td><td><?= $ta[4] ?></td> <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
-										<span class="glyphicon glyphicon-user"></span> Profile
-										</a>
-										</td> </tr>    
-									
-									<?php } ?>									
-									</table> <!-- End table -->
-								</div> <!-- End panel-body -->
-							</div> <!-- End collapse panel-collapse -->
+								<div class="collapse panel-collapse" id="<?= $panelID ?>">
+									<div class="panel-body">
+										<form action="selections.php" method="post" id="formid">
+											<table class="table table-striped">
+												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>View Profile</th></tr>
+											<?php
+											
+											/* Insert each application */
+											foreach($assistants as $assistant){
+												
+												$buttonGroupName = "action" . $tableEntry;
+												$profileID = "myProfile" . $assistant[0];
+												
+											?>
+											
+											<tr><td><?= $assistant[0] ?></td> <td><?= $assistant[1] ?></td> <td><?= $assistant[2] ?></td><td><?= $assistant[3] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<span class="glyphicon glyphicon-user"></span> Profile</a>
+											</tr> 											
+											
+											<?php
+											/* Table entry closing brace */
+											}
+											
+											?>
+											</table> <!-- End table -->
+										</form> <!-- End form -->
+									</div> <!-- End panel-body -->									
+								</div> <!-- End collapse panel-collapse -->
 							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">
 								<span class="glyphicon glyphicon-envelope"></span> Email</a>
-							</div> <!-- End panel-footer -->	
+							</div> <!-- End panel-footer -->								
 						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->
-				</div> <!-- End Row -->
-				<!-- End Lecture Assistants Section -->				
-				<!-- Lecture Assistants Section -->
-				<div class="row">
+					</div> <!-- End container -->	
+				</div> <!-- End row -->
 				
-					<div class="container">
-					
-						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4 data-toggle="collapse" data-target="#labTAs">Lab Assistants</h4>
-							</div> <!-- End panel-heading -->
-							<div class="collapse panel-collapse" id = "labTAs">
-								<div class="panel-body">										
-									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>View Profile</th> </tr>
-									<?php 
-										foreach($labTAs as $ta){ 
-										$myProfileID = "myProfile" . $ta[0];
-										?>
-										
-										
-										<tr><td><?= $ta[0] ?></td> <td><?= $ta[1] ?></td> <td><?= $ta[2] ?></td> <td><?= $ta[3] ?></td><td><?= $ta[4] ?></td> <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
-										<span class="glyphicon glyphicon-user"></span> Profile
-										</a>
-										</td> </tr>    
-									
-									<?php } ?>										
-									</table> <!-- End table -->
-								</div> <!-- End panel-body -->
-							</div> <!-- End collapse panel-collapse -->
-							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">
-								<span class="glyphicon glyphicon-envelope"></span> Email</a>
-							</div> <!-- End panel-footer -->
-						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->
-				</div> <!-- End Row -->
-				<!-- End Lecture Assistants Section -->
-				<!-- Lecture Assistants Section -->
-				<div class="row">				
-					<div class="container">		
-						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4 data-toggle="collapse" data-target="#workshopTAs">Workshop Assistants</h4>
-							</div> <!-- End panel-heading -->
-							<div class="collapse panel-collapse" id = "workshopTAs">
-								<div class="panel-body">
-										
-									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>View Profile</th> </tr>
-									<?php 
-										foreach($workshopTAs as $ta){ 
-										$myProfileID = "myProfile" . $ta[0];
-										?>		
-										<tr><td><?= $ta[0] ?></td> <td><?= $ta[1] ?></td> <td><?= $ta[2] ?></td> <td><?= $ta[3] ?></td><td><?= $ta[4] ?></td> <td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
-										<span class="glyphicon glyphicon-user"></span> Profile
-										</a>
-										</td> </tr>    
-					
-									<?php } ?>				
-									</table> <!-- End table -->
-								</div> <!-- End panel-body -->
-							</div> <!-- End collapse panel-collapse -->
-							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">
-								<span class="glyphicon glyphicon-envelope"></span> Email</a>
-							</div> <!-- End panel-footer -->
-						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->
-				</div> <!-- End Row -->
-				<!-- End Lecture Assistants Section -->				
+				<?php
+				
+				/* Course panels closing brace */
+				}
+				
+				?>		
+
+				<!-- END Course Panels -->
+			
 				</div>
 			<!-- END Page Content --> 
 	    

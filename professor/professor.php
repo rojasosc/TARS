@@ -1,25 +1,7 @@
 <?php
-  
-    include('../dbinterface.php');
-    session_start();   
-    if (!isset($_SESSION['auth'])) {
+	include('professorSession.php');
+	$pendingApps = count(getApplicants($email));
     
-    // if not redirect to login screen.  
-    header('Location: ../index.php');
-
-    }else{
-  
-    $firstName = $_SESSION['firstName'];
-    $lastName = $_SESSION['lastName'];
-    $email = $_SESSION['email'];
-    
-    $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
-    $firstLetter .= ".";
-    $name = $firstLetter . " " . $lastName;
-    
-  
-  }
-
 ?>
 <!-- A template for TARS.
 
@@ -64,7 +46,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $name ?></a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $nameBrand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -96,7 +78,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 							<h2>Welcome Professor <?= $lastName ?>!</h2>
 							
 							<h3>Notifications</h3> 
-							<p> You have <?= pendingApplicants($email);?> <a href="applicants.php" >applications</a> pending!</p> 
+							<p> You have <?= $pendingApps ?> <a href="applicants.php" >applications</a> pending!</p> 
 							
 							<h3>Announcements</h3>
 							<p>Remember to submit feedback for your assistants by (date).</p>
@@ -132,11 +114,5 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	
 		</div> 
 		<!-- End page-wrapper -->
-		
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<!-- END Scripts -->
-	</body>
 </html>
 	

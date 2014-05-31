@@ -1,30 +1,9 @@
-<?php 
-    include('../dbinterface.php');
-    session_start(); 
-    if (!isset($_SESSION['auth'])) {
+<?php
+	include('professorSession.php');
 
-    // if not redirect to login screen. 
-    
-    header('Location: ../index.php');
-
-    }else{
-  
-    $firstName = $_SESSION['firstName'];
-    $lastName = $_SESSION['lastName'];
-    $email = $_SESSION['email'];
-    
-    $professor = getProfessor($email);
+	/* Obtain a CRN and a courseNumber */
 	
-    $firstLetter = $firstName[0]; /* Holds the first letter of the first name. */
-    $firstLetter .= ".";
-    $name = $firstLetter . " " . $lastName;
-    
-    
-    /*Remove password and email session variables*/
-    
-
-    
-  }
+	$courses = getCourses($email);
 
 ?>
 <!-- A template for TARS.
@@ -80,7 +59,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $name ?></a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $nameBrand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">

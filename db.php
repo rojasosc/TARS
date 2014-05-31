@@ -432,20 +432,76 @@
 	*  Purpose: Retrieves all courses that contain the value 'courseName'. 
 	*  Returns: An array of course entries. (A 2-D array) 
 	**/
-	function getCourseName($courseNumber){
+	function getCourses($email){
 
 		$conn = open_database();
-		$sql = "SELECT * FROM Course WHERE CourseNumber = '$courseNumber'";
+		$professorID = getUserID($email);
 		
-		$course = mysqli_query($conn,$sql);
+		$sql = "SELECT Course.courseID, Course.courseNumber,Course.courseTitle FROM Course WHERE professorID = '$professorID'";
 		
-		/* Fetch every entry with courseNumber*/
-		$courses = mysqli_fetch_all($course,MYSQLI_NUM);
+		$result = mysqli_query($conn,$sql);
+		
+		/* Fetch every course */
+		$courses = mysqli_fetch_all($result,MYSQLI_NUM);
 		
 		close_database($conn);
 		
 		return $courses;
-	}	
+	}
+	
+	function getApplicationsByCourseID($email,$courseID){
+	
+		$conn = open_database();
+		$professorID = getUserID($email);
+		
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
+		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
+		
+		$result = mysqli_query($conn,$sql);	
+		$applications = mysqli_fetch_all($result, MYSQLI_NUM);
+		
+		close_database($conn);
+		
+		return $applications;
+	
+	}
+
+	
+	function getFilledPositionsForCourse($email,$courseID){
+	
+		$conn = open_database();
+		$professorID = getUserID($email);
+		
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
+		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = ".APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
+		
+		
+		$result = mysqli_query($conn,$sql);
+		$assistants = mysqli_fetch_all($result);
+		
+		close_database($conn);
+		
+		/* return the actual filled positions to use in the My Assistants page */
+	
+		return $assistants;
+
+	}
+	
+	function countTotalPositions($email,$courseID){
+	
+		$conn = open_database();
+		$professorID = getUserID($email);
+	
+		$sql = "SELECT COUNT(*) FROM Positions AS numberofPositions WHERE professorID = '$professorID' AND courseID = '$courseID'";
+		$count = mysqli_query($conn,$sql);
+		$count = mysqli_fetch_array($count);
+		close_database($conn);
+		$count = $count[0];
+		return $count;
+		
+	}
 
 	/* Function setPosition
 	*  Purpose: Assigns a position to a student. 

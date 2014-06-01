@@ -35,7 +35,7 @@
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
+								<a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -58,7 +58,7 @@
 			<div id="content">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h1 class="panel-title">Student Home Page</h1>
+						<h1 class="panel-title">Staff Home Page</h1>
 					</div>
 					<div class="panel-body">
 						<div class="jumbotron">

@@ -65,6 +65,7 @@ html,body{
 #login{
 	background-color: #000000;
 	margin: auto;
+	margin-bottom: 25px;
 	width: 500px;
 	padding: 50px;
 	border-radius: 25px;

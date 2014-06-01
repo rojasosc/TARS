@@ -553,8 +553,10 @@
 	* STUDENT FUNCTIONS
 	********************/
 	
-	//You can also use the getStudent() to retrieve a students information.
-	//This function will give you everything you need for the My Current Positions page. 
+	/* Function studentPositions
+	*  Purpose: Fetch all of the student's currently held TA-ing positions fromt he database
+	*  Returns: An array of associative arrays with all the student's TA position information
+	**/
 	
 	function studentPositions($email){
 	
@@ -576,6 +578,10 @@
 	
 	}
 
+	/* Function updateProfile
+	*  Purpose: Edit the database entries that correspond to the student's information with newly submitted ones from the student
+	*  Returns: absolutely nothing
+	**/
 	function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe) {
 		$connect = open_database();
 		

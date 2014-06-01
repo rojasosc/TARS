@@ -30,6 +30,8 @@
 	*DATABASE UTILITIES
 	*******************/	
 	
+	
+	
 	/**
 	* Function: open_database
 	* Purpose: Obtains an object representation of the database.
@@ -388,7 +390,7 @@
 		
 		$apps = mysqli_query($conn,$sql);
 		/* Fetch every application */
-		$apps = mysqli_fetch_all($apps,MYSQLI_NUM); 
+		$apps = mysqli_fetch_all($apps,MYSQLI_BOTH); 
 
 		close_database($conn);
 	
@@ -411,7 +413,7 @@
 		$apps = mysqli_query($conn,$sql); 
 		
 		/* Fetch every assistant */
-		$apps = mysqli_fetch_all($apps,MYSQLI_NUM); 
+		$apps = mysqli_fetch_all($apps,MYSQLI_BOTH); 
 		
 		close_database($conn);
 	
@@ -441,7 +443,7 @@
 		$result = mysqli_query($conn,$sql);
 		
 		/* Fetch every course */
-		$courses = mysqli_fetch_all($result,MYSQLI_NUM);
+		$courses = mysqli_fetch_all($result,MYSQLI_BOTH);
 		
 		close_database($conn);
 		
@@ -453,12 +455,12 @@
 		$conn = open_database();
 		$professorID = getUserID($email);
 		
-		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.type,Positions.positionID, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
 		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
 		
 		$result = mysqli_query($conn,$sql);	
-		$applications = mysqli_fetch_all($result, MYSQLI_NUM);
+		$applications = mysqli_fetch_all($result, MYSQLI_BOTH);
 		
 		close_database($conn);
 		
@@ -472,13 +474,13 @@
 		$conn = open_database();
 		$professorID = getUserID($email);
 		
-		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.type, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
 		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = ".APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
 		
 		
 		$result = mysqli_query($conn,$sql);
-		$assistants = mysqli_fetch_all($result);
+		$assistants = mysqli_fetch_all($result, MYSQLI_BOTH);
 		
 		close_database($conn);
 		
@@ -515,6 +517,8 @@
 		
 		close_database($conn);
 	}
+	
+	
 	
 	function getCourseIDS($email){
 	
@@ -570,7 +574,7 @@
 		
 		
 		$result = mysqli_query($conn, $sql);
-		$positions = mysqli_fetch_all($result, MYSQLI_ASSOC);
+		$positions = mysqli_fetch_all($result, MYSQLI_BOTH);
 		
 		close_database($conn);
 		

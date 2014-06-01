@@ -9,9 +9,12 @@
 		$studentID = $IDs[1];
 		$positionID = $IDs[2];
 		
-		//echo $status. " " . $studentID . " ". $positionID . " ";
+		echo $status. " " . $studentID . " ". $positionID . " ";
 		
-		setPositionStatus($studentID,$positionID,$status);
+		if(!!$status){
+		
+			setPositionStatus($studentID,$positionID,$status);
+		}
 		
 		header('Location: applicants.php');
 	 }

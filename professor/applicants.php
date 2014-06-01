@@ -6,21 +6,13 @@
 	$courses = getCourses($email);
 
 ?>
-<!-- A template for TARS.
+<!-- 
 
-This template consists of a wrapper div tag that encloses
-a set of header, content, and footer div tags.
+This page displays a professors prospective applicants.
+Each course is given its own panel and each panel is given its own form. 
 
-There are three ids inside the css file that provide the 
-necessary styling for the three components. 
-
-Using this structure we can fix the footer at the bottom and 
-maintain a solid structure through scrolling.
-
-The images are background images and not img tags. 
-
-The navbar is collapsable and seems to work pretty well. However,
-the navbar-brand does seem to run out of space if the window is shrunk enough. 
+The progress bars indicate the number of positions that still need to be filled
+and are color coded to emphasize priority.
 
 -->
 <!DOCTYPE html>
@@ -114,10 +106,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	}
 
     ?>
-
-		<!-- BEGIN page-wrapper -->
 		<div id="page-wrapper">
-			
 			<!-- BEGIN Page Header -->
 			<div id="header">
 				<div class="row" id="navbar-theme">
@@ -141,13 +130,24 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="#">Lecture Assistants</a></li>
-											<li><a href="#">Lab Assistants</a></li>
-											<li><a href="#">Workshop Assistants</a></li>
+										<?php
+											/* Create links for each course */
+											foreach($courses as $course){
+											
+											?>
+											
+											<li data-toggle="tool-tip" title="<?= "CRN: ".$course['courseID'] ?>"><a href="#"><?= $course['courseTitle'] ?></a></li>
+	
+										<?php	
+											}
+										?>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
+								</ul> <!-- End navbar unordered list -->								
+								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
+								
 							</div> <!-- End navbar-collapse collapse -->        
 						</div> <!-- End container-fluid -->
 					</nav>
@@ -166,13 +166,23 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				$tableEntry = 0;
 				foreach($courses as $course){
 							
-				$courseID = $course[0];
-				$courseTitle = $course[2];
+				$courseID = $course['courseID'];
+				$courseTitle = $course['courseTitle'];
 
 				/* applications for this particular course */
 				$applications = getApplicationsByCourseID($email,$courseID);
 				$totalCoursePositions = countTotalPositions($email,$courseID); /* positions to be filled */
-				$filledPositions = count(getFilledPositionsForCourse($email,$courseID)); /* positions that have been filled */					
+				$filledPositions = count(getFilledPositionsForCourse($email,$courseID)); /* positions that have been filled */
+				
+				/* Flag all positions filled for a particular course */
+// 				$full = false;
+// 				if($filledPositions == $totalCoursePositions){
+// 				
+// 					$full = true;
+// 				
+// 				}
+				
+				/* After a selection, disable other applications with the same courseID */
 				
 				/* For use in the progress bar */
 				$ratio = $filledPositions/$totalCoursePositions;
@@ -193,7 +203,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				/* create a new panel */ 
 				$panelID = "coursePanel" . $courseID;
 
-				$coursePanelName = $courseTitle . " " . $couseNumber . "\tCRN: " . $courseID;
+				$coursePanelName = $course['courseNumber']."-".$course['courseTitle'];
 				
 				?>
 				
@@ -207,30 +217,30 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<div class="panel-body">
 										<form action="selections.php" method="post" id="formid">
 											<table class="table table-striped">
-												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Position ID</th> <th>GPA</th><th>View Profile</th><th>Action</th></tr>
+												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>View Profile</th><th>Action</th></tr>
 											<?php
 											
 											/* Insert each application */
 											foreach($applications as $application){
-												
+							
 												$buttonGroupName = "action" . $tableEntry;
 												$profileID = "myProfile" . $application[0];
 												
 											?>
 											
-											<tr><td><?= $application[0] ?></td> <td><?= $application[1] ?></td> <td><?= $application[2] ?></td> <td><?= $application[3] ?></td><td><?= $application[4] ?></td><td><?= $application[5] ?></td><td><?= $application[6] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<tr><td><?= $application['userID'] ?></td> <td><?= $application['firstName'] ?></td> <td><?= $application['lastName'] ?></td> <td><?= $application['email'] ?></td><td><?= $application['courseNumber'] ?></td><td><?= $application['type'] ?></td><td><?= $application['gpa'] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</td>
 											<td>
 												<div class="btn-group" data-toggle="buttons">
 													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $application[0] ?>" value="3 <?= $application[0] ?> <?= $application[5] ?>"><span class="glyphicon glyphicon-ok"></span>
+													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $application['userID'] ?>" value="3 <?= $application['userID'] ?> <?= $application['positionID'] ?>"><span class="glyphicon glyphicon-ok"></span>
 													</label>
 													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $application[0] ?>" value="2 <?= $application[0] ?> <?= $application[5] ?>"><span class="glyphicon glyphicon-remove"></span>
+													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $application['userID'] ?>" value="2 <?= $application['userID'] ?> <?= $application['positionID'] ?>"><span class="glyphicon glyphicon-remove"></span>
 													</label>
 													<label name="lectureSelections" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-													<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $application[0] ?>" value="0 <?= $application[0] ?> <?= $application[5] ?>"><span class="glyphicon glyphicon-time"></span>												
+													<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $application['userID'] ?>" value="0 0 0"><span class="glyphicon glyphicon-time"></span>												
 													</label>
 												</div> <!-- End btn-group -->
 											</td>
@@ -273,6 +283,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 
 				<!-- END Course Panels -->
 			</div>
+			
 			<!-- END Page Content --> 
 	    
 			<!--BEGIN Page Footer -->

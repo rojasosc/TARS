@@ -33,6 +33,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 	</head> 
 	<body>
   <?php
@@ -40,21 +41,22 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	
 	foreach($courses as $course){
 	
-		$courseID = $course[0];
-		$assistants = getApplicationsByCourseID($email,$courseID);
+		$courseID = $course['courseID'];
+		/* Array of current assistants */
+		$assistants = getFilledPositionsForCourse($email,$courseID);
 		
 		foreach($assistants as $assistant){
 			
 			/*Get studentID */
-			$studentID = $assistant[0];
+			$studentID = $assistant['userID'];
 			
 			/*Get profile array representation */
-			$student = getStudent($assistant[3]);
+			$student = getStudent($assistant['email']);
 			
 			if(!in_array($studentID,$profilesMade)){
 			
 				$myProfileID = "myProfile". $studentID;
-				$profilesMade[] = $studentID;
+				$profilesMade[count($profilesMade)-1] = $studentID;
 			?>
 			
 			<!-- Profile Modal -->
@@ -63,7 +65,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $assistant[1]?>'s Profile</h4>
+				<h4 class="modal-title" id="myProfileLabel"> <?= $assistant['firstName']?>'s Profile</h4>
 			</div>
 			<div class="modal-body">
 			
@@ -167,13 +169,24 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="#">Lecture Assistants</a></li>
-											<li><a href="#">Lab Assistants</a></li>
-											<li><a href="#">Workshop Assistants</a></li>
+										<?php
+											/* Create links for each course */
+											foreach($courses as $course){
+											
+											?>
+											
+											<li data-toggle="tool-tip" title="<?= "CRN: ".$course['courseID'] ?>"><a href="#"><?= $course['courseTitle'] ?></a></li>
+	
+										<?php	
+											}
+										?>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
+								</ul> <!-- End navbar unordered list -->								
+								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
+								
 							</div> <!-- End navbar-collapse collapse -->        
 						</div> <!-- End container-fluid -->
 					</nav>
@@ -182,6 +195,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!--END Page Header -->	  	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
+							
 				<!-- Course Panels -->
 				<?php
 				/*Obtain positionIDS that are in the Assistantship table
@@ -190,18 +204,14 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				*/
 				$tableEntry = 0;
 				foreach($courses as $course){
-							
-				$courseID = $course[0];
-				$courseTitle = $course[2];
-
+				
 				/* assistants for this particular course */
-				$assistants = getFilledPositionsForCourse($email,$courseID);
+				$assistants = getFilledPositionsForCourse($email,$course['courseID']);
 								
 				/* create a new panel */ 
-				$panelID = "coursePanel" . $courseID;
+				$panelID = "coursePanel" . $course['courseID'];
 
-				$coursePanelName = $courseTitle . " " . $couseNumber . "\tCRN: " . $courseID;
-				
+				$coursePanelName = $course['courseNumber']."-".$course['courseTitle'];
 				?>
 				
 				<div class="row">
@@ -214,21 +224,22 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 									<div class="panel-body">
 										<form action="selections.php" method="post" id="formid">
 											<table class="table table-striped">
-												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>View Profile</th></tr>
+												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Type</th><th>View Profile</th></tr>
 											<?php
 											
 											/* Insert each application */
 											foreach($assistants as $assistant){
-												$profileID = "myProfile" . $assistant[0];
+												$profileID = "myProfile" . $assistant['userID'];
 												
 											?>
 											
-											<tr><td><?= $assistant[0] ?></td> <td><?= $assistant[1] ?></td> <td><?= $assistant[2] ?></td><td><?= $assistant[3] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<tr><td><?= $assistant['userID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td><td><?= $assistant['email'] ?></td><td><?= $assistant['type'] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</tr> 											
 											
 											<?php
 											/* Table entry closing brace */
+											$tableEntry++;
 											}
 											
 											?>
@@ -252,7 +263,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 
 				<!-- END Course Panels -->
 			
-				</div>
+			</div>
 			<!-- END Page Content --> 
 	    
 			<!--BEGIN Page Footer -->

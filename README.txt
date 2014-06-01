@@ -26,6 +26,7 @@ server (e.g. Local host)
 Database
 ================
 Reset your MySQL Password to "12345" before you proceed.
+Go into db.php in the main folder and change the constant DATABASE_PATH to where the database will be hosted.
 1. Open up phpmyadmin
 2. Click "New" in the left hand bar.
 3. Enter "TAR" as the database name.

@@ -20,7 +20,40 @@
 	</head>
   
 	<body>
-
+		<!-- BEGIN Email Modal -->
+		<div class="modal fade" id="emailmodal" tabindex="-1" role="dialog" aria-labelledby="emailmodalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Email Professor</h1>
+					</div>
+					<div class="modal-body">
+						<form action="cur_pos.php" method="post" id="emailprof">
+							<fieldset>
+								<div class="row">
+									<div class="col-xs-12">
+										Subject: <input type="text" name="subject" class="form-control" size="64"/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										Content:
+										<textarea class="form-control" rows="8" cols="64" form="emailprof">
+										</textarea>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-primary" form="passrecov" value="Submit">Send</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END Email Modal -->
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
@@ -70,6 +103,7 @@
 									<th>Location</th>
 									<th>Time</th>
 									<th>Compensation</th>
+									<th>Email</th>
 								</tr>
 								<?php
 									foreach($positions as $row) {
@@ -81,6 +115,7 @@
 										<td><?= $row[building]." ".$row[room]?></td>
 										<td><?= $row[startTime]." - ".$row[endTime]?></td>
 										<td><?= $row[compensation]?></td>
+										<td><a class="btn btn-default" href="#emailmodal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
 									</tr>
 								<?php
 									}

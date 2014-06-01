@@ -219,13 +219,11 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											/* Insert each application */
 											foreach($assistants as $assistant){
-												
-												$buttonGroupName = "action" . $tableEntry;
 												$profileID = "myProfile" . $assistant[0];
 												
 											?>
 											
-											<tr><td><?= $assistant[0] ?></td> <td><?= $assistant[1] ?></td> <td><?= $assistant[2] ?></td><td><?= $assistant[3] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$myProfileID?>" class="btn btn-default">
+											<tr><td><?= $assistant[0] ?></td> <td><?= $assistant[1] ?></td> <td><?= $assistant[2] ?></td><td><?= $assistant[3] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</tr> 											
 											

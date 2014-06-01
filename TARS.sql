@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.8.2
+-- version 4.2.0
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 30, 2014 at 06:59 PM
--- Server version: 5.5.37-MariaDB
+-- Generation Time: Jun 01, 2014 at 12:05 AM
+-- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -30,11 +30,7 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
   `positionID` int(30) NOT NULL,
   `studentID` int(30) NOT NULL,
   `compensation` varchar(30) NOT NULL,
-  `status` int(1) NOT NULL,
-  KEY `positionID` (`positionID`),
-  KEY `studentID` (`studentID`),
-  KEY `positionID_2` (`positionID`),
-  KEY `studentID_2` (`studentID`)
+  `status` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -42,12 +38,12 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
 --
 
 INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`) VALUES
-(1, 71, 'paid', 2),
-(2, 71, 'credit', 2),
-(3, 71, 'paid', 2),
-(1, 71, 'paid', 2),
-(2, 71, 'credit', 0),
-(3, 71, 'paid', 0);
+(1, 2, 'paid', 2),
+(2, 2, 'credit', 2),
+(3, 2, 'paid', 2),
+(1, 2, 'paid', 2),
+(2, 2, 'credit', 0),
+(3, 2, 'paid', 0);
 
 -- --------------------------------------------------------
 
@@ -56,7 +52,7 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`
 --
 
 CREATE TABLE IF NOT EXISTS `Course` (
-  `courseID` int(40) NOT NULL AUTO_INCREMENT,
+`courseID` int(40) NOT NULL,
   `professorID` int(11) NOT NULL,
   `courseNumber` varchar(40) NOT NULL,
   `courseTitle` varchar(40) NOT NULL,
@@ -64,22 +60,20 @@ CREATE TABLE IF NOT EXISTS `Course` (
   `startTime` varchar(40) NOT NULL,
   `endTime` varchar(40) NOT NULL,
   `placeID` int(30) NOT NULL,
-  `term` varchar(30) NOT NULL,
-  PRIMARY KEY (`courseID`),
-  KEY `placeID` (`placeID`),
-  KEY `professorID` (`professorID`),
-  KEY `professorID_2` (`professorID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+  `term` varchar(30) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `Course`
 --
 
 INSERT INTO `Course` (`courseID`, `professorID`, `courseNumber`, `courseTitle`, `website`, `startTime`, `endTime`, `placeID`, `term`) VALUES
-(1, 70, 'CSC-172', 'Data Structures', 'sdlfkjlkj', '4:00', '5:00', 2, 'Fall-2014'),
-(2, 70, 'CSC-173', 'Data Structures', 'sdlfkjlkj', '4:00', '5:00', 4, 'Fall-2014'),
-(3, 70, 'CSC-171', 'Data Structures', 'sdlfkjlkj', '4:00', '5:00', 5, 'Fall-2014'),
-(4, 70, 'CSC-210', 'Data Structures', 'sdlfkjlkj', '4:00', '5:00', 6, 'Fall-2014');
+(1, 1, 'CSC172', 'The Science of Data Structures', 'sdlfkjlkj', '1025', '1140', 2, '20141'),
+(2, 11, 'CSC173', 'Computation and Formal Systems', 'sdlfkjlkj', '1400', '1515', 4, '20141'),
+(3, 1, 'CSC171', 'The Science of Programming', 'sdlfkjlkj', '1025', '1140', 5, '20141'),
+(4, 12, 'CSC210', 'Web Programming', 'sdlfkjlkj', '1650', '1805', 6, '20141'),
+(5, 13, 'CSC280', 'Computer Models and Limitations', '280sofunyey', '1525', '1640', 2, '20141'),
+(6, 14, 'CSC252', 'Computer Organization', 'csc252sohard', '1105', '1220', 3, '20141');
 
 -- --------------------------------------------------------
 
@@ -88,11 +82,10 @@ INSERT INTO `Course` (`courseID`, `professorID`, `courseNumber`, `courseTitle`, 
 --
 
 CREATE TABLE IF NOT EXISTS `Place` (
-  `placeID` int(40) NOT NULL AUTO_INCREMENT,
+`placeID` int(40) NOT NULL,
   `building` varchar(30) NOT NULL,
   `room` varchar(30) NOT NULL,
-  `type` varchar(30) NOT NULL,
-  PRIMARY KEY (`placeID`)
+  `type` varchar(30) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=101 ;
 
 --
@@ -208,43 +201,47 @@ INSERT INTO `Place` (`placeID`, `building`, `room`, `type`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `Positions` (
-  `positionID` int(30) NOT NULL AUTO_INCREMENT,
+`positionID` int(30) NOT NULL,
   `courseID` int(30) NOT NULL,
   `professorID` int(30) NOT NULL,
-  `type` varchar(40) NOT NULL,
-  PRIMARY KEY (`positionID`),
-  KEY `courseID` (`courseID`,`professorID`),
-  KEY `professorID` (`professorID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+  `type` varchar(40) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
 
 --
 -- Dumping data for table `Positions`
 --
 
 INSERT INTO `Positions` (`positionID`, `courseID`, `professorID`, `type`) VALUES
-(1, 1, 70, 'Grader'),
-(2, 1, 70, 'Grader'),
-(3, 1, 70, 'Grader'),
-(4, 1, 70, 'Grader'),
-(5, 1, 70, 'Grader'),
-(6, 2, 70, 'Grader'),
-(7, 2, 70, 'Grader'),
-(8, 2, 70, 'Grader'),
-(9, 1, 70, 'Lab TA'),
-(10, 1, 70, 'Lab TA'),
-(11, 1, 70, 'Lab TA'),
-(12, 3, 70, 'Lab TA'),
-(13, 3, 70, 'Lab TA'),
-(14, 3, 70, 'Lab TA'),
-(15, 3, 70, 'Lab TA'),
-(16, 1, 70, 'Lab TA'),
-(17, 4, 70, 'Lab TA'),
-(18, 4, 70, 'Lab TA'),
-(19, 4, 70, 'Lab TA'),
-(20, 4, 70, 'Lab TA'),
-(21, 3, 70, 'Lab TA'),
-(22, 3, 70, 'Lab TA'),
-(23, 3, 70, 'Lab TA');
+(1, 1, 1, 'Grader'),
+(2, 1, 11, 'Grader'),
+(3, 1, 11, 'Grader'),
+(4, 1, 11, 'Workshop Leader'),
+(5, 1, 1, 'Grader'),
+(6, 2, 11, 'Grader'),
+(7, 2, 11, 'Grader'),
+(8, 2, 11, 'Grader'),
+(9, 1, 11, 'Lab TA'),
+(10, 1, 11, 'Lab TA'),
+(11, 1, 11, 'Lab TA'),
+(12, 3, 1, 'Lab TA'),
+(13, 3, 1, 'Lab TA'),
+(14, 3, 1, 'Lab TA'),
+(15, 3, 1, 'Lab TA'),
+(16, 1, 11, 'Lab TA'),
+(17, 4, 12, 'Lab TA'),
+(18, 4, 12, 'Lab TA'),
+(19, 4, 12, 'Lab TA'),
+(20, 4, 12, 'Lab TA'),
+(21, 3, 1, 'Lab TA'),
+(22, 3, 1, 'Lab TA'),
+(23, 3, 1, 'Lab TA'),
+(24, 5, 13, 'Grader'),
+(25, 5, 13, 'Grader'),
+(26, 5, 13, 'Lab TA'),
+(27, 5, 13, 'Lab TA'),
+(28, 6, 14, 'Workshop Leader'),
+(29, 6, 14, 'Grader'),
+(30, 6, 14, 'Lab TA');
 
 -- --------------------------------------------------------
 
@@ -258,11 +255,7 @@ CREATE TABLE IF NOT EXISTS `Professors` (
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
   `officePhone` int(30) NOT NULL,
-  `mobilePhone` int(30) NOT NULL,
-  PRIMARY KEY (`professorID`),
-  KEY `professorID` (`professorID`),
-  KEY `officeID` (`officeID`),
-  KEY `officeID_2` (`officeID`)
+  `mobilePhone` int(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -270,7 +263,11 @@ CREATE TABLE IF NOT EXISTS `Professors` (
 --
 
 INSERT INTO `Professors` (`professorID`, `officeID`, `firstName`, `lastName`, `officePhone`, `mobilePhone`) VALUES
-(70, 1, 'Ted', 'Pawlicki', 2147483647, 2147483647);
+(1, 1, 'Ted', 'Pawlicki', 2147483647, 2147483647),
+(11, 11, 'Christopher', 'Brown', 2147483647, 2147483647),
+(12, 12, 'Nathaniel', 'Martin', 2147483647, 2147483647),
+(13, 13, 'Lane', 'Hemaspaandra', 2147483647, 2147483647),
+(14, 14, 'Michael', 'Scott', 2147483647, 2147483647);
 
 -- --------------------------------------------------------
 
@@ -283,10 +280,15 @@ CREATE TABLE IF NOT EXISTS `Staff` (
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
   `officePhone` int(30) NOT NULL,
-  `mobilePhone` int(30) NOT NULL,
-  PRIMARY KEY (`staffID`),
-  KEY `staffID` (`staffID`)
+  `mobilePhone` int(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Staff`
+--
+
+INSERT INTO `Staff` (`staffID`, `firstName`, `lastName`, `officePhone`, `mobilePhone`) VALUES
+(15, 'Marty', 'Guenther', 2147483647, 2147483647);
 
 -- --------------------------------------------------------
 
@@ -301,11 +303,9 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `homePhone` varchar(30) NOT NULL,
   `mobilePhone` varchar(30) NOT NULL,
   `major` varchar(75) NOT NULL,
-  `gpa` decimal(10,0) NOT NULL,
+  `gpa` decimal(10,2) NOT NULL,
   `classYear` int(10) NOT NULL,
-  `aboutMe` longtext NOT NULL,
-  PRIMARY KEY (`studentID`),
-  KEY `studentID` (`studentID`)
+  `aboutMe` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -313,7 +313,15 @@ CREATE TABLE IF NOT EXISTS `Students` (
 --
 
 INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`) VALUES
-(71, 'oscar', 'rojas', '4444444444', '4444444444', 'cs', '4', 2015, 'alfjsldkj');
+(2, 'oscar', 'rojas', '4444444444', '4444444444', 'cs', '4.00', 2015, 'alfjsldkj'),
+(3, 'Jinze', 'Ahn', '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'WULULULULU'),
+(4, 'Lucky', 'Kane', '844831618', '8335382413', 'Computer Science', '1.94', 2015, 'In it except to so temper mutual tastes mother. Interested cultivated its continuing now yet are.'),
+(5, 'Karel', 'Aristides', '8992262788', '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.'),
+(6, 'Enlil', 'Amyas', '8331222069', '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. '),
+(7, 'Eli', 'Edmund', '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.'),
+(8, 'Thelonius', 'Afif', '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.'),
+(9, 'Stig', 'Euaristos', '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. '),
+(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.');
 
 -- --------------------------------------------------------
 
@@ -323,10 +331,7 @@ INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobi
 
 CREATE TABLE IF NOT EXISTS `Teaches` (
   `courseID` int(30) NOT NULL,
-  `professorID` int(30) NOT NULL,
-  KEY `courseID` (`courseID`,`professorID`),
-  KEY `courseID_2` (`courseID`,`professorID`),
-  KEY `professorID` (`professorID`)
+  `professorID` int(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -334,10 +339,10 @@ CREATE TABLE IF NOT EXISTS `Teaches` (
 --
 
 INSERT INTO `Teaches` (`courseID`, `professorID`) VALUES
-(1, 70),
-(2, 70),
-(3, 70),
-(4, 70);
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1);
 
 -- --------------------------------------------------------
 
@@ -346,72 +351,115 @@ INSERT INTO `Teaches` (`courseID`, `professorID`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `Users` (
-  `userID` int(40) NOT NULL AUTO_INCREMENT,
+`userID` int(40) NOT NULL,
   `email` varchar(40) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `type` int(11) NOT NULL,
-  PRIMARY KEY (`userID`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=72 ;
+  `type` int(11) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `Users`
 --
 
 INSERT INTO `Users` (`userID`, `email`, `password`, `type`) VALUES
-(1, 'noble@memorymetal.edu', 'Weimar', 3),
-(2, 'jake@futuregarden.org', 'Wixon Valley', 3),
-(3, 'ollie.jaime@memorymetal.com', 'Roma', 3),
-(4, 'roberto@thethen.edu', 'Keene', 3),
-(5, 'douglass@egg.com', 'Tomball', 3),
-(6, 'alec@form.me', 'Lockney', 3),
-(7, 'phoebe.millicent.katheryn@sharpsheep.inf', 'Brownsville', 3),
-(8, 'kari.estelle@secret.info', 'Manor', 3),
-(9, 'emile.elmo@officeoil.com', 'Rhome', 3),
-(10, 'wade@forcefork.info', 'Buckholts', 3),
-(11, 'maria.lenard.chauncey@shirt.edu', 'Liberty Hill', 3),
-(12, 'jamie@voicewaiting.org', 'Santa Cruz', 3),
-(13, 'jamie@pocketpoint.edu', 'Pineland', 3),
-(14, 'jules.gil.eliseo@rollroof.me', 'San Marcos', 3),
-(15, 'damion.chi@copycord.com', 'Sheldon', 3),
-(16, 'aileen@operationopinion.org', 'Galveston', 3),
-(17, 'lesley.jocelyn.paige@letterlevel.com', 'Blue-Iglesia Antigua', 3),
-(18, 'mckinley@businessbut.edu', 'Flatonia', 3),
-(19, 'alfonso@low.info', 'Midway', 3),
-(20, 'alfonzo.lyman@pipeplace.me', 'Natalia', 3),
-(21, 'bill.lloyd@amusement.info', 'Lakewood Village', 3),
-(22, 'jackson.raphael@normal.info', 'Loraine', 3),
-(23, 'sofia.jeanie@pullpump.com', 'Highlands', 3),
-(24, 'young.christian.lessie@army.me', 'Quemado', 3),
-(25, 'chandra@leaflearning.edu', 'Bruni', 3),
-(26, 'edward.brian@differentdigestion.info', 'Waller', 3),
-(27, 'regina.erica@why.com', 'Bruni', 3),
-(28, 'susanna.reva.deidre@impulsein.com', 'Pharr', 3),
-(29, 'rhea.marquita@noisenormal.me', 'Poteet', 3),
-(30, 'joan.ashley@water.org', 'Melissa', 3),
-(31, 'otha.miquel.lacy@all.org', 'Sunnyvale', 3),
-(32, 'spencer@everevery.edu', 'Hickory Creek', 3),
-(33, 'althea@blade.info', 'Lago', 3),
-(34, 'darryl@water.info', 'West Columbia', 3),
-(35, 'brad.gabriel@servant.com', 'Lost Creek', 3),
-(36, 'norris@shelf.org', 'McLean', 3),
-(37, 'chris.johnny@fictionfield.org', 'La Homa', 3),
-(38, 'rocco.gonzalo@clothcloud.me', 'La Presa', 3),
-(39, 'hannah.whitney@authority.org', 'Mount Enterprise', 3),
-(40, 'sarah@needlenerve.com', 'Del Mar Heights', 3),
-(41, 'migdalia.ivette@acrossact.com', 'Alton North', 3),
-(42, 'haywood@comfortcommittee.info', 'Pecan Gap', 3),
-(43, 'paula@wood.info', 'Liberty Hill', 3),
-(44, 'murray.jamal.devon@blackblade.info', 'Hillsboro', 3),
-(45, 'richard@complexcondition.org', 'Hurst', 3),
-(46, 'eldon.rocky.pierre@landlanguage.com', 'Josephine', 3),
-(47, 'lorene.elsa.josefina@machine.org', 'Redwood', 3),
-(48, 'armando.felix.jimmie@sign.info', 'Paducah', 3),
-(49, 'caren@horn.info', 'Jacksboro', 3),
-(50, 'emile.elmo.aron@throughthumb.com', 'Humble', 3),
-(70, 'pawlicki@cs.rochester.edu', '$2y$10$lRWCMEejbmjj02hIwfMjvuATC2q2yC7eiH6uySm1RYciA0JxuyTQS', 1),
-(71, 'orojas@u.rochester.edu', '$2y$10$zbMUGaKAGfmvxWlt8HIsa.GzYTAC/khAy846xHsPSCecfaaNzkZ2K', 0);
+(1, 'pawlicki@cs.rochester.edu', '$2y$10$lRWCMEejbmjj02hIwfMjvuATC2q2yC7eiH6uySm1RYciA0JxuyTQS', 1),
+(2, 'orojas@u.rochester.edu', '$2y$10$zbMUGaKAGfmvxWlt8HIsa.GzYTAC/khAy846xHsPSCecfaaNzkZ2K', 0),
+(3, 'jan2@u.rochester.edu', '$2y$10$.VAc/y1rCFGbX3zTBJycpe9FP6EUj.bshNtBmBztx4EHDEtoUuz0G', 0),
+(4, 'student1@u.rochester.edu', '$2y$10$3H.hdVdHGY2BiyrqkijuzOjtr4SPw0W8wrj0hDZYLuwOl.6vkOGTq', 0),
+(5, 'student2@u.rochester.edu', '$2y$10$3HUHQmAsgaIZ43BLZalI1unUhiLLKcKvwehZkpRi5GAkmm99uUhtO', 0),
+(6, 'student3@u.rochester.edu', '$2y$10$M08w4WXTfECX8wkeuCIvnuYKsbHOUtmQwmDhs.tL43CUWAWfDzb1e', 0),
+(7, 'student4@u.rochester.edu', '$2y$10$JzcmmCVDtHIDVpDw/g7JuOqAx128LSwDJYS5dsKZx5HucDl6Fgndq', 0),
+(8, 'student5@u.rochester.edu', '$2y$10$b.KOpfmt5iRo4ix5/sMm1.hJ/WWmmgk7CYMKjEhnq2OMDGiBTKK1m', 0),
+(9, 'student6@u.rochester.edu', '$2y$10$Xlrni1bV2MxbUb2mwfWbPujxB3/c6mXeAgrrrf2vvwlupIRy/DJz6', 0),
+(10, 'student7@u.rochester.edu', '$2y$10$Ca/fSp85GnQqxZ3x.5alVOdLJFoN.R8MaiIcKyW1OmytF6ow.PLhO', 0),
+(11, 'brown@cs.rochester.edu', '$2y$10$5h0ojOKkjACK9nCwiRp2/eW2obUaFGF5IviluR/x3f.wia0w9s9iK', 1),
+(12, 'martin@cs.rochester.edu', '$2y$10$OgCgpj81LO5tP4RDTM5g9ONfBGu8EK9dcowOx4dgTehN.HNfKShCe', 1),
+(13, 'lane@cs.rochester.edu', '$2y$10$db.fWC.VtOiYlVOe.OVVrOjUL1bpxVH9RzROE2trkqAaGCrZJNfme', 1),
+(14, 'scott@cs.rochester.edu', '$2y$10$w1ZOnPXxdDtUUmxuDWewt.WSnkDOJqeLwLzlexzm0oGQFRwwVYcLO', 1),
+(15, 'marty@cs.rochester.edu', '$2y$10$mracYEf6CHNZjOzCANSP0ehFI1pIo.o2CQAqmtHxgmMpuLlvrAZqK', 2);
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Assistantship`
+--
+ALTER TABLE `Assistantship`
+ ADD KEY `positionID` (`positionID`), ADD KEY `studentID` (`studentID`), ADD KEY `positionID_2` (`positionID`), ADD KEY `studentID_2` (`studentID`);
+
+--
+-- Indexes for table `Course`
+--
+ALTER TABLE `Course`
+ ADD PRIMARY KEY (`courseID`), ADD KEY `placeID` (`placeID`), ADD KEY `professorID` (`professorID`), ADD KEY `professorID_2` (`professorID`);
+
+--
+-- Indexes for table `Place`
+--
+ALTER TABLE `Place`
+ ADD PRIMARY KEY (`placeID`);
+
+--
+-- Indexes for table `Positions`
+--
+ALTER TABLE `Positions`
+ ADD PRIMARY KEY (`positionID`), ADD KEY `courseID` (`courseID`,`professorID`), ADD KEY `professorID` (`professorID`);
+
+--
+-- Indexes for table `Professors`
+--
+ALTER TABLE `Professors`
+ ADD PRIMARY KEY (`professorID`), ADD KEY `professorID` (`professorID`), ADD KEY `officeID` (`officeID`), ADD KEY `officeID_2` (`officeID`);
+
+--
+-- Indexes for table `Staff`
+--
+ALTER TABLE `Staff`
+ ADD PRIMARY KEY (`staffID`), ADD KEY `staffID` (`staffID`);
+
+--
+-- Indexes for table `Students`
+--
+ALTER TABLE `Students`
+ ADD PRIMARY KEY (`studentID`), ADD KEY `studentID` (`studentID`);
+
+--
+-- Indexes for table `Teaches`
+--
+ALTER TABLE `Teaches`
+ ADD KEY `courseID` (`courseID`,`professorID`), ADD KEY `courseID_2` (`courseID`,`professorID`), ADD KEY `professorID` (`professorID`);
+
+--
+-- Indexes for table `Users`
+--
+ALTER TABLE `Users`
+ ADD PRIMARY KEY (`userID`), ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `Course`
+--
+ALTER TABLE `Course`
+MODIFY `courseID` int(40) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `Place`
+--
+ALTER TABLE `Place`
+MODIFY `placeID` int(40) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=101;
+--
+-- AUTO_INCREMENT for table `Positions`
+--
+ALTER TABLE `Positions`
+MODIFY `positionID` int(30) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=31;
+--
+-- AUTO_INCREMENT for table `Users`
+--
+ALTER TABLE `Users`
+MODIFY `userID` int(40) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- Constraints for dumped tables
 --
@@ -420,48 +468,48 @@ INSERT INTO `Users` (`userID`, `email`, `password`, `type`) VALUES
 -- Constraints for table `Assistantship`
 --
 ALTER TABLE `Assistantship`
-  ADD CONSTRAINT `Assistantship_ibfk_1` FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Assistantship_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `Students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Assistantship_ibfk_1` FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Assistantship_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `Students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Course`
 --
 ALTER TABLE `Course`
-  ADD CONSTRAINT `Course_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `Place` (`placeID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Course_ibfk_2` FOREIGN KEY (`professorID`) REFERENCES `Professors` (`professorID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Course_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `Place` (`placeID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Course_ibfk_2` FOREIGN KEY (`professorID`) REFERENCES `Professors` (`professorID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Positions`
 --
 ALTER TABLE `Positions`
-  ADD CONSTRAINT `Positions_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `Course` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Positions_ibfk_2` FOREIGN KEY (`professorID`) REFERENCES `Professors` (`professorID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Positions_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `Course` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Positions_ibfk_2` FOREIGN KEY (`professorID`) REFERENCES `Professors` (`professorID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Professors`
 --
 ALTER TABLE `Professors`
-  ADD CONSTRAINT `Professors_ibfk_1` FOREIGN KEY (`professorID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Professors_ibfk_2` FOREIGN KEY (`officeID`) REFERENCES `Place` (`placeID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Professors_ibfk_1` FOREIGN KEY (`professorID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Professors_ibfk_2` FOREIGN KEY (`officeID`) REFERENCES `Place` (`placeID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Staff`
 --
 ALTER TABLE `Staff`
-  ADD CONSTRAINT `Staff_ibfk_1` FOREIGN KEY (`staffID`) REFERENCES `Users` (`userID`);
+ADD CONSTRAINT `Staff_ibfk_1` FOREIGN KEY (`staffID`) REFERENCES `Users` (`userID`);
 
 --
 -- Constraints for table `Students`
 --
 ALTER TABLE `Students`
-  ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Teaches`
 --
 ALTER TABLE `Teaches`
-  ADD CONSTRAINT `Teaches_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `Course` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Teaches_ibfk_2` FOREIGN KEY (`professorID`) REFERENCES `Professors` (`professorID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Teaches_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `Course` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Teaches_ibfk_2` FOREIGN KEY (`professorID`) REFERENCES `Professors` (`professorID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

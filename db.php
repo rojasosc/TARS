@@ -1,6 +1,5 @@
 <?php
 
-
 /*******************************************
 *TARS- Teacher Assistant Registration System
 ********************************************/
@@ -309,7 +308,7 @@
 	*  Purpose: Creates a new account for a professor. 
 	*  Returns: nothing.
 	**/
-	function registerProfessor($firstName, $lastName,$email,$password,$officePhone,$mobilePhone){
+	function registerProfessor($firstName, $lastName, $email, $password, $officeID, $officePhone, $mobilePhone){
 		$conn = open_database();
 
 		/* escape variables to avoid  injection attacks. */   
@@ -327,7 +326,7 @@
 		$professorID = newUser($email,$password,PROFESSOR);
 		
 		/*Insert student record*/
-		$sql = "INSERT INTO Professors VALUES('$professorID','$firstName','$lastName','$officePhone','$mobilePhone')";
+		$sql = "INSERT INTO Professors VALUES('$professorID', '$officeID', '$firstName','$lastName','$officePhone','$mobilePhone')";
 		mysqli_query($conn,$sql);
 		
 		close_database($conn); 
@@ -568,13 +567,33 @@
 			. "WHERE Users.userID = '$studentID' AND Positions.courseID = Course.courseID AND Assistantship.positionID = Positions.positionID AND Assistantship.status = " .APPROVED. " AND Assistantship.studentID = Users.userID AND Course.placeID = Place.placeID ORDER BY `Course`.`courseNumber` ASC";
 		
 		
-		$result = mysqli_query($conn,$sql);
-		$positions = mysqli_fetch_all($sql,MYSQLI_NUM);
+		$result = mysqli_query($conn, $sql);
+		$positions = mysqli_fetch_all($result, MYSQLI_ASSOC);
 		
 		close_database($conn);
 		
 		return $positions;
 	
+	}
+
+	function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe) {
+		$connect = open_database();
+		
+		$firstName = mysqli_real_escape_string($connect, $firstName);
+		$lastName = mysqli_real_escape_string($connect, $lastName);
+		$mobilePhone = mysqli_real_escape_string($connect, $mobilePhone);
+		$major = mysqli_real_escape_string($connect, $major);
+		$classYear = mysqli_real_escape_string($connect, $classYear);
+		$gpa = mysqli_real_escape_string($connect, $gpa);
+		$aboutMe = mysqli_real_escape_string($connect, $aboutMe);
+		
+		$sql = "UPDATE Students\n"
+			."INNER JOIN Users ON Users.userID = Students.studentID\n"
+			."SET firstName = '$firstName', lastName = '$lastName', mobilePhone = '$mobilePhone', major = '$major', classYear = '$classYear', gpa = '$gpa', aboutMe = '$aboutMe'\n"
+			."WHERE email = '$email';";
+		mysqli_query($connect, $sql);
+		
+		close_database($connect);
 	}
 	
 	

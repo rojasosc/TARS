@@ -1,20 +1,12 @@
 <?php  
-    include('../dbinterface.php');
-  
-    session_start();
-
-    if (!isset($_SESSION['auth'])) {
-    // if not redirect to login screen. 
-		header('Location: ../index.php');
-    } else {
-		if(!empty($_POST)) {
-			updateProfile($_POST['email'], $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'],  $_POST['gpa'], $_POST['qual-hist']);
-		}
-		$firstName = $_SESSION['firstName'];
-		$lastName = $_SESSION['lastName']; 
-		$email = $_SESSION['email'];
+    include('studentSession.php');
+	if(!empty($_POST)) {
+			updateProfile($email, $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'], $_POST['gpa'], $_POST['qual-hist']);
 		$student = getStudent($email);
-	}  
+		$fn = $student['firstName'];
+		$ln = $student['lastName'];
+		$brand = $fn[0].". ".$ln;
+	}
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +43,7 @@
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $firstName[0].". ".$lastName ?></a>
+								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -81,24 +73,24 @@
 								<div class="row">
 									<div class="col-xs-6">
 										<label>First Name:
-											<input class="form-control" type="text" name="fn" size="32" value="<?=$student[firstName]?>" />
+											<input class="form-control" type="text" name="fn" size="32" value="<?=$fn?>" />
 										</label>
 									</div>
 									<div class="col-xs-6">
 										<label>Last Name:
-											<input class="form-control" type="text" name="ln" size="32" value="<?=$student[lastName]?>" />
+											<input class="form-control" type="text" name="ln" size="32" value="<?=$ln?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-6">
 										<label>E-mail:
-											<input class="form-control" readonly="readonly" type="email" name="email" size="64" value="<?=$student[email]?>" />
+											<input class="form-control" readonly="readonly" type="email" name="email" size="64" value="<?=$email?>" />
 										</label>
 									</div>
 									<div class="col-xs-6">
 										<label>Phone Number:
-											<input class="form-control" type="text" name="pn" size="11" value="<?=$student[phone]?>" />
+											<input class="form-control" type="text" name="pn" size="11" value="<?=$student[mobilePhone]?>" />
 										</label>
 									</div>
 								</div>
@@ -115,13 +107,13 @@
 									</div>
 									<div class="col-xs-4">
 										<label>Cumulative GPA:
-											<input class="form-control" type="text" name="gpa" size="32" value="<?=$student[GPA]?>" />
+											<input class="form-control" type="text" name="gpa" size="32" value="<?=$student[gpa]?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row col-xs-12">
 									<label>Qualifications and TA-ing history: <br />
-										<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student[about]?></textarea>
+										<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student[aboutMe]?></textarea>
 									</label>
 								</div>
 								<div class="row">

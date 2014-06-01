@@ -1,17 +1,6 @@
 <?php  
-    include('../dbinterface.php');
-  
-    session_start();
-
-    if (!isset($_SESSION['auth'])) {
-    // if not redirect to login screen. 
-		header('Location: ../index.php');
-    } else {
-		$firstName = $_SESSION['firstName'];
-		$lastName = $_SESSION['lastName'];
-		$email = $_SESSION['email'];
-		$info = getCurPosInfo($email);
-	}  
+    include('studentSession.php');
+	$positions = studentPositions($email);
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +37,7 @@
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $firstName[0].". ".$lastName ?></a>
+								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -75,7 +64,6 @@
 							<!-- BEGIN Current Positions Table -->
 							<table class="table table-striped">
 								<tr>
-									<th>ID</th>
 									<th>Course Number</th>
 									<th>Course Name</th>
 									<th>Type</th>
@@ -84,14 +72,13 @@
 									<th>Compensation</th>
 								</tr>
 								<?php
-									foreach($info as $row) {
+									foreach($positions as $row) {
 								?>
 									<tr>
-										<td><?= $row[CID]?></td>
-										<td><?= $row[ClassName]?></td>
-										<td><?= $row[ClassTitle]?></td>
+										<td><?= $row[courseNumber]?></td>
+										<td><?= $row[courseTitle]?></td>
 										<td><?= $row[type]?></td>
-										<td><?= $row[classRoom]?></td>
+										<td><?= $row[building]." ".$row[room]?></td>
 										<td><?= $row[startTime]." - ".$row[endTime]?></td>
 										<td><?= $row[compensation]?></td>
 									</tr>

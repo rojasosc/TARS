@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 01, 2014 at 12:05 AM
+-- Generation Time: Jun 01, 2014 at 03:29 AM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -43,7 +43,13 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`
 (3, 2, 'paid', 2),
 (1, 2, 'paid', 2),
 (2, 2, 'credit', 0),
-(3, 2, 'paid', 0);
+(3, 2, 'paid', 0),
+(5, 3, 'paid', 3),
+(7, 3, 'credit', 3),
+(14, 2, 'paid', 3),
+(19, 2, 'credit', 3),
+(26, 3, 'paid', 3),
+(25, 3, 'credit', 3);
 
 -- --------------------------------------------------------
 
@@ -314,7 +320,7 @@ CREATE TABLE IF NOT EXISTS `Students` (
 
 INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`) VALUES
 (2, 'oscar', 'rojas', '4444444444', '4444444444', 'cs', '4.00', 2015, 'alfjsldkj'),
-(3, 'Jinze', 'Ahn', '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'WULULULULU'),
+(3, 'Jinze', 'Ahn', '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'WULULULULU CAW CAW CAW'),
 (4, 'Lucky', 'Kane', '844831618', '8335382413', 'Computer Science', '1.94', 2015, 'In it except to so temper mutual tastes mother. Interested cultivated its continuing now yet are.'),
 (5, 'Karel', 'Aristides', '8992262788', '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.'),
 (6, 'Enlil', 'Amyas', '8331222069', '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. '),

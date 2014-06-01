@@ -1,15 +1,5 @@
 <?php  
-    include('../dbinterface.php');
-  
-    session_start();
-
-    if (!isset($_SESSION['auth'])) {
-    // if not redirect to login screen. 
-		header('Location: ../index.php');
-    } else {
-		$firstName = $_SESSION['firstName'];
-		$lastName = $_SESSION['lastName'];
-	}  
+    include('studentSession.php');
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +35,7 @@
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $firstName[0].". ".$lastName ?></a>
+								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">

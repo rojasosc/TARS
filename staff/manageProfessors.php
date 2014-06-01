@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Home</title>
+		<title>Manage Professors</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
@@ -38,9 +38,9 @@
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li class="active"><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li><a href="manageTerms.php"><span class="glyphicon glyphicon-calendar"></span> Manage Terms</a></li>
-									<li><a href="manageProfessors.php"><span class="glyphicon glyphicon-book"></span> Manage Professors</a></li>
+									<li class="active"><a href="manageProfessors.php"><span class="glyphicon glyphicon-book"></span> Manage Professors</a></li>
 									<li><a href="manageAssistants.php"><span class="glyphicon glyphicon-folder-open"></span> Manage TAs</a></li>
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
 								</ul> <!-- End navbar unordered list -->
@@ -56,14 +56,8 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				<div class="container">
-					<div class="jumbotron">
-						<h2 class="welcome">Welcome <?= $fn ?>!</h2>					
-						<h3>Notifications</h3> 
-							<p>You have (num) applicants that need to be verified.</p>
-						<h3>Announcements</h3>
-					</div> <!-- End jumbotron -->
-				</div> <!-- End container -->
+	
+			    
 			</div>
 			<!-- END Page Content --> 
 	    

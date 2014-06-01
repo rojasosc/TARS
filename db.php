@@ -615,6 +615,59 @@
 	* STAFF FUNCTIONS
 	*****************/
 	
+	
+	/* Function 
+	*  Purpose: 
+	*  Returns: 
+	**/
+	function getPayrollByTerm($term){
+		
+		$conn = open_database();
+		
+	
+		$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.classYear, Course.courseNumber, Positions.type, Assistantship.compensation\n"
+		. "FROM Users,Students,Course,Positions,Assistantship\n"
+		. "WHERE Students.studentID = Users.userID AND Students.studentID = Assistantship.studentID AND Course.courseID = Positions.courseID AND Positions.positionID = Assistantship.positionID AND Assistantship.status = ".APPROVED;
+		
+		$result = mysqli_query($conn,$sql);
+		$payroll = mysqli_fetch_all($result,MYSQLI_BOTH);
+
+		close_database($conn);
+		
+		return $payroll;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/********************
 	* END STAFF FUNCTIONS
 	*********************/

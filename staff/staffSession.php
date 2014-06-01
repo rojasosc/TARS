@@ -12,6 +12,6 @@
 		$staff = getStaff($email);		//Fetch said staff object
 		$fn = $staff['firstName'];	//Fetch the first name
 		$ln = $staff['lastName'];		//Fetch the last name
-		$brand = $fn[0].". ".$ln;		//Create a single variable to hold the brand at the far left of the navbar
+		$nameBrand = $fn[0].". ".$ln;		//Create a single variable to hold the brand at the far left of the navbar
 	}
 ?>

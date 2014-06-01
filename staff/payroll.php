@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Home</title>
+		<title>Payroll</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
@@ -38,11 +38,11 @@
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li class="active"><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li><a href="manageTerms.php"><span class="glyphicon glyphicon-calendar"></span> Manage Terms</a></li>
 									<li><a href="manageProfessors.php"><span class="glyphicon glyphicon-book"></span> Manage Professors</a></li>
 									<li><a href="manageAssistants.php"><span class="glyphicon glyphicon-folder-open"></span> Manage TAs</a></li>
-									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
+									<li class="active"><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
 								</ul> <!-- End navbar unordered list -->
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -57,12 +57,60 @@
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div class="container">
-					<div class="jumbotron">
-						<h2 class="welcome">Welcome <?= $fn ?>!</h2>					
-						<h3>Notifications</h3> 
-							<p>You have (num) applicants that need to be verified.</p>
-						<h3>Announcements</h3>
+					<div class="jumbotron" >
+						<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
+							<fieldset>
+								<legend>Select Term</legend>
+								<div class="row">
+										<div class="col-md-4">
+											<div class="form-group">
+											<label class="control-label" for="term">Term</label>
+											<select name="term" class="form-control" placeholder="Term">
+												<!-- Still need to use PHP to render these dynamically -->
+												<option>Fall-2013</option>
+												<option>Spring-2014</option>
+												<option>Summer-2014</option>
+												<option>Fall-2014</option>
+												<option>Spring-2015</option>
+											</select> <!-- End select -->										
+											</div> <!-- End column -->									
+										</div> <!-- End form-group -->
+								</div> <!-- End row --->
+							</fieldset>
+						</form> <!-- End form -->
+						<div class="row">
+							<table class="table table-striped">
+							<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
+							<!-- Note: use Ajax to render table content -->
+
+							<?php
+							
+							$term = "Fall-2014";
+							$assistants = getPayrollByTerm($term);
+							
+							foreach($assistants as $assistant){
+							
+							?>
+							
+							<tr>
+								<td><?= $assistant['studentID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td> <td><?= $assistant['email'] ?></td><td><?= $assistant['courseNumber'] ?></td><td><?= $assistant['type'] ?></td><td><?= $assistant['classYear'] ?></td>
+								<td><?= $assistant['compensation'] ?></td>
+							</tr>
+							<?php
+							
+							} /* Payroll closing brace */
+							
+							?>
+							
+							</table> <!-- End Table -->							
+						</div>
 					</div> <!-- End jumbotron -->
+				<div class="row">
+					<div class="col-md-3">
+						<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
+					</div> <!-- End col-md-3 -->
+				</div> <!-- End row -->	
+				<br>
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

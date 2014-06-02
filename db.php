@@ -620,13 +620,12 @@
 		if($search != NULL) {
 			$search = strtoupper($search);
 			$search = trim($search);
-			$sql .= "WHERE courseNumber = '$search'";
+			$sql .= "WHERE courseNumber = '$search'\n";
 		}
 		if($term != NULL) {
-			$sql .= ", term = '$term'\n";
+			$sql .= "AND term = '$term'\n";
 		}
 		$sql .="ORDER BY positionID";
-		
 		$results = mysqli_query($connect, $sql);
 		$results = mysqli_fetch_all($results, MYSQLI_BOTH);
 		close_database($connect);

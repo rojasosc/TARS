@@ -115,7 +115,7 @@
 										<th>Course</th>
 										<th>Professor</th>
 										<th>Position Type</th>
-										<th>Apply</th>
+										<th></th>
 									</tr>
 									<?php
 										foreach($positions as $rows) {
@@ -126,7 +126,9 @@
 											<td><?=$rows['courseTitle']?></td>
 											<td><?=$rows['firstName']." ".$rows['lastName']?></td>
 											<td><?=$rows['type']?></td>
-											<td><button class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Apply</button></td>
+											<td>
+												<button class="btn btn-default"><span class="glyphicon glyphicon-info-sign"></span></button>
+												<button class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Apply</button></td>
 										</tr>
 									<?php
 										}

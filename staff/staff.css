@@ -74,6 +74,10 @@ th,td {
 	height: 50px;
 }
 
+.col-md-4{
+	margin-left: 10px;
+	margin-right: 10px;
+}
 
 /*
  * Everything below is NavBar coloring

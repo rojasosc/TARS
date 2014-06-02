@@ -190,7 +190,7 @@ and are color coded to emphasize priority.
 				
 				if($ratio > .66){
 				
-					$progress = "sucess";
+					$progress = "success";
 				
 				}elseif($ratio > .33){
 				

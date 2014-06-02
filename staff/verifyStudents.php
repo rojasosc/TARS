@@ -9,10 +9,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>My Profile</title>
+		<title>Student Verification</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -71,9 +73,44 @@
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">			    
-	
+			<div id="content">
+				<!-- Course Panels -->	
+				<div class="row">
+					<div class="container">					
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h4 data-toggle="collapse" data-target="#panel">Course</h4>
+							</div> <!-- End panel-heading -->
+								<div class="collapse panel-collapse" id="panel">
+									<div class="panel-body">
+										<form action="selections.php" method="post" id="formid">
+											<table class="table table-striped">
+												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>View Profile</th><th>Action</th></tr>
+											</table> <!-- End table -->
+										
+									</div> <!-- End panel-body -->									
+								</div> <!-- End collapse panel-collapse -->
+								<div class="panel-footer">
+									<div class="row">
+										<div class="col-md-3">
+											<button name="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-circle"></span> Confirm</button>
+										</div> <!-- End column -->
+										</form> <!-- End form -->								
+									</div> <!-- End row -->
+									<strong>Positions Filled</strong>
+									<div class="progress progress-striped active">
+										<div class="progress-bar progress-bar-<?= $progress ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+										Students Verified
+										</div> <!-- End progress-bar progress-bar-danger -->
+									</div> <!-- End progress-bar -->
+								</div> <!-- End panel-footer -->								
+						</div> <!-- End panel panel-primary -->
+					</div> <!-- End container -->	
+				</div> <!-- End row -->	
+
+				<!-- END Course Panels -->
 			</div>
+			
 			<!-- END Page Content --> 
 	    
 			<!--BEGIN Page Footer -->
@@ -101,5 +138,6 @@
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-	</body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	</body>	
 </html>

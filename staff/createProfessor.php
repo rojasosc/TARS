@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Payroll</title>
+		<title>Create Account</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
@@ -71,66 +71,87 @@
 					</nav>
 				</div> <!-- End navbar-theme -->
 			</div>		
-			<!--END Page Header -->	 
+			<!--END Page Header -->	
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div class="container">
-					<div class="jumbotron" >
-						<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
-							<fieldset>
-								<legend>Select Term</legend>
-								<div class="row">
-										<div class="col-md-4">
-											<div class="form-group">
-											<label class="control-label" for="term">Term</label>
-											<select name="term" class="form-control" placeholder="Term">
-												<!-- Still need to use PHP to render these dynamically -->
-												<option>Fall-2013</option>
-												<option>Spring-2014</option>
-												<option>Summer-2014</option>
-												<option>Fall-2014</option>
-												<option>Spring-2015</option>
-											</select> <!-- End select -->										
-											</div> <!-- End column -->									
-										</div> <!-- End form-group -->
-								</div> <!-- End row --->
-							</fieldset>
-						</form> <!-- End form -->
-						<div class="row">
-							<table class="table table-striped">
-							<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
-							<!-- Note: use Ajax to render table content -->
-
-							<?php
-							
-							$term = "Fall-2014";
-							$assistants = getPayrollByTerm($term);
-							
-							foreach($assistants as $assistant){
-							
-							?>
-							
-							<tr>
-								<td><?= $assistant['studentID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td> <td><?= $assistant['email'] ?></td><td><?= $assistant['courseNumber'] ?></td><td><?= $assistant['type'] ?></td><td><?= $assistant['classYear'] ?></td>
-								<td><?= $assistant['compensation'] ?></td>
-							</tr>
-							<?php
-							
-							} /* Payroll closing brace */
-							
-							?>
-							
-							</table> <!-- End Table -->							
-						</div>
-					</div> <!-- End jumbotron -->
-				<div class="row">
-					<div class="col-md-3">
-						<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
-					</div> <!-- End col-md-3 -->
-				</div> <!-- End row -->	
-				<br>
-				</div> <!-- End container -->
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h4>Create New Account</h4>
+							</div> <!-- End panel-heading -->
+								<div class="panel-body">
+									<form class="form-horizontal" id="createAccountForm">
+										<fieldset>
+											<legend>New Account</legend>
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="firstName">First Name</label>
+														<input type="text" class="form-control" name="firstName" placeholder="First Name"/>														
+													</div> <!-- End form-group -->							
+												</div> <!-- End column -->
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="firstName">Last Name</label>
+														<input type="text" class="form-control" name="lastName" placeholder="Last Name"/>													
+													</div> <!-- End form-group -->							
+												</div>	<!-- End column -->						
+											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="email">Email</label>
+														<input type="email" class="form-control" name="email" placeholder="Email"/>					
+													</div> <!-- End form-group -->							
+												</div> <!-- End column -->
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="emailConfirm">Re-Enter Email</label>
+														<input type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
+																		
+													</div> <!-- End form-group -->							
+												</div>	<!-- End column -->						
+											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="password">Create Password</label>
+														<input type="password" class="form-control" name="password" placeholder="Create Password"/>					
+													</div> <!-- End form-group -->							
+												</div> <!-- End column -->
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="passwordConfirm">Confirm Password</label>
+														<input type="password" class="form-control" name="passwordConfirm" placeholder="Confirm Password"/>					
+													</div> <!-- End form-group -->						
+												</div>							
+											</div> <!-- End row -->	
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="homePhone">Home Phone</label>
+														<input type="tel" class="form-control" name="homePhone" placeholder="Home Phone"/>
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="mobilePhone">Mobile Phone</label>
+														<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone"/>
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->								
+											</div> <!-- End row -->
+											<br>
+											<div class="row">
+												<div class="col-md-3">
+													<button type = "submit"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Create Account</button>
+												</div> <!-- End column -->
+											</div> <!-- End row -->	
+										</fieldset> <!-- End fieldset -->
+									</form> <!-- End form-horizontal -->
+								</div> <!-- End panel-body -->
+						</div> <!-- End panel panel-success -->						>
+				</div> <!-- End container -->			    
 			</div>
 			<!-- END Page Content --> 
 	    

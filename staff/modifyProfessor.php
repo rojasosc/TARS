@@ -9,10 +9,13 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>My Profile</title>
+		<title>Modify Account</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -71,8 +74,37 @@
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">			    
-	
+			<div id="content">
+				<div class="container">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h4>Modify Account</h4>
+								
+							</div> <!-- End panel-heading -->
+								<div class="panel-body">
+									<form class="form-horizontal" id="createAccountForm" method="post" action="#">
+										<fieldset>
+											<legend>Modify Account</legend>
+											<small>Enter an email address to find an existing account.</small>
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="email">Email</label>
+														<input type="email" class="form-control" name="email" placeholder="Email"/>					
+													</div> <!-- End form-group -->							
+												</div> <!-- End column -->					
+											</div> <!-- End row -->
+											<br>
+											<div class="row">
+												<div class="col-md-3">
+													<button type = "submit"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Search</button>
+												</div> <!-- End column -->
+											</div> <!-- End row -->	
+										</fieldset> <!-- End fieldset -->
+									</form> <!-- End form-horizontal -->
+								</div> <!-- End panel-body -->
+						</div> <!-- End panel panel-success -->						
+				</div> <!-- End container -->			    
 			</div>
 			<!-- END Page Content --> 
 	    

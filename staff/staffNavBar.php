@@ -1,21 +1,5 @@
-<?php  
-    include('staffSession.php');
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<title>My Profile</title>
-		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
-	</head>
-	<body>
-		<!-- BEGIN page-wrapper -->
+<?php 
+	echo	"<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
 			
@@ -68,38 +52,8 @@
 					</nav>
 				</div> <!-- End navbar-theme -->
 			</div>		
-			<!--END Page Header -->	  
-	  
-			<!-- BEGIN Page Content -->
-			<div id="content">			    
-	
-			</div>
-			<!-- END Page Content --> 
-	    
-			<!--BEGIN Page Footer -->
-			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
-			</div>
-			<!--END Page Footer -->
-		</div> 
-		<!-- End page-wrapper -->
-	</body>
-</html>
+			<!--END Page Header -->	  ";
+
+
+?>
+

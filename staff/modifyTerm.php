@@ -9,10 +9,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>My Profile</title>
+		<title>Modify Term</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -71,8 +73,12 @@
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">			    
-	
+			<div id="content">
+				<div class="container">
+					<div class="jumbotron">
+		
+					</div> <!-- End jumbotron -->
+				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 
 	    
@@ -101,5 +107,6 @@
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-	</body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	</body>	
 </html>

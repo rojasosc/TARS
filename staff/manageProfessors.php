@@ -14,7 +14,6 @@
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
 		<script src="../js/bootstrap.min.js"></script>
-
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -39,25 +38,47 @@
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
 									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="manageTerms.php"><span class="glyphicon glyphicon-calendar"></span> Manage Terms</a></li>
-									<li class="active"><a href="manageProfessors.php"><span class="glyphicon glyphicon-book"></span> Manage Professors</a></li>
-									<li><a href="manageAssistants.php"><span class="glyphicon glyphicon-folder-open"></span> Manage TAs</a></li>
+									<li class="dropdown">
+										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="newTerm.php">New Term</a></li>
+											<li><a href="modifyTerm.php">Modify Term</a></li>
+										</ul> <!-- End drop down unordered list -->
+									</li> <!-- End drop down list item -->
+									<li class="dropdown">
+										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="createProfessor.php">New Account</a></li>
+											<li><a href="modifyProfessor.php">Modify Account</a></li>
+										</ul> <!-- End drop down unordered list -->
+									</li> <!-- End drop down list item -->
+									<li class="dropdown">
+										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Assistants<b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="modifyStudent.php">Modify Account</a></li>
+											<li><a href="verifyStudents.php">Screen Students</a></li>
+										</ul> <!-- End drop down unordered list -->
+									</li> <!-- End drop down list item -->
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
 								</ul> <!-- End navbar unordered list -->
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->								
-							</div> <!-- End navbar-collapse collapse -->        
+							</div> <!-- End navbar-collapse collapse -->	
 						</div> <!-- End container-fluid -->
 					</nav>
 				</div> <!-- End navbar-theme -->
 			</div>		
-			<!--END Page Header -->	  
+			<!--END Page Header -->	   
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-	
-			    
+				<div class="container">
+					<div class="jumbotron">
+						<h2>Professor Management History</h2>
+					
+					</div> <!-- End jumbotron -->
+				</div> <!-- End container -->			    
 			</div>
 			<!-- END Page Content --> 
 	    

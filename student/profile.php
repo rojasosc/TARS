@@ -67,9 +67,8 @@
 						<h1 class="panel-title">Edit Profile</h1>
 					</div>
 					<div class="panel-body">
-					<div class="container-fluid display-area">
-						<form role="form" action="profile.php" method="post" id="profile">
-							<fieldset>
+						<div class="container-fluid display-area">
+							<form role="form" action="profile.php" method="post" id="profile">
 								<div class="row">
 									<div class="col-xs-6">
 										<label>First Name:
@@ -78,7 +77,7 @@
 									</div>
 									<div class="col-xs-6">
 										<label>Last Name:
-											<input class="form-control" type="text" name="ln" size="32" value="<?=$ln?>" />
+											<input class="form-control" type="text" name="ln" size="32" value="<?=$ln?>" />	
 										</label>
 									</div>
 								</div>
@@ -119,11 +118,10 @@
 								<div class="row">
 									<input class="btn btn-primary btn-lg submitbutton" type="submit" value="Save" />
 								</div>
-							</fieldset>
-						</form>
+							</form>
+						</div>
 					</div>
 				</div>
-					</div>
 			</div>
 			<!-- END Page Content --> 
 	    

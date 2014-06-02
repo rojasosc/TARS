@@ -11,7 +11,7 @@ html,body{
 
 }
 #header {
-    background-image: url('header-logo.png');
+    background-image: url('images/header-logo.png');
     background-repeat: no-repeat;
     background-color: #011227;
     background-position: center;
@@ -23,7 +23,7 @@ html,body{
 #content {
     padding: 25px;
     padding-bottom: 250px;
-    background-image: url('background.jpg');
+    background-image: url('images/background.jpg');
     background-position: center;
     background-repeat: no-repeat;
     height: auto;
@@ -32,7 +32,7 @@ html,body{
 }
 #footer {
     width: 100%;
-    background-image: url('meliora_challenge_330x60.png');
+    background-image: url('images/meliora_challenge_330x60.png');
     background-repeat: no-repeat;
     background-color: #474747;
     background-position: center;

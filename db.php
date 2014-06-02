@@ -604,7 +604,33 @@
 		
 		close_database($connect);
 	}
+
+	/* Function search
+	*  Purpose: Search the database for TA positions with the specified attributes
+	*  Returns: An array of associative arrays that represent individual positions
+	**/
 	
+	function search($search, $term, $days, $startTime, $endtime) {
+		$connect = open_database();
+		$sql = "SELECT *\n"
+			."FROM Positions\n"
+			."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
+			."INNER JOIN Professors ON Positions.professorID = Professors.professorID\n";
+		if($search != NULL) {
+			$search = strtoupper($search);
+			$search = trim($search);
+			$sql .= "WHERE courseNumber = '$search'\n";
+		}
+		if($term != NULL) {
+			$sql .= "AND term = '$term'\n";
+		}
+		$sql .="ORDER BY positionID";
+		$results = mysqli_query($connect, $sql);
+		$results = mysqli_fetch_all($results, MYSQLI_BOTH);
+		close_database($connect);
+		
+		return $results;
+	}
 	
 	/***********************
 	* END STUDENT FUNCTIONS

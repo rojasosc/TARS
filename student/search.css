@@ -1,39 +1,12 @@
-h1{
-	text-align: center;
+#term-dropdown {
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
-
-.sidebar-offcanvas
-{
-	width: 20%;
-	float: left;
-	
+#day-checkboxes {
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
-
-.panel-default
-{
-	width: 80%;
-	height: 60%; 
-	float: right;
-}
-
-.modal-body {
-    max-height: 100px;
-}
-
-#searchbtn
-{
-	position: right;
-}
-#tainfo
-{
-float: right;
-}
-.btn-group
-{
-	padding: 5px;
-	float: right;
-}
-.pagination
-{
-	float: center;
+#time-constraint {
+	padding-top: 15px;
+	padding-bottom: 15px;
 }

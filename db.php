@@ -24,12 +24,10 @@
 	const STAFF_VERIFIED = 1;
 	const REJECTED = 2;
 	const APPROVED = 3;
-
 	
 	/******************
 	*DATABASE UTILITIES
 	*******************/	
-	
 	
 	
 	/**
@@ -266,7 +264,7 @@
 		$sql = "INSERT INTO Users (email,password,type) VALUES('$email','$password','$type')";	
 		mysqli_query($conn,$sql);
 		$user = mysqli_query($conn,"SELECT * FROM Users WHERE email ='$email'");
-		$user = mysqli_fetch_array($user);
+		$user = mysqli_fetch_array($user,MYSQLI_BOTH);
 		
 		/*Obtain user ID*/
 		$userID = $user['userID'];
@@ -310,7 +308,7 @@
 	*  Purpose: Creates a new account for a professor. 
 	*  Returns: nothing.
 	**/
-	function registerProfessor($firstName, $lastName, $email, $password, $officeID, $officePhone, $mobilePhone){
+	function registerProfessor($officeID,$firstName, $lastName, $email, $password,$officePhone, $mobilePhone){
 		$conn = open_database();
 
 		/* escape variables to avoid  injection attacks. */   
@@ -328,7 +326,7 @@
 		$professorID = newUser($email,$password,PROFESSOR);
 		
 		/*Insert student record*/
-		$sql = "INSERT INTO Professors VALUES('$professorID', '$officeID', '$firstName','$lastName','$officePhone','$mobilePhone')";
+		$sql = "INSERT INTO Professors VALUES('$professorID',$officeID,'$firstName','$lastName','$officePhone','$mobilePhone')";
 		mysqli_query($conn,$sql);
 		
 		close_database($conn); 
@@ -410,6 +408,7 @@
 		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
 		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = " .APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ORDER BY `Course`.`courseNumber` ASC";		
+		
 		$apps = mysqli_query($conn,$sql); 
 		
 		/* Fetch every assistant */
@@ -636,38 +635,38 @@
 		
 		return $payroll;
 	}
+
+	function getOffice($building,$room){
 	
+		$conn = open_database();
+		
+		$sql = "SELECT * FROM Place WHERE building = '$building' AND room = '$room' LIMIT 1";
+		$result = mysqli_query($conn,$sql);
+		
+		$office = mysqli_fetch_array($result,MYSQLI_BOTH);
+		
+		close_database($conn);
 	
+		return $office;
+	}
 	
+	function getUnverifiedStudents(){
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		$conn = open_database();
+		
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
+		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = " .PENDING. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = Course.professorID AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT;		
+		
+		$result = mysqli_query($conn,$sql);
+		
+		$students = mysqli_fetch_all($result,MYSQLI_BOTH);
+
+		close_database($conn);
+		
+		return $students;
+	}
+
 	/********************
 	* END STAFF FUNCTIONS
 	*********************/

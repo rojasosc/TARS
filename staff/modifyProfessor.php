@@ -17,7 +17,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>		
-		<script rel="text/javascript" src="findStudentAccount.js"></script>
+		<script rel="text/javascript" src="findProfessorAccount.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -80,7 +80,7 @@
 				<div class="container">
 						<div class="panel panel-success">
 							<div class="panel-heading">
-								<h4>Modify Account</h4>
+								<h4>Search Professors</h4>
 								
 							</div> <!-- End panel-heading -->
 								<div class="panel-body">
@@ -91,8 +91,8 @@
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label class="control-label" for="email">Email</label>
-														<input id="emailSearch" type="email" class="form-control" name="email" placeholder="Email"/>					
+														<label class="control-label" for="emailSearch">Email</label>
+														<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email"/>					
 													</div> <!-- End form-group -->							
 												</div> <!-- End column -->					
 											</div> <!-- End row -->
@@ -114,6 +114,9 @@
 								<h4>Results</h4>
 							</div> <!-- End panel-heading -->
 								<div class="panel-body" id="results">
+								        <div class="jumbotron" id="noResults">
+										<p id="noResults">No Professors Found.</p>
+								        </div> <!-- End no results div -->								
 									<div class="jumbotron" id="formBox">
 										<form action="updateProfessorProcess.php" class="form-horizontal" id="updateForm" method="post">
 											<div class="row">
@@ -136,19 +139,19 @@
 														<label class="control-label" for="email">Email</label>
 														<input id="email" type="email" class="form-control" name="email"/>					
 													</div> <!-- End form-group -->							
-												</div>							
+												</div>	<!-- End column -->						
 											</div> <!-- End row -->
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="officePhone">Office Phone</label>
-														<input id="officePhone" type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
+														<input id="officePhone" type="tel" class="form-control" name="officePhone"/>
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="mobilePhone">Mobile Phone</label>
-														<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone"/>
+														<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" />
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->								
 											</div> <!-- End row -->
@@ -157,6 +160,9 @@
 												<div class="col-md-3">
 													<button id="updateButton" type="submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
 												</div> <!-- End column -->
+												<div class="col-md-3">
+													<button id="closeForm" name="closeForm" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-thumbs-down"></span> Close</button>
+												</div> <!-- End column -->												
 											</div> <!-- End row -->								
 										</form> <!-- End form -->
 									</div> <!-- End jumbotron -->

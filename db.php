@@ -91,10 +91,10 @@
 		$studentID = getUserID($email);
 		
 		$conn = open_database();
-		$sql = "SELECT * FROM Students WHERE studentID = '$studentID'";
+		$sql = "SELECT * FROM Students WHERE Students.studentID = '$studentID'";
 		
 		$student = mysqli_query($conn,$sql);
-		$student = mysqli_fetch_array($student,MYSQLI_ASSOC);
+		$student = mysqli_fetch_array($student);
 		
 		
 		close_database($conn);
@@ -111,7 +111,7 @@
 		$professorID = getUserID($email);
 		
 		$conn = open_database();
-		$sql = "SELECT * FROM Professors WHERE professorID = '$professorID'";
+		$sql = "SELECT * FROM Professors WHERE Professors.professorID = '$professorID'";
 		
 		$professor = mysqli_query($conn,$sql);
 		$professor = mysqli_fetch_array($professor);
@@ -723,9 +723,39 @@
 	function updateProfessor($firstName, $lastName, $email,$officePhone, $mobilePhone){
 	
 		$conn = open_database();
-		$professorID = getUserID($email);
-		$sql = "UPDATE Professor SET Professor.firstName = '$firstName', Professor.lastName = '$lastName', Professor.officePhone = '$officePhone', Professor.mobilePhone = '$mobilePhone' WHERE Professor.professorID = '$professorID'";
 		
+		/* escape variables to avoid  injection attacks. */ 
+		$firstName = mysqli_real_escape_string($conn,$firstName);
+		$lastName = mysqli_real_escape_string($conn,$lastName);
+		$email = mysqli_real_escape_string($conn,$email);
+		$password = mysqli_real_escape_string($conn,$password);
+		$officePhone = mysqli_real_escape_string($conn,$officePhone);
+		$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
+		
+		$professorID = getUserID($email);
+		$sql = "UPDATE Professors SET Professors.firstName = '$firstName', Professors.lastName = '$lastName', Professors.officePhone = '$officePhone', Professors.mobilePhone = '$mobilePhone' WHERE Professors.professorID = '$professorID'";		
+		mysqli_query($conn,$sql);
+		
+		close_database($conn);	
+	}
+	
+	function updateStudent($firstName, $lastName,$email,$homePhone,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
+	
+		$conn = open_database();
+				
+		/* escape variables to avoid  injection attacks. */ 
+		$firstName = mysqli_real_escape_string($conn,$firstName);
+		$lastName = mysqli_real_escape_string($conn,$lastName);
+		$email = mysqli_real_escape_string($conn,$email);
+		$homePhone = mysqli_real_escape_string($conn,$homePhone);
+		$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
+		$classYear = mysqli_real_escape_string($conn,$classYear);
+		$major = mysqli_real_escape_string($conn,$major);
+		$gpa = mysqli_real_escape_string($conn,$gpa);
+		$aboutMe = mysqli_real_escape_string($conn,$aboutMe);
+		
+		$studentID = getUserID($email);
+		$sql = "UPDATE Students SET Students.firstName = '$firstName', Students.lastName = '$lastName', Students.homePhone = '$homePhone', Students.mobilePhone = '$mobilePhone', Students.classYear = '$classYear', Students.major = '$major', Students.gpa = '$gpa', Students.aboutMe = '$aboutMe' WHERE Students.studentID = '$studentID'";		
 		mysqli_query($conn,$sql);
 		
 		close_database($conn);	

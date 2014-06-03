@@ -2,7 +2,6 @@
 
 	include('../db.php');
 	
-	$student = getStudent($_POST['email']);
-
-	echo json_encode($student,true)
+	$student = getStudent($_POST['emailSearch']);
+	echo json_encode($student,true);
 ?>

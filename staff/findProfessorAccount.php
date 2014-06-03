@@ -2,7 +2,7 @@
 
 	include('../db.php');
 	
-	$professor = getProfessor($_POST['email']);
+	$professor = getProfessor($_POST['emailSearch']);
 
-	echo json_encode($professor,true)
+	echo json_encode($professor,true);
 ?>

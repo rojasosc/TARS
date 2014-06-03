@@ -80,7 +80,7 @@
 				<div class="container">
 						<div class="panel panel-success">
 							<div class="panel-heading">
-								<h4>Modify Account</h4>
+								<h4>Search Students</h4>
 								
 							</div> <!-- End panel-heading -->
 								<div class="panel-body">
@@ -91,15 +91,15 @@
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label class="control-label" for="email">Email</label>
-														<input id="emailSearch" type="email" class="form-control" name="email" placeholder="Email"/>					
+														<label class="control-label" for="emailSearch">Email</label>
+														<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email"/>					
 													</div> <!-- End form-group -->							
 												</div> <!-- End column -->					
 											</div> <!-- End row -->
 											<br>
 											<div class="row">
 												<div class="col-md-3">
-													<button id="submitButton"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Search</button>
+													<button id="submitButton"  type="submit" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Search</button>
 												</div> <!-- End column -->
 											</div> <!-- End row -->	
 										</fieldset> <!-- End fieldset -->
@@ -114,8 +114,13 @@
 								<h4>Results</h4>
 							</div> <!-- End panel-heading -->
 								<div class="panel-body" id="results">
+								        <div class="jumbotron" id="noResults">
+										<p id="noResults">No Students Found.</p>
+								        </div> <!-- End no results div -->
 									<div class="jumbotron" id="formBox">
-										<form action="#" class="form-horizontal" id="updateForm" method="post">
+										<h2>Update Profile</h2>
+										
+										<form action="updateStudentProcess.php" class="form-horizontal" id="updateForm" method="post">
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group"> 
@@ -198,8 +203,11 @@
 											<br>
 											<div class="row">
 												<div class="col-md-3">
-													<button id="updateButton" type = "submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+													<button id="updateButton" type="submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
 												</div> <!-- End column -->
+												<div class="col-md-3">
+													<button id="closeForm" name="closeForm" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-thumbs-down"></span> Close</button>
+												</div> <!-- End column -->												
 											</div> <!-- End row -->								
 										</form> <!-- End form -->
 									</div> <!-- End jumbotron -->

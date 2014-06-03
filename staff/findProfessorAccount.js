@@ -1,17 +1,19 @@
 $(document).ready(function() {
 	var email;
 	$('#formBox').hide();
-	
+	$('#noResults').hide();
 	/*Prevents a page redirection to the php page.*/
 	$("#findAccountForm").submit(function(event){
+		$('#formBox').hide(1000);
+		$('#noResults').hide(1000);			
 		
-	return false;
+		return false;
 	});
 
 	/*Prevents a page redirection to the php page.*/
 	$("#updateForm").submit(function(event){
 		
-	return false;
+		return false;
 	
 	});
 
@@ -25,16 +27,21 @@ $(document).ready(function() {
 			
 		$.post(url,data,function (info){ 
 		clearInput();
-		
-	
-		
 		var professor = eval('(' + info + ')');
-
+		
+		if(!professor){
+			
+			$('#noResults').toggle(2000);
+			
+			
+		}
+			
+		
 		$('#firstName').val(professor["firstName"]);
 		$('#lastName').val(professor["lastName"]);
 		$('#email').val(email);
-		$('#officePhone').val(professor["officePhone"]);
 		$('#mobilePhone').val(professor["mobilePhone"]);
+		$('#officePhone').val(professor["officePhone"]);
 		$('#formBox').show(1000);
 		});
 			
@@ -54,7 +61,10 @@ $(document).ready(function() {
 			
 	});	
 
-
+	$('#closeForm').click(function(){
+		
+		$('#formBox').hide(1000);	
+	});	
 	
 });
 

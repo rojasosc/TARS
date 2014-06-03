@@ -25,10 +25,11 @@
 	const REJECTED = 2;
 	const APPROVED = 3;
 	
+	
+	
 	/******************
 	*DATABASE UTILITIES
 	*******************/	
-	
 	
 	/**
 	* Function: open_database
@@ -93,7 +94,7 @@
 		$sql = "SELECT * FROM Students WHERE studentID = '$studentID'";
 		
 		$student = mysqli_query($conn,$sql);
-		$student = mysqli_fetch_array($student);
+		$student = mysqli_fetch_array($student,MYSQLI_ASSOC);
 		
 		
 		close_database($conn);
@@ -585,7 +586,7 @@
 	*  Purpose: Edit the database entries that correspond to the student's information with newly submitted ones from the student
 	*  Returns: absolutely nothing
 	**/
-	function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe) {
+	function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe){
 		$connect = open_database();
 		
 		$firstName = mysqli_real_escape_string($connect, $firstName);
@@ -680,9 +681,9 @@
 	
 		$conn = open_database();
 		
-		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
-		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = " .PENDING. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = Course.professorID AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT;		
+		$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.gpa\n"
+		. "FROM Students,Users\n"
+		. "WHERE Students.studentID = Users.userID AND Students.status = 0";
 		
 		$result = mysqli_query($conn,$sql);
 		
@@ -691,6 +692,32 @@
 		close_database($conn);
 		
 		return $students;
+	}
+	
+	function totalAssistantCount(){
+	
+		$conn = open_database();
+
+		$sql = "SELECT COUNT(*) FROM Students AS numberofStudents";
+		$count = mysqli_query($conn,$sql);
+		$count = mysqli_fetch_array($count);
+		close_database($conn);
+		$count = $count[0];
+		return $count;		
+	
+	}
+	
+	
+	function setStatus($studentID,$status){
+	
+		$conn = open_database();
+		
+		$sql = "UPDATE Students SET status = '$status' WHERE Students.studentID = '$studentID'";
+		
+		mysqli_query($conn,$sql);
+		
+		close_database($conn);
+
 	}
 
 	/********************

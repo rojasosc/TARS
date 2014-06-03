@@ -13,8 +13,11 @@
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
+		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
+		<script src="createProfessor.js"></script>
 
 	</head>
 	<body>
@@ -75,13 +78,14 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				<div class="container">
+				<div class="container" id="formBox">
 						<div class="panel panel-success">
 							<div class="panel-heading">
-								<h4>Create New Account</h4>
+								<h4 data-toggle="collapse" data-target="#createAccountBody">Create New Account</h4>
 							</div> <!-- End panel-heading -->
+							<div class="collapse panel-collapse" id="createAccountBody">
 								<div class="panel-body">
-									<form class="form-horizontal" id="createAccountForm">
+									<form class="form-horizontal" id="createAccountForm" method="post" action="createProfessorProcess.php">
 										<fieldset>
 											<legend>New Account</legend>
 											<div class="row">
@@ -130,8 +134,8 @@
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label class="control-label" for="homePhone">Home Phone</label>
-														<input type="tel" class="form-control" name="homePhone" placeholder="Home Phone"/>
+														<label class="control-label" for="homePhone">Office Phone</label>
+														<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
@@ -141,6 +145,31 @@
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->								
 											</div> <!-- End row -->
+											<legend>Office</legend>
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="building"></label>
+														<select name="building" class="form-control" placeholder="Building">
+															<option>CSB</option>
+															<option>LATT</option>
+															<option>Meliora</option>
+														</select> <!-- End select -->										
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="room">Room</label>
+														<select name="room" class="form-control" placeholder="Room">
+															<option>306</option>
+															<option>233</option>
+															<option>255</option>
+															<option>219</option>
+															<option>393</option>
+														</select> <!-- End select -->										
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->							
+											</div> <!-- End Row -->												
 											<br>
 											<div class="row">
 												<div class="col-md-3">
@@ -150,7 +179,11 @@
 										</fieldset> <!-- End fieldset -->
 									</form> <!-- End form-horizontal -->
 								</div> <!-- End panel-body -->
-						</div> <!-- End panel panel-success -->						>
+							</div> <!-- End panel panel-collapse -->
+								<div class="panel-footer" id="createdProfessors">
+									
+								</div> <!-- End panel-footer -->	
+						</div> <!-- End panel panel-success -->						
 				</div> <!-- End container -->			    
 			</div>
 			<!-- END Page Content --> 

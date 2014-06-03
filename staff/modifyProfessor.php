@@ -9,13 +9,15 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Modify Account</title>
+		<title>Modify Student</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-
+		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>		
+		<script rel="text/javascript" src="findStudentAccount.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -82,29 +84,86 @@
 								
 							</div> <!-- End panel-heading -->
 								<div class="panel-body">
-									<form class="form-horizontal" id="createAccountForm" method="post" action="#">
+									<form class="form-horizontal" id="findAccountForm" method="post" action="findProfessorAccount.php">
 										<fieldset>
-											<legend>Modify Account</legend>
+											
 											<small>Enter an email address to find an existing account.</small>
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="email">Email</label>
-														<input type="email" class="form-control" name="email" placeholder="Email"/>					
+														<input id="emailSearch" type="email" class="form-control" name="email" placeholder="Email"/>					
 													</div> <!-- End form-group -->							
 												</div> <!-- End column -->					
 											</div> <!-- End row -->
 											<br>
 											<div class="row">
 												<div class="col-md-3">
-													<button type = "submit"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Search</button>
+													<button id="submitButton"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Search</button>
 												</div> <!-- End column -->
 											</div> <!-- End row -->	
 										</fieldset> <!-- End fieldset -->
 									</form> <!-- End form-horizontal -->
 								</div> <!-- End panel-body -->
 						</div> <!-- End panel panel-success -->						
-				</div> <!-- End container -->			    
+				</div> <!-- End container -->
+				
+				<div class="container">
+						<div class="panel panel-danger">
+							<div class="panel-heading">
+								<h4>Results</h4>
+							</div> <!-- End panel-heading -->
+								<div class="panel-body" id="results">
+									<div class="jumbotron" id="formBox">
+										<form action="#" class="form-horizontal" id="updateForm" method="post">
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group"> 
+														<label class="control-label" for="firstName">First Name</label>
+														<input id="firstName" type="text" class="form-control" name="firstName"/>														
+													</div> <!-- End form-group -->							
+												</div>
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="firstName">Last Name</label>
+														<input id="lastName" type="text" class="form-control" name="lastName" />													
+													</div> <!-- End form-group -->							
+												</div>							
+											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="email">Email</label>
+														<input id="email" type="email" class="form-control" name="email"/>					
+													</div> <!-- End form-group -->							
+												</div>							
+											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="officePhone">Office Phone</label>
+														<input id="homePhone" type="tel" class="form-control" name="officePhone" placeholder="Home Phone"/>
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="mobilePhone">Mobile Phone</label>
+														<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone"/>
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->								
+											</div> <!-- End row -->
+											<br>
+											<div class="row">
+												<div class="col-md-3">
+													<button id="updateButton" type = "submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+												</div> <!-- End column -->
+											</div> <!-- End row -->								
+										</form> <!-- End form -->
+									</div> <!-- End jumbotron -->
+								</div> <!-- End panel-body -->
+						</div> <!-- End panel panel-success -->						
+				</div> <!-- End container -->
+			
 			</div>
 			<!-- END Page Content --> 
 	    
@@ -133,5 +192,6 @@
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-	</body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	</body>	
 </html>

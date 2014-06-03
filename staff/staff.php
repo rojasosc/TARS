@@ -1,5 +1,8 @@
 <?php  
     include('staffSession.php');
+    $students = getUnverifiedStudents();	
+    $totalUnverified = count($students);
+
 ?>
 
 <!DOCTYPE html>
@@ -78,9 +81,9 @@
 					<div class="jumbotron">
 						<h2 class="welcome">Welcome <?= $fn ?>!</h2>					
 						<h3>Notifications</h3> 
-							<p>You have (num) applicants that need to be verified.</p>
+							<p>You have <?= $totalUnverified ?> <a href="verifyStudents.php">students</a> that need to be verified.</p>
 							<p>(name) has dropped out of his assistantship.</p>
-							<p>(name) has has replaced (name) in (course) as a (type).</p>
+							<p>(name) has replaced (name) in (course) as a (type).</p>
 					</div> <!-- End jumbotron -->
 				</div> <!-- End container -->
 			</div>

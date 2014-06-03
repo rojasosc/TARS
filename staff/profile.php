@@ -71,7 +71,12 @@
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">			    
+			<div id="content">
+				<div class="container">
+					<div class="jumbotron">
+						<h1>Profile Page</h1>
+					</div> <!-- End jumbotron -->
+				</div> <!-- End container -->
 	
 			</div>
 			<!-- END Page Content --> 

@@ -1,0 +1,7 @@
+<?php
+
+	include('../db.php');
+	
+	
+
+?>

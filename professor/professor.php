@@ -42,6 +42,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<script src="../js/bootstrap.min.js"></script>
 	</head> 
 	<body>
+		<div id="page-wrapper">
 			<!-- BEGIN Page Header -->
 			<div id="header">
 				<div class="row" id="navbar-theme">

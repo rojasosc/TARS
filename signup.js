@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	
+		
   /*Attach a bootstrapValidator to the form*/	
   $('#signupForm').bootstrapValidator({
         message: 'This value is not valid',

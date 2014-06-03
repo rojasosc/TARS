@@ -25,13 +25,16 @@ $(document).ready(function() {
 			
 		$.post(url,data,function (info){ 
 		clearInput();
-		var student = eval('(' + info + ')');
+		
+	
+		
+		var professor = eval('(' + info + ')');
 
-		$('#firstName').val(student["firstName"]);
-		$('#lastName').val(student["lastName"]);
+		$('#firstName').val(professor["firstName"]);
+		$('#lastName').val(professor["lastName"]);
 		$('#email').val(email);
-		$('#officePhone').val(student["officePhone"]);
-		$('#mobilePhone').val(student["mobilePhone"]);
+		$('#officePhone').val(professor["officePhone"]);
+		$('#mobilePhone').val(professor["mobilePhone"]);
 		$('#formBox').show(1000);
 		});
 			

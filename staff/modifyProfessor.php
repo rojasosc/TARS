@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Modify Student</title>
+		<title>Modify Professor</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="staff.css" rel="stylesheet"/>
@@ -115,7 +115,7 @@
 							</div> <!-- End panel-heading -->
 								<div class="panel-body" id="results">
 									<div class="jumbotron" id="formBox">
-										<form action="#" class="form-horizontal" id="updateForm" method="post">
+										<form action="updateProfessorProcess.php" class="form-horizontal" id="updateForm" method="post">
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group"> 
@@ -142,7 +142,7 @@
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="officePhone">Office Phone</label>
-														<input id="homePhone" type="tel" class="form-control" name="officePhone" placeholder="Home Phone"/>
+														<input id="officePhone" type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
@@ -155,7 +155,7 @@
 											<br>
 											<div class="row">
 												<div class="col-md-3">
-													<button id="updateButton" type = "submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+													<button id="updateButton" type="submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
 												</div> <!-- End column -->
 											</div> <!-- End row -->								
 										</form> <!-- End form -->

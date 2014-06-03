@@ -719,6 +719,17 @@
 		close_database($conn);
 
 	}
+	
+	function updateProfessor($firstName, $lastName, $email,$officePhone, $mobilePhone){
+	
+		$conn = open_database();
+		$professorID = getUserID($email);
+		$sql = "UPDATE Professor SET Professor.firstName = '$firstName', Professor.lastName = '$lastName', Professor.officePhone = '$officePhone', Professor.mobilePhone = '$mobilePhone' WHERE Professor.professorID = '$professorID'";
+		
+		mysqli_query($conn,$sql);
+		
+		close_database($conn);	
+	}
 
 	/********************
 	* END STAFF FUNCTIONS

@@ -686,7 +686,7 @@
 		
 		$result = mysqli_query($conn,$sql);
 		
-		$students = mysqli_fetch_all($result,MYSQLI_BOTH);
+		$students = @mysqli_fetch_all($result,MYSQLI_BOTH);
 
 		close_database($conn);
 		

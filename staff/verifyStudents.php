@@ -44,6 +44,7 @@
 			$progress = "danger";
 		}		
 		
+	if($students != NULL) {
 		foreach($students as $student){
 			
 			/*Get studentID */
@@ -103,7 +104,7 @@
 			}
 		}	
 	
-
+	}
     ?>	
     
 		<!-- BEGIN Comment Modal-->
@@ -218,6 +219,7 @@
 												
 												$students = getUnverifiedStudents();
 												$tableEntry = 0;
+											if($students != NULL) {
 												foreach($students as $student){
 													$buttonGroupName = "action" . $tableEntry;
 													$myProfileID = "myProfile". $student['studentID'];
@@ -253,7 +255,7 @@
 												<?php
 												$tableEntry++;
 												}
-	
+											}
 												?>
 												
 											</table> <!-- End table -->

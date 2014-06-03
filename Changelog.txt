@@ -1,0 +1,49 @@
+================================================================
+****************************************************************
+CHANGELOG
+****************************************************************
+================================================================
+
+================================
+********************************
+Publish 1
+********************************
+================================
+Date: 2 June, 2014
+
+Initial publish.
+Rudimentary functions are in place.
+There are 3 account types as of now: Student, Professor, Staff.
+
+===Student===
+Fully functional:
+Profile edit page
+Current positions page
+Searching for positions on the search page
+
+Needs functionality:
+Updating database when the apply button is clicked
+
+Haven't touched:
+Nothing
+
+===Professor===
+Fully functional:
+Everything except the edit profile page
+
+Needs functionality:
+Edit profile page (Not sure if we want to keep)
+
+Haven't touched:
+Nothing
+
+===Staff===
+Fully functional:
+Payroll page (including .xls download)
+Everything that has an interface except adding comments to student screenings
+
+Needs functionality:
+Adding comments to student screenings
+
+Haven't touched:
+Profile page (Probably wouldn't want it)

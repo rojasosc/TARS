@@ -24,8 +24,7 @@
 	const STAFF_VERIFIED = 1;
 	const REJECTED = 2;
 	const APPROVED = 3;
-	
-	
+		
 	
 	/******************
 	*DATABASE UTILITIES
@@ -299,7 +298,7 @@
 		$studentID = newUser($email,$password,STUDENT);
 
 		/*Insert student record*/
-		$sql = "INSERT INTO Students VALUES('$studentID','$firstName','$lastName','$homePhone','$mobilePhone','$major','$gpa','$classYear','$aboutMe')";
+		$sql = "INSERT INTO Students VALUES('$studentID','$firstName','$lastName','$homePhone','$mobilePhone','$major','$gpa','$classYear','$aboutMe',0)";
 		mysqli_query($conn,$sql);
 		close_database($conn);
 	

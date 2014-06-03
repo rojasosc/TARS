@@ -174,6 +174,15 @@ $(document).ready(function() {
 	
 	
     });
+  
+  
+  
+ /*Prevents a page redirection to the php page.*/
+$("#signupForm").submit(function(event){
+		
+  return false;
+});
+ 
     
  $('#submitButton').click(function(){
 	    // Ajax post(url,data,callback function)
@@ -201,9 +210,4 @@ function displayConfirmation(){
 	
 }
 
-/*Prevents a page redirection to the php page.*/
-$("#signupForm").submit(function(event){
-		
-  return false;
-});
 

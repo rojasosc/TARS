@@ -1,7 +1,7 @@
 $(document).ready(function() {
 		
   /*Attach a bootstrapValidator to the form*/	
-  $('#signupForm').bootstrapValidator({
+  var validator = $('#signupForm').bootstrapValidator({
         message: 'This value is not valid',
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
@@ -59,8 +59,10 @@ $(document).ready(function() {
                     },
                     emailAddress: {
                         message: 'Your input is not a valid email address'
-                    }
+                    },
+
                 }
+               
             },
             emailConfirm: {
                 validators: {
@@ -193,8 +195,34 @@ $("#signupForm").submit(function(event){
 		displayConfirmation();
 	});
 });
+ 
+ 
+$('#email').keyup(function (){
+	
+	var url = "emailExists.php";
+	var email = $('#email').val();
+	
+	var data = {
+		
+		'email': email	
+	}
+	
+	$.post(url,data,function (info){
+		
+		/* If the email address entered is already taken. Update the validator instance.*/
+		if(info){
+			
+			$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');
+			$('#signupForm').data('bootstrapValidator').updateElementStatus($('#email'), 'INVALID');
+			alert('The email address you\'ve entered is already in use.');
+			
+		}
+		
+	});
+	
+}); 
 
-});
+}); /* End on ready function */
 
 /*Clears all the fields in the registration form*/
 function clearInput() {

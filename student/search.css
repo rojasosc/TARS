@@ -1,12 +1,4 @@
-#term-dropdown {
-	padding-top: 15px;
-	padding-bottom: 15px;
-}
-#day-checkboxes {
-	padding-top: 15px;
-	padding-bottom: 15px;
-}
-#time-constraint {
-	padding-top: 15px;
-	padding-bottom: 15px;
+#inputrow {
+	margin-top: 15px;
+	margin-bottom: 15px;
 }

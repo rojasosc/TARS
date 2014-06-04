@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 03, 2014 at 04:16 PM
+-- Generation Time: Jun 04, 2014 at 06:36 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -30,26 +30,28 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
   `positionID` int(30) NOT NULL,
   `studentID` int(30) NOT NULL,
   `compensation` varchar(30) NOT NULL,
-  `status` int(1) NOT NULL
+  `status` int(1) NOT NULL,
+  `qualifications` varchar(511) NOT NULL,
+  `staffComments` varchar(511) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Assistantship`
 --
 
-INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`) VALUES
-(1, 2, 'paid', 2),
-(2, 2, 'credit', 2),
-(3, 2, 'paid', 2),
-(1, 2, 'paid', 2),
-(2, 2, 'credit', 0),
-(3, 2, 'paid', 0),
-(5, 3, 'paid', 3),
-(7, 3, 'credit', 3),
-(14, 2, 'paid', 3),
-(19, 2, 'credit', 3),
-(26, 3, 'paid', 3),
-(25, 3, 'credit', 3);
+INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`, `qualifications`, `staffComments`) VALUES
+(1, 2, 'paid', 2, '', ''),
+(2, 2, 'credit', 2, '', ''),
+(3, 2, 'paid', 2, '', ''),
+(1, 2, 'paid', 2, '', ''),
+(2, 2, 'credit', 0, '', ''),
+(3, 2, 'paid', 0, '', ''),
+(5, 3, 'paid', 3, '', ''),
+(7, 3, 'credit', 3, '', ''),
+(14, 2, 'paid', 3, '', ''),
+(19, 2, 'credit', 3, '', ''),
+(26, 3, 'paid', 3, '', ''),
+(25, 3, 'credit', 3, '', '');
 
 -- --------------------------------------------------------
 
@@ -80,6 +82,27 @@ INSERT INTO `Course` (`courseID`, `professorID`, `courseNumber`, `courseTitle`, 
 (4, 12, 'CSC210', 'Web Programming', 'sdlfkjlkj', '1650', '1805', 6, '20142'),
 (5, 13, 'CSC280', 'Computer Models and Limitations', '280sofunyey', '1525', '1640', 2, '20141'),
 (6, 14, 'CSC252', 'Computer Organization', 'csc252sohard', '1105', '1220', 3, '20141');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Feedback`
+--
+
+CREATE TABLE IF NOT EXISTS `Feedback` (
+  `commentID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
+  `professorID` int(11) NOT NULL,
+  `dateTime` varchar(255) NOT NULL,
+  `comment` varchar(511) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Feedback`
+--
+
+INSERT INTO `Feedback` (`commentID`, `studentID`, `professorID`, `dateTime`, `comment`) VALUES
+(1, 3, 14, '04062014-132653', 'dummy row');
 
 -- --------------------------------------------------------
 
@@ -313,25 +336,26 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `gpa` decimal(10,2) NOT NULL,
   `classYear` int(10) NOT NULL,
   `aboutMe` longtext NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '0'
+  `status` int(11) NOT NULL DEFAULT '0',
+  `reputation` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Students`
 --
 
-INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `status`) VALUES
-(2, 'oscar', 'rojas', '4444444444', '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 2),
-(3, 'Jinze', 'Ahn', '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'WULULULULU CAW CAW CAW', 2),
-(4, 'Elena', 'Walker', '3222222223', '236777', 'Physics', '3.23', 2017, 'afsfsd', 2),
-(5, 'Karel', 'Aristides', '8992262788', '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.', 2),
-(6, 'Enlil', 'Amyas', '8331222069', '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. ', 2),
-(7, 'Eli', 'Edmund', '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2),
-(8, 'Thelonius', 'Afif', '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2),
-(9, 'Stig', 'Euaristos', '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2),
-(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0),
-(16, 'Wallace', 'Brown', '1234567890', '1234567890', 'Physics', '3.43', 2017, 'My Name is Wallace. ', 0),
-(20, 'howard', 'brown', '11111111111', '11111111111', 'Computer Science', '3.33', 2015, 'asdfsafdsf', 0);
+INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `status`, `reputation`) VALUES
+(2, 'oscar', 'rojas', '4444444444', '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 2, 0),
+(3, 'Jinze', 'Ahn', '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'Took CSC 171 Fall 2012. Got an A', 2, 0),
+(4, 'Elena', 'Walker', '3222222223', '236777', 'Physics', '3.23', 2017, 'afsfsd', 2, 0),
+(5, 'Karel', 'Aristides', '8992262788', '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.', 2, 0),
+(6, 'Enlil', 'Amyas', '8331222069', '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. ', 2, 0),
+(7, 'Eli', 'Edmund', '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2, 0),
+(8, 'Thelonius', 'Afif', '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2, 0),
+(9, 'Stig', 'Euaristos', '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2, 0),
+(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0),
+(16, 'Wallace', 'Brown', '1234567890', '1234567890', 'Physics', '3.43', 2017, 'My Name is Wallace. ', 0, 0),
+(20, 'howard', 'brown', '11111111111', '11111111111', 'Computer Science', '3.33', 2015, 'asdfsafdsf', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -403,6 +427,12 @@ ALTER TABLE `Assistantship`
 --
 ALTER TABLE `Course`
  ADD PRIMARY KEY (`courseID`), ADD KEY `placeID` (`placeID`), ADD KEY `professorID` (`professorID`), ADD KEY `professorID_2` (`professorID`);
+
+--
+-- Indexes for table `Feedback`
+--
+ALTER TABLE `Feedback`
+ ADD PRIMARY KEY (`commentID`), ADD KEY `studentID` (`studentID`);
 
 --
 -- Indexes for table `Place`
@@ -479,7 +509,7 @@ MODIFY `userID` int(40) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 ALTER TABLE `Assistantship`
 ADD CONSTRAINT `Assistantship_ibfk_1` FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `Assistantship_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `tar`.`students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Assistantship_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `Students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Course`

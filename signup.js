@@ -60,6 +60,36 @@ $(document).ready(function() {
                     emailAddress: {
                         message: 'Your input is not a valid email address'
                     },
+		    callback: {
+			    
+				message: 'This email address is already in use',
+				callback: function(value,validator){
+					
+					var url = "emailExists.php";
+					
+					
+					var data = {
+						
+						'email': value
+		
+					}
+					var valid = false;
+					$.post(url,data,function(info){
+						
+						if(info){
+							
+							valid = false;
+						}else{
+							
+							valid = true;
+						}
+					});
+					
+					return valid;
+					
+				}
+		   }
+		    
 
                 }
                
@@ -72,6 +102,35 @@ $(document).ready(function() {
                     emailAddress: {
                         message: 'Your input is not a valid email address'
                     },
+		    callback: {
+			    
+				message: 'This email address is already in use',
+				callback: function(value,validator){
+					
+					var url = "emailExists.php";
+					
+					/* Data to pass in post request */
+					var data = {
+						
+						'email': value
+					}
+					var valid = false;
+					/* Check if the email is already in use*/
+					$.post(url,data,function(info){
+						
+						if(info){
+							
+							valid = false;
+						}else{
+							
+							valid = true;
+						}
+					});
+					
+					return valid;
+					
+				}
+		   },		    
 		    identical: {
 			field: 'email',
 			message: 'Email addresses don\'t match'
@@ -195,32 +254,7 @@ $("#signupForm").submit(function(event){
 		displayConfirmation();
 	});
 });
- 
- 
-$('#email').keyup(function (){
-	
-	var url = "emailExists.php";
-	var email = $('#email').val();
-	
-	var data = {
-		
-		'email': email	
-	}
-	
-	$.post(url,data,function (info){
-		
-		/* If the email address entered is already taken. Update the validator instance.*/
-		if(info){
-			
-			$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');
-			$('#signupForm').data('bootstrapValidator').updateElementStatus($('#email'), 'INVALID');
-			alert('The email address you\'ve entered is already in use.');
-			
-		}
-		
-	});
-	
-}); 
+  
 
 }); /* End on ready function */
 

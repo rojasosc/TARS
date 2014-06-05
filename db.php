@@ -610,7 +610,7 @@
 	*  Returns: An array of associative arrays that represent individual positions
 	**/
 	
-	function search($search, $term, $days, $startTime, $endtime) {
+	function search($search, $term, $type) {
 		$connect = open_database();
 		$sql = "SELECT *\n"
 			."FROM Positions\n"
@@ -618,13 +618,17 @@
 			."INNER JOIN Professors ON Positions.professorID = Professors.professorID\n";
 		if($search != NULL) {
 			$search = strtoupper($search);
-			$search = trim($search);
+			$search = preg_replace('/\s+/', '', $search);
 			$sql .= "WHERE courseNumber = '$search'\n";
 		}
 		if($term != NULL) {
 			$sql .= "AND term = '$term'\n";
 		}
+		if($type != NULL && !strcmp($type, 'All')) {
+			$sql .="WHERE type = '$type'\n";
+		}
 		$sql .="ORDER BY positionID";
+		
 		$results = mysqli_query($connect, $sql);
 		$results = mysqli_fetch_all($results, MYSQLI_BOTH);
 		close_database($connect);

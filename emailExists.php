@@ -4,6 +4,6 @@
 	
 	$exists = emailExists($_POST['email']);
 	
-	echo  $exists;
+	echo json_encode($exists);
 
 ?>

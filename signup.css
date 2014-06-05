@@ -78,6 +78,15 @@ html,body{
 	color: white;
 }
 
+#emailExists{
+	
+	color: #a94442
+}
+#emailExistsC{
+	
+	color: #a94442
+}
+
 .col-md-4{
 	margin-left: 10px;
 	margin-right: 10px;

@@ -152,7 +152,7 @@
 	/* Function login
 	*  Purpose: Logs a user in.  Verifies that user's input password field against
 	*           a hashed password stored in the database.
-	*  Returns: nothing.
+	*  Returns: The user information row in the database, or false if login is incorrect.
 	**/
 	function login($email, $inputPassword){
 

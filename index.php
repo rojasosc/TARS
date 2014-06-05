@@ -1,11 +1,13 @@
 <?php
 	include ("db.php");
 
-	$userName = $_POST['email'];
-	$password = $_POST['password'];
-	$user = login($userName, $password);
-
 	if(isset($_POST['submit'])){
+
+        $userName = isset($_POST['email']) ? $_POST['email'] : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        if (!empty($userName) && !empty($password)) {
+            $user = login($userName, $password);
+        }
 	
 		if($user){
 		

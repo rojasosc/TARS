@@ -1,6 +1,11 @@
 <?php  
-    include('studentSession.php');
-	$positions = search($_POST['search'], $_POST['term'], $_POST['type']);
+include('studentSession.php');
+
+$search = isset($_POST['search']) ? $_POST['search'] : '';
+$term = isset($_POST['term']) ? $_POST['term'] : '';
+$type = isset($_POST['type']) ? $_POST['term'] : '';
+
+$positions = search($search, $term, $type);
 ?>
 
 <!DOCTYPE html>
@@ -172,24 +177,24 @@
 								<div class="row" id="inputrow">
 									<div class="col-xs-6">
 										Search:
-										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=$_POST[search]?>"/>
+										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=$search?>"/>
 									</div>
 									<div class="col-xs-3">
 										Term:
 										<select class="form-control" name="term">
-											<option value="20142" <?php if(strcmp($_POST['term'], '20142') == 0){?>selected="selected"<?php }?>>Fall 2014</option>
-											<option value="20141" <?php if(strcmp($_POST['term'], '20141') == 0){?>selected="selected"<?php }?>>Spring 2014</option>
-											<option value="20132" <?php if(strcmp($_POST['term'], '20132') == 0){?>selected="selected"<?php }?>>Fall 2013</option>
-											<option value="20131" <?php if(strcmp($_POST['term'], '20131') == 0){?>selected="selected"<?php }?>>Spring 2013</option>
+											<option value="20142" <?php if(strcmp($term, '20142') == 0){?>selected="selected"<?php }?>>Fall 2014</option>
+											<option value="20141" <?php if(strcmp($term, '20141') == 0){?>selected="selected"<?php }?>>Spring 2014</option>
+											<option value="20132" <?php if(strcmp($term, '20132') == 0){?>selected="selected"<?php }?>>Fall 2013</option>
+											<option value="20131" <?php if(strcmp($term, '20131') == 0){?>selected="selected"<?php }?>>Spring 2013</option>
 										</select>
 									</div>
 									<div class="col-xs-3">
 										Type:
 										<select name="type" class="form-control">
-											<option value="All" <?php if(strcmp($_POST['type'], 'All') == 0){?>selected="selected"<?php }?>>All</option>
-											<option value="Workshop Leader" <?php if(strcmp($_POST['type'], 'Workshop Leader') == 0){?>selected="selected"<?php }?>>Workshop Leader</option>
-											<option value="Lab TA" <?php if(strcmp($_POST['type'], 'Lab TA') == 0){?>selected="selected"<?php }?>>Lab TA</option>
-											<option value="Grader" <?php if(strcmp($_POST['type'], 'Grader') == 0){?>selected="selected"<?php }?>>Grader</option>
+											<option value="All" <?php if(strcmp($type, 'All') == 0){?>selected="selected"<?php }?>>All</option>
+											<option value="Workshop Leader" <?php if(strcmp($type, 'Workshop Leader') == 0){?>selected="selected"<?php }?>>Workshop Leader</option>
+											<option value="Lab TA" <?php if(strcmp($type, 'Lab TA') == 0){?>selected="selected"<?php }?>>Lab TA</option>
+											<option value="Grader" <?php if(strcmp($type, 'Grader') == 0){?>selected="selected"<?php }?>>Grader</option>
 										</select>
 									</div>
 								</div>

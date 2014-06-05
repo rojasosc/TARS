@@ -55,14 +55,15 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input type="email" class="form-control" name="email" placeholder="Email"/>					
+										<input id="email" type="email" class="form-control" name="email" placeholder="Email"/>
+										<small id="emailExists" class="help-block" style="">This email is already in use</small>
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="emailConfirm">Re-Enter Email</label>
-										<input type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
-														
+										<input id="emailConfirm" type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
+										<small id="emailExistsC" class="help-block" style="">This email is already in use</small>				
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->

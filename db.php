@@ -220,19 +220,21 @@
 	function emailExists($email){
 	
 		$conn = open_database();
-		
+		$email = mysqli_real_escape_string($conn, $email);
 		$sql = "SELECT * FROM Users WHERE email ='$email'";
 		
 		$user = mysqli_query($conn,$sql);
 		$user = mysqli_fetch_all($user);
 		
-		close_database();
+		close_database($conn);
 		
 		/* Check if the email is already in use */
 		
 		if(count($user) > 0){
+
 			return true; 
 		}else{
+		
 			return false;
 		}
 

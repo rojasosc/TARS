@@ -8,10 +8,12 @@ $(document).ready(function() {
 	var appModalFooter;
 	var appFormHTML;
 	var appFormButtons;
+	var currPos;
 
     //Get the positionID of the position student is applying ot
     $('.applyButton').on('click', function() {
-        positionID = $(this).closest('tr').find(".positionID").text();
+        currPos = $(this).closest('tr');
+		positionID = currPos.find(".positionID").text();
 	});
 
     //Submit a post request to search_process.php
@@ -40,5 +42,6 @@ $(document).ready(function() {
 	$('#applymodal').on('hidden.bs.modal', function(event) {
 		appModalBody.html(appFormHTML);
 		appModalFooter.html(appFormButtons);
+		currPos.hide(800);
 	});
 });

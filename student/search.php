@@ -1,11 +1,6 @@
 <?php  
-include('studentSession.php');
-
-$search = isset($_POST['search']) ? $_POST['search'] : '';
-$term = isset($_POST['term']) ? $_POST['term'] : '';
-$type = isset($_POST['type']) ? $_POST['term'] : '';
-
-$positions = search($search, $term, $type);
+    include('studentSession.php');
+	$positions = search($_POST['search'], $_POST['term'], $_POST['type']);
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +22,7 @@ $positions = search($search, $term, $type);
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script rel="text/javascript" src="search.js"></script>
+		<script type="text/javascript" src="search.js"></script>
 		<!-- END Scripts -->
 		
 	</head>
@@ -100,12 +95,12 @@ $positions = search($search, $term, $type);
 						<h1 class="modal-title">Application</h1>
 					</div>
 					<div class="modal-body">
-						<form role="form" method="post" id="application">
+						<form role="form" method="post" id="application" action="search_process.php">
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
 									<label>
 										Compensation:
-										<select name="compensation" class="form-control">
+										<select name="compensation" class="form-control" id="compensation">
 											<option value="paid">Paid</option>
 											<option value="credit">Credit</option>
 										</select>
@@ -118,7 +113,7 @@ $positions = search($search, $term, $type);
 										<p>
 											Please explain below why you want to fill this position and why you are qualified to. Please keep it clear and concise.
 										</p>
-										<textarea class="form-control" rows="4" cols="64" name="qualifications"></textarea>
+										<textarea class="form-control" rows="4" cols="64" name="qualifications" id="qualifications"></textarea>
 									</label>
 								</div>
 							</div>
@@ -177,24 +172,24 @@ $positions = search($search, $term, $type);
 								<div class="row" id="inputrow">
 									<div class="col-xs-6">
 										Search:
-										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=$search?>"/>
+										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=$_POST[search]?>"/>
 									</div>
 									<div class="col-xs-3">
 										Term:
 										<select class="form-control" name="term">
-											<option value="20142" <?php if(strcmp($term, '20142') == 0){?>selected="selected"<?php }?>>Fall 2014</option>
-											<option value="20141" <?php if(strcmp($term, '20141') == 0){?>selected="selected"<?php }?>>Spring 2014</option>
-											<option value="20132" <?php if(strcmp($term, '20132') == 0){?>selected="selected"<?php }?>>Fall 2013</option>
-											<option value="20131" <?php if(strcmp($term, '20131') == 0){?>selected="selected"<?php }?>>Spring 2013</option>
+											<option value="20142" <?php if(strcmp($_POST['term'], '20142') == 0){?>selected="selected"<?php }?>>Fall 2014</option>
+											<option value="20141" <?php if(strcmp($_POST['term'], '20141') == 0){?>selected="selected"<?php }?>>Spring 2014</option>
+											<option value="20132" <?php if(strcmp($_POST['term'], '20132') == 0){?>selected="selected"<?php }?>>Fall 2013</option>
+											<option value="20131" <?php if(strcmp($_POST['term'], '20131') == 0){?>selected="selected"<?php }?>>Spring 2013</option>
 										</select>
 									</div>
 									<div class="col-xs-3">
 										Type:
 										<select name="type" class="form-control">
-											<option value="All" <?php if(strcmp($type, 'All') == 0){?>selected="selected"<?php }?>>All</option>
-											<option value="Workshop Leader" <?php if(strcmp($type, 'Workshop Leader') == 0){?>selected="selected"<?php }?>>Workshop Leader</option>
-											<option value="Lab TA" <?php if(strcmp($type, 'Lab TA') == 0){?>selected="selected"<?php }?>>Lab TA</option>
-											<option value="Grader" <?php if(strcmp($type, 'Grader') == 0){?>selected="selected"<?php }?>>Grader</option>
+											<option value="All" <?php if(strcmp($_POST['type'], 'All') == 0){?>selected="selected"<?php }?>>All</option>
+											<option value="Workshop Leader" <?php if(strcmp($_POST['type'], 'Workshop Leader') == 0){?>selected="selected"<?php }?>>Workshop Leader</option>
+											<option value="Lab TA" <?php if(strcmp($_POST['type'], 'Lab TA') == 0){?>selected="selected"<?php }?>>Lab TA</option>
+											<option value="Grader" <?php if(strcmp($_POST['type'], 'Grader') == 0){?>selected="selected"<?php }?>>Grader</option>
 										</select>
 									</div>
 								</div>
@@ -221,7 +216,7 @@ $positions = search($search, $term, $type);
 										foreach($positions as $rows) {
 									?>
 										<tr>
-											<td><?=$rows['positionID']?></td>
+											<td class="positionID"><?=$rows['positionID']?></td>
 											<td><?=$rows['courseNumber']?></td>
 											<td><?=$rows['courseTitle']?></td>
 											<td><?=$rows['firstName']." ".$rows['lastName']?></td>
@@ -229,7 +224,7 @@ $positions = search($search, $term, $type);
 											<td><?=$rows['time']?></td>
 											<td>
 												
-												<button class="btn btn-default" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
+												<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
 											</td>
 										</tr>
 									<?php

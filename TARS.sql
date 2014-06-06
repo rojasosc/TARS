@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 06, 2014 at 03:23 PM
+-- Generation Time: Jun 06, 2014 at 06:39 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.4.28
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
   `positionID` int(30) NOT NULL,
   `studentID` int(30) NOT NULL,
   `compensation` varchar(30) NOT NULL,
-  `status` int(1) NOT NULL,
+  `appStatus` int(1) NOT NULL,
   `qualifications` varchar(511) NOT NULL,
   `staffComments` varchar(511) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
 -- Dumping data for table `Assistantship`
 --
 
-INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`, `qualifications`, `staffComments`) VALUES
+INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`, `staffComments`) VALUES
 (1, 2, 'paid', 2, '', ''),
 (2, 2, 'credit', 2, '', ''),
 (3, 2, 'paid', 2, '', ''),
@@ -66,7 +66,27 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`
 (7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!', ''),
 (7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!', ''),
 (1, 3, 'paid', 0, 'works? maybe?', ''),
-(1, 3, 'paid', 0, 'oogabooga', '');
+(1, 3, 'paid', 0, 'oogabooga', ''),
+(18, 3, 'paid', 0, 'insta-approve!', ''),
+(30, 3, 'paid', 0, 'Let''s make sure this works.....', ''),
+(12, 3, 'paid', 0, 'triggerrrrrrrr!', ''),
+(4, 3, 'paid', 0, 'typoooos', ''),
+(4, 3, 'paid', 0, 'typoooos', ''),
+(8, 3, 'paid', 0, 'pls', ''),
+(3, 3, 'paid', 0, 'well, this is weird.', ''),
+(3, 3, 'paid', 0, 'okwaht.', ''),
+(9, 3, 'paid', 0, 'did i fix it?', ''),
+(3, 3, 'paid', 0, 'does it work in ff?', ''),
+(4, 3, 'paid', 0, 'what.', ''),
+(9, 3, 'paid', 0, 'soooo confused', ''),
+(4, 3, 'paid', 0, 'whathwat', ''),
+(3, 3, 'paid', 0, 'now does that work?', ''),
+(2, 3, 'paid', 0, 'works here doe, right?', ''),
+(1, 3, 'paid', 0, 'this should work here.', ''),
+(2, 3, 'paid', 0, 'yo what up im on ff', ''),
+(3, 3, 'paid', 0, 'does THAT work?', ''),
+(3, 3, 'paid', 0, 'leeeeeeeet''s try that again', ''),
+(4, 3, 'paid', 0, 'one last chance, chrome. before i fire you from the testing team.', '');
 
 -- --------------------------------------------------------
 
@@ -389,9 +409,11 @@ CREATE TABLE IF NOT EXISTS `Teaches` (
 
 INSERT INTO `Teaches` (`courseID`, `professorID`) VALUES
 (1, 1),
-(2, 1),
+(2, 11),
 (3, 1),
-(4, 1);
+(4, 12),
+(5, 13),
+(6, 14);
 
 -- --------------------------------------------------------
 

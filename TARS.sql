@@ -20,6 +20,17 @@ SET time_zone = "+00:00";
 -- Database: `TARS`
 --
 
+DROP TABLE IF EXISTS Assistantship;
+DROP TABLE IF EXISTS Feedback;
+DROP TABLE IF EXISTS Positions;
+DROP TABLE IF EXISTS Staff;
+DROP TABLE IF EXISTS Students;
+DROP TABLE IF EXISTS Teaches;
+DROP TABLE IF EXISTS Course;
+DROP TABLE IF EXISTS Professors;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Place;
+
 -- --------------------------------------------------------
 
 --
@@ -353,9 +364,7 @@ INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobi
 (7, 'Eli', 'Edmund', '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2, 0),
 (8, 'Thelonius', 'Afif', '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2, 0),
 (9, 'Stig', 'Euaristos', '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2, 0),
-(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0),
-(16, 'Wallace', 'Brown', '1234567890', '1234567890', 'Physics', '3.43', 2017, 'My Name is Wallace. ', 0, 0),
-(20, 'howard', 'brown', '11111111111', '11111111111', 'Computer Science', '3.33', 2015, 'asdfsafdsf', 0, 0);
+(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -542,7 +551,7 @@ ADD CONSTRAINT `Staff_ibfk_1` FOREIGN KEY (`staffID`) REFERENCES `Users` (`userI
 -- Constraints for table `Students`
 --
 ALTER TABLE `Students`
-ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `emergency`.`Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Teaches`

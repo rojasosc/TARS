@@ -7,12 +7,12 @@ $(document).ready(function () {
 	/* listens for any change in the email fields */
 	$('#email').bind('keyup',emailExists);
 	$('#emailConfirm').bind('keyup',emailExistsC);
-	$('#email').bind('onchange',emailExists);
-	$('#emailConfirm').bind('onchange',emailExistsC);
+	$('#email').bind('input',emailExists);
+	$('#emailConfirm').bind('input',emailExistsC);
 	$('#email').bind('onpaste',emailExists);
 	$('#emailConfirm').bind('onpaste',emailExistsC);
 	$('#email').bind('oninput',emailExists);
-	$('#emailConfirm').bind('onhover',emailExistsC);
+	$('#emailConfirm').bind('oninput',emailExistsC);
 	
 	
 	/*Attach a bootstrapValidator to the form*/	
@@ -263,7 +263,7 @@ function emailExistsC(){
 			}else{
 				
 				$('#emailExistsC').hide();
-				validate('email');
+				validate('emailConfirm');
 			}
 			
 		});

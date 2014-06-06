@@ -140,7 +140,7 @@
 							<br>
 							<div class="row">
 								<div class="col-md-3">
-									<button type = "submit"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Sign Up</button>
+									<button type="submit"  id="submitButton" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Sign Up</button>
 								</div> <!-- End column -->
 							</div> <!-- End row -->								
 						</form>

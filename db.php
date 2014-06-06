@@ -24,6 +24,8 @@
 	const STAFF_VERIFIED = 1;
 	const REJECTED = 2;
 	const APPROVED = 3;
+
+	const CURRENT_TERM = 20142;
 		
 	
 	/******************
@@ -618,21 +620,24 @@
 			."FROM Positions\n"
 			."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
 			."INNER JOIN Professors ON Positions.professorID = Professors.professorID\n";
-		if($search != NULL) {
+		if(!is_null($search)) {
 			$search = strtoupper($search);
 			$search = preg_replace('/\s+/', '', $search);
 			$sql .= "WHERE courseNumber = '$search'\n";
 		}
-		if($term != NULL) {
-			$sql .= "AND term = '$term'\n";
+		if(is_null($term)) {
+			$term = CURRENT_TERM;
 		}
-		if($type != NULL && !strcmp($type, 'All')) {
+		$sql .= "WHERE term = '$term'\n";
+		if(!is_null($type) && !strcmp($type, 'All')) {
 			$sql .="WHERE posType = '$type'\n";
 		}
 		$sql .="ORDER BY positionID";
-		
+
 		$results = mysqli_query($connect, $sql);
-		$results = mysqli_fetch_all($results, MYSQLI_BOTH);
+		if($results != false) {
+			$results = mysqli_fetch_all($results, MYSQLI_BOTH);
+		}
 		close_database($connect);
 		
 		return $results;

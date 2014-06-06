@@ -213,19 +213,27 @@
 										<th></th>
 									</tr>
 									<?php
-										foreach($positions as $rows) {
+										if($positions != false) {
+											foreach($positions as $rows) {
 									?>
-										<tr>
-											<td class="positionID"><?=$rows['positionID']?></td>
-											<td><?=$rows['courseNumber']?></td>
-											<td><?=$rows['courseTitle']?></td>
-											<td><?=$rows['firstName']." ".$rows['lastName']?></td>
-											<td><?=$rows['posType']?></td>
-											<td><?=$rows['time']?></td>
-											<td>
-												<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
-											</td>
-										</tr>
+											<tr>
+												<td class="positionID"><?=$rows['positionID']?></td>
+												<td><?=$rows['courseNumber']?></td>
+												<td><?=$rows['courseTitle']?></td>
+												<td><?=$rows['firstName']." ".$rows['lastName']?></td>
+												<td><?=$rows['posType']?></td>
+												<td><?=$rows['time']?></td>
+												<td>
+													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
+												</td>
+											</tr>
+									<?php
+											}
+										} else {
+									?>
+											<tr>
+												<td colspan="7">No results</td>
+											</tr>
 									<?php
 										}
 									?>

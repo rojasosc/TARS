@@ -210,7 +210,6 @@
 										<th>Professor</th>
 										<th>Position Type <button class="btn btn-default" data-target="#infomodal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
 										<th>Time</th>
-										<th>Compensation</th>
 										<th></th>
 									</tr>
 									<?php

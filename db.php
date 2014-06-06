@@ -326,7 +326,7 @@
 		$professorID = newUser($email,$password,PROFESSOR);
 		
 		/*Insert student record*/
-		$sql = "INSERT INTO Professors VALUES('$professorID',$officeID,'$firstName','$lastName','$officePhone','$mobilePhone')";
+		$sql = "INSERT INTO Professors VALUES('$professorID','$officeID','$firstName','$lastName','$officePhone','$mobilePhone')";
 		mysqli_query($conn,$sql);
 		
 		close_database($conn); 

@@ -204,15 +204,6 @@ $(document).ready(function () {
 	});
 	
 	
-	$('#submitButton').click(function(){
-		// Ajax post(url,data,callback function)
-		var url = $('#signupForm').attr('action');
-		var data = $('#signupForm :input').serializeArray();
-		$.post(url,data,function (info){ 
-			clearInput(); 
-			displayConfirmation();
-		});
-	});
 
 }); /* End on ready function */
 

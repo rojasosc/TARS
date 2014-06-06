@@ -3,13 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
-
--- Generation Time: Jun 04, 2014 at 06:36 PM
-=======
--- Generation Time: Jun 03, 2014 at 04:16 PM
-
+-- Generation Time: Jun 06, 2014 at 01:25 AM
 -- Server version: 5.6.17
--- PHP Version: 5.5.12
+-- PHP Version: 5.4.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -340,18 +336,13 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `gpa` decimal(10,2) NOT NULL,
   `classYear` int(10) NOT NULL,
   `aboutMe` longtext NOT NULL,
-
   `status` int(11) NOT NULL DEFAULT '0',
   `reputation` int(11) NOT NULL
-
-  `status` int(11) NOT NULL DEFAULT '0'
-
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Students`
 --
-
 
 INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `status`, `reputation`) VALUES
 (2, 'oscar', 'rojas', '4444444444', '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 2, 0),
@@ -365,20 +356,6 @@ INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobi
 (10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0),
 (16, 'Wallace', 'Brown', '1234567890', '1234567890', 'Physics', '3.43', 2017, 'My Name is Wallace. ', 0, 0),
 (20, 'howard', 'brown', '11111111111', '11111111111', 'Computer Science', '3.33', 2015, 'asdfsafdsf', 0, 0);
-
-INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `status`) VALUES
-(2, 'oscar', 'rojas', '4444444444', '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 2),
-(3, 'Jinze', 'Ahn', '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'WULULULULU CAW CAW CAW', 2),
-(4, 'Elena', 'Walker', '3222222223', '236777', 'Physics', '3.23', 2017, 'afsfsd', 2),
-(5, 'Karel', 'Aristides', '8992262788', '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.', 2),
-(6, 'Enlil', 'Amyas', '8331222069', '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. ', 2),
-(7, 'Eli', 'Edmund', '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2),
-(8, 'Thelonius', 'Afif', '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2),
-(9, 'Stig', 'Euaristos', '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2),
-(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0),
-(16, 'Wallace', 'Brown', '1234567890', '1234567890', 'Physics', '3.43', 2017, 'My Name is Wallace. ', 0),
-(20, 'howard', 'brown', '11111111111', '11111111111', 'Computer Science', '3.33', 2015, 'asdfsafdsf', 0);
-
 
 -- --------------------------------------------------------
 
@@ -532,7 +509,7 @@ MODIFY `userID` int(40) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 ALTER TABLE `Assistantship`
 ADD CONSTRAINT `Assistantship_ibfk_1` FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `Assistantship_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `tar`.`students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Assistantship_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `Students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Course`

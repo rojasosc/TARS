@@ -21,7 +21,7 @@
   
 	<body>
 		<!-- BEGIN Email Modal -->
-		<div class="modal fade" id="emailmodal" tabindex="-1" role="dialog" aria-labelledby="emailmodalLabel" aria-hidden="true">
+		<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailmodalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -49,6 +49,44 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 						<button type="submit" class="btn btn-primary" form="passrecov" value="Submit">Send</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END Email Modal -->
+		<!-- BEGIN Withdraw Modal -->
+		<div class="modal fade" id="withdrawModal" tabindex="-1" role="dialog" aria-labelledby="withdrawModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Withdraw From Position</h1>
+					</div>
+					<div class="modal-body">
+						<form action="withdraw.php" method="post" id="withdrawForm">
+							<fieldset>
+								<div class="row">
+									<div class="col-xs-10 col-xs-offset-1">
+										<p>
+											Are you sure you want to withdraw from this position? It is highly unlikely for you to get it back after you withdraw from it. You will no longer be responsible for this position but you will also relinquish all remaining compensations for filling this position.
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-10 col-xs-offset-1">
+										<p>
+											If you still wish to withdraw from this position, an E-mail will be sent to your employer notifying them of your release and your reasons detailed below:
+										</p>
+										<textarea class="form-control" rows="8" cols="64" form="withdrawReason">
+										</textarea>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-success" form="withdrawForm" value="Submit">Withdraw</button>
 					</div>
 				</div>
 			</div>
@@ -105,6 +143,7 @@
 									<th>Time</th>
 									<th>Compensation</th>
 									<th>Email</th>
+									<th>Withdraw</th>
 								</tr>
 								<?php
 									foreach($positions as $row) {
@@ -117,7 +156,8 @@
 										<td><?= $row['building']." ".$row[room]?></td>
 										<td><?= $row['time']?></td>
 										<td><?= $row['compensation']?></td>
-										<td><a class="btn btn-default" href="#emailmodal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
+										<td><a class="btn btn-default" href="#emailModal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
+										<td><a class="btn btn-default" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 									</tr>
 								<?php
 									}

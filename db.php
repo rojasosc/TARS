@@ -384,7 +384,7 @@
 		
 		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ASC";		
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.appStatus <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ASC";		
 		
 		$apps = mysqli_query($conn,$sql);
 		/* Fetch every application */
@@ -454,9 +454,9 @@
 		$conn = open_database();
 		$professorID = getUserID($email);
 		
-		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.type,Positions.positionID, Students.gpa\n"
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.posType,Positions.positionID, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.appStatus <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
 		
 		$result = mysqli_query($conn,$sql);	
 		$applications = mysqli_fetch_all($result, MYSQLI_BOTH);
@@ -473,10 +473,9 @@
 		$conn = open_database();
 		$professorID = getUserID($email);
 		
-		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.type, Students.gpa\n"
+		$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.posType, Students.gpa\n"
 		. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = ".APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
-		
+		. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.appStatus = ".APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";		
 		
 		$result = mysqli_query($conn,$sql);
 		$assistants = mysqli_fetch_all($result, MYSQLI_BOTH);

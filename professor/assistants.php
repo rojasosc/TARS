@@ -233,7 +233,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 												
 											?>
 											
-											<tr><td><?= $assistant['userID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td><td><?= $assistant['email'] ?></td><td><?= $assistant['type'] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<tr><td><?= $assistant['userID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td><td><?= $assistant['email'] ?></td><td><?= $assistant['posType'] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</tr> 											
 											

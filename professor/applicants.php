@@ -228,7 +228,7 @@ and are color coded to emphasize priority.
 												
 											?>
 											
-											<tr><td><?= $application['userID'] ?></td> <td><?= $application['firstName'] ?></td> <td><?= $application['lastName'] ?></td> <td><?= $application['email'] ?></td><td><?= $application['courseNumber'] ?></td><td><?= $application['type'] ?></td><td><?= $application['gpa']?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<tr><td><?= $application['userID'] ?></td> <td><?= $application['firstName'] ?></td> <td><?= $application['lastName'] ?></td> <td><?= $application['email'] ?></td><td><?= $application['courseNumber'] ?></td><td><?= $application['posType'] ?></td><td><?= $application['gpa']?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</td>
 											<td>

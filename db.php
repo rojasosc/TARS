@@ -220,21 +220,19 @@
 	function emailExists($email){
 	
 		$conn = open_database();
-		$email = mysqli_real_escape_string($conn, $email);
+		
 		$sql = "SELECT * FROM Users WHERE email ='$email'";
 		
 		$user = mysqli_query($conn,$sql);
 		$user = mysqli_fetch_all($user);
 		
-		close_database($conn);
+		close_database();
 		
 		/* Check if the email is already in use */
 		
 		if(count($user) > 0){
-
 			return true; 
 		}else{
-		
 			return false;
 		}
 
@@ -565,19 +563,22 @@
 	
 	function studentPositions($email){
 	
-		$conn = open_database();
+		$connect = open_database();
 		
 		$studentID = getUserID($email);
 		
-		$sql = "SELECT Users.userID, Course.courseNumber, Course.courseTitle, Positions.type, Place.building, Place.room, Course.startTime, Course.endTime, Assistantship.compensation\n"
-			. "FROM Users,Course,Positions,Place,Assistantship\n"
-			. "WHERE Users.userID = '$studentID' AND Positions.courseID = Course.courseID AND Assistantship.positionID = Positions.positionID AND Assistantship.status = " .APPROVED. " AND Assistantship.studentID = Users.userID AND Course.placeID = Place.placeID ORDER BY `Course`.`courseNumber` ASC";
+		$sql = "SELECT *\n"
+			."FROM Positions\n"
+			."INNER JOIN Assistantship ON Positions.positionID = Assistantship.positionID\n"
+			."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
+			."INNER JOIN Place ON Course.placeID = Place.placeID\n"
+			."WHERE studentID = '$studentID' AND status = ".APPROVED."\n"
+			."ORDER BY courseNumber ASC;";
 		
+		$result = mysqli_query($connect, $sql);
+		$positions = mysqli_fetch_all($result, MYSQLI_ASSOC);
 		
-		$result = mysqli_query($conn, $sql);
-		$positions = mysqli_fetch_all($result, MYSQLI_BOTH);
-		
-		close_database($conn);
+		close_database($connect);
 		
 		return $positions;
 	

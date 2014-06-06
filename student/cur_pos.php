@@ -97,6 +97,7 @@
 							<!-- BEGIN Current Positions Table -->
 							<table class="table table-striped">
 								<tr>
+									<th>Position ID</th>
 									<th>Course Number</th>
 									<th>Course Name</th>
 									<th>Type</th>
@@ -109,12 +110,13 @@
 									foreach($positions as $row) {
 								?>
 									<tr>
-										<td><?= $row[courseNumber]?></td>
-										<td><?= $row[courseTitle]?></td>
-										<td><?= $row[type]?></td>
-										<td><?= $row[building]." ".$row[room]?></td>
-										<td><?= $row[startTime]." - ".$row[endTime]?></td>
-										<td><?= $row[compensation]?></td>
+										<td><?= $row['positionID']?></td>
+										<td><?= $row['courseNumber']?></td>
+										<td><?= $row['courseTitle']?></td>
+										<td><?= $row['posType']?></td>
+										<td><?= $row['building']." ".$row[room]?></td>
+										<td><?= $row['time']?></td>
+										<td><?= $row['compensation']?></td>
 										<td><a class="btn btn-default" href="#emailmodal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
 									</tr>
 								<?php

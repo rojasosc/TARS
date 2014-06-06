@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 06, 2014 at 01:25 AM
+-- Generation Time: Jun 06, 2014 at 03:23 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.4.28
 
@@ -62,7 +62,11 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `status`
 (14, 2, 'paid', 3, '', ''),
 (19, 2, 'credit', 3, '', ''),
 (26, 3, 'paid', 3, '', ''),
-(25, 3, 'credit', 3, '', '');
+(25, 3, 'credit', 3, '', ''),
+(7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!', ''),
+(7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!', ''),
+(1, 3, 'paid', 0, 'works? maybe?', ''),
+(1, 3, 'paid', 0, 'oogabooga', '');
 
 -- --------------------------------------------------------
 
@@ -125,14 +129,14 @@ CREATE TABLE IF NOT EXISTS `Place` (
 `placeID` int(40) NOT NULL,
   `building` varchar(30) NOT NULL,
   `room` varchar(30) NOT NULL,
-  `type` varchar(30) NOT NULL
+  `roomType` varchar(30) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=101 ;
 
 --
 -- Dumping data for table `Place`
 --
 
-INSERT INTO `Place` (`placeID`, `building`, `room`, `type`) VALUES
+INSERT INTO `Place` (`placeID`, `building`, `room`, `roomType`) VALUES
 (1, 'CSB', '306', 'Lab'),
 (2, 'LATT', '249', 'Lecture Hall'),
 (3, 'Meliora', '281', 'Lecture Hall'),
@@ -245,14 +249,14 @@ CREATE TABLE IF NOT EXISTS `Positions` (
   `courseID` int(30) NOT NULL,
   `professorID` int(30) NOT NULL,
   `time` varchar(16) NOT NULL,
-  `type` varchar(40) NOT NULL
+  `posType` varchar(40) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
 
 --
 -- Dumping data for table `Positions`
 --
 
-INSERT INTO `Positions` (`positionID`, `courseID`, `professorID`, `time`, `type`) VALUES
+INSERT INTO `Positions` (`positionID`, `courseID`, `professorID`, `time`, `posType`) VALUES
 (1, 1, 1, 'FLEXIBLE', 'Grader'),
 (2, 1, 11, 'FLEXIBLE', 'Grader'),
 (3, 1, 11, 'FLEXIBLE', 'Grader'),
@@ -364,7 +368,9 @@ INSERT INTO `Students` (`studentID`, `firstName`, `lastName`, `homePhone`, `mobi
 (7, 'Eli', 'Edmund', '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2, 0),
 (8, 'Thelonius', 'Afif', '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2, 0),
 (9, 'Stig', 'Euaristos', '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2, 0),
-(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0);
+(10, 'Chidubem', 'Juho', '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0),
+(16, 'Wallace', 'Brown', '1234567890', '1234567890', 'Physics', '3.43', 2017, 'My Name is Wallace. ', 0, 0),
+(20, 'howard', 'brown', '11111111111', '11111111111', 'Computer Science', '3.33', 2015, 'asdfsafdsf', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -551,7 +557,7 @@ ADD CONSTRAINT `Staff_ibfk_1` FOREIGN KEY (`staffID`) REFERENCES `Users` (`userI
 -- Constraints for table `Students`
 --
 ALTER TABLE `Students`
-ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `emergency`.`Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Teaches`

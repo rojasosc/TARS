@@ -4,6 +4,27 @@ CHANGELOG
 ****************************************************************
 ================================================================
 
+
+================================
+********************************
+Publish 2
+********************************
+================================
+Date: 6 June, 2014
+
+===General===
+Reworked to support PHP 5.4
+
+===Student===
+Position searching and applying is now fully functional
+Added an interface to withdraw from currently held TAing positions
+
+===Professor===
+
+
+===Staff===
+
+
 ================================
 ********************************
 Publish 1
@@ -11,6 +32,7 @@ Publish 1
 ================================
 Date: 2 June, 2014
 
+===General===
 Initial publish.
 Rudimentary functions are in place.
 There are 3 account types as of now: Student, Professor, Staff.

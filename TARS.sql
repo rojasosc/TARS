@@ -54,9 +54,6 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `appStat
 (1, 2, 'paid', 2, '', ''),
 (2, 2, 'credit', 2, '', ''),
 (3, 2, 'paid', 2, '', ''),
-(1, 2, 'paid', 2, '', ''),
-(2, 2, 'credit', 0, '', ''),
-(3, 2, 'paid', 0, '', ''),
 (5, 3, 'paid', 3, '', ''),
 (7, 3, 'credit', 3, '', ''),
 (14, 2, 'paid', 3, '', ''),
@@ -64,28 +61,14 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `appStat
 (26, 3, 'paid', 3, '', ''),
 (25, 3, 'credit', 3, '', ''),
 (7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!', ''),
-(7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!', ''),
-(1, 3, 'paid', 0, 'works? maybe?', ''),
-(1, 3, 'paid', 0, 'oogabooga', ''),
 (18, 3, 'paid', 0, 'insta-approve!', ''),
 (30, 3, 'paid', 0, 'Let''s make sure this works.....', ''),
 (12, 3, 'paid', 0, 'triggerrrrrrrr!', ''),
-(4, 3, 'paid', 0, 'typoooos', ''),
-(4, 3, 'paid', 0, 'typoooos', ''),
 (8, 3, 'paid', 0, 'pls', ''),
-(3, 3, 'paid', 0, 'well, this is weird.', ''),
-(3, 3, 'paid', 0, 'okwaht.', ''),
 (9, 3, 'paid', 0, 'did i fix it?', ''),
 (3, 3, 'paid', 0, 'does it work in ff?', ''),
-(4, 3, 'paid', 0, 'what.', ''),
-(9, 3, 'paid', 0, 'soooo confused', ''),
-(4, 3, 'paid', 0, 'whathwat', ''),
-(3, 3, 'paid', 0, 'now does that work?', ''),
-(2, 3, 'paid', 0, 'works here doe, right?', ''),
 (1, 3, 'paid', 0, 'this should work here.', ''),
 (2, 3, 'paid', 0, 'yo what up im on ff', ''),
-(3, 3, 'paid', 0, 'does THAT work?', ''),
-(3, 3, 'paid', 0, 'leeeeeeeet''s try that again', ''),
 (4, 3, 'paid', 0, 'one last chance, chrome. before i fire you from the testing team.', '');
 
 -- --------------------------------------------------------
@@ -574,12 +557,6 @@ ADD CONSTRAINT `Professors_ibfk_2` FOREIGN KEY (`officeID`) REFERENCES `Place` (
 --
 ALTER TABLE `Staff`
 ADD CONSTRAINT `Staff_ibfk_1` FOREIGN KEY (`staffID`) REFERENCES `Users` (`userID`);
-
---
--- Constraints for table `Students`
---
-ALTER TABLE `Students`
-ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `emergency`.`Users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Teaches`

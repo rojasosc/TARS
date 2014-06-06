@@ -17,9 +17,10 @@ $(document).ready(function() {
 		compensation = $('#compensation').val();
 		qualifications = $('#qualifications').val();
 		
-		$.post(url, {positionID : positionID, studentID : studentID, compensation : compensation, qualifications : qualifications, status : '0'}, function(data){
-			$('#applymodal').attr('aria-hidden', 'true');
+		$.post(url, {positionID : positionID, studentID : studentID, compensation : compensation, qualifications : qualifications}, function(data){
+			$('#appClose').trigger('click');
 		});
 		event.preventDefault();
+		
 	});	
 });

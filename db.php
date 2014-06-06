@@ -572,7 +572,7 @@
 			."INNER JOIN Assistantship ON Positions.positionID = Assistantship.positionID\n"
 			."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
 			."INNER JOIN Place ON Course.placeID = Place.placeID\n"
-			."WHERE studentID = '$studentID' AND status = ".APPROVED."\n"
+			."WHERE studentID = '$studentID' AND appStatus = ".APPROVED."\n"
 			."ORDER BY courseNumber ASC;";
 		
 		$result = mysqli_query($connect, $sql);
@@ -628,7 +628,7 @@
 			$sql .= "AND term = '$term'\n";
 		}
 		if($type != NULL && !strcmp($type, 'All')) {
-			$sql .="WHERE type = '$type'\n";
+			$sql .="WHERE posType = '$type'\n";
 		}
 		$sql .="ORDER BY positionID";
 		
@@ -637,6 +637,24 @@
 		close_database($connect);
 		
 		return $results;
+	}
+
+	/* Function apply
+	*  Purpose: Register a student's application in the database
+	*  Returns: Absolutely nothing
+	**/
+
+	function apply($positionID, $studentID, $compensation, $qualifications) {
+		$connect = open_database();
+		$pID = mysqli_real_escape_string($connect, $positionID);
+		$sID = mysqli_real_escape_string($connect, $studentID);
+		$comp = mysqli_real_escape_string($connect, $compensation);
+		$qual = mysqli_real_escape_string($connect, $qualifications);
+		$sql = "INSERT IGNORE INTO Assistantship\n"
+			."(`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`)\n"
+			."VALUES ('$pID', '$sID', '$comp', '0', '$qual');";
+		mysqli_query($connect, $sql);
+		close_database($connect);
 	}
 	
 	/***********************

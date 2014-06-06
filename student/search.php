@@ -95,7 +95,7 @@
 						<h1 class="modal-title">Application</h1>
 					</div>
 					<div class="modal-body">
-						<form role="form" method="post" id="application" action="search_process.php">
+						<form role="form" method="post" id="application" action="appProcess.php">
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
 									<input type="hidden" value="<?= $student['studentID']?>" id="studentID"/>
@@ -121,7 +121,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal" id="appClose">Close</button>
 						<button type="submit" class="btn btn-primary" form="application" value="Submit" id="appSubmit">Submit</button>
 					</div>
 				</div>
@@ -221,7 +221,7 @@
 											<td><?=$rows['courseNumber']?></td>
 											<td><?=$rows['courseTitle']?></td>
 											<td><?=$rows['firstName']." ".$rows['lastName']?></td>
-											<td><?=$rows['type']?></td>
+											<td><?=$rows['posType']?></td>
 											<td><?=$rows['time']?></td>
 											<td>
 												<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>

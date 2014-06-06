@@ -13,6 +13,7 @@
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
+		<link href="modifyTerm.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 	</head>
@@ -76,8 +77,92 @@
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron">
-		
+						<div id="formBox">
+							<form action="#" class="form-horizontal" id="newTermForm" method="post">
+								<legend>Modify Term</legend>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label class="control-label" for="termName">Select Term</label>
+											<select id="classYear" name="termName" class="form-control">
+												<option>Summer-2014</option>
+												<option>Fall-2014</option>
+												<option>Spring-2015</option>
+												<option>Summer-2015</option>
+												<option>Fall-2015</option>
+											</select> <!-- End select -->										
+										</div> <!-- End form-group -->
+									</div> <!-- End column -->									
+								</div> <!-- End row -->
+							</form> <!-- End form -->													
 					</div> <!-- End jumbotron -->
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#termOverview" data-toggle="tab">Term Overview</a></li>
+						<li><a href="#manageCourses" data-toggle="tab">Manage Courses</a></li>
+						<li><a href="#managePositions" data-toggle="tab">Manage Positions</a></li>
+						<li><a href="#manageLocations" data-toggle="tab">Manage Locations</a></li>
+					</ul>
+
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div class="tab-pane fade in active" id="termOverview">
+							<div class="container">
+								<br>
+								<div class="row">
+									<div class="col-md-4">
+										<h4>Number of Courses:</h4>
+									</div> <!-- End column -->
+								</div> <!-- End row -->
+								<div class="row">
+									<div class="col-md-4">
+										<h4>Number of Positions:</h4>
+									</div> <!-- End column -->
+								</div> <!-- End row -->	
+								<div class="row">
+									<div class="col-md-4">
+										<h4>Number of Locations:</h4>
+									</div> <!-- End column -->
+								</div> <!-- End row -->								
+							</div> <!-- end container -->
+						</div> <!-- end tab-pane -->
+						<div class="tab-pane fade " id="manageCourses">
+							<div class="container">
+								<br>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label class="control-label" for="major">Select Course</label>
+											<select name="major" class="form-control" placeholder="Major">
+												<option>The Science of Data Structures</option>
+												<option>Computation and Formal Systems</option>
+												<option>Web Programming</option>
+											</select> <!-- End select -->										
+										</div> <!-- End form-group -->
+									</div> <!-- End column -->
+									<div class="col-md-4">
+										<div class="form-group">
+											<label class="control-label" for="major">Select Professor</label>
+											<select name="major" class="form-control" placeholder="Major">
+												<option>Ted Pawlicki</option>
+												<option>Chris Brown</option>
+												<option>Michael Scott</option>
+											</select> <!-- End select -->										
+										</div> <!-- End form-group -->
+									</div> <!-- End column -->									
+								</div> <!-- End row -->
+								
+								<div class="row">
+									
+								</div> <!-- End row -->
+								
+							</div> <!-- end container -->
+						</div> <!-- end tab-pane -->
+						<div class="tab-pane fade " id="managePositions">
+						</div> <!-- end tab-pane -->
+						<div class="tab-pane fade" id="manageLocations">
+						</div> <!-- end tab-pane -->
+					</div>					
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

@@ -220,7 +220,7 @@
 	function emailExists($email){
 	
 		$conn = open_database();
-		
+		$email = mysqli_real_escape_string($conn, $email);
 		$sql = "SELECT * FROM Users WHERE email ='$email'";
 		
 		$user = mysqli_query($conn,$sql);
@@ -298,7 +298,7 @@
 		$studentID = newUser($email,$password,STUDENT);
 
 		/*Insert student record*/
-		$sql = "INSERT INTO Students VALUES('$studentID','$firstName','$lastName','$homePhone','$mobilePhone','$major','$gpa','$classYear','$aboutMe',0)";
+		$sql = "INSERT INTO Students VALUES('$studentID','$firstName','$lastName','$homePhone','$mobilePhone','$major','$gpa','$classYear','$aboutMe',0,0)";
 		mysqli_query($conn,$sql);
 		close_database($conn);
 	

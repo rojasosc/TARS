@@ -1,10 +1,12 @@
-$(document).ready(function() {
+$(document).ready(function () {
 	
 	$('#emailExists').hide();
 	$('#emailExistsC').hide();
 	
-	$('#email').bind('keypress',emailExists);
-	$('#emailConfirm').bind('keypress',emailExistsC);
+	
+	/* listens for any change in the email fields */
+	$('#email').bind('keyup',emailExists);
+	$('#emailConfirm').bind('keyup',emailExistsC);
 	$('#email').bind('onchange',emailExists);
 	$('#emailConfirm').bind('onchange',emailExistsC);
 	$('#email').bind('onpaste',emailExists);
@@ -72,7 +74,7 @@ $(document).ready(function() {
 			},
 			emailAddress: {
 				message: 'Your input is not a valid email address'
-			},
+			}
 
 			
 
@@ -186,19 +188,19 @@ $(document).ready(function() {
 			}
 
 			}
-		},	    
+		}	    
 	
 		} /* close fields */
 		
 		
 	});
-	
-	
-	
+
+
+
 	/*Prevents a page redirection to the php page.*/
 	$("#signupForm").submit(function(event){
 			
-	return false;
+		return false;
 	});
 	
 	
@@ -210,77 +212,6 @@ $(document).ready(function() {
 			clearInput(); 
 			displayConfirmation();
 		});
-	});
-	
-	$('#email').keyup(function(){
-		
-		var url = "emailExists.php";
-		var email = $(this).val();
-		var data = {
-			
-			'email': email
-		}
-		
-		$.post(url,data,function(info){
-			
-			if(info == "true"){
-
-				$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');				
-				$('#emailExists').show();
-			}else{
-				
-				$('#emailExists').hide();
-
-			}
-			
-		});
-		
-	});
-	
-
-    });
-  
-  
-  
- /*Prevents a page redirection to the php page.*/
-$("#signupForm").submit(function(event){
-		
-  return false;
-});
- 
-    
- $('#submitButton').click(function(){
-	    // Ajax post(url,data,callback function)
-	    var url = $('#signupForm').attr('action');
-	    var data = $('#signupForm :input').serializeArray();
-	    $.post(url,data,function (info){ 
-		clearInput(); 
-		displayConfirmation();
-
-	$('#emailConfirm').keyup(function(){
-		
-		var url = "emailExists.php";
-		var email = $(this).val();
-		var data = {
-			
-			'email': email
-		}
-		
-		$.post(url,data,function(info){
-			
-			if(info == "true"){
-
-				$('#signupForm').data('bootstrapValidator').updateStatus('emailConfirm', 'INVALID');
-				$('#emailExistsC').show();
-
-			}else{
-				$('#emailExistsC').hide();
-
-			}
-			
-		});
-		
-
 	});
 
 }); /* End on ready function */
@@ -298,13 +229,14 @@ function emailExists(){
 			$.post(url,data,function(info){
 				
 				if(info == "true"){
-
-					$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');				
+					
+					$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');
+					
 					$('#emailExists').show();
 				}else{
 					
 					$('#emailExists').hide();
-
+					validate('email');
 				}
 				
 			});
@@ -315,6 +247,7 @@ function emailExistsC(){
 		
 		var url = "emailExists.php";
 		var email = $(this).val();
+		
 		var data = {
 			
 			'email': email
@@ -323,13 +256,14 @@ function emailExistsC(){
 		$.post(url,data,function(info){
 			
 			if(info == "true"){
-
+				
 				$('#signupForm').data('bootstrapValidator').updateStatus('emailConfirm', 'INVALID');
 				$('#emailExistsC').show();
 
 			}else{
+				
 				$('#emailExistsC').hide();
-
+				validate('email');
 			}
 			
 		});

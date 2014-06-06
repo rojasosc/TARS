@@ -15,6 +15,8 @@
 		<link href="staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="fileinput.js"></script>
+		<script src="newTerm.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -76,7 +78,42 @@
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron">
-		
+						<div id="formBox">
+							<form action="#" class="form-horizontal" id="newTermForm" method="post">
+								<legend>New Term</legend>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label class="control-label" for="termName">Specify Term</label>
+											<select id="classYear" name="termName" class="form-control">
+												<option>Summer-2014</option>
+												<option>Fall-2014</option>
+												<option>Spring-2015</option>
+												<option>Summer-2015</option>
+												<option>Fall-2015</option>
+											</select> <!-- End select -->										
+										</div> <!-- End form-group -->
+									</div> <!-- End column -->
+									<div class="col-md-4">
+										<div class="form-group"> 
+											<label class="control-label" for="termFile">Choose File</label><br>
+											<input type="file" title="Browse" name="termFile" data-filename-placement="inside">													
+										</div> <!-- End form-group -->							
+									</div>	<!-- End column -->									
+								</div> <!-- End row -->
+								<br>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<button id="submitButton" type="submit"  name="updateButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Create Term</button>													
+										</div> <!-- End form-group -->							
+									</div>	<!-- End column -->
+									<div class="col-md-12">
+										<p>Use this form to upload a new term using an XML file.
+										Once you have uploaded the file, you can make <a href="modifyTerm.php">modifications</a> to the new term</p>			
+									</div> <!-- End column -->													
+								</div> <!-- End row -->
+							</form> <!-- End form -->													
 					</div> <!-- End jumbotron -->
 				</div> <!-- End container -->
 			</div>
@@ -107,6 +144,5 @@
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

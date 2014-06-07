@@ -2,7 +2,7 @@
     include('staffSession.php');
 ?>
 
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -219,7 +219,7 @@
 												
 												$students = getUnverifiedStudents();
 												$tableEntry = 0;
-											if($students != NULL) {
+												if($students != NULL) {
 												foreach($students as $student){
 													$buttonGroupName = "action" . $tableEntry;
 													$myProfileID = "myProfile". $student['studentID'];

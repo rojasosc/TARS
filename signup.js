@@ -4,6 +4,7 @@ $(document).ready(function () {
 	$('#emailExistsC').hide();
 	
 	
+	
 	/* listens for any change in the email fields */
 	$('#email').bind('keyup',emailExists);
 	$('#emailConfirm').bind('keyup',emailExistsC);
@@ -75,9 +76,6 @@ $(document).ready(function () {
 			emailAddress: {
 				message: 'Your input is not a valid email address'
 			}
-
-			
-
 			}
 		
 		},
@@ -221,9 +219,10 @@ function emailExists(){
 				
 				if(info == "true"){
 					
-					$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');
-					
+					$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');				
 					$('#emailExists').show();
+					
+
 				}else{
 					
 					$('#emailExists').hide();
@@ -247,12 +246,13 @@ function emailExistsC(){
 		$.post(url,data,function(info){
 			
 			if(info == "true"){
+				valid = true;
+					$('#signupForm').data('bootstrapValidator').updateStatus('emailConfirm', 'INVALID');
+					$('#emailExistsC').show();
 				
-				$('#signupForm').data('bootstrapValidator').updateStatus('emailConfirm', 'INVALID');
-				$('#emailExistsC').show();
 
 			}else{
-				
+				valid = false;
 				$('#emailExistsC').hide();
 				validate('emailConfirm');
 			}

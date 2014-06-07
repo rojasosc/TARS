@@ -16,6 +16,7 @@
 		<link href="modifyTerm.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="modifyTerm.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -75,60 +76,50 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
+			
 				<div class="container">
-					<div class="jumbotron">
-						<div id="formBox">
-							<form action="#" class="form-horizontal" id="newTermForm" method="post">
-								<legend>Modify Term</legend>
-								<div class="row">
-									<div class="col-md-4">
-										<div class="form-group">
-											<label class="control-label" for="termName">Select Term</label>
-											<select id="classYear" name="termName" class="form-control">
-												<option>Summer-2014</option>
-												<option>Fall-2014</option>
-												<option>Spring-2015</option>
-												<option>Summer-2015</option>
-												<option>Fall-2015</option>
-											</select> <!-- End select -->										
-										</div> <!-- End form-group -->
-									</div> <!-- End column -->									
-								</div> <!-- End row -->
-							</form> <!-- End form -->													
-					</div> <!-- End jumbotron -->
-					<!-- Nav tabs -->
+					<form action="#" class="form-horizontal" id="newTermForm" method="post">		
+						<div class="row">		
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="control-label" for="termName">Select Term</label>
+									<select id="selectTerm" name="termName" class="form-control">
+										<option>Summer-2014</option>
+										<option>Fall-2014</option>
+										<option>Spring-2015</option>
+										<option>Summer-2015</option>
+										<option>Fall-2015</option>
+									</select> <!-- End select -->										
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->									
+						</div> <!-- End row -->
+					</form> <!-- End form -->
+				</div> <!-- End container -->
+				
+				<div class="container" id="termContainer">
+										<!-- Nav tabs -->
 					<ul class="nav nav-tabs">
-						<li class="active"><a href="#termOverview" data-toggle="tab">Term Overview</a></li>
+						<li class="active"><a href="#term" data-toggle="tab">Term Overview</a></li>
 						<li><a href="#manageCourses" data-toggle="tab">Manage Courses</a></li>
 						<li><a href="#managePositions" data-toggle="tab">Manage Positions</a></li>
 						<li><a href="#manageLocations" data-toggle="tab">Manage Locations</a></li>
 					</ul>
 
 					<!-- Tab panes -->
-					<div class="tab-content">
-						<div class="tab-pane fade in active" id="termOverview">
-							<div class="container">
-								<br>
-								<div class="row">
-									<div class="col-md-4">
-										<h4>Number of Courses:</h4>
-									</div> <!-- End column -->
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-md-4">
-										<h4>Number of Positions:</h4>
-									</div> <!-- End column -->
-								</div> <!-- End row -->	
-								<div class="row">
-									<div class="col-md-4">
-										<h4>Number of Locations:</h4>
-									</div> <!-- End column -->
-								</div> <!-- End row -->								
-							</div> <!-- end container -->
+					<div class="tab-content">	
+						<div class="tab-pane fade in active" id="term">
+							<br>		
+							<div class="container" id="termOverview">
+								<h3 class="termHeader"></h3>
+								<h4>Number of Courses: (Number)</h4>
+								<h4>Number of Positions: (Number)</h4>
+								<h4>Number of Locations: (Number)</h4>	
+							</div> <!-- End container -->
 						</div> <!-- end tab-pane -->
-						<div class="tab-pane fade " id="manageCourses">
+						<div class="tab-pane fade" id="manageCourses">
 							<div class="container">
 								<br>
+								<h3 class="termHeader"></h3>
 								<div class="row">
 									<div class="col-md-4">
 										<div class="form-group">
@@ -136,6 +127,7 @@
 											<select name="major" class="form-control" placeholder="Major">
 												<option>The Science of Data Structures</option>
 												<option>Computation and Formal Systems</option>
+												<option>Computer Organization</option>
 												<option>Web Programming</option>
 											</select> <!-- End select -->										
 										</div> <!-- End form-group -->
@@ -150,19 +142,16 @@
 											</select> <!-- End select -->										
 										</div> <!-- End form-group -->
 									</div> <!-- End column -->									
-								</div> <!-- End row -->
-								
-								<div class="row">
-									
-								</div> <!-- End row -->
-								
+								</div> <!-- End row -->							
 							</div> <!-- end container -->
 						</div> <!-- end tab-pane -->
-						<div class="tab-pane fade " id="managePositions">
+						<div class="tab-pane fade" id="managePositions">
+							<h3 class="termHeader"></h3>
 						</div> <!-- end tab-pane -->
 						<div class="tab-pane fade" id="manageLocations">
+							<h3 class="termHeader"></h3>
 						</div> <!-- end tab-pane -->
-					</div>					
+					</div>	<!-- end tab-content -->
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

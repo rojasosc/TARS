@@ -1,22 +1,6 @@
 $(document).ready(function () {
 	
-	$('#emailExists').hide();
-	$('#emailExistsC').hide();
-	
-	
-	
-	/* listens for any change in the email fields */
-	$('#email').bind('keyup',emailExists);
-	$('#emailConfirm').bind('keyup',emailExistsC);
-	$('#email').bind('input',emailExists);
-	$('#emailConfirm').bind('input',emailExistsC);
-	$('#email').bind('onpaste',emailExists);
-	$('#emailConfirm').bind('onpaste',emailExistsC);
-	$('#email').bind('oninput',emailExists);
-	$('#emailConfirm').bind('oninput',emailExistsC);
-	
-	
-	/*Attach a bootstrapValidator to the form*/	
+	/* Attach a bootstrapValidator to the form */	
 	$('#signupForm').bootstrapValidator({
 		message: 'This value is not valid',
 		feedbackIcons: {
@@ -38,15 +22,15 @@ $(document).ready(function () {
 			message: 'Your first name is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your first name is required and cannot be empty'
+				message: 'Your first name is required and can\'t be empty'
 			},
 			stringLength: {
-				min: 4,
+				min: 2,
 				max: 30,
-				message: 'Your first name must be between 4 and 30 characters long'
+				message: 'Your first name must be between 2 and 30 characters long'
 			},
 			regexp: {
-				regexp: /^[a-zA-Z]+$/,
+				regexp: /^[a-zA-Z0-9" "]+$/,
 				message: 'Your first name can only consist of alphabetical characters'
 			}
 			}
@@ -55,15 +39,15 @@ $(document).ready(function () {
 			message: 'Your last name is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your last name is required and cannot be empty'
+				message: 'Your last name is required and can\'t be empty'
 			},
 			stringLength: {
-				min: 4,
+				min: 2,
 				max: 30,
-				message: 'Your last name must be between 4 and 30 characters long'
+				message: 'Your last name must be between 2 and 30 characters long'
 			},
 			regexp: {
-				regexp: /^[a-zA-Z]+$/,
+				regexp: /^[a-zA-Z0-9" "]+$/,
 				message: 'Your last name can only consist of alphabetical characters'
 			}
 			}
@@ -71,23 +55,31 @@ $(document).ready(function () {
 		email: {
 			validators: {
 			notEmpty: {
-				message: 'Your email is required and cannot be empty'
+				message: 'Your email is required and can\'t be empty'
 			},
 			emailAddress: {
 				message: 'Your input is not a valid email address'
+			},
+			remote: {
+				message: 'This email is already in use',
+				url: 'emailExists.php'
 			}
-			}
-		
+			
+			}		
 		},
 		emailConfirm: {
 			validators: {
 			notEmpty: {
-				message: 'An email confirmation is required and cannot be empty'
+				message: 'An email confirmation is required and can\'t be empty'
 			},
 			emailAddress: {
 				message: 'Your input is not a valid email address'
 			},
-		    
+			remote: {
+				message: 'This email is already in use',
+				url: 'emailExists.php'
+				
+			},				    
 			identical: {
 				field: 'email',
 				message: 'Email addresses don\'t match'
@@ -99,7 +91,7 @@ $(document).ready(function () {
 			message: 'Your password is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your password is required and cannot be empty'
+				message: 'Your password is required and can\'t be empty'
 			},
 			stringLength: {
 				min: 6,
@@ -116,7 +108,7 @@ $(document).ready(function () {
 			message: 'Your password is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your password is required and cannot be empty'
+				message: 'Your password is required and can\'t be empty'
 			},
 			stringLength: {
 				min: 6,
@@ -139,7 +131,7 @@ $(document).ready(function () {
 			message: 'Your home phone is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your home phone is required and cannot be empty'
+				message: 'Your home phone is required and can\'t be empty'
 			},
 			stringLength: {
 				min: 10,
@@ -156,7 +148,7 @@ $(document).ready(function () {
 			message: 'Your mobile phone is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your mobile phone is required and cannot be empty'
+				message: 'Your mobile phone is required and can\'t be empty'
 			},
 			stringLength: {
 				min: 10,
@@ -173,7 +165,7 @@ $(document).ready(function () {
 			message: 'Your gpa is not valid',
 			validators: {
 			notEmpty: {
-				message: 'Your gpa is required and cannot be empty'
+				message: 'Your gpa is required and can\'t be empty'
 			},
 			stringLength: {
 				min: 3,
@@ -186,80 +178,19 @@ $(document).ready(function () {
 			}
 
 			}
-		}	    
-	
-		} /* close fields */
-		
-		
-	});
+		}	    	
+	} /* close fields */		
+});
 
 
 
-	/*Prevents a page redirection to the php page.*/
+	/* prevent a page redirection */
 	$("#signupForm").submit(function(event){
-			
+				
 		return false;
 	});
 	
-	
-
 }); /* End on ready function */
-
-/* Checks to see if the email is already in use and marks the field invalid */
-function emailExists(){
-			
-			var url = "emailExists.php";
-			var email = $(this).val();
-			var data = {
-				
-				'email': email
-			}
-			
-			$.post(url,data,function(info){
-				
-				if(info == "true"){
-					
-					$('#signupForm').data('bootstrapValidator').updateStatus('email', 'INVALID');				
-					$('#emailExists').show();
-					
-
-				}else{
-					
-					$('#emailExists').hide();
-					validate('email');
-				}
-				
-			});
-			
-	}
-	
-function emailExistsC(){
-		
-		var url = "emailExists.php";
-		var email = $(this).val();
-		
-		var data = {
-			
-			'email': email
-		}
-		
-		$.post(url,data,function(info){
-			
-			if(info == "true"){
-				valid = true;
-					$('#signupForm').data('bootstrapValidator').updateStatus('emailConfirm', 'INVALID');
-					$('#emailExistsC').show();
-				
-
-			}else{
-				valid = false;
-				$('#emailExistsC').hide();
-				validate('emailConfirm');
-			}
-			
-		});
-		
-	}
 
 /*Clears all the fields in the registration form*/
 function clearInput() {

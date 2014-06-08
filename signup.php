@@ -54,15 +54,15 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input id="email" type="email" class="form-control" name="email" placeholder="Email"/>
-										<small id="emailExists" class="help-block" style="">This email is already in use</small>
+										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email"/>
+										
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="emailConfirm">Re-Enter Email</label>
-										<input id="emailConfirm" type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
-										<small id="emailExistsC" class="help-block" style="">This email is already in use</small>				
+										<input type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
+														
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -144,7 +144,7 @@
 								</div> <!-- End column -->
 							</div> <!-- End row -->								
 						</form>
-					</div> <!-- End jumbotron -->
+					</div> <!-- End jumbotron -->			
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

@@ -75,6 +75,10 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div class="page-header">
+					<h1>Payroll</h1>
+				</div> <!-- End page-header -->
+			
 				<div class="container">
 					<div class="jumbotron" >
 						<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">

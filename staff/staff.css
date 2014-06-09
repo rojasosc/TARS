@@ -122,27 +122,44 @@ th,td {
 	
 }
 
-#termContainer{
+#termContainer {
 
-	background-color: #a2c2db; 
-	border-radius: 25px;
+	background-color: #011227; 
+	border-radius: 15px;
+	border: groove;
 	padding: 25px;
 	margin-bottom: 20px;
+	color: white;
 	
 	
 }
-
-a {
-	
-	color: black;
-}
-
 .nav-tabs p{
 	
 	font-weight: bold;
 	font-size: 20pt;
+	color: white;
+}
+
+#manageCourses legend{
+	
+	color: white;
+}
+
+table th{
+	
+	color: black;
+}
+
+tr:nth-child(even) {
+	background: #CCC;
 	
 }
+
+td{
+	
+	color: black;
+}
+
 
 
 /*

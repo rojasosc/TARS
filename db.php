@@ -319,7 +319,7 @@ final class Student extends User {
 		return Database::executeInsert($sql, $args);
 	}
 
-	public function updateProfile($firstName, $lastName, $homePhone, $mobilePhone,
+	public function updateProfile($firstName, $lastName, $mobilePhone,
 		$major, $classYear, $gpa, $aboutMe) {
 		$sql = 'UPDATE Students
 				INNER JOIN Users ON Users.ID = Students.userID

@@ -85,16 +85,16 @@ INSERT INTO `Professors` (`userID`, `officeID`, `officePhone`, `mobilePhone`) VA
 INSERT INTO `Staff` (`userID`, `officePhone`, `mobilePhone`) VALUES
 (15, 2147483647, 2147483647);
 
-INSERT INTO `Students` (`userID`, `homePhone`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `status`, `reputation`) VALUES
-(2, '4444444444', '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 2, 0),
-(3, '5857495590', '5857495590', 'Computer Science', '4.00', 2016, 'Took CSC 171 Fall 2012. Got an A', 2, 0),
-(4, '3222222223', '236777', 'Physics', '3.23', 2017, 'afsfsd', 2, 0),
-(5, '8992262788', '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.', 2, 0),
-(6, '8331222069', '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. ', 2, 0),
-(7, '8994231123', '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2, 0),
-(8, '8336587283', '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2, 0),
-(9, '8116908137', '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2, 0),
-(10, '8444006848', '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0);
+INSERT INTO `Students` (`userID`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `status`, `reputation`) VALUES
+(2, '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 2, 0),
+(3, '5857495590', 'Computer Science', '4.00', 2016, 'Took CSC 171 Fall 2012. Got an A', 2, 0),
+(4, '236777', 'Physics', '3.23', 2017, 'afsfsd', 2, 0),
+(5, '8557545870', 'Accounting', '1.24', 2016, 'Out interested acceptance our partiality affronting unpleasant why add. Esteem garden men yet shy course.', 2, 0),
+(6, '8330785816', 'Physics', '2.78', 2017, 'Consulted up my tolerably sometimes perpetual oh. Expression acceptance imprudence particular had eat unsatiable. ', 2, 0),
+(7, '8117746442', 'Mathematics', '2.03', 2018, 'In entirely be to at settling felicity. Fruit two match men you seven share.', 2, 0),
+(8, '8555274345', 'Economics', '2.55', 2017, 'Income joy nor can wisdom summer. Extremely depending he gentleman improving intention rapturous as.', 2, 0),
+(9, '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 2, 0),
+(10, '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 0, 0);
 
 INSERT INTO `Feedback` (`studentID`, `commenterID`, `dateTime`, `comment`) VALUES
 (3, 14, '2014-04-06 13:26:53', 'test post, please ignore');

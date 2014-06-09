@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `Users` (
 --
 CREATE TABLE IF NOT EXISTS `Students` (
   `userID` bigint(20) NOT NULL,
-  `homePhone` bigint(20) NOT NULL,
   `mobilePhone` bigint(20) NOT NULL,
   `major` varchar(75) NOT NULL,
   `gpa` decimal(10,2) NOT NULL,

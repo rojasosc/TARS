@@ -140,22 +140,22 @@ INSERT INTO `Teaches` (`courseID`, `professorID`) VALUES
 (6, 14);
 
 INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`) VALUES
-(1, 2, 'paid', 2, ''),
+(1, 2, 'pay', 2, ''),
 (2, 2, 'credit', 2, ''),
-(3, 2, 'paid', 2, ''),
-(5, 3, 'paid', 3, ''),
+(3, 2, 'pay', 2, ''),
+(5, 3, 'pay', 3, ''),
 (7, 3, 'credit', 3, ''),
-(14, 2, 'paid', 3, ''),
+(14, 2, 'pay', 3, ''),
 (19, 2, 'credit', 3, ''),
-(26, 3, 'paid', 3, ''),
+(26, 3, 'pay', 3, ''),
 (25, 3, 'credit', 3, ''),
-(18, 3, 'paid', 0, 'insta-approve!'),
-(30, 3, 'paid', 0, 'Let''s make sure this works.....'),
-(12, 3, 'paid', 0, 'triggerrrrrrrr!'),
-(8, 3, 'paid', 0, 'pls'),
-(9, 3, 'paid', 0, 'did i fix it?'),
-(3, 3, 'paid', 0, 'does it work in ff?'),
-(1, 3, 'paid', 0, 'this should work here.'),
-(2, 3, 'paid', 0, 'yo what up im on ff'),
-(4, 3, 'paid', 0, 'one last chance, chrome. before i fire you from the testing team.');
+(18, 3, 'pay', 0, 'insta-approve!'),
+(30, 3, 'pay', 0, 'Let''s make sure this works.....'),
+(12, 3, 'pay', 0, 'triggerrrrrrrr!'),
+(8, 3, 'pay', 0, 'pls'),
+(9, 3, 'pay', 0, 'did i fix it?'),
+(3, 3, 'pay', 0, 'does it work in ff?'),
+(1, 3, 'pay', 0, 'this should work here.'),
+(2, 3, 'pay', 0, 'yo what up im on ff'),
+(4, 3, 'pay', 0, 'one last chance, chrome. before i fire you from the testing team.');
 

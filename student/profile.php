@@ -3,8 +3,8 @@
 	if(!empty($_POST)) {
 		updateProfile($email, $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'], $_POST['gpa'], $_POST['qual-hist']);
 		$student = getStudent($email);
-		$fn = $student['firstName'];
-		$ln = $student['lastName'];
+		$fn = $student->getFirstName();
+		$ln = $student->getLastName();
 		$brand = $fn[0].". ".$ln;
 	}
 ?>

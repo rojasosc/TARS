@@ -124,12 +124,12 @@ th,td {
 
 #termContainer {
 
-	background-color: #011227; 
+	background-color: #C9E1C1; 
 	border-radius: 15px;
 	border: groove;
 	padding: 25px;
 	margin-bottom: 20px;
-	color: white;
+	color: black;
 	
 	
 }
@@ -137,12 +137,12 @@ th,td {
 	
 	font-weight: bold;
 	font-size: 20pt;
-	color: white;
+	color: #3c763d;
 }
 
 #manageCourses legend{
 	
-	color: white;
+	color: black;
 }
 
 table th{
@@ -160,6 +160,16 @@ td{
 	color: black;
 }
 
+
+#search{
+	
+	float:left;
+	width: 25%;
+	border-right-style: solid;
+	border-right-color: #3C763D;
+	padding: 10px;	
+	
+}
 
 
 /*

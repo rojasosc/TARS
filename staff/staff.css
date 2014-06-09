@@ -124,7 +124,6 @@ th,td {
 
 #termContainer {
 
-	background-color: #C9E1C1; 
 	border-radius: 15px;
 	border: groove;
 	padding: 25px;
@@ -171,6 +170,60 @@ td{
 	
 }
 
+
+#results{
+	
+	float:right;
+	width: 75%;
+	
+}
+
+
+.pagination{
+	
+	text-align: center;
+	margin: auto;
+	font-weight: bold;
+	
+}
+
+#navTabs{
+	
+	float:left;
+	width: 25%;
+	border-right-style: solid;
+	border-right-color: #3C763D;
+	padding: 10px;		
+}
+
+#editTermForms{
+
+	float:right;
+	width: 75%;		
+}
+
+#navTabs li {
+	margin: 10px;
+	margin-left: 0;
+	background-color: #334d6c;
+	border-radius: 10px;
+}
+
+#navTabs li:hover {
+	margin: 10px;
+	margin-left: 0;	
+	border-radius: 10px;
+}
+
+#navTabs a {
+	
+	color: white;
+}
+
+#navTabs a:hover {
+	
+	color: black;
+}
 
 /*
  * Everything below is NavBar coloring

@@ -183,7 +183,7 @@
 											<li><a href="editProfessor.php">Edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
-									<li class="dropdown">
+									<li class="dropdown active">
 										<a href="manageStudents.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Students<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="editStudent.php">Edit Account</a></li>

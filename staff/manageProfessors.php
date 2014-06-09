@@ -42,20 +42,20 @@
 										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="newTerm.php">New Term</a></li>
-											<li><a href="modifyTerm.php">Modify Term</a></li>
+											<li><a href="editTerm.php">edit Term</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
 										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="createProfessor.php">New Account</a></li>
-											<li><a href="modifyProfessor.php">Modify Account</a></li>
+											<li><a href="editProfessor.php">edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
 										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Assistants<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="modifyStudent.php">Modify Account</a></li>
+											<li><a href="editStudent.php">edit Account</a></li>
 											<li><a href="verifyStudents.php">Screen Students</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->

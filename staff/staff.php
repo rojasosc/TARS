@@ -41,26 +41,26 @@
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li class="active"><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li class="dropdown">
 										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="newTerm.php">New Term</a></li>
-											<li><a href="modifyTerm.php">Modify Term</a></li>
+											<li><a href="editTerm.php">Edit Term</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
 										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="createProfessor.php">New Account</a></li>
-											<li><a href="modifyProfessor.php">Modify Account</a></li>
+											<li><a href="editProfessor.php">Edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
-										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Assistants<b class="caret"></b></a>
+										<a href="manageStudents.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Students<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="modifyStudent.php">Modify Account</a></li>
-											<li><a href="verifyStudents.php">Screen Students</a></li>
+											<li><a href="editStudent.php">Edit Account</a></li>
+											<li><a href="reviewStudents.php">Review Students</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>

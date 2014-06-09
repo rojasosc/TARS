@@ -11,9 +11,9 @@
 
 /* Database login credentials */
 const DATABASE_PATH = 'localhost';
-const DATABASE_USERNAME = 'tars';
-const DATABASE_PASSWORD = 'bCb3AnME3LTHTrcm';
-const DATABASE_NAME = 'tars';
+const DATABASE_USERNAME = 'root';
+const DATABASE_PASSWORD = '1234';
+const DATABASE_NAME = 'TARS';
 const DATABASE_TYPE = 'mysql';
 
 const STUDENT = 0;
@@ -298,6 +298,17 @@ final class Student extends User {
 		}
 	}
 
+	public function getApplications($status) {
+		$sql = 'SELECT * FROM Assistantship
+				INNER JOIN Positions ON Positions.ID = Assistantship.positionID
+				INNER JOIN Courses ON Courses.ID = Positions.courseID
+				WHERE studentID = :student_id AND appStatus = :status
+				ORDER BY department DESC, courseNumber ASC';
+		$args = array(':student_id' => $this->id, ':status' => $status);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Applicant($row); }, $rows);
+	}
+
 	public function getHomePhone() { return $this->homePhone; }
 	public function getMobilePhone() { return $this->mobilePhone; }
 	public function getMajor() { return $this->major; }
@@ -328,7 +339,7 @@ final class Professor extends User {
 			(:id, :officeID, :officePhone, :mobilePhone)',
 			array(':id' => $userID, ':officeID' => $officeID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
-	}
+		}
 
 	public function __construct($user_row, $professor_row) {
 		parent::__construct($user_row);
@@ -340,6 +351,18 @@ final class Professor extends User {
 			$this->mobilePhone = $professor_row['mobilePhone'];
 		}
 	}
+
+	public function getCourses() {
+		$sql = 'SELECT Courses.ID, Courses.CRN, Courses.department, Courses.courseNumber,
+					Courses.courseTitle, Courses.website, Courses.termID
+				FROM Courses, Teaches
+				WHERE Courses.ID = Teaches.courseID AND Teaches.professorID = :prof_id
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		$args = array(':prof_id' => $this->id);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Course($row); }, $rows);
+	}
+
 
 	public function getOffice() {
 		if ($this->office = null) {
@@ -398,11 +421,35 @@ final class Position {
 		return new Position($row);
 	}
 
-	public static function getTotalPositions($prof_obj, $course_obj) {
-		$sql = 'SELECT COUNT(*) FROM Positions
-				WHERE professorID = :prof_id AND courseID = :course_id';
-		return Database::executeGetScalar($sql,
-			array(':prof_id' => $prof_obj->getID(), ':course_id' => $course_obj->getID()));
+	public static function findPositions($search_field, $term = -1, $position_type = null) {
+		$sql = 'SELECT * FROM Positions
+				INNER JOIN Courses ON Positions.courseID = Courses.ID
+				WHERE ';
+		$args = array();
+		if (!empty($search_field)) {
+			$i = 1;
+			foreach (explode(' ', $search_field) as $word) {
+				$sql .= "(Courses.department = :word$i OR Courses.courseNumber = :word$i OR
+					INSTR(Courses.courseTitle, :word$i)) AND ";
+				$args[":word$i"] = $word;
+				$i++;
+			}
+		}
+		if ($term >= 0) {
+			$sql .= 'termID = :term AND ';
+			$args[':term'] = $term;
+		}
+		// TODO: implement position_type
+		//if ($position_type != null) {
+		//	$sql .= 'posType = :posType AND ';
+		//	$args[':posType'] = $position_type;
+		//}
+		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		//echo '<pre>';
+		//print_r($args);
+		//exit($sql);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Position($row); }, $rows);
 	}
 
 	private function __construct($row) {
@@ -440,7 +487,9 @@ final class Position {
 	private $posType;
 }
 
+// TODO: a better name to describe this than Applicant and Assistantship is "Application"
 final class Applicant {
+	// TODO: this should be in relation to the Applicant database object instead of Position
 	public static function setPositionStatus($student, $position, $status) {
 		$sql = 'UPDATE Assistantship
 				SET appStatus = :status
@@ -541,28 +590,49 @@ final class Applicant {
 	private $qualifications;
 }
 
+final class Term {
+	public static function getTermByID($id) {
+		$sql = 'SELECT * FROM Terms WHERE ID = :id';
+		$args = array(':id' => $id);
+		$row = Database::executeGetRow($sql, $args);
+		return new Term($row);
+	}
+
+	public static function getAllTerms() {
+		$sql = 'SELECT * FROM Terms ORDER BY year, session';
+		$rows = Database::executeGetAllRows($sql, array());
+		return array_map(function ($row) { return new Term($row); }, $rows);
+	}
+
+	public function __construct($row) {
+		$this->id = $row['ID'];
+		$this->year = $row['year'];
+		$this->session = $row['session'];
+	}
+
+	public function getID() { return $this->id; }
+	public function getYear() { return $this->year; }
+	public function getSession() { return $this->session; }
+	public function toString() {
+		return ucfirst($this->session).' '.$this->year;
+	}
+
+	private $id;
+	private $year;
+	private $session;
+}
+
 final class Course {
 	public static function getCourseByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Courses WHERE ID = :id',
-			array(':id' => $id));
+		$sql = 'SELECT * FROM Courses WHERE ID = :id';
+		$args = array(':id' => $id);
+		$row = Database::executeGetRow($sql, $args);
 		return new Course($row);
 	}
 
-	public static function getCoursesByProfessor($prof_obj) {
-		$sql = 'SELECT Courses.ID, Courses.CRN, Courses.department, Courses.courseNumber,
-					Courses.courseTitle, Courses.website, Courses.termID
-				FROM Courses, Teaches
-				WHERE Courses.ID = Teaches.courseID AND Teaches.professorID = :prof_id
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
-		
-		$rows = Database::executeGetAllRows($sql, array(
-			':prof_id' => $prof_obj->getID()));
-		return array_map(function ($row) { return new Course($row); }, $rows);
-	}
-
-	private function __construct($row) {
+	public function __construct($row) {
 		$this->id = $row['ID'];
-		$this->crn = $row['CRN'];
+		$this->crn = $row['crn'];
 		$this->department = $row['department'];
 		$this->courseNumber = $row['courseNumber'];
 		$this->courseTitle = $row['courseTitle'];
@@ -570,6 +640,20 @@ final class Course {
 		$this->termID = $row['termID'];
 		$this->term = null;
 	}
+
+	public function getTotalPositions($prof = null) {
+		if ($prof == null) {
+			$sql = 'SELECT COUNT(*) FROM Positions
+				WHERE courseID = :course_id';
+			$args = array(':course_id' => $this->id);
+		} else {
+			$sql = 'SELECT COUNT(*) FROM Positions
+				WHERE professorID = :prof_id AND courseID = :course_id';
+			$args = array(':prof_id' => $prof->getID(), ':course_id' => $this->id);
+		}
+		return Database::executeGetScalar($sql, $args);
+	}
+
 
 	public function getID() { return $this->id; }
 	public function getCRN() { return $this->crn; }
@@ -809,7 +893,7 @@ function getCourses($email) {
 	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
 	if ($professor_obj) {
-		return Course::getCoursesByProfessor($professor_obj);
+		return $professor_obj->getCourses();
 	} else {
 		return array();
 	}
@@ -846,7 +930,7 @@ function countTotalPositions($email,$course_obj){
 	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
 	if ($professor_obj && $course_obj) {
-		Position::getTotalPositions($professor_obj, $course_obj);
+		$course_obj->getTotalPositions($professor_obj);
 	} else {
 		return 0;
 	}
@@ -911,25 +995,13 @@ function getCourseIDS($email){
 
 function studentPositions($email){
 
-	$connect = open_database();
-	
-	$studentID = getUserID($email);
-	
-	$sql = "SELECT *\n"
-		."FROM Positions\n"
-		."INNER JOIN Assistantship ON Positions.positionID = Assistantship.positionID\n"
-		."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
-		."INNER JOIN Place ON Course.placeID = Place.placeID\n"
-		."WHERE studentID = '$studentID' AND appStatus = ".APPROVED."\n"
-		."ORDER BY courseNumber ASC;";
-	
-	$result = mysqli_query($connect, $sql);
-	$positions = mysqli_fetch_all($result, MYSQLI_ASSOC);
-	
-	close_database($connect);
-	
-	return $positions;
+	$student = User::getUserByEmail($email);
 
+	if ($student) {
+		return $student->getApplications(APPROVED);
+	} else {
+		return array();
+	}
 }
 
 /* Function updateProfile
@@ -962,32 +1034,8 @@ function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $cla
 **/
 
 function search($search, $term, $type) {
-	$connect = open_database();
-	$sql = "SELECT *\n"
-		."FROM Positions\n"
-		."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
-		."INNER JOIN Professors ON Positions.professorID = Professors.professorID\n";
-	if(!is_null($search)) {
-		$search = strtoupper($search);
-		$search = preg_replace('/\s+/', '', $search);
-		$sql .= "WHERE courseNumber = '$search'\n";
-	}
-	if(is_null($term)) {
-		$term = CURRENT_TERM;
-	}
-	$sql .= "WHERE term = '$term'\n";
-	if(!is_null($type) && !strcmp($type, 'All')) {
-		$sql .="WHERE posType = '$type'\n";
-	}
-	$sql .="ORDER BY positionID";
 
-	$results = mysqli_query($connect, $sql);
-	if($results != false) {
-		$results = mysqli_fetch_all($results, MYSQLI_BOTH);
-	}
-	close_database($connect);
-	
-	return $results;
+	return Position::findPositions($search, $term, $type);
 }
 
 /* Function apply

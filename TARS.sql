@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `Courses` (
   `crn` bigint(20) NOT NULL,
   `department` varchar(10) NOT NULL,
   `courseNumber` varchar(10) NOT NULL,
-  `courseTitle` varchar(40) NOT NULL,
+  `courseTitle` varchar(80) NOT NULL,
   `website` varchar(40) NOT NULL,
   `termID` bigint(20) NOT NULL,
 

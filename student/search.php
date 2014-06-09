@@ -2,10 +2,12 @@
 include('studentSession.php');
 
 $search = isset($_POST['search']) ? $_POST['search'] : '';
-$term = isset($_POST['term']) ? $_POST['term'] : '';
-$type = isset($_POST['type']) ? $_POST['term'] : '';
+$term = isset($_POST['term']) ? $_POST['term'] : -1;
+$type = isset($_POST['type']) ? $_POST['term'] : null;
 
 $positions = search($search, $term, $type);
+
+$terms = Term::getAllTerms();
 ?>
 
 <!DOCTYPE html>
@@ -103,7 +105,7 @@ $positions = search($search, $term, $type);
 						<form role="form" method="post" id="application" action="appProcess.php">
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
-									<input type="hidden" value="<?= $student['studentID']?>" id="studentID"/>
+									<input type="hidden" value="<?= $student->getID()?>" id="studentID"/>
 									<label>
 										Compensation:
 										<select name="compensation" class="form-control" id="compensation">
@@ -183,10 +185,13 @@ $positions = search($search, $term, $type);
 									<div class="col-xs-3">
 										Term:
 										<select class="form-control" name="term">
-											<option value="20142" <?php if(strcmp($term, '20142') == 0){?>selected="selected"<?php }?>>Fall 2014</option>
-											<option value="20141" <?php if(strcmp($term, '20141') == 0){?>selected="selected"<?php }?>>Spring 2014</option>
-											<option value="20132" <?php if(strcmp($term, '20132') == 0){?>selected="selected"<?php }?>>Fall 2013</option>
-											<option value="20131" <?php if(strcmp($term, '20131') == 0){?>selected="selected"<?php }?>>Spring 2013</option>
+										<?php
+										foreach ($terms as $term_opt) {
+										?>
+											<option value="<?=$term_opt->getID()?>" <?php if($term == $term_opt->getID()){?>selected="selected"<?php }?>><?=$term_opt->toString()?></option>
+										<?php
+										}
+										?>
 										</select>
 									</div>
 									<div class="col-xs-3">
@@ -219,15 +224,17 @@ $positions = search($search, $term, $type);
 									</tr>
 									<?php
 										if($positions != false) {
-											foreach($positions as $rows) {
+											foreach($positions as $position) {
+												$course = $position->getCourse();
+												$professor = $position->getProfessor();
 									?>
 											<tr>
-												<td class="positionID"><?=$rows['positionID']?></td>
-												<td><?=$rows['courseNumber']?></td>
-												<td><?=$rows['courseTitle']?></td>
-												<td><?=$rows['firstName']." ".$rows['lastName']?></td>
-												<td><?=$rows['posType']?></td>
-												<td><?=$rows['time']?></td>
+												<td class="positionID"><?=$position->getID()?></td>
+												<td><?=$course->getDepartment()?><?=$course->getNumber()?></td>
+												<td><?=$course->getTitle()?></td>
+												<td><?=$professor->getFirstName()." ".$professor->getLastName()?></td>
+												<td><?=$position->getPositionType()?></td>
+												<td><?=$position->getTime()?></td>
 												<td>
 													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
 												</td>

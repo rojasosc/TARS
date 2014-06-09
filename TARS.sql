@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS Teaches;
 DROP TABLE IF EXISTS Feedback;
-DROP TABLE IF EXISTS Assistantship;
+DROP TABLE IF EXISTS Applications;
 DROP TABLE IF EXISTS Positions;
 DROP TABLE IF EXISTS CourseSessions;
 DROP TABLE IF EXISTS Sessions;
@@ -37,12 +37,12 @@ DROP TABLE IF EXISTS Places;
 -- Represents a place.
 --
 CREATE TABLE IF NOT EXISTS `Places` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `placeID` bigint(20) NOT NULL AUTO_INCREMENT,
   `building` varchar(30) NOT NULL,
   `room` varchar(30) NOT NULL,
   `roomType` varchar(30) NOT NULL,
 
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`placeID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
@@ -51,14 +51,14 @@ CREATE TABLE IF NOT EXISTS `Places` (
 -- Represents any users in the system
 --
 CREATE TABLE IF NOT EXISTS `Users` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `userID` bigint(20) NOT NULL AUTO_INCREMENT,
   `email` varchar(254) NOT NULL,
   `password` varchar(255) NOT NULL,
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
   `type` int(11) NOT NULL,
 
-  PRIMARY KEY (`ID`),
+  PRIMARY KEY (`userID`),
   UNIQUE KEY (`email`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `reputation` int(11) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`ID`)
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS `Professors` (
   `mobilePhone` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`ID`),
-  FOREIGN KEY (`officeID`) REFERENCES `Places` (`ID`)
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`),
+  FOREIGN KEY (`officeID`) REFERENCES `Places` (`placeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `Staff` (
   `mobilePhone` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`ID`)
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -117,11 +117,11 @@ CREATE TABLE IF NOT EXISTS `Staff` (
 -- Represents a term for a given course.
 --
 CREATE TABLE IF NOT EXISTS `Terms` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `termID` bigint(20) NOT NULL AUTO_INCREMENT,
   `year` year NOT NULL,
   `session` enum('spring','fall') NOT NULL,
 
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`termID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `Terms` (
 -- Represents a Course in the database.
 --
 CREATE TABLE IF NOT EXISTS `Courses` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `courseID` bigint(20) NOT NULL AUTO_INCREMENT,
   `crn` bigint(20) NOT NULL,
   `department` varchar(10) NOT NULL,
   `courseNumber` varchar(10) NOT NULL,
@@ -138,9 +138,9 @@ CREATE TABLE IF NOT EXISTS `Courses` (
   `website` varchar(40) NOT NULL,
   `termID` bigint(20) NOT NULL,
 
-  PRIMARY KEY (`ID`),
+  PRIMARY KEY (`courseID`),
   UNIQUE KEY (`crn`, `termID`),
-  FOREIGN KEY (`termID`) REFERENCES `Terms` (`ID`)
+  FOREIGN KEY (`termID`) REFERENCES `Terms` (`termID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -150,12 +150,12 @@ CREATE TABLE IF NOT EXISTS `Courses` (
 -- There may be multiple of these for a course.
 --
 CREATE TABLE IF NOT EXISTS `Sessions` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sessionID` bigint(20) NOT NULL AUTO_INCREMENT,
   `weekday` enum('M','T','W','R','F','S','U') NOT NULL,
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
 
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`sessionID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -169,10 +169,10 @@ CREATE TABLE IF NOT EXISTS `CourseSessions` (
   `sessionID` bigint(20) NOT NULL,
   `placeID` bigint(20) NOT NULL,
 
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`ID`),
-  FOREIGN KEY (`sessionID`) REFERENCES `Sessions` (`ID`),
-  FOREIGN KEY (`placeID`) REFERENCES `Places` (`ID`)
+  PRIMARY KEY (`courseSessionID`),
+  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
+  FOREIGN KEY (`sessionID`) REFERENCES `Sessions` (`sessionID`),
+  FOREIGN KEY (`placeID`) REFERENCES `Places` (`placeID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -181,14 +181,14 @@ CREATE TABLE IF NOT EXISTS `CourseSessions` (
 -- Represents a position that a TA can fill.
 --
 CREATE TABLE IF NOT EXISTS `Positions` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `positionID` bigint(20) NOT NULL AUTO_INCREMENT,
   `courseID` bigint(20) NOT NULL,
   `professorID` bigint(20) NOT NULL,
   `time` varchar(40) NOT NULL,
   `posType` varchar(40) NOT NULL,
 
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`ID`),
+  PRIMARY KEY (`positionID`),
+  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
   FOREIGN KEY (`professorID`) REFERENCES `Professors` (`userID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
@@ -197,17 +197,17 @@ CREATE TABLE IF NOT EXISTS `Positions` (
 --
 -- Represents an application made by a student
 --
-CREATE TABLE IF NOT EXISTS `Assistantship` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `Applications` (
+  `appID` bigint(20) NOT NULL AUTO_INCREMENT,
   `positionID` bigint(20) NOT NULL,
   `studentID` bigint(20) NOT NULL,
   `compensation` enum('pay','credit') NOT NULL,
   `appStatus` int(11) NOT NULL,
   `qualifications` varchar(511) NOT NULL,
 
-  PRIMARY KEY (`ID`),
+  PRIMARY KEY (`appID`),
   UNIQUE KEY (`positionID`, `studentID`),
-  FOREIGN KEY (`positionID`) REFERENCES `Positions` (`ID`),
+  FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`),
   FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -217,15 +217,15 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
 -- Represents feedback comments.
 --
 CREATE TABLE IF NOT EXISTS `Feedback` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `feedbackID` bigint(20) NOT NULL AUTO_INCREMENT,
   `studentID` bigint(20) NOT NULL,
   `commenterID` bigint(20) NOT NULL,
   `dateTime` datetime NOT NULL,
   `comment` varchar(511) NOT NULL,
 
-  PRIMARY KEY (`ID`),
+  PRIMARY KEY (`feedbackID`),
   FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`),
-  FOREIGN KEY (`commenterID`) REFERENCES `Users` (`ID`)
+  FOREIGN KEY (`commenterID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -234,12 +234,12 @@ CREATE TABLE IF NOT EXISTS `Feedback` (
 -- Represents the relationship between Courses and Professors.
 --
 CREATE TABLE IF NOT EXISTS `Teaches` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `teachID` bigint(20) NOT NULL AUTO_INCREMENT,
   `courseID` bigint(20) NOT NULL,
   `professorID` bigint(20) NOT NULL,
 
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`ID`),
+  PRIMARY KEY (`teachID`),
+  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
   FOREIGN KEY (`professorID`) REFERENCES `Professors` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

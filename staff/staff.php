@@ -80,7 +80,7 @@
 				<div class="container">
 					<div class="jumbotron">
 						<h2 class="welcome">Welcome <?= $fn ?>!</h2>					
-						<h3>Notifications</h3> 
+						<h3><span class="glyphicon glyphicon-warning-sign"></span> Notifications</h3> 
 							<p>You have <?= $totalUnverified ?> <a href="verifyStudents.php">students</a> that need to be verified.</p>
 							<p>(name) has dropped out of his assistantship.</p>
 							<p>(name) has replaced (name) in (course) as a (type).</p>

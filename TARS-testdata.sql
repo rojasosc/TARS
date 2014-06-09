@@ -149,7 +149,6 @@ INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `appStat
 (19, 2, 'credit', 3, ''),
 (26, 3, 'paid', 3, ''),
 (25, 3, 'credit', 3, ''),
-(7, 3, 'paid', 0, 'IT''S GOING TO WORK NOW, RIGHT?!'),
 (18, 3, 'paid', 0, 'insta-approve!'),
 (30, 3, 'paid', 0, 'Let''s make sure this works.....'),
 (12, 3, 'paid', 0, 'triggerrrrrrrr!'),

@@ -279,7 +279,7 @@ final class Student extends User {
 
 		return Database::executeInsert('INSERT INTO Students
 			(userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
-			(:id, :homePhone, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
+			(:id, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
 			array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
 				  ':major' => $major, ':gpa' => $gpa,
 				  ':classYear' => $classYear, ':aboutMe' => $aboutMe));
@@ -822,7 +822,7 @@ function emailExists($email){
 ********************/
 
 
-function registerStudent($firstName, $lastName,$email,$password,$homePhone,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
+function registerStudent($firstName, $lastName,$email,$password,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
 
 	/* Note: $password does not require database escaping; it is not being put in the database.
 	 *       Only the result of password_hash() is, and that is escaped by being a parameter

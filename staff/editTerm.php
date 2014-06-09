@@ -79,26 +79,12 @@
 					<div class="row">
 						<h1>Edit Term</h1>
 					</div> <!-- End row -->
-						<!-- Nav tabs -->
-					<ul class="nav nav-tabs">
-						<li class="active"><a href="#term" data-toggle="tab">Term Overview</a></li>
-						<li><a href="#manageCourses" data-toggle="tab">Manage Courses</a></li>
-						<li><a href="#managePositions" data-toggle="tab">Manage Positions</a></li>
-						<li class="navbar-right"><p class="termHeader"></p></li>
-
-					</ul> <!-- End Nav tabs -->
-					<!-- Tab panes -->
-					<br>
-					<div class="tab-content">
-						
-						<!-- Begin Term Overview Pane -->
-						<div class="tab-pane fade in active" id="term">
-							<br>
-							<div class="container">
+					
+					<div class="container" id="navTabs">
 								<form action="#" class="form-horizontal" id="newTermForm" method="post">		
 									<div class="row">		
-										<div class="col-md-4">
-											<div class="form-group">
+										<div class="col-md-12">
+											
 												<label class="control-label" for="termName">Select Term</label>
 												<select id="selectTerm" name="termName" class="form-control">
 													<option>Summer-2014</option>
@@ -107,10 +93,27 @@
 													<option>Summer-2015</option>
 													<option>Fall-2015</option>
 												</select> <!-- End select -->										
-											</div> <!-- End form-group -->
+									
 										</div> <!-- End column -->									
 									</div> <!-- End row -->
-								</form> <!-- End form -->
+								</form> <!-- End form -->	
+						<!-- Nav tabs -->
+						<ul class="nav nav-stacked">
+							<li class="active"><a href="#term" data-toggle="tab">Term Overview</a></li>
+							<li><a href="#manageCourses" data-toggle="tab">Manage Courses</a></li>
+							<li><a href="#managePositions" data-toggle="tab">Manage Positions</a></li>
+						</ul> 
+						<!-- End Nav tabs -->					
+					</div> <!-- End container -->		
+					<div class="container" id="editTermForms">
+					<div class="tab-content">
+						
+						<!-- Begin Term Overview Pane -->
+						<div class="tab-pane fade in active" id="term">
+							<br>
+							<div class="container">
+
+								
 							</div> <!-- End container -->							
 							<div class="container" id="termOverview">
 								<h4>Number of Courses: (Number)</h4>
@@ -351,19 +354,20 @@
 									</table>									
 									</div> <!-- End column -->
 								</div> <!-- End row -->
-												<div class="row">
-													<div class="col-md-2">
-														<button id="updateCourseButton" type="submit"  name="updateCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add Grader</button>
-													</div> <!-- End column -->
-													<div class="col-md-2 col-md-offset-2">
-														<button id="removeCourseButton" type="submit"  name="removeCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add Lab TA</button>
-													</div> <!-- End column -->
-													<div class="col-md-2 col-md-offset-2">
-														<button id="removeCourseButton" type="submit"  name="removeCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add WL</button>
-													</div> <!-- End column -->														
-												</div> <!-- End row -->									
+								<div class="row">
+									<div class="col-md-2">
+										<button id="updateCourseButton" type="submit"  name="updateCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add Grader</button>
+									</div> <!-- End column -->
+									<div class="col-md-2 col-md-offset-2">
+										<button id="removeCourseButton" type="submit"  name="removeCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add Lab TA</button>
+									</div> <!-- End column -->
+									<div class="col-md-2 col-md-offset-2">
+										<button id="removeCourseButton" type="submit"  name="removeCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add WL</button>
+									</div> <!-- End column -->														
+								</div> <!-- End row -->									
 						</div> <!-- end tab-pane -->
-					</div>	<!-- end tab-content -->
+					</div>	<!-- end tab-content -->					
+					</div> <!-- End editTermForms container -->
 				</div> <!-- End container -->						
 			</div>
 			<!-- END Page Content --> 

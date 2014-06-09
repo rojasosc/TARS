@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS `Assistantship` (
   `qualifications` varchar(511) NOT NULL,
 
   PRIMARY KEY (`ID`),
+  UNIQUE KEY (`positionID`, `studentID`),
   FOREIGN KEY (`positionID`) REFERENCES `Positions` (`ID`),
   FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

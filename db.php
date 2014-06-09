@@ -26,7 +26,9 @@ const STAFF_VERIFIED = 1;
 const REJECTED = 2;
 const APPROVED = 3;
 
-const CURRENT_TERM = 20142;
+// TODO: use a configurable option or something
+// 2 is internal ID of current Term row/object (fall 2014) in TARS-testdata.sql
+const CURRENT_TERM = 2;
 
 /******************
 *DATABASE UTILITIES
@@ -309,6 +311,29 @@ final class Student extends User {
 		return array_map(function ($row) { return new Applicant($row); }, $rows);
 	}
 
+	public function apply($position, $compensation, $qualifications) {
+		$sql = 'INSERT INTO Assistantship
+				(positionID, studentID, compensation, appStatus, qualifications) VALUES
+				(:position, :student, :comp, :status, :qual)';
+		$args = array(':position' => $position->getID(), ':student' => $this->id,
+			':comp' => $compensation, ':qual' => $qualifications);
+		return Database::executeInsert($sql, $args);
+	}
+
+	public function updateProfile($firstName, $lastName, $homePhone, $mobilePhone,
+		$major, $classYear, $gpa, $aboutMe) {
+		$sql = 'UPDATE Students
+				INNER JOIN Users ON Users.ID = Students.userID
+				SET firstName = :firstName, lastName = :lastName, homePhone = :homePhone,
+					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
+					gpa = :gpa, aboutMe = :aboutMe
+				WHERE ID = :id';
+		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
+			':homePhone'=>$homePhone, ':mobilePhone'=>$mobilePhone, ':major'=>$major,
+			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
+		Database::execute($sql, $args);
+	}
+
 	public function getHomePhone() { return $this->homePhone; }
 	public function getMobilePhone() { return $this->mobilePhone; }
 	public function getMajor() { return $this->major; }
@@ -494,10 +519,9 @@ final class Applicant {
 		$sql = 'UPDATE Assistantship
 				SET appStatus = :status
 				WHERE studentID = :student_id AND positionID = :position_id';
-		Database::execute($sql, array(
-			':status' => $status,
-			':student_id' => $student->getID(),
-			':position_id' => $position->getID()));
+		$args = array(':status' => $status,	':student_id' => $student->getID(),
+			':position_id' => $position->getID());
+		Database::execute($sql, $args);
 	}
 
 	public static function getApplicantByID($id) {
@@ -512,20 +536,16 @@ final class Applicant {
 					Assistantship.compensation, Assistantship.appStatus,
 					Assistantship.qualifications
 				FROM Assistantship, Users, Courses, Positions, Students, Teaches
-				WHERE Users.ID = Assistantship.studentID AND
+				WHERE Assistantship.studentID = Users.ID AND
 					Assistantship.studentID = Students.userID AND
 					Assistantship.appStatus = :status AND
 					Assistantship.positionID = Positions.ID AND
 					Positions.courseID = Courses.ID AND
 					Teaches.courseID = Courses.ID AND
-					Users.type = :type_student AND
 					Teaches.professorID = :prof_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
-
-		$rows = Database::executeGetAllRows($sql, array(
-			':prof_id' => $prof_obj->getID(),
-			':status' => $app_status,
-			':type_student' => STUDENT));
+		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status);
+		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Applicant($row); }, $rows);
 	}
 
@@ -534,21 +554,34 @@ final class Applicant {
 					Assistantship.compensation, Assistantship.appStatus,
 					Assistantship.qualifications
 				FROM Assistantship, Users, Courses, Positions, Students, Teaches
-				WHERE Users.ID = Assistantship.studentID AND
+				WHERE Assistantship.studentID = Users.ID AND
 					Assistantship.studentID = Students.userID AND
 					Assistantship.appStatus = :status AND
 					Assistantship.positionID = Positions.ID AND
 					Positions.courseID = :course_id AND
 					Teaches.courseID = Courses.ID AND
-					Users.type = :type_student AND
 					Courses.ID = :course_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status,
+			':course_id' => $course_obj->getID());
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Applicant($row); }, $rows);
+	}
 
-		$rows = Database::executeGetAllRows($sql, array(
-			':prof_id' => $prof_obj->getID(),
-			':status' => $app_status,
-			':type_student' => STUDENT,
-			':course_id' => $course_obj->getID()));
+	public static function getApplicantsByTerm($term, $app_status, $compensation) {
+		$sql = 'SELECT *
+				FROM Assistantship, Positions, Courses, Students, Users
+				WHERE Assistantship.studentID = Users.ID AND
+					Assistantship.studentID = Students.userID AND
+					Courses.ID = Positions.courseID AND
+					Positions.ID = Assistantship.studentID AND
+					Assistantship.appStatus = :status AND
+					Assistantship.compensation = :compensation AND
+					Courses.termID = :termID
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		$args = array(':termID' => $term->getID(), ':status' => $app_status,
+			':compensation' => $compensation);
+		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Applicant($row); }, $rows);
 	}
 
@@ -918,7 +951,6 @@ function getFilledPositionsForCourse($email,$course_obj){
 	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
 	if ($professor_obj && $course_obj) {
-		// TODO: support both PENDING and STAFF_VERIFIED in DAL
 		return Applicant::getApplicantsByProfessorAndCourse($professor_obj, $course_obj, APPROVED);
 	} else {
 		return array();
@@ -995,7 +1027,7 @@ function getCourseIDS($email){
 
 function studentPositions($email){
 
-	$student = User::getUserByEmail($email);
+	$student = User::getUserByEmail($email, STUDENT);
 
 	if ($student) {
 		return $student->getApplications(APPROVED);
@@ -1009,23 +1041,14 @@ function studentPositions($email){
 *  Returns: absolutely nothing
 **/
 function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe){
-	$connect = open_database();
-	
-	$firstName = mysqli_real_escape_string($connect, $firstName);
-	$lastName = mysqli_real_escape_string($connect, $lastName);
-	$mobilePhone = mysqli_real_escape_string($connect, $mobilePhone);
-	$major = mysqli_real_escape_string($connect, $major);
-	$classYear = mysqli_real_escape_string($connect, $classYear);
-	$gpa = mysqli_real_escape_string($connect, $gpa);
-	$aboutMe = mysqli_real_escape_string($connect, $aboutMe);
-	
-	$sql = "UPDATE Students\n"
-		."INNER JOIN Users ON Users.userID = Students.studentID\n"
-		."SET firstName = '$firstName', lastName = '$lastName', mobilePhone = '$mobilePhone', major = '$major', classYear = '$classYear', gpa = '$gpa', aboutMe = '$aboutMe'\n"
-		."WHERE email = '$email';";
-	mysqli_query($connect, $sql);
-	
-	close_database($connect);
+	$student = User::getUserByEmail($email, STUDENT);
+
+	if ($student) {
+		$student->updateProfile($firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /* Function search
@@ -1044,16 +1067,12 @@ function search($search, $term, $type) {
 **/
 
 function apply($positionID, $studentID, $compensation, $qualifications) {
-	$connect = open_database();
-	$pID = mysqli_real_escape_string($connect, $positionID);
-	$sID = mysqli_real_escape_string($connect, $studentID);
-	$comp = mysqli_real_escape_string($connect, $compensation);
-	$qual = mysqli_real_escape_string($connect, $qualifications);
-	$sql = "INSERT IGNORE INTO Assistantship\n"
-		."(`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`)\n"
-		."VALUES ('$pID', '$sID', '$comp', '0', '$qual');";
-	mysqli_query($connect, $sql);
-	close_database($connect);
+	$student = User::getUserByID($studentID, STUDENT);
+	$position = Position::getPositionByID($positionID);
+
+	if ($student && $position) {
+		$student->apply($position, $compensation, $qualifications);
+	}
 }
 
 /***********************
@@ -1069,24 +1088,20 @@ function apply($positionID, $studentID, $compensation, $qualifications) {
 *  Purpose: 
 *  Returns: 
 **/
-function getPayrollByTerm($term){
-	
-	$conn = open_database();
-	
+function getPayrollByTerm($termID){
 
-	$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.classYear, Course.courseNumber, Positions.type, Assistantship.compensation\n"
-	. "FROM Users,Students,Course,Positions,Assistantship\n"
-	. "WHERE Students.studentID = Users.userID AND Students.studentID = Assistantship.studentID AND Course.courseID = Positions.courseID AND Positions.positionID = Assistantship.positionID AND Assistantship.status = ".APPROVED;
-	
-	$result = mysqli_query($conn,$sql);
-	$payroll = mysqli_fetch_all($result,MYSQLI_BOTH);
+	$term = Term::getTermByID($termID);
 
-	close_database($conn);
-	
-	return $payroll;
+	if ($term) {
+		return Applicant::getApplicantsByTerm($term, APPROVED, 'paid');
+	} else {
+		return array();
+	}
 }
 
 function getOffice($building,$room){
+
+	return new Place(array('id'=>-1,'building'=>$building,'room'=>$room,'roomType'=>'Office'));
 
 	$conn = open_database();
 	
@@ -1101,6 +1116,8 @@ function getOffice($building,$room){
 }
 
 function getUnverifiedStudents(){
+
+	return array();
 
 	$conn = open_database();
 	
@@ -1119,6 +1136,10 @@ function getUnverifiedStudents(){
 
 function totalAssistantCount(){
 
+	return 0;
+
+	//return Applicant::get
+
 	$conn = open_database();
 
 	$sql = "SELECT COUNT(*) FROM Students AS numberofStudents";
@@ -1133,6 +1154,8 @@ function totalAssistantCount(){
 
 function setStatus($studentID,$status){
 
+	return;
+
 	$conn = open_database();
 	
 	$sql = "UPDATE Students SET status = '$status' WHERE Students.studentID = '$studentID'";
@@ -1144,6 +1167,8 @@ function setStatus($studentID,$status){
 }
 
 function updateProfessor($firstName, $lastName, $email,$officePhone, $mobilePhone){
+
+	return;
 
 	$conn = open_database();
 	
@@ -1163,6 +1188,8 @@ function updateProfessor($firstName, $lastName, $email,$officePhone, $mobilePhon
 }
 
 function updateStudent($firstName, $lastName,$email,$homePhone,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
+
+	return;
 
 	$conn = open_database();
 			
@@ -1188,4 +1215,3 @@ function updateStudent($firstName, $lastName,$email,$homePhone,$mobilePhone,$cla
 * END STAFF FUNCTIONS
 *********************/
 
-?>

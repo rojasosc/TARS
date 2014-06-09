@@ -1,5 +1,5 @@
 <?php
-include('plugins/password_compat/password.php');
+	include('plugins/password_compat/password.php');
 /*******************************************
 *TARS- Teacher Assistant Registration System
 ********************************************/
@@ -7,13 +7,14 @@ include('plugins/password_compat/password.php');
 /******************
 *Database Interface
 *******************/
-
+		
 
 /* Database login credentials */
-const DATABASE_PATH = "localhost";
-const DATABASE_USERNAME = "root";
-const DATABASE_PASSWORD = "12345";
-const DATABASE_NAME = "TARS";
+const DATABASE_PATH = 'localhost';
+const DATABASE_USERNAME = 'tars';
+const DATABASE_PASSWORD = 'bCb3AnME3LTHTrcm';
+const DATABASE_NAME = 'tars';
+const DATABASE_TYPE = 'mysql';
 
 const STUDENT = 0;
 const PROFESSOR = 1;
@@ -27,120 +28,597 @@ const APPROVED = 3;
 
 const CURRENT_TERM = 20142;
 
-
 /******************
 *DATABASE UTILITIES
 *******************/	
 
-/**
-* Function: open_database
-* Purpose: Obtains an object representation of the database.
-* Parameters: None.
-* Returns: nothing.
-*/
-function open_database(){
+/*
+ * Databse Object: Utility class to connect to and query the database using PDO.
+ */
+final class Database {
+	private static $db_conn = null;
 
-/** Obtain an object representation of the database */
-$conn = mysqli_connect(DATABASE_PATH,DATABASE_USERNAME,DATABASE_PASSWORD,DATABASE_NAME) or die("Error " . mysqli_error($conn));
+	/**
+	 * Database::connect()
+	 * Purpose: Connects to the database using PDO and sets $db_conn.
+	 *
+	 * This terminates the script with an echo on failure, since throwing an
+	 * exception is a security risk (the stacktrace will contain the database credentials).
+	 *
+	 * Call this ONLY ONCE, because we want to promote persistant database connections, which
+	 * can be cached by PDO.
+	 */
+	public static function connect() {
 
-return $conn;
+		$db_dsn = DATABASE_TYPE.':host='.DATABASE_PATH.';dbname='.DATABASE_NAME;
+
+		try {
+			/** Obtain a persistant object representation of the database */
+			Database::$db_conn = new PDO($db_dsn, DATABASE_USERNAME, DATABASE_PASSWORD);
+			Database::$db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		} catch (PDOException $ex) {
+			echo "PDO connection error: " . $ex->getMessage() . "<br/>\n";
+			exit;
+		}
+
+	}
+
+	/**
+	 * Database::executeStatement($sql, $args)
+	 * Purpose: Prepares and executes a statement with the specified arguments.
+	 * Returns: The statement object, for fetching.
+	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 */
+	public static function execute($sql, $args) {
+		/* prepare statement: throws PDOException on error */
+		$stmt = Database::$db_conn->prepare($sql);
+
+		/* execute statement: throws PDOException on error */
+		$stmt->execute($args);
+
+		return $stmt;
+	}
+
+	/**
+	 * Database::executeGetRow($sql, $args)
+	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
+	 *          Gets a row of the database.
+	 * Returns: The row requested, or FALSE if no rows returned
+	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 */
+	public static function executeGetRow($sql, $args) {
+		/* create and execute the statement object */
+		$stmt = Database::execute($sql, $args);
+
+		/* fetch result: return first row, or null */
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		if ($result === null) {
+			/* empty result set */
+			return false;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Database::executeGetAllRows($sql, $args)
+	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
+	 *          Gets all selected rows of the database.
+	 * Returns: The rows requested
+	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 */
+	public static function executeGetAllRows($sql, $args) {
+		/* create and execute the statement object */
+		$stmt = Database::execute($sql, $args);
+
+		/* fetch result: return array of all rows */
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * Database::executeGetScalar($sql, $args)
+	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
+	 *          Gets a single cell/value (scalar) from the database.
+	 * Returns: The scalar requested, or FALSE if no rows returned
+	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 */
+	public static function executeGetScalar($sql, $args) {
+		/* create and execute the statement object */
+		$stmt = Database::execute($sql, $args);
+
+		/* fetch result: return first row, or null */
+		$result = $stmt->fetch(PDO::FETCH_NUM);
+		if ($result === null) {
+			/* empty result set */
+			return false;
+		}
+
+		return $result[0];
+	}
+
+	/**
+	 * Database::executeInsert($sql, $args)
+	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
+	 *          Gets the inserted ID
+	 * Returns: The last ID generated for an AUTO_INCREMENT column; the ID of the column inserted.
+	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 * Note: Yes, you can run non-INSERT queries with this.
+	 *       It's silly to though, as why else do you need the last ID inserted?
+	 */
+	public static function executeInsert($sql, $args) {
+		/* create and execute the statement object */
+		Database::execute($sql, $args);
+
+		/* get the inserted ID */
+		return Database::$db_conn->lastInsertId();
+	}
+
 }
 
 
-/**
-* Function: close_database();
-* Purpose: Closes the existing connection to the database.
-* Parameters: None.
-* Returns: Nothing.
-*/
-function close_database($conn){
+final class Place {
+	public static function getPlaceByID($id) {
+		$row = Database::executeGetRow('SELECT * FROM Places WHERE ID = :id',
+			array(':id' => $id));
+		return new Place($row);
+	}
 
-/** Close the existing connection to the database */
+	private function __construct($row) {
+		$this->building = $row['building'];
+		$this->room = $row['room'];
+		$this->roomType = $row['roomType'];
+	}
 
-mysqli_close($conn);
+	private $building;
+	private $room;
+	private $roomType;
+}
 
-}	
+/*
+ * User Object: Represents a User in the database.
+ *
+ * ::getUserByEmail($email) returns subclassed User object by given username
+ * ::getUserByID($id) returns subclassed User object by given database row ID
+ *
+ * ->getID() return database row ID
+ * ->getEmail() returns email string
+ * ->getPassword() returns hashed password string
+ * ->getObjectType() returns object type
+ * ->getFirstName() return user first name
+ * ->getLastName() return user last name
+ */
+abstract class User {
+	public static function getUserByID($id, $check_type = -1) {
+		$user_row = Database::executeGetRow('SELECT * FROM Users WHERE ID = :id',
+			array(':id'=>$id));
+
+		if ($user_row) {
+			return User::getUserSubclassObject($user_row, $check_type);
+		} else {
+			return false;
+		}
+	}
+
+	public static function getUserByEmail($email, $check_type = -1) {
+		$user_row = Database::executeGetRow('SELECT * FROM Users WHERE email = :email',
+			array(':email'=>$email));
+
+		if ($user_row) {
+			return User::getUserSubclassObject($user_row, $check_type);
+		} else {
+			return false;
+		}
+	}
+
+	private static function getUserSubclassObject($user_row, $check_type) {
+		$args = array(':id' => $user_row['ID']);
+		if ($check_type >= 0 && $check_type != $user_row['type']) {
+			return false;
+		}
+		switch ($user_row['type']) {
+		case STUDENT:
+			$row = Database::executeGetRow('SELECT * FROM Students WHERE userID = :id', $args);
+			return new Student($user_row, $row);
+		case PROFESSOR:
+			$row = Database::executeGetRow('SELECT * FROM Professors WHERE userID = :id', $args);
+			return new Professor($user_row, $row);
+		case STAFF:
+			$row = Database::executeGetRow('SELECT * FROM Staff WHERE userID = :id', $args);
+			return new Staff($user_row, $row);
+		case ADMIN:
+			// TODO add admin table?
+			return new Admin($user_row, false);
+		}
+	}
+
+	public static function insertUser($email, $password, $firstName, $lastName, $type) {
+		return Database::executeInsert('INSERT INTO Users
+			(email, password, firstName, lastName, type) VALUES
+			(:email, :password, :firstName, :lastName, :type)',
+			array(':email' => $email, ':password' => $password,
+				':firstName' => $firstName, ':lastName' => $lastName, ':type' => $type));
+	}
+
+	public static function checkEmailAvailable($email) {
+		$count = Database::getScalar('SELECT COUNT(*) FROM Users WHERE email = :email',
+			array(':email' => $email));
+		return $count == 0;
+	}
+
+	protected function __construct($user_row) {
+		$this->id = $user_row['ID'];
+		$this->email = $user_row['email'];
+		$this->password = $user_row['password'];
+		$this->otype = $user_row['type'];
+		$this->firstName = $user_row['firstName'];
+		$this->lastName = $user_row['lastName'];
+	}
+
+	public function getID() { return $this->id; }
+	public function getEmail() { return $this->email; }
+	public function getPassword() { return $this->password; }
+	public function getObjectType() { return $this->otype; }
+	public function getFirstName() { return $this->firstName; }
+	public function getLastName() { return $this->lastName; }
+
+	protected $id;
+	protected $email;
+	protected $password;
+	protected $otype;
+	protected $firstName;
+	protected $lastName;
+}
+
+final class Student extends User {
+	public static function insertStudent($email, $password_hash, $firstName, $lastName,
+		$homePhone, $mobilePhone, $major, $gpa, $classYear, $aboutMe) {
+
+		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
+
+		return Database::executeInsert('INSERT INTO Students
+			(userID, homePhone, mobilePhone, major, gpa, classYear, aboutMe) VALUES
+			(:id, :homePhone, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
+			array(':id' => $userID, ':homePhone' => $homePhone,
+				':mobilePhone' => $mobilePhone, ':major' => $major, ':gpa' => $gpa,
+				':classYear' => $classYear, ':aboutMe' => $aboutMe));
+	}
+
+	public function __construct($user_row, $student_row) {
+		parent::__construct($user_row);
+
+		if ($student_row) {
+			$this->homePhone = $student_row['homePhone'];
+			$this->mobilePhone = $student_row['mobilePhone'];
+			$this->major = $student_row['major'];
+			$this->gpa = $student_row['gpa'];
+			$this->classYear = $student_row['classYear'];
+			$this->aboutMe = $student_row['aboutMe'];
+			$this->status = $student_row['status'];
+			$this->reputation = $student_row['reputation'];
+		}
+	}
+
+	public function getHomePhone() { return $this->homePhone; }
+	public function getMobilePhone() { return $this->mobilePhone; }
+	public function getMajor() { return $this->major; }
+	public function getGPA() { return $this->gpa; }
+	public function getClassYear() { return $this->classYear; }
+	public function getAboutMe() { return $this->aboutMe; }
+	public function getStatus() { return $this->status; }
+	public function getReputation() { return $this->reputation; }
+
+	private $homePhone;
+	private $mobilePhone;
+	private $major;
+	private $gpa;
+	private $classYear;
+	private $aboutMe;
+	private $status;
+	private $reputation;
+}
+
+final class Professor extends User {
+	public static function insertProfessor($email, $password_hash, $firstName, $lastName,
+		$officeID, $officePhone, $mobilePhone) {
+
+		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, PROFESSOR);
+
+		return Database::executeInsert('INSERT INTO Professors
+			(userID, officeID, officePhone, mobilePhone) VALUES
+			(:id, :officeID, :officePhone, :mobilePhone)',
+			array(':id' => $userID, ':officeID' => $officeID,
+				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
+	}
+
+	public function __construct($user_row, $professor_row) {
+		parent::__construct($user_row);
+
+		if ($professor_row) {
+			$this->officeID = $professor_row['officeID'];
+			$this->office = null;
+			$this->officePhone = $professor_row['officePhone'];
+			$this->mobilePhone = $professor_row['mobilePhone'];
+		}
+	}
+
+	public function getOffice() {
+		if ($this->office = null) {
+			$this->office = Place::getPlaceByID($this->officeID);
+		}
+		return $this->office;
+	}
+	public function getOfficePhone() { return $this->officePhone; }
+	public function getMobilePhone() { return $this->mobilePhone; }
+
+	private $officeID;
+	private $office;
+	private $officePhone;
+	private $mobilePhone;
+}
+
+final class Staff extends User {
+	public static function insertStaff($email, $password_hash, $firstName, $lastName,
+		$officePhone, $mobilePhone) {
+
+		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STAFF);
+
+		return Database::executeInsert('INSERT INTO Staff
+			(userID, officePhone, mobilePhone) VALUES
+			(:id, :officePhone, :mobilePhone)',
+			array(':id' => $userID,
+				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
+	}
+
+	public function __construct($user_row, $staff_row) {
+		parent::__construct($user_row);
+
+		if ($staff_row) {
+			$this->officePhone = $staff_row['officePhone'];
+			$this->mobilePhone = $staff_row['mobilePhone'];
+		}
+	}
+
+	public function getOfficePhone() { return $this->officePhone; }
+	public function getMobilePhone() { return $this->mobilePhone; }
+
+	private $officePhone;
+	private $mobilePhone;
+}
+
+final class Admin extends User {
+	public function __construct($user_row, $admin_row) {
+		parent::__construct($user_row);
+	}
+}
+
+final class Position {
+	public static function getPositionByID($id) {
+		$row = Database::executeGetRow('SELECT * FROM Positions WHERE ID = :id',
+			array(':id' => $id));
+		return new Position($row);
+	}
+
+	public static function getTotalPositions($prof_obj, $course_obj) {
+		$sql = 'SELECT COUNT(*) FROM Positions
+				WHERE professorID = :prof_id AND courseID = :course_id';
+		return Database::executeGetScalar($sql,
+			array(':prof_id' => $prof_obj->getID(), ':course_id' => $course_obj->getID()));
+	}
+
+	private function __construct($row) {
+		$this->id = $row['ID'];
+		$this->courseID = $row['courseID'];
+		$this->course = null;
+		$this->professorID = $row['professorID'];
+		$this->professor = null;
+		$this->time = $row['time'];
+		$this->posType = $row['posType'];
+	}
+
+	public function getID() { return $this->id; }
+	public function getCourse() {
+		if ($this->course == null) {
+			$this->course = Course::getCourseByID($this->courseID);
+		}
+		return $this->course;
+	}
+	public function getProfessor() {
+		if ($this->professor == null) {
+			$this->professor = User::getUserByID($this->professorID, PROFESSOR);
+		}
+		return $this->professor;
+	}
+	public function getTime() { return $this->time; }
+	public function getPositionType() { return $this->posType; }
+
+	private $id;
+	private $courseID;
+	private $course;
+	private $professorID;
+	private $professor;
+	private $time;
+	private $posType;
+}
+
+final class Applicant {
+	public static function getApplicantByID($id) {
+		$row = Database::executeGetRow('SELECT * FROM Assistantship WHERE ID = :id',
+			array(':id' => $id));
+		return new Applicant($row);
+	}
+
+	// TODO pagination?
+	public static function getApplicantsByProfessor($prof_obj, $app_status) {
+		$sql = 'SELECT Assistantship.ID, Assistantship.positionID, Assistantship.studentID,
+					Assistantship.compensation, Assistantship.appStatus,
+					Assistantship.qualifications
+				FROM Assistantship, Users, Courses, Positions, Students, Teaches
+				WHERE Users.ID = Assistantship.studentID AND
+					Assistantship.studentID = Students.userID AND
+					Assistantship.appStatus = :status AND
+					Assistantship.positionID = Positions.ID AND
+					Positions.courseID = Courses.ID AND
+					Teaches.courseID = Courses.ID AND
+					Users.type = :type_student AND
+					Teaches.professorID = :prof_id
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+
+		$rows = Database::executeGetAllRows($sql, array(
+			':prof_id' => $prof_obj->getID(),
+			':status' => $app_status,
+			':type_student' => STUDENT));
+		return array_map(function ($row) { return new Applicant($row); }, $rows);
+	}
+
+	public static function getApplicantsByProfessorAndCourse($prof_obj, $course_obj, $app_status) {
+		$sql = 'SELECT Assistantship.ID, Assistantship.positionID, Assistantship.studentID,
+					Assistantship.compensation, Assistantship.appStatus,
+					Assistantship.qualifications
+				FROM Assistantship, Users, Courses, Positions, Students, Teaches
+				WHERE Users.ID = Assistantship.studentID AND
+					Assistantship.studentID = Students.userID AND
+					Assistantship.appStatus = :status AND
+					Assistantship.positionID = Positions.ID AND
+					Positions.courseID = :course_id AND
+					Teaches.courseID = Courses.ID AND
+					Users.type = :type_student AND
+					Courses.ID = :course_id
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+
+		$rows = Database::executeGetAllRows($sql, array(
+			':prof_id' => $prof_obj->getID(),
+			':status' => $app_status,
+			':type_student' => STUDENT,
+			':course_id' => $course_obj->getID()));
+		return array_map(function ($row) { return new Applicant($row); }, $rows);
+	}
+
+	public function __construct($row) {
+		$this->id = $row['ID'];
+		$this->positionID = $row['positionID'];
+		$this->position = null;
+		$this->studentID = $row['studentID'];
+		$this->student = null;
+		$this->compensation = $row['compensation'];
+		$this->appStatus = $row['appStatus'];
+		$this->qualifications = $row['qualifications'];
+	}
+
+	public function getID() { return $this->id; }
+	public function getPosition() {
+		if ($this->position == null) {
+			$this->position = Position::getPositionByID($this->positionID);
+		}
+		return $this->position;
+	}
+	public function getStudent() {
+		if ($this->student == null) {
+			$this->student = User::getUserByID($this->studentID);
+		}
+		return $this->student;
+	}
+	public function getCompensation() { return $this->compensation; }
+	public function getStatus() { return $this->appStatus; }
+	public function getQualifications() { return $this->qualifications; }
+
+	private $id;
+	private $position;
+	private $positionID;
+	private $student;
+	private $studentID;
+	private $compensation;
+	private $appStatus;
+	private $qualifications;
+}
+
+final class Course {
+	public static function getCourseByID($id) {
+		$row = Database::executeGetRow('SELECT * FROM Courses WHERE ID = :id',
+			array(':id' => $id));
+		return new Course($row);
+	}
+
+	public static function getCoursesByProfessor($prof_obj) {
+		$sql = 'SELECT Courses.ID, Courses.CRN, Courses.department, Courses.courseNumber,
+					Courses.courseTitle, Courses.website, Courses.termID
+				FROM Courses, Teaches
+				WHERE Courses.ID = Teaches.courseID AND Teaches.professorID = :prof_id
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		
+		$rows = Database::executeGetAllRows($sql, array(
+			':prof_id' => $prof_obj->getID()));
+		return array_map(function ($row) { return new Course($row); }, $rows);
+	}
+
+	private function __construct($row) {
+		$this->id = $row['ID'];
+		$this->crn = $row['CRN'];
+		$this->department = $row['department'];
+		$this->courseNumber = $row['courseNumber'];
+		$this->courseTitle = $row['courseTitle'];
+		$this->website = $row['website'];
+		$this->termID = $row['termID'];
+		$this->term = null;
+	}
+
+	public function getID() { return $this->id; }
+	public function getCRN() { return $this->crn; }
+	public function getDepartment() { return $this->department; }
+	public function getNumber() { return $this->courseNumber; }
+	public function getTitle() { return $this->courseTitle; }
+	public function getWebsite() { return $this->website; }
+	public function getTerm() {
+		if ($this->term == null) {
+			$this->term = Term::getTermByID($this->termID);
+		}
+		return $this->term;
+	}
+
+	private $id;
+	private $crn;
+	private $department;
+	private $courseNumber;
+	private $title;
+	private $website;
+	private $term;
+	private $termID;
+}
+
+Database::connect();
 
 /* Function getUserID
-* Purpose: Obtains an existing users ID via their email address.
-* Returns: integer userID
+*  Purpose: Obtains an existing users ID via their email address.
+*  Returns: integer userID
 **/
-function getUserID($email){
-
-$conn = open_database();
-
-$sql = "SELECT * FROM Users WHERE email='$email'";
-$user = mysqli_query($conn,$sql);
-
-/* Fetch user as an array representation */
-$user = mysqli_fetch_array($user);
-
-/*Obtain user ID*/
-$userID = $user['userID'];
-
-close_database($conn);
-
-return $userID;
+function getUserID($email) {
+	if ($user_obj = User::getUserByEmail($email)) {
+		return $user_obj->getID();
+	}
+	return false;
 }
 
-/* Function
-* Purpose:
-* Returns:
+/* Function 
+*  Purpose: 
+*  Returns: 
 **/	
-function getStudent($email){
-
-$studentID = getUserID($email);
-
-$conn = open_database();
-$sql = "SELECT * FROM Students WHERE Students.studentID = '$studentID'";
-
-$student = mysqli_query($conn,$sql);
-$student = mysqli_fetch_array($student);
-
-
-close_database($conn);
-return $student;
-
+function getStudent($email) {
+	return User::getUserByEmail($email, STUDENT);
 }
 
-/* Function
-* Purpose:
-* Returns:
+/* Function 
+*  Purpose: 
+*  Returns: 
 **/	
-function getProfessor($email){
-
-$professorID = getUserID($email);
-
-$conn = open_database();
-$sql = "SELECT * FROM Professors WHERE Professors.professorID = '$professorID'";
-
-$professor = mysqli_query($conn,$sql);
-$professor = mysqli_fetch_array($professor);
-
-close_database($conn);
-
-return $professor;
-
+function getProfessor($email) {
+	return User::getUserByEmail($email, PROFESSOR);
 }	
 
-/* Function
-* Purpose:
-* Returns:
+/* Function 
+*  Purpose: 
+*  Returns: 
 **/	
-function getStaff($email){
-
-$staffID = getUserID($email);
-
-$conn = open_database();
-$sql = "SELECT * FROM Staff WHERE staffID = '$staffID'";
-
-$staff = mysqli_query($conn,$sql);
-$staff = mysqli_fetch_array($staff);
-
-
-close_database($conn);
-return $staff;
-
+function getStaff($email) {
+	return User::getUserByEmail($email, STAFF);
 }	
 
 /***********************
@@ -152,93 +630,63 @@ return $staff;
 *****************/	
 
 /* Function login
-* Purpose: Logs a user in. Verifies that user's input password field against
-* a hashed password stored in the database.
-* Returns: nothing.
+*  Purpose: Logs a user in.  Verifies that user's input password field against
+*           a hashed password stored in the database.
+*  Returns: nothing.
 **/
-function login($email, $inputPassword){
-
-$conn = open_database();
-$email = mysqli_real_escape_string($conn, $email);
-$inputPassword = mysqli_real_escape_string($conn, $inputPassword); // Entered Password
-$user = mysqli_query($conn, "SELECT * FROM Users WHERE email = '$email'");
-
-$user = mysqli_fetch_array($user);
-$password = $user['password'];
-
-/* Determine the type of user and verify password */
-
-if(password_verify($inputPassword,$password)){
-beginSession($email);
-return $user;
-
-}else{
-
-return false;
-}
-
+function login($email, $input_password) {
+	if ($user_obj = User::getUserByEmail($email)) {
+		if (password_verify($input_password, $user_obj->getPassword())) {
+			beginSession($email);
+			return $user_obj;
+		}
+	}
+	return false;
 }
 
 
 /* Function beginSession
-* Purpose: Initializes a new session.
-* Returns: nothing.
+*  Purpose:  Initializes a new session.
+*  Returns: nothing.
 **/
 function beginSession($email){
 
-session_start(); // begin the session
-session_regenerate_id(true); // regenerate a new session id on each log in
-$_SESSION['auth'] = "Authorized";
-$_SESSION['email'] = $email;
-
+	session_start(); // begin the session
+	session_regenerate_id(true);  // regenerate a new session id on each log in
+	$_SESSION['auth'] =  "Authorized";
+	$_SESSION['email'] = $email;
+	
 }
 
 /* Function endSession
-* Purpose: Terminates an existing session.
-* Returns: nothing.
+*  Purpose: Terminates an existing session.  
+*  Returns: nothing. 
 **/
 function endSession(){
 
-// Unset all of the session variables.
-$_SESSION = array();
+	// Unset all of the session variables.
+	$_SESSION = array();
 
-// If it's desired to kill the session, also delete the session cookie.
-// Note: This will destroy the session, and not just the session data!
-if (ini_get("session.use_cookies")) {
-$params = session_get_cookie_params();
-setcookie(session_name(), '', time() - 42000,
-$params["path"], $params["domain"],
-$params["secure"], $params["httponly"]);
-}
+	// If it's desired to kill the session, also delete the session cookie.
+	// Note: This will destroy the session, and not just the session data!
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+			$params["path"], $params["domain"],
+			$params["secure"], $params["httponly"]);
+	}
 
-// Finally, destroy the session.
-session_destroy();
+	// Finally, destroy the session.
+	session_destroy(); 
 }
 
 /* Function emailExists
-* Purpose: Checks if an email is in use.
-* Returns: True if in use and false otherwise.
+*  Purpose: Checks if an email is in use.
+*  Returns: True if in use and false otherwise.
 **/	
 function emailExists($email){
-
-$conn = open_database();
-$email = mysqli_real_escape_string($conn, $email);
-$sql = "SELECT * FROM Users WHERE email ='$email'";
-
-$user = mysqli_query($conn,$sql);
-$user = mysqli_fetch_all($user);
-
-close_database($conn);
-
-/* Check if the email is already in use */
-
-if(count($user) > 0){
-return false;
-}else{
-return true;
-}
-
-}
+	return User::checkEmailExists($email);
+} 
 
 /********************
 * END LOGIN FUNCTIONS
@@ -249,121 +697,50 @@ return true;
 * USER REGISTRATION
 ********************/
 
-/* Function newUser
-* Purpose: Creates a new user in the Users table.
-* Returns: The user ID of the new user.
-**/	
-function newUser($email,$password,$type){
-
-/*
-* Types
-* [0 => student], [1 => professor], [2 => staff], [3 => admin]
-*/
-
-$conn = open_database();
-
-/*Insert entry into the Users table*/
-$sql = "INSERT INTO Users (email,password,type) VALUES('$email','$password','$type')";	
-mysqli_query($conn,$sql);
-$user = mysqli_query($conn,"SELECT * FROM Users WHERE email ='$email'");
-$user = mysqli_fetch_array($user,MYSQLI_BOTH);
-
-/*Obtain user ID*/
-$userID = $user['userID'];
-
-close_database($conn);
-
-  return $userID;
-
-}
-
 
 function registerStudent($firstName, $lastName,$email,$password,$homePhone,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
-$conn = open_database();
 
-/* escape variables to avoid injection attacks. */
-$firstName = mysqli_real_escape_string($conn,$firstName);
-$lastName = mysqli_real_escape_string($conn,$lastName);
-$email = mysqli_real_escape_string($conn,$email);
-$password = mysqli_real_escape_string($conn,$password);
-$homePhone = mysqli_real_escape_string($conn,$homePhone);
-$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
-$classYear = mysqli_real_escape_string($conn,$classYear);
-$major = mysqli_real_escape_string($conn,$major);
-$gpa = mysqli_real_escape_string($conn,$gpa);
-$aboutMe = mysqli_real_escape_string($conn,$aboutMe);
+	/* Note: $password does not require database escaping; it is not being put in the database.
+	 *       Only the result of password_hash() is, and that is escaped by being a parameter
+	 *       in the prepared statement.
+	 */
+	$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-/*Hash Password*/
-$password = password_hash($password, PASSWORD_DEFAULT);
-
-/*Obtain student ID*/
-$studentID = newUser($email,$password,STUDENT);
-
-/*Insert student record*/
-$sql = "INSERT INTO Students VALUES('$studentID','$firstName','$lastName','$homePhone','$mobilePhone','$major','$gpa','$classYear','$aboutMe',0,0)";
-mysqli_query($conn,$sql);
-close_database($conn);
-
+	Student::insertStudent($email, $password_hash, $firstName, $lastName,
+		$homePhone, $mobilePhone, $major, $gpa, $classYear, $aboutMe);
 }
 
 /* Function registerProfessor
-* Purpose: Creates a new account for a professor.
-* Returns: nothing.
+*  Purpose: Creates a new account for a professor. 
+*  Returns: nothing.
 **/
-function registerProfessor($officeID,$firstName, $lastName, $email, $password,$officePhone, $mobilePhone){
-$conn = open_database();
+function registerProfessor($officeID,$firstName, $lastName, $email, $password,$officePhone, $mobilePhone) {
 
-/* escape variables to avoid injection attacks. */
-$firstName = mysqli_real_escape_string($conn,$firstName);
-$lastName = mysqli_real_escape_string($conn,$lastName);
-$email = mysqli_real_escape_string($conn,$email);
-$password = mysqli_real_escape_string($conn,$password);
-$officePhone = mysqli_real_escape_string($conn,$officePhone);
-$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
+	/* Note: $password does not require database escaping; it is not being put in the database.
+	 *       Only the result of password_hash() is, and that is escaped by being a parameter
+	 *       in the prepared statement.
+	 */
+	$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-/*Hash Password*/
-$password = password_hash($password, PASSWORD_DEFAULT);
-
-/*Obtain professor ID*/
-$professorID = newUser($email,$password,PROFESSOR);
-
-/*Insert student record*/
-$sql = "INSERT INTO Professors VALUES('$professorID','$officeID','$firstName','$lastName','$officePhone','$mobilePhone')";
-mysqli_query($conn,$sql);
-
-close_database($conn);
-
+	Professor::insertProfessor($email, $password_hash, $firstName, $lastName,
+		$officeID, $officePhone, $mobilePhone);
 }	
 
 /* Function registerAdmin
-* Purpose: Creates an account for an admin.
-* Returns: nothing.
+*  Purpose: Creates an account for an admin. 
+*  Returns: nothing.
 **/
-function registerStaff($firstName, $lastName,$email,$password,$officePhone,$mobilePhone){
+function registerStaff($firstName, $lastName,$email,$password,$officePhone,$mobilePhone) {
 
-$conn = open_database();
+	/* Note: $password does not require database escaping; it is not being put in the database.
+	 *       Only the result of password_hash() is, and that is escaped by being a parameter
+	 *       in the prepared statement.
+	 */
+	$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-/* escape variables to avoid injection attacks. */
-$firstName = mysqli_real_escape_string($conn,$firstName);
-$lastName = mysqli_real_escape_string($conn,$lastName);
-$email = mysqli_real_escape_string($conn,$email);
-$password = mysqli_real_escape_string($conn,$password);
-$officePhone = mysqli_real_escape_string($conn,$officePhone);
-$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
-
-/*Hash Password*/
-$password = password_hash($password, PASSWORD_DEFAULT);
-
-/*Obtain staff ID*/
-$staffID = newUser($email,$password,STAFF);
-
-/*Insert staff record*/
-$sql = "INSERT INTO Staff VALUES('$staffID','$firstName','$lastName','$officePhone','$mobilePhone')";
-mysqli_query($conn,$sql);	
-
-close_database($conn);
-
-}	
+	Staff::insertStaff($email, $password_hash, $firstName, $lastName,
+		$officePhone, $mobilePhone);
+}
 
 /***********************
 * END USER REGISTRATION
@@ -374,179 +751,140 @@ close_database($conn);
 ********************/
 
 /* Function getApplicants
-* Purpose: Obtain a table representation of a particular professor's applicants.
-* Returns: A 2-D array of type 0 and type 1 applicantions
+*  Purpose:  Obtain a table representation of a particular professor's applicants.
+*  Returns:  A 2-D array of type 0 and type 1 applicantions
 **/
-function getApplicants($email){
+function getApplicants($email) {
 
-$conn = open_database();
+	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
-$professorID = getUserID($email);
-
-
-$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
-. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.appStatus <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ASC";	
-
-$apps = mysqli_query($conn,$sql);
-/* Fetch every application */
-$apps = mysqli_fetch_all($apps,MYSQLI_BOTH);
-
-close_database($conn);
-
-return $apps;
+	if ($professor_obj) {
+		// TODO: support both PENDING and STAFF_VERIFIED in DAL
+		return Applicant::getApplicantsByProfessor($professor_obj, PENDING);
+	} else {
+		return array();
+	}
 }	
 
 /* Function getApplicants
-* Purpose: Obtain a table representation of a particular professor's applicants.
-* Returns: A 2-D array of type 0 and type 1 applicantions
+*  Purpose:  Obtain a table representation of a particular professor's applicants.
+*  Returns:  A 2-D array of type 0 and type 1 applicantions
 **/
-function getAssistants($email){
+function getAssistants($email) {
 
-$conn = open_database();
+	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
-$professorID = getUserID($email);
-
-$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.positionID, Students.gpa\n"
-. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.status = " .APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = Course.courseID AND Teaches.professorID = '$professorID' AND Teaches.courseID = Course.courseID AND Users.type = ".STUDENT." ORDER BY `Course`.`courseNumber` ORDER BY `Course`.`courseNumber` ASC";	
-
-$apps = mysqli_query($conn,$sql);
-
-/* Fetch every assistant */
-$apps = mysqli_fetch_all($apps,MYSQLI_BOTH);
-
-close_database($conn);
-
-return $apps;
+	if ($professor_obj) {
+		return Applicant::getApplicantsByProfessor($professor_obj, APPROVED);
+	} else {
+		return array();
+	}
 }
 
-function pendingApplicants($email){
+function pendingApplicants($email) {
 
-$count = 0;
-$count += count(getApplicants($email));
+	$count = 0; 
+	$count += count(getApplicants($email));
 
-return $count;
+	return $count;
 
 }
 
 /* Function getCourseName
-* Purpose: Retrieves all courses that contain the value 'courseName'.
-* Returns: An array of course entries. (A 2-D array)
+*  Purpose: Retrieves all courses that contain the value 'courseName'. 
+*  Returns: An array of course entries. (A 2-D array) 
 **/
-function getCourses($email){
+function getCourses($email) {
 
-$conn = open_database();
-$professorID = getUserID($email);
+	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
-$sql = "SELECT Course.courseID, Course.courseNumber,Course.courseTitle FROM Course WHERE professorID = '$professorID'";
-
-$result = mysqli_query($conn,$sql);
-
-/* Fetch every course */
-$courses = mysqli_fetch_all($result,MYSQLI_BOTH);
-
-close_database($conn);
-
-return $courses;
+	if ($professor_obj) {
+		return Course::getCoursesByProfessor($professor_obj);
+	} else {
+		return array();
+	}
 }
 
-function getApplicationsByCourseID($email,$courseID){
+function getApplicationsByCourse($email,$course_obj){
 
-$conn = open_database();
-$professorID = getUserID($email);
+	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
-$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.posType,Positions.positionID, Students.gpa\n"
-. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.appStatus <= ". STAFF_VERIFIED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";	
-
-$result = mysqli_query($conn,$sql);	
-$applications = mysqli_fetch_all($result, MYSQLI_BOTH);
-
-close_database($conn);
-
-return $applications;
-
+	if ($professor_obj && $course_obj) {
+		// TODO: support both PENDING and STAFF_VERIFIED in DAL
+		return Applicant::getApplicantsByProfessorAndCourse($professor_obj, $course_obj, PENDING);
+	} else {
+		return array();
+	}
 }
 
 
-function getFilledPositionsForCourse($email,$courseID){
+function getFilledPositionsForCourse($email,$course_obj){
 
-$conn = open_database();
-$professorID = getUserID($email);
 
-$sql = "SELECT Users.userID,Students.firstName,Students.lastName,Users.email,Course.courseNumber, Positions.posType, Students.gpa\n"
-. "FROM Assistantship,Users,Course,Positions,Students,Teaches\n"
-. "WHERE Users.userID = Assistantship.studentID AND Assistantship.studentID = Students.studentID AND Assistantship.appStatus = ".APPROVED. " AND Assistantship.positionID = Positions.positionID AND Positions.courseID = '$courseID' AND Teaches.professorID = '$professorID' AND Teaches.courseID = '$courseID' AND Users.type = ".STUDENT." AND Course.courseID = '$courseID'";	
+	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
-$result = mysqli_query($conn,$sql);
-$assistants = mysqli_fetch_all($result, MYSQLI_BOTH);
-
-close_database($conn);
-
-/* return the actual filled positions to use in the My Assistants page */
-
-return $assistants;
-
+	if ($professor_obj && $course_obj) {
+		// TODO: support both PENDING and STAFF_VERIFIED in DAL
+		return Applicant::getApplicantsByProfessorAndCourse($professor_obj, $course_obj, APPROVED);
+	} else {
+		return array();
+	}
 }
 
-function countTotalPositions($email,$courseID){
+function countTotalPositions($email,$course_obj){
 
-$conn = open_database();
-$professorID = getUserID($email);
+	$professor_obj = User::getUserByEmail($email, PROFESSOR);
 
-$sql = "SELECT COUNT(*) FROM Positions AS numberofPositions WHERE professorID = '$professorID' AND courseID = '$courseID'";
-$count = mysqli_query($conn,$sql);
-$count = mysqli_fetch_array($count);
-close_database($conn);
-$count = $count[0];
-return $count;
-
+	if ($professor_obj && $course_obj) {
+		Position::getTotalPositions($professor_obj, $course_obj);
+	} else {
+		return 0;
+	}
 }
 
 /* Function setPosition
-* Purpose: Assigns a position to a student.
-* Returns: nothing.
+*  Purpose: Assigns a position to a student. 
+*  Returns: nothing.
 **/
 function setPositionStatus($studentID,$positionID,$status){
-$conn = open_database();
-
-$sql = "UPDATE Assistantship SET status = '$status' WHERE studentID = '$studentID' AND positionID = '$positionID'";
-
-mysqli_query($conn,$sql);
-
-close_database($conn);
+	$conn = open_database();
+	
+	$sql = "UPDATE Assistantship SET status = '$status' WHERE studentID = '$studentID' AND positionID = '$positionID'";
+	
+	mysqli_query($conn,$sql);
+	
+	close_database($conn);
 }
 
 
 
 function getCourseIDS($email){
 
-$conn = open_database();
+	$conn = open_database();
+	
+	$professorID = getUserID($email);
+	
+	$sql = "SELECT Course.courseID\n"
+		. "FROM Course\n"
+		. "WHERE professorID = '$professorID'";
 
-$professorID = getUserID($email);
-
-$sql = "SELECT Course.courseID\n"
-. "FROM Course\n"
-. "WHERE professorID = '$professorID'";
-
-$result = mysqli_query($conn,$sql);
-
-
-/* 2-D array of courseIDS */
-$result = mysqli_fetch_all($result);
-
-/*Make just one array */
-$courseIDS = array();
-
-foreach($result as $course){
-
-$courseIDS[] = $course[0];
-}
-
-close_database($conn);
-
-return $courseIDS;
+	$result = mysqli_query($conn,$sql);
+	
+	
+	/* 2-D array of courseIDS */ 
+	$result = mysqli_fetch_all($result); 
+	
+	/*Make just one array */
+	$courseIDS = array();
+	
+	foreach($result as $course){
+		
+		$courseIDS[] = $course[0];
+	}
+	
+	close_database($conn);
+	
+	return $courseIDS;
 }
 
 /************************
@@ -558,107 +896,107 @@ return $courseIDS;
 ********************/
 
 /* Function studentPositions
-* Purpose: Fetch all of the student's currently held TA-ing positions fromt he database
-* Returns: An array of associative arrays with all the student's TA position information
+*  Purpose: Fetch all of the student's currently held TA-ing positions fromt he database
+*  Returns: An array of associative arrays with all the student's TA position information
 **/
 
 function studentPositions($email){
 
-$connect = open_database();
-
-$studentID = getUserID($email);
-
-$sql = "SELECT *\n"
-."FROM Positions\n"
-."INNER JOIN Assistantship ON Positions.positionID = Assistantship.positionID\n"
-."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
-."INNER JOIN Place ON Course.placeID = Place.placeID\n"
-."WHERE studentID = '$studentID' AND appStatus = ".APPROVED."\n"
-."ORDER BY courseNumber ASC;";
-
-$result = mysqli_query($connect, $sql);
-$positions = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-close_database($connect);
-
-return $positions;
+	$connect = open_database();
+	
+	$studentID = getUserID($email);
+	
+	$sql = "SELECT *\n"
+		."FROM Positions\n"
+		."INNER JOIN Assistantship ON Positions.positionID = Assistantship.positionID\n"
+		."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
+		."INNER JOIN Place ON Course.placeID = Place.placeID\n"
+		."WHERE studentID = '$studentID' AND appStatus = ".APPROVED."\n"
+		."ORDER BY courseNumber ASC;";
+	
+	$result = mysqli_query($connect, $sql);
+	$positions = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	
+	close_database($connect);
+	
+	return $positions;
 
 }
 
 /* Function updateProfile
-* Purpose: Edit the database entries that correspond to the student's information with newly submitted ones from the student
-* Returns: absolutely nothing
+*  Purpose: Edit the database entries that correspond to the student's information with newly submitted ones from the student
+*  Returns: absolutely nothing
 **/
 function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe){
-$connect = open_database();
-
-$firstName = mysqli_real_escape_string($connect, $firstName);
-$lastName = mysqli_real_escape_string($connect, $lastName);
-$mobilePhone = mysqli_real_escape_string($connect, $mobilePhone);
-$major = mysqli_real_escape_string($connect, $major);
-$classYear = mysqli_real_escape_string($connect, $classYear);
-$gpa = mysqli_real_escape_string($connect, $gpa);
-$aboutMe = mysqli_real_escape_string($connect, $aboutMe);
-
-$sql = "UPDATE Students\n"
-."INNER JOIN Users ON Users.userID = Students.studentID\n"
-."SET firstName = '$firstName', lastName = '$lastName', mobilePhone = '$mobilePhone', major = '$major', classYear = '$classYear', gpa = '$gpa', aboutMe = '$aboutMe'\n"
-."WHERE email = '$email';";
-mysqli_query($connect, $sql);
-
-close_database($connect);
+	$connect = open_database();
+	
+	$firstName = mysqli_real_escape_string($connect, $firstName);
+	$lastName = mysqli_real_escape_string($connect, $lastName);
+	$mobilePhone = mysqli_real_escape_string($connect, $mobilePhone);
+	$major = mysqli_real_escape_string($connect, $major);
+	$classYear = mysqli_real_escape_string($connect, $classYear);
+	$gpa = mysqli_real_escape_string($connect, $gpa);
+	$aboutMe = mysqli_real_escape_string($connect, $aboutMe);
+	
+	$sql = "UPDATE Students\n"
+		."INNER JOIN Users ON Users.userID = Students.studentID\n"
+		."SET firstName = '$firstName', lastName = '$lastName', mobilePhone = '$mobilePhone', major = '$major', classYear = '$classYear', gpa = '$gpa', aboutMe = '$aboutMe'\n"
+		."WHERE email = '$email';";
+	mysqli_query($connect, $sql);
+	
+	close_database($connect);
 }
 
 /* Function search
-* Purpose: Search the database for TA positions with the specified attributes
-* Returns: An array of associative arrays that represent individual positions
+*  Purpose: Search the database for TA positions with the specified attributes
+*  Returns: An array of associative arrays that represent individual positions
 **/
 
 function search($search, $term, $type) {
-$connect = open_database();
-$sql = "SELECT *\n"
-."FROM Positions\n"
-."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
-."INNER JOIN Professors ON Positions.professorID = Professors.professorID\n";
-if(!is_null($search)) {
-$search = strtoupper($search);
-$search = preg_replace('/\s+/', '', $search);
-$sql .= "WHERE courseNumber = '$search'\n";
-}
-if(is_null($term)) {
-$term = CURRENT_TERM;
-}
-$sql .= "WHERE term = '$term'\n";
-if(!is_null($type) && !strcmp($type, 'All')) {
-$sql .="WHERE posType = '$type'\n";
-}
-$sql .="ORDER BY positionID";
+	$connect = open_database();
+	$sql = "SELECT *\n"
+		."FROM Positions\n"
+		."INNER JOIN Course ON Positions.courseID = Course.courseID\n"
+		."INNER JOIN Professors ON Positions.professorID = Professors.professorID\n";
+	if(!is_null($search)) {
+		$search = strtoupper($search);
+		$search = preg_replace('/\s+/', '', $search);
+		$sql .= "WHERE courseNumber = '$search'\n";
+	}
+	if(is_null($term)) {
+		$term = CURRENT_TERM;
+	}
+	$sql .= "WHERE term = '$term'\n";
+	if(!is_null($type) && !strcmp($type, 'All')) {
+		$sql .="WHERE posType = '$type'\n";
+	}
+	$sql .="ORDER BY positionID";
 
-$results = mysqli_query($connect, $sql);
-if($results != false) {
-$results = mysqli_fetch_all($results, MYSQLI_BOTH);
-}
-close_database($connect);
-
-return $results;
+	$results = mysqli_query($connect, $sql);
+	if($results != false) {
+		$results = mysqli_fetch_all($results, MYSQLI_BOTH);
+	}
+	close_database($connect);
+	
+	return $results;
 }
 
 /* Function apply
-* Purpose: Register a student's application in the database
-* Returns: Absolutely nothing
+*  Purpose: Register a student's application in the database
+*  Returns: Absolutely nothing
 **/
 
 function apply($positionID, $studentID, $compensation, $qualifications) {
-$connect = open_database();
-$pID = mysqli_real_escape_string($connect, $positionID);
-$sID = mysqli_real_escape_string($connect, $studentID);
-$comp = mysqli_real_escape_string($connect, $compensation);
-$qual = mysqli_real_escape_string($connect, $qualifications);
-$sql = "INSERT IGNORE INTO Assistantship\n"
-."(`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`)\n"
-."VALUES ('$pID', '$sID', '$comp', '0', '$qual');";
-mysqli_query($connect, $sql);
-close_database($connect);
+	$connect = open_database();
+	$pID = mysqli_real_escape_string($connect, $positionID);
+	$sID = mysqli_real_escape_string($connect, $studentID);
+	$comp = mysqli_real_escape_string($connect, $compensation);
+	$qual = mysqli_real_escape_string($connect, $qualifications);
+	$sql = "INSERT IGNORE INTO Assistantship\n"
+		."(`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`)\n"
+		."VALUES ('$pID', '$sID', '$comp', '0', '$qual');";
+	mysqli_query($connect, $sql);
+	close_database($connect);
 }
 
 /***********************
@@ -670,123 +1008,123 @@ close_database($connect);
 *****************/
 
 
-/* Function
-* Purpose:
-* Returns:
+/* Function 
+*  Purpose: 
+*  Returns: 
 **/
 function getPayrollByTerm($term){
+	
+	$conn = open_database();
+	
 
-$conn = open_database();
+	$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.classYear, Course.courseNumber, Positions.type, Assistantship.compensation\n"
+	. "FROM Users,Students,Course,Positions,Assistantship\n"
+	. "WHERE Students.studentID = Users.userID AND Students.studentID = Assistantship.studentID AND Course.courseID = Positions.courseID AND Positions.positionID = Assistantship.positionID AND Assistantship.status = ".APPROVED;
+	
+	$result = mysqli_query($conn,$sql);
+	$payroll = mysqli_fetch_all($result,MYSQLI_BOTH);
 
-
-$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.classYear, Course.courseNumber, Positions.type, Assistantship.compensation\n"
-. "FROM Users,Students,Course,Positions,Assistantship\n"
-. "WHERE Students.studentID = Users.userID AND Students.studentID = Assistantship.studentID AND Course.courseID = Positions.courseID AND Positions.positionID = Assistantship.positionID AND Assistantship.status = ".APPROVED;
-
-$result = mysqli_query($conn,$sql);
-$payroll = mysqli_fetch_all($result,MYSQLI_BOTH);
-
-close_database($conn);
-
-return $payroll;
+	close_database($conn);
+	
+	return $payroll;
 }
 
 function getOffice($building,$room){
 
-$conn = open_database();
+	$conn = open_database();
+	
+	$sql = "SELECT * FROM Place WHERE building = '$building' AND room = '$room' LIMIT 1";
+	$result = mysqli_query($conn,$sql);
+	
+	$office = mysqli_fetch_array($result,MYSQLI_BOTH);
+	
+	close_database($conn);
 
-$sql = "SELECT * FROM Place WHERE building = '$building' AND room = '$room' LIMIT 1";
-$result = mysqli_query($conn,$sql);
-
-$office = mysqli_fetch_array($result,MYSQLI_BOTH);
-
-close_database($conn);
-
-return $office;
+	return $office;
 }
 
 function getUnverifiedStudents(){
 
-$conn = open_database();
+	$conn = open_database();
+	
+	$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.gpa\n"
+	. "FROM Students,Users\n"
+	. "WHERE Students.studentID = Users.userID AND Students.status = 0";
+	
+	$result = mysqli_query($conn,$sql);
+	
+	$students = @mysqli_fetch_all($result,MYSQLI_BOTH);
 
-$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.gpa\n"
-. "FROM Students,Users\n"
-. "WHERE Students.studentID = Users.userID AND Students.status = 0";
-
-$result = mysqli_query($conn,$sql);
-
-$students = @mysqli_fetch_all($result,MYSQLI_BOTH);
-
-close_database($conn);
-
-return $students;
+	close_database($conn);
+	
+	return $students;
 }
 
 function totalAssistantCount(){
 
-$conn = open_database();
+	$conn = open_database();
 
-$sql = "SELECT COUNT(*) FROM Students AS numberofStudents";
-$count = mysqli_query($conn,$sql);
-$count = mysqli_fetch_array($count);
-close_database($conn);
-$count = $count[0];
-return $count;	
+	$sql = "SELECT COUNT(*) FROM Students AS numberofStudents";
+	$count = mysqli_query($conn,$sql);
+	$count = mysqli_fetch_array($count);
+	close_database($conn);
+	$count = $count[0];
+	return $count;		
 
 }
 
 
 function setStatus($studentID,$status){
 
-$conn = open_database();
-
-$sql = "UPDATE Students SET status = '$status' WHERE Students.studentID = '$studentID'";
-
-mysqli_query($conn,$sql);
-
-close_database($conn);
+	$conn = open_database();
+	
+	$sql = "UPDATE Students SET status = '$status' WHERE Students.studentID = '$studentID'";
+	
+	mysqli_query($conn,$sql);
+	
+	close_database($conn);
 
 }
 
 function updateProfessor($firstName, $lastName, $email,$officePhone, $mobilePhone){
 
-$conn = open_database();
-
-/* escape variables to avoid injection attacks. */
-$firstName = mysqli_real_escape_string($conn,$firstName);
-$lastName = mysqli_real_escape_string($conn,$lastName);
-$email = mysqli_real_escape_string($conn,$email);
-$password = mysqli_real_escape_string($conn,$password);
-$officePhone = mysqli_real_escape_string($conn,$officePhone);
-$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
-
-$professorID = getUserID($email);
-$sql = "UPDATE Professors SET Professors.firstName = '$firstName', Professors.lastName = '$lastName', Professors.officePhone = '$officePhone', Professors.mobilePhone = '$mobilePhone' WHERE Professors.professorID = '$professorID'";	
-mysqli_query($conn,$sql);
-
-close_database($conn);	
+	$conn = open_database();
+	
+	/* escape variables to avoid  injection attacks. */ 
+	$firstName = mysqli_real_escape_string($conn,$firstName);
+	$lastName = mysqli_real_escape_string($conn,$lastName);
+	$email = mysqli_real_escape_string($conn,$email);
+	$password = mysqli_real_escape_string($conn,$password);
+	$officePhone = mysqli_real_escape_string($conn,$officePhone);
+	$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
+	
+	$professorID = getUserID($email);
+	$sql = "UPDATE Professors SET Professors.firstName = '$firstName', Professors.lastName = '$lastName', Professors.officePhone = '$officePhone', Professors.mobilePhone = '$mobilePhone' WHERE Professors.professorID = '$professorID'";		
+	mysqli_query($conn,$sql);
+	
+	close_database($conn);	
 }
 
 function updateStudent($firstName, $lastName,$email,$homePhone,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
 
-$conn = open_database();
-
-/* escape variables to avoid injection attacks. */
-$firstName = mysqli_real_escape_string($conn,$firstName);
-$lastName = mysqli_real_escape_string($conn,$lastName);
-$email = mysqli_real_escape_string($conn,$email);
-$homePhone = mysqli_real_escape_string($conn,$homePhone);
-$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
-$classYear = mysqli_real_escape_string($conn,$classYear);
-$major = mysqli_real_escape_string($conn,$major);
-$gpa = mysqli_real_escape_string($conn,$gpa);
-$aboutMe = mysqli_real_escape_string($conn,$aboutMe);
-
-$studentID = getUserID($email);
-$sql = "UPDATE Students SET Students.firstName = '$firstName', Students.lastName = '$lastName', Students.homePhone = '$homePhone', Students.mobilePhone = '$mobilePhone', Students.classYear = '$classYear', Students.major = '$major', Students.gpa = '$gpa', Students.aboutMe = '$aboutMe' WHERE Students.studentID = '$studentID'";	
-mysqli_query($conn,$sql);
-
-close_database($conn);	
+	$conn = open_database();
+			
+	/* escape variables to avoid  injection attacks. */ 
+	$firstName = mysqli_real_escape_string($conn,$firstName);
+	$lastName = mysqli_real_escape_string($conn,$lastName);
+	$email = mysqli_real_escape_string($conn,$email);
+	$homePhone = mysqli_real_escape_string($conn,$homePhone);
+	$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
+	$classYear = mysqli_real_escape_string($conn,$classYear);
+	$major = mysqli_real_escape_string($conn,$major);
+	$gpa = mysqli_real_escape_string($conn,$gpa);
+	$aboutMe = mysqli_real_escape_string($conn,$aboutMe);
+	
+	$studentID = getUserID($email);
+	$sql = "UPDATE Students SET Students.firstName = '$firstName', Students.lastName = '$lastName', Students.homePhone = '$homePhone', Students.mobilePhone = '$mobilePhone', Students.classYear = '$classYear', Students.major = '$major', Students.gpa = '$gpa', Students.aboutMe = '$aboutMe' WHERE Students.studentID = '$studentID'";		
+	mysqli_query($conn,$sql);
+	
+	close_database($conn);	
 }
 
 /********************

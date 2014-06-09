@@ -536,9 +536,9 @@ final class Applicant {
 				WHERE Applications.studentID = Users.userID AND
 					Applications.studentID = Students.userID AND
 					Applications.appStatus = :status AND
-					Applications.positionID = Positions.ID AND
-					Positions.courseID = Courses.userID AND
-					Teaches.courseID = Courses.userID AND
+					Applications.positionID = Positions.positionID AND
+					Positions.courseID = Courses.courseID AND
+					Teaches.courseID = Courses.courseID AND
 					Teaches.professorID = :prof_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status);
@@ -554,7 +554,7 @@ final class Applicant {
 				WHERE Applications.studentID = Users.userID AND
 					Applications.studentID = Students.userID AND
 					Applications.appStatus = :status AND
-					Applications.positionID = Positions.ID AND
+					Applications.positionID = Positions.positionID AND
 					Positions.courseID = :course_id AND
 					Teaches.courseID = Courses.courseID AND
 					Courses.courseID = :course_id

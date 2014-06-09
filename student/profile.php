@@ -89,30 +89,30 @@
 									</div>
 									<div class="col-xs-6">
 										<label>Phone Number:
-											<input class="form-control" type="text" name="pn" size="11" value="<?=$student['mobilePhone']?>" />
+											<input class="form-control" type="text" name="pn" size="11" value="<?=$student->getMobilePhone()?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-4">
 										<label>Major:
-											<input class="form-control" type="text" name="mjr" size="32" value="<?=$student['major']?>" />
+											<input class="form-control" type="text" name="mjr" size="32" value="<?=$student->getMajor()?>" />
 										</label>		
 									</div>
 									<div class="col-xs-4">
 										<label>Class Year:
-											<input class="form-control" type="text" name="year" size="32" value="<?=$student['classYear']?>" />
+											<input class="form-control" type="text" name="year" size="32" value="<?=$student->getClassYear()?>" />
 										</label>
 									</div>
 									<div class="col-xs-4">
 										<label>Cumulative GPA:
-											<input class="form-control" type="text" name="gpa" size="32" value="<?=$student['gpa']?>" />
+											<input class="form-control" type="text" name="gpa" size="32" value="<?=$student->getGPA()?>" />
 										</label>
 									</div>
 								</div>
 								<div class="row col-xs-12">
 									<label>Qualifications and TA-ing history: <br />
-										<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student['aboutMe']?></textarea>
+										<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student->getAboutMe()?></textarea>
 									</label>
 								</div>
 								<div class="row">

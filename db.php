@@ -323,12 +323,12 @@ final class Student extends User {
 		$major, $classYear, $gpa, $aboutMe) {
 		$sql = 'UPDATE Students
 				INNER JOIN Users ON Users.ID = Students.userID
-				SET firstName = :firstName, lastName = :lastName, homePhone = :homePhone,
+				SET firstName = :firstName, lastName = :lastName,
 					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
 					gpa = :gpa, aboutMe = :aboutMe
 				WHERE ID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':homePhone'=>$homePhone, ':mobilePhone'=>$mobilePhone, ':major'=>$major,
+			':mobilePhone'=>$mobilePhone, ':major'=>$major,
 			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
 		Database::execute($sql, $args);
 	}

@@ -41,17 +41,16 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	
 	foreach($courses as $course){
 	
-		$courseID = $course['courseID'];
+		$courseID = $course->getID();
 		/* Array of current assistants */
-		$assistants = getFilledPositionsForCourse($email,$courseID);
+		$assistants = getFilledPositionsForCourse($email,$course);
 		
 		foreach($assistants as $assistant){
 			
 			/*Get studentID */
-			$studentID = $assistant['userID'];
-			
-			/*Get profile array representation */
-			$student = getStudent($assistant['email']);
+			$student = $assistant->getStudent();
+
+			$studentID = $student->getID();
 			
 			if(!in_array($studentID,$profilesMade)){
 			
@@ -65,27 +64,27 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $assistant['firstName']?>'s Profile</h4>
+				<h4 class="modal-title" id="myProfileLabel"> <?= $student->getFirstName()?>'s Profile</h4>
 			</div>
 			<div class="modal-body">
 			
 				<h3>Personal Information</h3>
 				<div class="container">
-				<p>Major: <?=$student['major']?></p>
-				<p>GPA: <?=$student['gpa']?></p>
-				<p>Class Year: <?=$student['classYear']?></p>
+				<p>Major: <?=$student->getMajor()?></p>
+				<p>GPA: <?=$student->getGPA()?></p>
+				<p>Class Year: <?=$student->getClassYear()?></p>
 				</div>
 				
 				<h3>Contact Information</h3>
 				<div class="container">
-				<p>Email: email </p>
-				<p>Mobile Phone: <?=$student['homePhone']?> </p>
-				<p>Home Phone: <?=$student['mobilePhone']?> </p>
+				<p>Email: <?=$student->getEmail()?> </p>
+				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
+				<p>Home Phone: <?=$student->getHomePhone()?> </p>
 				</div>
 				
 				<h3>About Me</h3>
 				<div class="container">
-				<p><?=$student['aboutMe']?></p>
+				<p><?=$student->getAboutMe()?></p>
 				
 				</div>
 				
@@ -175,7 +174,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											?>
 											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course['courseID'] ?>"><a href="#"><?= $course['courseTitle'] ?></a></li>
+											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
 	
 										<?php	
 											}
@@ -206,12 +205,13 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				foreach($courses as $course){
 				
 				/* assistants for this particular course */
-				$assistants = getFilledPositionsForCourse($email,$course['courseID']);
+				$assistants = getFilledPositionsForCourse($email,$course);
 								
 				/* create a new panel */ 
-				$panelID = "coursePanel" . $course['courseID'];
+				$panelID = "coursePanel" . $course->getID();
 
-				$coursePanelName = $course['courseNumber']."-".$course['courseTitle'];
+				$coursePanelName = $course->getDepartment().$course->getNumber().
+					'-'.$course->getTitle();
 				?>
 				
 				<div class="row">
@@ -229,11 +229,13 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											/* Insert each application */
 											foreach($assistants as $assistant){
-												$profileID = "myProfile" . $assistant['userID'];
+												$student = $assistant->getStudent();
+												$position = $assistant->getPosition();
+												$profileID = "myProfile" . $student->getID();
 												
 											?>
 											
-											<tr><td><?= $assistant['userID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td><td><?= $assistant['email'] ?></td><td><?= $assistant['posType'] ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</tr> 											
 											

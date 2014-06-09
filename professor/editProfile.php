@@ -76,7 +76,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											?>
 											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course['courseID'] ?>"><a href="#"><?= $course['courseTitle'] ?></a></li>
+											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
 	
 										<?php	
 											}
@@ -164,14 +164,14 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 										<div class="row fourth">
 											<div class="col-md-4">
 												<div class="form-group">
-													<label>Home Phone</label>
-													<input type="tel" class="form-control" disabled="disabled" name="homePhone" value="<?= $professor['homePhone']?>">												
+													<label>Office Phone</label>
+													<input type="tel" class="form-control" disabled="disabled" name="officePhone" value="<?= $professor->getOfficePhone()?>">												
 												</div> <!-- End form-group -->											
 											</div> <!--End column-->
 											<div class="col-md-4">
 												<div class="form-group">
 													<label>Mobile Phone</label>
-													<input type="tel" class="form-control" disabled="disabled" name="mobilePhone" value="<?= $professor['phone']?>">												
+													<input type="tel" class="form-control" disabled="disabled" name="mobilePhone" value="<?= $professor->getMobilePhone()?>">												
 												</div> <!-- End form-group -->											
 											</div> <!--End column-->
 											<div class="col-md-4">

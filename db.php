@@ -441,6 +441,16 @@ final class Position {
 }
 
 final class Applicant {
+	public static function setPositionStatus($student, $position, $status) {
+		$sql = 'UPDATE Assistantship
+				SET appStatus = :status
+				WHERE studentID = :student_id AND positionID = :position_id';
+		Database::execute($sql, array(
+			':status' => $status,
+			':student_id' => $student->getID(),
+			':position_id' => $position->getID()));
+	}
+
 	public static function getApplicantByID($id) {
 		$row = Database::executeGetRow('SELECT * FROM Assistantship WHERE ID = :id',
 			array(':id' => $id));
@@ -847,17 +857,16 @@ function countTotalPositions($email,$course_obj){
 *  Returns: nothing.
 **/
 function setPositionStatus($studentID,$positionID,$status){
-	$conn = open_database();
-	
-	$sql = "UPDATE Assistantship SET status = '$status' WHERE studentID = '$studentID' AND positionID = '$positionID'";
-	
-	mysqli_query($conn,$sql);
-	
-	close_database($conn);
+	$student_obj = User::getUserByEmail($email, STUDENT);
+	$position_obj = Position::getPositionByID($positionID);
+
+	if ($student_obj && $position_obj) {
+		Applicant::setPositionStatus($student_obj, $position_obj, $status);
+	}
 }
 
 
-
+/* UNUSED: not mapped
 function getCourseIDS($email){
 
 	$conn = open_database();
@@ -871,10 +880,10 @@ function getCourseIDS($email){
 	$result = mysqli_query($conn,$sql);
 	
 	
-	/* 2-D array of courseIDS */ 
+	/* 2-D array of courseIDS *
 	$result = mysqli_fetch_all($result); 
 	
-	/*Make just one array */
+	/*Make just one array *
 	$courseIDS = array();
 	
 	foreach($result as $course){
@@ -885,7 +894,7 @@ function getCourseIDS($email){
 	close_database($conn);
 	
 	return $courseIDS;
-}
+}*/
 
 /************************
 * END PROFESSOR FUNCTIONS

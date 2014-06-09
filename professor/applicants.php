@@ -42,21 +42,18 @@ and are color coded to emphasize priority.
 	
 	foreach($courses as $course){
 	
-		$courseID = $course[0];
-		$applications = getApplicationsByCourseID($email,$courseID);
+		$courseID = $course->getCRN();
+		$applications = getApplicationsByCourse($email,$course);
 		
 		foreach($applications as $application){
 			
 			/*Get studentID */
-			$studentID = $application[0];
+			$student = $application->getStudent();
 			
-			/*Get profile array representation */
-			$student = getStudent($application[3]);
+			if(!in_array($student->getID(),$profilesMade)){
 			
-			if(!in_array($studentID,$profilesMade)){
-			
-				$myProfileID = "myProfile". $studentID;
-				$profilesMade[] = $studentID;
+				$myProfileID = "myProfile". $student->getID();
+				$profilesMade[] = $student->getID();
 			?>
 			
 			<!-- Profile Modal -->
@@ -65,27 +62,27 @@ and are color coded to emphasize priority.
 			<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $application[1]?>'s Profile</h4>
+				<h4 class="modal-title" id="myProfileLabel"> <?= $student->getFirstName()?>'s Profile</h4>
 			</div>
 			<div class="modal-body">
 			
 				<h3>Personal Information</h3>
 				<div class="container">
-				<p>Major: <?=$student['major']?></p>
-				<p>GPA: <?=$student['gpa']?></p>
-				<p>Class Year: <?=$student['classYear']?></p>
+				<p>Major: <?=$student->getMajor()?></p>
+				<p>GPA: <?=$student->getGPA()?></p>
+				<p>Class Year: <?=$student->getClassYear()?></p>
 				</div>
 				
 				<h3>Contact Information</h3>
 				<div class="container">
 				<p>Email: email </p>
-				<p>Mobile Phone: <?=$student['homePhone']?> </p>
-				<p>Home Phone: <?=$student['mobilePhone']?> </p>
+				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
+				<p>Home Phone: <?=$student->getHomePhone()?> </p>
 				</div>
 				
 				<h3>About Me</h3>
 				<div class="container">
-				<p><?=$student['aboutMe']?></p>
+				<p><?=$student->getAboutMe()?></p>
 				
 				</div>
 				
@@ -136,7 +133,7 @@ and are color coded to emphasize priority.
 											
 											?>
 											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course['courseID'] ?>"><a href="#"><?= $course['courseTitle'] ?></a></li>
+											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
 	
 										<?php	
 											}
@@ -166,13 +163,13 @@ and are color coded to emphasize priority.
 				$tableEntry = 0;
 				foreach($courses as $course){
 							
-				$courseID = $course['courseID'];
-				$courseTitle = $course['courseTitle'];
+				$courseID = $course->getCRN();
+				$courseTitle = $course->getTitle();
 
 				/* applications for this particular course */
-				$applications = getApplicationsByCourseID($email,$courseID);
-				$totalCoursePositions = countTotalPositions($email,$courseID); /* positions to be filled */
-				$filledPositions = count(getFilledPositionsForCourse($email,$courseID)); /* positions that have been filled */
+				$applications = getApplicationsByCourse($email,$course);
+				$totalCoursePositions = countTotalPositions($email,$course); /* positions to be filled */
+				$filledPositions = count(getFilledPositionsForCourse($email,$course)); /* positions that have been filled */
 				
 				/* Flag all positions filled for a particular course */
 // 				$full = false;
@@ -185,6 +182,9 @@ and are color coded to emphasize priority.
 				/* After a selection, disable other applications with the same courseID */
 				
 				/* For use in the progress bar */
+				if ($totalCoursePositions == 0) {
+					$totalCoursePositions++;
+				}
 				$ratio = $filledPositions/$totalCoursePositions;
 				$percentage = $ratio * 100;
 				
@@ -203,7 +203,8 @@ and are color coded to emphasize priority.
 				/* create a new panel */ 
 				$panelID = "coursePanel" . $courseID;
 
-				$coursePanelName = $course['courseNumber']."-".$course['courseTitle'];
+				$coursePanelName = $course->getDepartment().$course->getNumber().
+					'-'.$course->getTitle();
 				
 				?>
 				
@@ -224,23 +225,24 @@ and are color coded to emphasize priority.
 											foreach($applications as $application){
 							
 												$buttonGroupName = "action" . $tableEntry;
-												$profileID = "myProfile" . $application[0];
+												$student = $application->getStudent();
+												$profileID = "myProfile" .$student->getID();
 												
 											?>
 											
-											<tr><td><?= $application['userID'] ?></td> <td><?= $application['firstName'] ?></td> <td><?= $application['lastName'] ?></td> <td><?= $application['email'] ?></td><td><?= $application['courseNumber'] ?></td><td><?= $application['posType'] ?></td><td><?= $application['gpa']?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
+											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $course->getDepartment().$course->getNumber()?></td><td><?= $application->getPosition()->getPositionType() ?></td><td><?= $student->getGPA() ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</td>
 											<td>
 												<div class="btn-group" data-toggle="buttons">
 													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $application['userID'] ?>" value="3 <?= $application['userID'] ?> <?= $application['positionID'] ?>"><span class="glyphicon glyphicon-ok"></span>
+													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $student->getID() ?>" value="3 <?= $student->getID() ?> <?= $application->getPosition()->getID() ?>"><span class="glyphicon glyphicon-ok"></span>
 													</label>
 													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $application['userID'] ?>" value="2 <?= $application['userID'] ?> <?= $application['positionID'] ?>"><span class="glyphicon glyphicon-remove"></span>
+													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $student->getID() ?>" value="2 <?= $student->getID() ?> <?= $application->getPosition()->getID() ?>"><span class="glyphicon glyphicon-remove"></span>
 													</label>
 													<label name="lectureSelections" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-													<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $application['userID'] ?>" value="0 0 0"><span class="glyphicon glyphicon-time"></span>												
+													<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $student->getID() ?>" value="0 0 0"><span class="glyphicon glyphicon-time"></span>												
 													</label>
 												</div> <!-- End btn-group -->
 											</td>

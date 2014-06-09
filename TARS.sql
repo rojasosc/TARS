@@ -21,7 +21,6 @@ DROP TABLE IF EXISTS Applications;
 DROP TABLE IF EXISTS Positions;
 DROP TABLE IF EXISTS CourseSessions;
 DROP TABLE IF EXISTS Sessions;
-DROP TABLE IF EXISTS Course;
 DROP TABLE IF EXISTS Courses;
 DROP TABLE IF EXISTS Terms;
 DROP TABLE IF EXISTS Staff;
@@ -164,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `Sessions` (
 -- Represents the list of Sessions for a Course
 --
 CREATE TABLE IF NOT EXISTS `CourseSessions` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `courseSessionID` bigint(20) NOT NULL AUTO_INCREMENT,
   `courseID` bigint(20) NOT NULL,
   `sessionID` bigint(20) NOT NULL,
   `placeID` bigint(20) NOT NULL,

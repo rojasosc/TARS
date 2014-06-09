@@ -147,16 +147,16 @@
 								</tr>
 								<?php
 									foreach($positions as $row) {
+										$course = $row->getPosition()->getCourse();
+										$position = $row->getPosition();
 								?>
 									<tr>
 										<td><?= $row->getID()?></td>
-										<td><?= $row->getPosition()->getCourse()->getDepartment()
-											." ".
-											$row->getPosition()->getCourse()->getNumber()?></td>
-										<td><?= $row->getPosition()->getCourse()->getTitle()?></td>
-										<td><?= $row->getPosition()->getPositionType()?></td>
+										<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
+										<td><?= $course->getTitle()?></td>
+										<td><?= $position->getPositionType()?></td>
 										<td><?= "TBD"?></td>
-										<td><?= $row->getPosition()->getTime()?></td>
+										<td><?= $position->getTime()?></td>
 										<td><?= $row->getCompensation()?></td>
 										<td><a class="btn btn-default" href="#emailModal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
 										<td><a class="btn btn-default" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>

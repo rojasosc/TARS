@@ -160,7 +160,7 @@ final class Database {
 
 final class Place {
 	public static function getPlaceByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Places WHERE ID = :id',
+		$row = Database::executeGetRow('SELECT * FROM Places WHERE placeID = :id',
 			array(':id' => $id));
 		return new Place($row);
 	}
@@ -191,7 +191,7 @@ final class Place {
  */
 abstract class User {
 	public static function getUserByID($id, $check_type = -1) {
-		$user_row = Database::executeGetRow('SELECT * FROM Users WHERE ID = :id',
+		$user_row = Database::executeGetRow('SELECT * FROM Users WHERE userID = :id',
 			array(':id'=>$id));
 
 		if ($user_row) {
@@ -213,7 +213,7 @@ abstract class User {
 	}
 
 	private static function getUserSubclassObject($user_row, $check_type) {
-		$args = array(':id' => $user_row['ID']);
+		$args = array(':id' => $user_row['userID']);
 		if ($check_type >= 0 && $check_type != $user_row['type']) {
 			return false;
 		}
@@ -248,7 +248,7 @@ abstract class User {
 	}
 
 	protected function __construct($user_row) {
-		$this->id = $user_row['ID'];
+		$this->id = $user_row['userID'];
 		$this->email = $user_row['email'];
 		$this->password = $user_row['password'];
 		$this->otype = $user_row['type'];
@@ -300,9 +300,9 @@ final class Student extends User {
 	}
 
 	public function getApplications($status) {
-		$sql = 'SELECT * FROM Assistantship
-				INNER JOIN Positions ON Positions.ID = Assistantship.positionID
-				INNER JOIN Courses ON Courses.ID = Positions.courseID
+		$sql = 'SELECT * FROM Applications
+				INNER JOIN Positions ON Positions.positionID = Applications.positionID
+				INNER JOIN Courses ON Courses.courseID = Positions.courseID
 				WHERE studentID = :student_id AND appStatus = :status
 				ORDER BY department DESC, courseNumber ASC';
 		$args = array(':student_id' => $this->id, ':status' => $status);
@@ -311,7 +311,7 @@ final class Student extends User {
 	}
 
 	public function apply($position, $compensation, $qualifications) {
-		$sql = 'INSERT INTO Assistantship
+		$sql = 'INSERT INTO Applications
 				(positionID, studentID, compensation, appStatus, qualifications) VALUES
 				(:position, :student, :comp, :status, :qual)';
 		$args = array(':position' => $position->getID(), ':student' => $this->id,
@@ -322,11 +322,11 @@ final class Student extends User {
 	public function updateProfile($firstName, $lastName, $mobilePhone,
 		$major, $classYear, $gpa, $aboutMe) {
 		$sql = 'UPDATE Students
-				INNER JOIN Users ON Users.ID = Students.userID
+				INNER JOIN Users ON Users.userID = Students.userID
 				SET firstName = :firstName, lastName = :lastName,
 					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
 					gpa = :gpa, aboutMe = :aboutMe
-				WHERE ID = :id';
+				WHERE userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 			':mobilePhone'=>$mobilePhone, ':major'=>$major,
 			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
@@ -375,10 +375,10 @@ final class Professor extends User {
 	}
 
 	public function getCourses() {
-		$sql = 'SELECT Courses.ID, Courses.CRN, Courses.department, Courses.courseNumber,
+		$sql = 'SELECT Courses.courseID, Courses.CRN, Courses.department, Courses.courseNumber,
 					Courses.courseTitle, Courses.website, Courses.termID
 				FROM Courses, Teaches
-				WHERE Courses.ID = Teaches.courseID AND Teaches.professorID = :prof_id
+				WHERE Courses.courseID = Teaches.courseID AND Teaches.professorID = :prof_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		$args = array(':prof_id' => $this->id);
 		$rows = Database::executeGetAllRows($sql, $args);
@@ -438,14 +438,14 @@ final class Admin extends User {
 
 final class Position {
 	public static function getPositionByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Positions WHERE ID = :id',
+		$row = Database::executeGetRow('SELECT * FROM Positions WHERE positionID = :id',
 			array(':id' => $id));
 		return new Position($row);
 	}
 
 	public static function findPositions($search_field, $term = -1, $position_type = null) {
 		$sql = 'SELECT * FROM Positions
-				INNER JOIN Courses ON Positions.courseID = Courses.ID
+				INNER JOIN Courses ON Positions.courseID = Courses.courseID
 				WHERE ';
 		$args = array();
 		if (!empty($search_field)) {
@@ -475,7 +475,7 @@ final class Position {
 	}
 
 	private function __construct($row) {
-		$this->id = $row['ID'];
+		$this->id = $row['positionID'];
 		$this->courseID = $row['courseID'];
 		$this->course = null;
 		$this->professorID = $row['professorID'];
@@ -509,11 +509,11 @@ final class Position {
 	private $posType;
 }
 
-// TODO: a better name to describe this than Applicant and Assistantship is "Application"
+// TODO: a better name to describe this than Applicant and Applications is "Application"
 final class Applicant {
 	// TODO: this should be in relation to the Applicant database object instead of Position
 	public static function setPositionStatus($student, $position, $status) {
-		$sql = 'UPDATE Assistantship
+		$sql = 'UPDATE Applications
 				SET appStatus = :status
 				WHERE studentID = :student_id AND positionID = :position_id';
 		$args = array(':status' => $status,	':student_id' => $student->getID(),
@@ -522,23 +522,23 @@ final class Applicant {
 	}
 
 	public static function getApplicantByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Assistantship WHERE ID = :id',
+		$row = Database::executeGetRow('SELECT * FROM Applications WHERE appID = :id',
 			array(':id' => $id));
 		return new Applicant($row);
 	}
 
 	// TODO pagination?
 	public static function getApplicantsByProfessor($prof_obj, $app_status) {
-		$sql = 'SELECT Assistantship.ID, Assistantship.positionID, Assistantship.studentID,
-					Assistantship.compensation, Assistantship.appStatus,
-					Assistantship.qualifications
-				FROM Assistantship, Users, Courses, Positions, Students, Teaches
-				WHERE Assistantship.studentID = Users.ID AND
-					Assistantship.studentID = Students.userID AND
-					Assistantship.appStatus = :status AND
-					Assistantship.positionID = Positions.ID AND
-					Positions.courseID = Courses.ID AND
-					Teaches.courseID = Courses.ID AND
+		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
+					Applications.compensation, Applications.appStatus,
+					Applications.qualifications
+				FROM Applications, Users, Courses, Positions, Students, Teaches
+				WHERE Applications.studentID = Users.userID AND
+					Applications.studentID = Students.userID AND
+					Applications.appStatus = :status AND
+					Applications.positionID = Positions.ID AND
+					Positions.courseID = Courses.userID AND
+					Teaches.courseID = Courses.userID AND
 					Teaches.professorID = :prof_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status);
@@ -547,17 +547,17 @@ final class Applicant {
 	}
 
 	public static function getApplicantsByProfessorAndCourse($prof_obj, $course_obj, $app_status) {
-		$sql = 'SELECT Assistantship.ID, Assistantship.positionID, Assistantship.studentID,
-					Assistantship.compensation, Assistantship.appStatus,
-					Assistantship.qualifications
-				FROM Assistantship, Users, Courses, Positions, Students, Teaches
-				WHERE Assistantship.studentID = Users.ID AND
-					Assistantship.studentID = Students.userID AND
-					Assistantship.appStatus = :status AND
-					Assistantship.positionID = Positions.ID AND
+		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
+					Applications.compensation, Applications.appStatus,
+					Applications.qualifications
+				FROM Applications, Users, Courses, Positions, Students, Teaches
+				WHERE Applications.studentID = Users.userID AND
+					Applications.studentID = Students.userID AND
+					Applications.appStatus = :status AND
+					Applications.positionID = Positions.ID AND
 					Positions.courseID = :course_id AND
-					Teaches.courseID = Courses.ID AND
-					Courses.ID = :course_id
+					Teaches.courseID = Courses.courseID AND
+					Courses.courseID = :course_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status,
 			':course_id' => $course_obj->getID());
@@ -567,13 +567,13 @@ final class Applicant {
 
 	public static function getApplicantsByTerm($term, $app_status, $compensation) {
 		$sql = 'SELECT *
-				FROM Assistantship, Positions, Courses, Students, Users
-				WHERE Assistantship.studentID = Users.ID AND
-					Assistantship.studentID = Students.userID AND
-					Courses.ID = Positions.courseID AND
-					Positions.ID = Assistantship.studentID AND
-					Assistantship.appStatus = :status AND
-					Assistantship.compensation = :compensation AND
+				FROM Applications, Positions, Courses, Students, Users
+				WHERE Applications.studentID = Users.ID AND
+					Applications.studentID = Students.userID AND
+					Courses.courseID = Positions.courseID AND
+					Positions.positionID = Applications.studentID AND
+					Applications.appStatus = :status AND
+					Applications.compensation = :compensation AND
 					Courses.termID = :termID
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		$args = array(':termID' => $term->getID(), ':status' => $app_status,
@@ -583,7 +583,7 @@ final class Applicant {
 	}
 
 	public function __construct($row) {
-		$this->id = $row['ID'];
+		$this->id = $row['appID'];
 		$this->positionID = $row['positionID'];
 		$this->position = null;
 		$this->studentID = $row['studentID'];
@@ -622,7 +622,7 @@ final class Applicant {
 
 final class Term {
 	public static function getTermByID($id) {
-		$sql = 'SELECT * FROM Terms WHERE ID = :id';
+		$sql = 'SELECT * FROM Terms WHERE termID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
 		return new Term($row);
@@ -635,7 +635,7 @@ final class Term {
 	}
 
 	public function __construct($row) {
-		$this->id = $row['ID'];
+		$this->id = $row['termID'];
 		$this->year = $row['year'];
 		$this->session = $row['session'];
 	}
@@ -654,14 +654,14 @@ final class Term {
 
 final class Course {
 	public static function getCourseByID($id) {
-		$sql = 'SELECT * FROM Courses WHERE ID = :id';
+		$sql = 'SELECT * FROM Courses WHERE courseID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
 		return new Course($row);
 	}
 
 	public function __construct($row) {
-		$this->id = $row['ID'];
+		$this->id = $row['courseID'];
 		$this->crn = $row['crn'];
 		$this->department = $row['department'];
 		$this->courseNumber = $row['courseNumber'];

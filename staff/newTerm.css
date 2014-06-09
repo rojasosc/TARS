@@ -1,5 +1,42 @@
-.tab-pane{
+.panelHeader{
 	
+	font-weight: bold;
+	font-size: 20pt;
+	text-align: center;
+}
+
+.optionHeader{
 	
-	background-color:white;
+	font-weight: bold;
+	font-size: 15pt;
+}
+
+#newTermButton{
+	
+	margin-top: 25px;
+	width: 150px;
+	
+}
+
+#copyTermButton{
+	
+	margin-top: 27px;
+	width: 150px;
+
+	
+}
+
+#payrollContainer{
+	
+	float:left;
+	width: 25%;
+	border-right-style: solid;
+	border-right-color: #3C763D;
+	padding: 10px;
+}
+
+#resultsContainer{
+	float:right;
+	width: 75%;
+	
 }

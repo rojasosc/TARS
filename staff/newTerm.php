@@ -43,25 +43,25 @@
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
 									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="dropdown">
+									<li class="dropdown active">
 										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="newTerm.php">New Term</a></li>
-											<li><a href="modifyTerm.php">Modify Term</a></li>
+											<li class="active"><a href="newTerm.php">New Term</a></li>
+											<li><a href="editTerm.php">Edit Term</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
 										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="createProfessor.php">New Account</a></li>
-											<li><a href="modifyProfessor.php">Modify Account</a></li>
+											<li><a href="editProfessor.php">Edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
-										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Assistants<b class="caret"></b></a>
+										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Students<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="modifyStudent.php">Modify Account</a></li>
-											<li><a href="verifyStudents.php">Screen Students</a></li>
+											<li><a href="editStudent.php">Edit Account</a></li>
+											<li><a href="reviewStudents.php">Review Students</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
@@ -78,84 +78,83 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				<div class="page-header">
-					<h1>New Term</h1>
-				</div>
 				<div class="container">
-					<div class="jumbotron">
-						<div id="formBox">
-							<form action="#" class="form-horizontal" id="newTermForm" method="post">
-								<legend>1) Upload Term</legend>
-								<div class="row">
-											<div class="col-md-12">
-												<p>Use this form to upload a new term using an XML file.
-												Once you have uploaded the file, you can make <a href="modifyTerm.php">modifications</a> to the new term</p>			
-											</div> <!-- End column -->						
-								</div> <!-- End row -->								
-								<div class="row">
-									<div class="col-md-4">
-										<div class="form-group">
-											<label class="control-label" for="termName">Specify Term</label>
-											<select id="classYear" name="termName" class="form-control">
-												<option>Summer-2014</option>
-												<option>Fall-2014</option>
-												<option>Spring-2015</option>
-												<option>Summer-2015</option>
-												<option>Fall-2015</option>
-											</select> <!-- End select -->										
-										</div> <!-- End form-group -->
-									</div> <!-- End column -->
-									<div class="col-md-4">
-										<div class="form-group"> 
-											<label class="control-label" for="termFile">Choose File</label><br>
-											<input type="file" title="Browse" name="termFile" data-filename-placement="inside">													
-										</div> <!-- End form-group -->							
-									</div>	<!-- End column -->									
-								</div> <!-- End row -->
-							
-								<div class="row">
-									<div class="col-md-2">
-										<div class="form-group">
-											<button id="newTermButton" type="submit"  name="newTermButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Create Term</button>													
-										</div> <!-- End form-group -->							
-									</div>	<!-- End column -->													
-								</div> <!-- End row -->
-							</form> <!-- End form -->
-						</div> <!-- end formbox -->
-						<div id="formBox">
-							<form action="#" class="form-horizontal" id="newTermForm" method="post">
-								<legend>2) Copy previous Term</legend>
-								<div class="row">
-									<div class="col-md-12">
-										<p>Use this form to create a new term by copying a previous term.
-										Once you have copied the term, you can make <a href="modifyTerm.php">modifications</a> to the new term</p>			
-									</div> <!-- End column -->									
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-md-4">
-										<div class="form-group">
-											<label class="control-label" for="termName">Specify Term</label>
-											<select id="classYear" name="termName" class="form-control">
-												<option>Summer-2014</option>
-												<option>Fall-2014</option>
-												<option>Spring-2015</option>
-												<option>Summer-2015</option>
-												<option>Fall-2015</option>
-											</select> <!-- End select -->										
-										</div> <!-- End form-group -->
-									</div> <!-- End column -->								
-								</div> <!-- End row -->
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<p class="panelHeader">New Term</p>
+						</div> <!-- End panel-heading -->
+						<div class="panel-body">
+							<div class="container">
+								<div id="formBox">
+									<form action="#" class="form-horizontal" id="newTermForm" method="post">
+										<p class="optionHeader">1) Upload Term</p>
+										<div class="row">
+													<div class="col-md-12">
+														<p>Use this form to upload a new term using an XML file.
+														Once you have uploaded the file, you can make <a href="editTerm.php">modifications</a> to the new term</p>			
+													</div> <!-- End column -->						
+										</div> <!-- End row -->								
+										<div class="row">
+											<div class="col-md-4">
+												<div class="form-group">
+													<label class="control-label" for="termName">Specify Term</label>
+													<select id="classYear" name="termName" class="form-control">
+														<option>Summer-2014</option>
+														<option>Fall-2014</option>
+														<option>Spring-2015</option>
+														<option>Summer-2015</option>
+														<option>Fall-2015</option>
+													</select> <!-- End select -->										
+												</div> <!-- End form-group -->
+											</div> <!-- End column -->
+											<div class="col-md-2">
+												<div class="form-group"> 
+													<label class="control-label" for="termFile">Choose File</label><br>
+													<input type="file" title="Browse" name="termFile" data-filename-placement="inside">													
+												</div> <!-- End form-group -->							
+											</div>	<!-- End column -->
+											<div class="col-md-3">
+												<div class="form-group">
+													<button id="newTermButton" type="submit"  name="newTermButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Upload Term</button>													
+												</div> <!-- End form-group -->							
+											</div>	<!-- End column -->												
+										</div> <!-- End row -->																					
+									</form> <!-- End form -->
+								</div> <!-- end formbox -->
 								<br>
-								<div class="row">
-									<div class="col-md-2">
-										<div class="form-group">
-											<button id="copyTermButton" type="submit"  name="copyTermButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Make Copy</button>													
-										</div> <!-- End form-group -->							
-									</div>	<!-- End column -->												
-								</div> <!-- End row -->
-							</form> <!-- End form -->
-						</div> <!-- end formbox -->						
-					</div> <!-- End jumbotron -->					
+								<div id="formBox">
+									<form action="#" class="form-horizontal" id="newTermForm" method="post">
+										<p class="optionHeader">2) Copy Previous Term</p>
+										<div class="row">
+											<div class="col-md-12">
+												<p>Use this form to create a new term by copying a previous term.
+												Once you have copied the term, you can make <a href="editTerm.php">modifications</a> to the new term</p>			
+											</div> <!-- End column -->									
+										</div> <!-- End row -->
+										<div class="row">
+											<div class="col-md-4">
+												<div class="form-group">
+													<label class="control-label" for="termName">Specify Term</label>
+													<select id="classYear" name="termName" class="form-control">
+														<option>Summer-2014</option>
+														<option>Fall-2014</option>
+														<option>Spring-2015</option>
+														<option>Summer-2015</option>
+														<option>Fall-2015</option>
+													</select> <!-- End select -->										
+												</div> <!-- End form-group -->
+											</div> <!-- End column -->
+											<div class="col-md-3">
+												<div class="form-group">
+													<button id="copyTermButton" type="submit"  name="copyTermButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Make Copy</button>													
+												</div> <!-- End form-group -->							
+											</div>	<!-- End column -->																							
+										</div> <!-- End row -->
+									</form> <!-- End form -->
+								</div> <!-- end formbox -->								
+							</div> <!-- End container -->						
+						</div> <!-- End panel-body -->
+					</div> <!-- End panel panel-success -->						
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

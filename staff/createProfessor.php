@@ -13,6 +13,7 @@
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
+		<link href="newTerm.css" rel="stylesheet">
 		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
@@ -47,21 +48,21 @@
 										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="newTerm.php">New Term</a></li>
-											<li><a href="modifyTerm.php">Modify Term</a></li>
+											<li><a href="editTerm.php">Edit Term</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
-									<li class="dropdown">
+									<li class="dropdown active">
 										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="createProfessor.php">New Account</a></li>
-											<li><a href="modifyProfessor.php">Modify Account</a></li>
+											<li class="active"><a href="createProfessor.php">New Account</a></li>
+											<li><a href="editProfessor.php">Edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
-										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Assistants<b class="caret"></b></a>
-										<ul class="dropdown-menu">
-											<li><a href="modifyStudent.php">Modify Account</a></li>
-											<li><a href="verifyStudents.php">Screen Students</a></li>
+										<a href="manageStudents.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Students<b class="caret"></b></a>
+										<ul class="dropdown-menu">											
+											<li><a href="reviewStudents.php">Review Students</a></li>
+											<li><a href="editStudent.php">Edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
@@ -81,7 +82,7 @@
 				<div class="container" id="formBox">
 						<div class="panel panel-success">
 							<div class="panel-heading">
-								<h4 data-toggle="collapse" data-target="#createAccountBody">Create New Account</h4>
+								<p class="panelHeader">New Professor Account</p>
 							</div> <!-- End panel-heading -->
 							<div class="collapse panel-collapse" id="createAccountBody">
 								<div class="panel-body">

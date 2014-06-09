@@ -9,14 +9,14 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Modify Term</title>
+		<title>Edit Term</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="staff.css" rel="stylesheet">
-		<link href="modifyTerm.css" rel="stylesheet">
+		<link href="editTerm.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="modifyTerm.js"></script>
+		<script src="editTerm.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -41,25 +41,25 @@
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
 									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="dropdown">
+									<li class="dropdown active">
 										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="newTerm.php">New Term</a></li>
-											<li><a href="modifyTerm.php">Modify Term</a></li>
+											<li class="active"><a href="editTerm.php">Edit Term</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
 										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li><a href="createProfessor.php">New Account</a></li>
-											<li><a href="modifyProfessor.php">Modify Account</a></li>
+											<li class="active"><a href="editProfessor.php">Edit Account</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li class="dropdown">
 										<a href="manageAssistants.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Assistants<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="modifyStudent.php">Modify Account</a></li>
-											<li><a href="verifyStudents.php">Screen Students</a></li>
+											<li><a href="editStudent.php">Edit Account</a></li>
+											<li><a href="reviewStudents.php">Review Students</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
@@ -75,35 +75,15 @@
 			<!--END Page Header -->	  
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">
-				<div class="page-header">
-					<h1>Modify Term</h1>
-				</div>			
-				<div class="container">
-					<form action="#" class="form-horizontal" id="newTermForm" method="post">		
-						<div class="row">		
-							<div class="col-md-4">
-								<div class="form-group">
-									<label class="control-label" for="termName">Select Term</label>
-									<select id="selectTerm" name="termName" class="form-control">
-										<option>Summer-2014</option>
-										<option>Fall-2014</option>
-										<option>Spring-2015</option>
-										<option>Summer-2015</option>
-										<option>Fall-2015</option>
-									</select> <!-- End select -->										
-								</div> <!-- End form-group -->
-							</div> <!-- End column -->									
-						</div> <!-- End row -->
-					</form> <!-- End form -->
-				</div> <!-- End container -->
-				
+			<div id="content">						
 				<div class="container" id="termContainer">
 						<!-- Nav tabs -->
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#term" data-toggle="tab">Term Overview</a></li>
 						<li><a href="#manageCourses" data-toggle="tab">Manage Courses</a></li>
 						<li><a href="#managePositions" data-toggle="tab">Manage Positions</a></li>
+						<li class="navbar-right"><p class="termHeader"></p></li>
+
 					</ul> <!-- End Nav tabs -->
 					<!-- Tab panes -->
 					<br>
@@ -111,9 +91,26 @@
 						
 						<!-- Begin Term Overview Pane -->
 						<div class="tab-pane fade in active" id="term">
-							<br>		
+							<br>
+							<div class="container">
+								<form action="#" class="form-horizontal" id="newTermForm" method="post">		
+									<div class="row">		
+										<div class="col-md-4">
+											<div class="form-group">
+												<label class="control-label" for="termName">Select Term</label>
+												<select id="selectTerm" name="termName" class="form-control">
+													<option>Summer-2014</option>
+													<option>Fall-2014</option>
+													<option>Spring-2015</option>
+													<option>Summer-2015</option>
+													<option>Fall-2015</option>
+												</select> <!-- End select -->										
+											</div> <!-- End form-group -->
+										</div> <!-- End column -->									
+									</div> <!-- End row -->
+								</form> <!-- End form -->
+							</div> <!-- End container -->							
 							<div class="container" id="termOverview">
-								<h3 class="termHeader"></h3>
 								<h4>Number of Courses: (Number)</h4>
 								<h4>Number of Positions: (Number)</h4>
 								<h4>Number of Locations: (Number)</h4>
@@ -127,7 +124,7 @@
 							<!-- Nav tabs -->
 							<ul class="nav nav-pills">
 								<li class="active"><a href="#newCourse" data-toggle="tab">New Course</a></li>
-								<li><a href="#editCourse" data-toggle="tab">Modify Course</a></li>
+								<li><a href="#editCourse" data-toggle="tab">Edit Course</a></li>
 							</ul> <!-- End Nav tabs -->
 							<h3 class="termHeader"></h3>
 							<div class="tab-content">
@@ -311,7 +308,6 @@
 									<form class="form-horizontal" method="post" action="#">
 										<div class="row">
 											<div class="col-md-4">
-												<div class="form-group">
 													<label class="control-label" for="course">Select Course</label>
 													<select name="course" class="form-control" id="selectCourse">
 														<option>The Science of Data Structures</option>
@@ -319,7 +315,6 @@
 														<option>Computer Organization</option>
 														<option>Web Programming</option>
 													</select> <!-- End select -->										
-												</div> <!-- End form-group -->
 											</div> <!-- End column -->
 											<div class="col-md-4" id="professorColumn">
 												<div class="form-group">
@@ -334,7 +329,7 @@
 										</div> <!-- End row -->										
 									</form> <!-- End form manage positions -->
 								</div> <!-- end container -->
-								<div class="container">
+								<div class="row">
 									<table class="table table-striped">
 										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>View Profile</th></tr>
 										<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#myProfile3" class="btn btn-default">
@@ -342,10 +337,10 @@
 											</td>
 										</tr> 												
 									</table>
-								</div> <!-- End container -->
+								</div> <!-- End row -->
 						</div> <!-- end tab-pane -->
 					</div>	<!-- end tab-content -->
-				</div> <!-- End container -->
+				</div> <!-- End container -->						
 			</div>
 			<!-- END Page Content --> 
 	    

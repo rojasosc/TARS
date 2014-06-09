@@ -12,7 +12,7 @@
 		if($user){
 		
 			/* User type */
-			$type = $user['type'];
+			$type = $user->getObjectType();
 			
 			if($type == STUDENT){
 				

@@ -149,13 +149,15 @@
 									foreach($positions as $row) {
 								?>
 									<tr>
-										<td><?= $row['positionID']?></td>
-										<td><?= $row['courseNumber']?></td>
-										<td><?= $row['courseTitle']?></td>
-										<td><?= $row['posType']?></td>
-										<td><?= $row['building']." ".$row[room]?></td>
-										<td><?= $row['time']?></td>
-										<td><?= $row['compensation']?></td>
+										<td><?= $row->getID()?></td>
+										<td><?= $row->getPosition()->getCourse()->getDepartment()
+											." ".
+											$row->getPosition()->getCourse()->getNumber()?></td>
+										<td><?= $row->getPosition()->getCourse()->getTitle()?></td>
+										<td><?= $row->getPosition()->getPositionType()?></td>
+										<td><?= "TBD"?></td>
+										<td><?= $row->getPosition()->getTime()?></td>
+										<td><?= $row->getCompensation()?></td>
 										<td><a class="btn btn-default" href="#emailModal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
 										<td><a class="btn btn-default" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 									</tr>

@@ -273,23 +273,22 @@ abstract class User {
 
 final class Student extends User {
 	public static function insertStudent($email, $password_hash, $firstName, $lastName,
-		$homePhone, $mobilePhone, $major, $gpa, $classYear, $aboutMe) {
+		$mobilePhone, $major, $gpa, $classYear, $aboutMe) {
 
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
 
 		return Database::executeInsert('INSERT INTO Students
-			(userID, homePhone, mobilePhone, major, gpa, classYear, aboutMe) VALUES
+			(userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
 			(:id, :homePhone, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
-			array(':id' => $userID, ':homePhone' => $homePhone,
-				':mobilePhone' => $mobilePhone, ':major' => $major, ':gpa' => $gpa,
-				':classYear' => $classYear, ':aboutMe' => $aboutMe));
+			array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
+				  ':major' => $major, ':gpa' => $gpa,
+				  ':classYear' => $classYear, ':aboutMe' => $aboutMe));
 	}
 
 	public function __construct($user_row, $student_row) {
 		parent::__construct($user_row);
 
 		if ($student_row) {
-			$this->homePhone = $student_row['homePhone'];
 			$this->mobilePhone = $student_row['mobilePhone'];
 			$this->major = $student_row['major'];
 			$this->gpa = $student_row['gpa'];
@@ -334,7 +333,6 @@ final class Student extends User {
 		Database::execute($sql, $args);
 	}
 
-	public function getHomePhone() { return $this->homePhone; }
 	public function getMobilePhone() { return $this->mobilePhone; }
 	public function getMajor() { return $this->major; }
 	public function getGPA() { return $this->gpa; }
@@ -343,7 +341,6 @@ final class Student extends User {
 	public function getStatus() { return $this->status; }
 	public function getReputation() { return $this->reputation; }
 
-	private $homePhone;
 	private $mobilePhone;
 	private $major;
 	private $gpa;
@@ -834,7 +831,7 @@ function registerStudent($firstName, $lastName,$email,$password,$homePhone,$mobi
 	$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 	Student::insertStudent($email, $password_hash, $firstName, $lastName,
-		$homePhone, $mobilePhone, $major, $gpa, $classYear, $aboutMe);
+		$mobilePhone, $major, $gpa, $classYear, $aboutMe);
 }
 
 /* Function registerProfessor
@@ -1021,7 +1018,7 @@ function getCourseIDS($email){
 ********************/
 
 /* Function studentPositions
-*  Purpose: Fetch all of the student's currently held TA-ing positions fromt he database
+*  Purpose: Fetch all of the student's currently held TA-ing positions from the database
 *  Returns: An array of associative arrays with all the student's TA position information
 **/
 

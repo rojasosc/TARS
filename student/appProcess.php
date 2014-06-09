@@ -1,11 +1,10 @@
 <?php
 	include("../db.php");
 	if(isset($_POST)) {
+		echo 'post isset';
 		$pID = $_POST['positionID'];
-		$sID = $_POST['studentID'];
 		$comp = $_POST['compensation'];
 		$qual = $_POST['qualifications'];
-		apply($pID, $sID, $comp, $qual);
+		Student::apply($pID, $comp, $qual);
 	}
-	echo "success";
 ?>

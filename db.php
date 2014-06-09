@@ -278,8 +278,8 @@ final class Student extends User {
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
 
 		return Database::executeInsert('INSERT INTO Students
-			(userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
-			(:id, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
+			(studentID, userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
+			(:id, :id, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
 			array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
 				  ':major' => $major, ':gpa' => $gpa,
 				  ':classYear' => $classYear, ':aboutMe' => $aboutMe));
@@ -314,19 +314,19 @@ final class Student extends User {
 		$sql = 'INSERT INTO Applications
 				(positionID, studentID, compensation, appStatus, qualifications) VALUES
 				(:position, :student, :comp, :status, :qual)';
-		$args = array(':position' => $position->getID(), ':student' => $this->id,
-			':comp' => $compensation, ':qual' => $qualifications);
+		$args = array(':position' => $position, ':student' => $this->id,
+			':comp' => $compensation, ':status' => PENDING, ':qual' => $qualifications);
 		return Database::executeInsert($sql, $args);
 	}
 
 	public function updateProfile($firstName, $lastName, $mobilePhone,
 		$major, $classYear, $gpa, $aboutMe) {
 		$sql = 'UPDATE Students
-				INNER JOIN Users ON Users.userID = Students.userID
+				INNER JOIN Users ON Users.userID = Students.studentID
 				SET firstName = :firstName, lastName = :lastName,
 					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
 					gpa = :gpa, aboutMe = :aboutMe
-				WHERE userID = :id';
+				WHERE studentID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 			':mobilePhone'=>$mobilePhone, ':major'=>$major,
 			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
@@ -357,8 +357,8 @@ final class Professor extends User {
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, PROFESSOR);
 
 		return Database::executeInsert('INSERT INTO Professors
-			(userID, officeID, officePhone, mobilePhone) VALUES
-			(:id, :officeID, :officePhone, :mobilePhone)',
+			(professorID, userID, officeID, officePhone, mobilePhone) VALUES
+			(:id, :id, :officeID, :officePhone, :mobilePhone)',
 			array(':id' => $userID, ':officeID' => $officeID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
 		}
@@ -408,8 +408,8 @@ final class Staff extends User {
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STAFF);
 
 		return Database::executeInsert('INSERT INTO Staff
-			(userID, officePhone, mobilePhone) VALUES
-			(:id, :officePhone, :mobilePhone)',
+			(staffID, userID, officePhone, mobilePhone) VALUES
+			(:id, :id, :officePhone, :mobilePhone)',
 			array(':id' => $userID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
 	}
@@ -568,7 +568,7 @@ final class Applicant {
 	public static function getApplicantsByTerm($term, $app_status, $compensation) {
 		$sql = 'SELECT *
 				FROM Applications, Positions, Courses, Students, Users
-				WHERE Applications.studentID = Users.ID AND
+				WHERE Applications.studentID = Users.userID AND
 					Applications.studentID = Students.userID AND
 					Courses.courseID = Positions.courseID AND
 					Positions.positionID = Applications.studentID AND

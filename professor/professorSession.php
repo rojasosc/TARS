@@ -16,8 +16,8 @@
 	/* Obtain professor associate array representation */	
 	$professor = getProfessor($email);
 	
-	$firstName = $professor['firstName'];
-	$lastName = $professor['lastName'];
+	$firstName = $professor->getFirstName();
+	$lastName = $professor->getLastName();
 	
 	/* Used in the navbar brand */
 	$nameBrand = $firstName[0].".".$lastName;

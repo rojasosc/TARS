@@ -72,7 +72,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											?>
 											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course['courseID'] ?>"><a href="#"><?= $course['courseTitle'] ?></a></li>
+											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
 	
 										<?php	
 											}

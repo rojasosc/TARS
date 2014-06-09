@@ -76,6 +76,9 @@
 			<!-- BEGIN Page Content -->
 			<div id="content">						
 				<div class="container" id="termContainer">
+					<div class="row">
+						<h1>Edit Term</h1>
+					</div> <!-- End row -->
 						<!-- Nav tabs -->
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#term" data-toggle="tab">Term Overview</a></li>
@@ -125,7 +128,6 @@
 								<li class="active"><a href="#newCourse" data-toggle="tab">New Course</a></li>
 								<li><a href="#editCourse" data-toggle="tab">Edit Course</a></li>
 							</ul> <!-- End Nav tabs -->
-							<h3 class="termHeader"></h3>
 							<div class="tab-content">
 								<div class="tab-pane fade in active" id="newCourse">
 									
@@ -302,7 +304,6 @@
 						</div> <!-- End tab-pane manage courses -->
 						
 						<div class="tab-pane fade" id="managePositions">
-							<h3 class="termHeader"></h3>
 								<div class="container">
 									<form class="form-horizontal" method="post" action="#">
 										<div class="row">
@@ -316,27 +317,51 @@
 													</select> <!-- End select -->										
 											</div> <!-- End column -->
 											<div class="col-md-4" id="professorColumn">
-												<div class="form-group">
 													<label class="control-label" for="professor">Select Professor</label>
 													<select name="professor" class="form-control" id="selectProfessor">
 														<option>Ted Pawlicki</option>
 														<option>Chris Brown</option>
 														<option>Michael Scott</option>
 													</select> <!-- End select -->										
-												</div> <!-- End form-group -->
 											</div> <!-- End column -->												
 										</div> <!-- End row -->										
 									</form> <!-- End form manage positions -->
 								</div> <!-- end container -->
 								<div class="row">
+									<div class="col-md-4">
+										<h3>Current Assistants</h3>
+									</div> <!-- End column -->
+									
+								</div> <!-- End row -->
+								<div class="row">
+									<div class="col-md-12">
 									<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>View Profile</th></tr>
+										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>View Profile</th></tr>									<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#myProfile3" class="btn btn-default">
+											<span class="glyphicon glyphicon-user"></span> Profile</a>
+											</td>
+										</tr> 
 										<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#myProfile3" class="btn btn-default">
 											<span class="glyphicon glyphicon-user"></span> Profile</a>
 											</td>
-										</tr> 												
-									</table>
+										</tr> 	
+										<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#myProfile3" class="btn btn-default">
+											<span class="glyphicon glyphicon-user"></span> Profile</a>
+											</td>
+										</tr> 											
+									</table>									
+									</div> <!-- End column -->
 								</div> <!-- End row -->
+												<div class="row">
+													<div class="col-md-2">
+														<button id="updateCourseButton" type="submit"  name="updateCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add Grader</button>
+													</div> <!-- End column -->
+													<div class="col-md-2 col-md-offset-2">
+														<button id="removeCourseButton" type="submit"  name="removeCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add Lab TA</button>
+													</div> <!-- End column -->
+													<div class="col-md-2 col-md-offset-2">
+														<button id="removeCourseButton" type="submit"  name="removeCourseButton" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-add"></span> Add WL</button>
+													</div> <!-- End column -->														
+												</div> <!-- End row -->									
 						</div> <!-- end tab-pane -->
 					</div>	<!-- end tab-content -->
 				</div> <!-- End container -->						

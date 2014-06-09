@@ -139,7 +139,7 @@ INSERT INTO `Teaches` (`courseID`, `professorID`) VALUES
 (5, 13),
 (6, 14);
 
-INSERT INTO `Assistantship` (`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`) VALUES
+INSERT INTO `Applications` (`positionID`, `studentID`, `compensation`, `appStatus`, `qualifications`) VALUES
 (1, 2, 'pay', 2, ''),
 (2, 2, 'credit', 2, ''),
 (3, 2, 'pay', 2, ''),

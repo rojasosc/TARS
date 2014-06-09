@@ -5,7 +5,7 @@ $search = isset($_POST['search']) ? $_POST['search'] : '';
 $term = isset($_POST['term']) ? $_POST['term'] : -1;
 $type = isset($_POST['type']) ? $_POST['term'] : null;
 
-$positions = search($search, $term, $type);
+$positions = Position::findPositions($search, $term, $type);
 
 $terms = Term::getAllTerms();
 ?>
@@ -232,7 +232,7 @@ $terms = Term::getAllTerms();
 												<td class="positionID"><?=$position->getID()?></td>
 												<td><?=$course->getDepartment()?><?=$course->getNumber()?></td>
 												<td><?=$course->getTitle()?></td>
-												<td><?=$professor->getFirstName()." ".$professor->getLastName()?></td>
+												<td><?=$professor->getFirstName()[0].". ".$professor->getLastName()?></td>
 												<td><?=$position->getPositionType()?></td>
 												<td><?=$position->getTime()?></td>
 												<td>

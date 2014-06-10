@@ -1,4 +1,5 @@
 <?php  
+    ini_set('display_errors',1);	
     include('staffSession.php');
 ?>
 
@@ -206,7 +207,7 @@
 								<br>
 								<div class="row">
 									<div class="col-md-6">
-										<button id="submitButton"  type="submit" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Search</button>
+										<button id="searchStudents"  type="submit" name="searchStudents" class="btn btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Search</button>
 									</div> <!-- End column -->
 								</div> <!-- End row -->	
 							</form> <!-- End form-horizontal -->

@@ -78,8 +78,8 @@
 				<div class="container" id="termContainer">
 					<div class="row">
 						<h1>Edit Term</h1>
+						<h2 class="termHeader"></h2>
 					</div> <!-- End row -->
-					
 					<div class="container" id="navTabs">
 								<form action="#" class="form-horizontal" id="newTermForm" method="post">		
 									<div class="row">		

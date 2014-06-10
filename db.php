@@ -375,7 +375,7 @@ final class Professor extends User {
 	}
 
 	public function getCourses() {
-		$sql = 'SELECT Courses.courseID, Courses.CRN, Courses.department, Courses.courseNumber,
+		$sql = 'SELECT Courses.courseID, Courses.crn, Courses.department, Courses.courseNumber,
 					Courses.courseTitle, Courses.website, Courses.termID
 				FROM Courses, Teaches
 				WHERE Courses.courseID = Teaches.courseID AND Teaches.professorID = :prof_id

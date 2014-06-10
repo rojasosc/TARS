@@ -191,8 +191,9 @@ final class Place {
  */
 abstract class User {
 	public static function getUserByID($id, $check_type = -1) {
-		$user_row = Database::executeGetRow('SELECT * FROM Users WHERE userID = :id',
-			array(':id'=>$id));
+		$sql = 'SELECT * FROM Users WHERE userID = :id';
+		$args = array(':id' => $id);
+		$user_row = Database::executeGetRow($sql, $args);
 
 		if ($user_row) {
 			return User::getUserSubclassObject($user_row, $check_type);
@@ -202,8 +203,9 @@ abstract class User {
 	}
 
 	public static function getUserByEmail($email, $check_type = -1) {
-		$user_row = Database::executeGetRow('SELECT * FROM Users WHERE email = :email',
-			array(':email'=>$email));
+		$sql = 'SELECT * FROM Users WHERE email = :email';
+		$args = array(':email' => $email);
+		$user_row = Database::executeGetRow($sql, $args);
 
 		if ($user_row) {
 			return User::getUserSubclassObject($user_row, $check_type);
@@ -232,6 +234,34 @@ abstract class User {
 			return new Admin($user_row, false);
 		}
 	}
+
+	public static function findUsers($email, $firstName, $lastName, $check_type = -1) {
+		$sql = 'SELECT * FROM Users
+				WHERE ';
+		$args = array();
+		if (!empty($email)) {
+			$sql .= 'INSTR(email, :email) AND ';
+			$args[':email'] = $email;
+		}
+		if (!empty($firstName)) {
+			$sql .= 'INSTR(firstName, :firstName) AND ';
+			$args[':firstName'] = $firstName;
+		}
+		if (!empty($lastName)) {
+			$sql .= 'INSTR(lastName, :lastName) AND ';
+			$args[':lastName'] = $lastName;
+		}
+		$sql .= '1 ORDER BY lastName DESC, firstName DESC';
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_filter(array_map(function ($row) {
+			if ($row) {
+				return User::getUserSubclassObject($row, $check_type);
+			} else {
+				return false;
+			}
+		}, $rows), function ($obj) { return $obj !== false; });
+	}
+
 
 	public static function insertUser($email, $password, $firstName, $lastName, $type) {
 		return Database::executeInsert('INSERT INTO Users

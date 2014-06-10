@@ -1,9 +1,6 @@
 $(document).ready(function() {
 	var email;
-	
-	$('#formBox').hide();
-	$('#noResults').hide();
-	
+	$('#results').hide();	
 	/*Prevents a page redirection to the php page.*/
 	$("#findAccountForm").submit(function(event){
 		$('#formBox').hide(1000);
@@ -18,7 +15,7 @@ $(document).ready(function() {
 	
 	});
 
-	$('#submitButton').click(function(){
+	$('#searchStudents').click(function(){
 			
 		email = $('#emailSearch').val();
 			
@@ -31,14 +28,22 @@ $(document).ready(function() {
 
 		var student = eval('(' + info + ')');
 		
+		/* If there are no results, display a prompt */
+		
 		if(!student){
 			
 			$('#noResults').toggle(2000);
 			
 			
 		}
+
+		/* Prepare results table */
 		
-		$('#firstName').val(student["firstName"]);
+				
+		
+		
+		
+/*		$('#firstName').val(student["firstName"]);
 		$('#lastName').val(student["lastName"]);
 		$('#email').val(email);
 		$('#mobilePhone').val(student["mobilePhone"]);
@@ -46,9 +51,9 @@ $(document).ready(function() {
 		$('#major').val(student["major"]);
 		$('#gpa').val(student["gpa"]);
 		$('#classYear').val(student["classYear"]);
-		$('#aboutMe').val(student["aboutMe"]);			
+		$('#aboutMe').val(student["aboutMe"]);	*/	
 
-		$('#formBox').show(1000);
+		$('#results').fadeIn(1000);
 	});
 
 	

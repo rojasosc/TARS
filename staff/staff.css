@@ -132,6 +132,13 @@ th,td {
 	
 	
 }
+
+.termHeader{
+	font-weight: bold;
+	text-align: center;
+	color: #334d6c;
+	
+}
 .nav-tabs p{
 	
 	font-weight: bold;

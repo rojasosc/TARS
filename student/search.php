@@ -159,6 +159,9 @@ $terms = Term::getAllTerms();
 									<li><a href="student.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li><a href="cur_pos.php"><span class="glyphicon glyphicon-th-list"></span> Current Positions</a></li>
 									<li class="active"><a href="search.php"><span class="glyphicon glyphicon-inbox"></span> Position Search</a></li>
+								</ul> <!-- End navbar unordered list -->
+
+								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
 							</div> <!-- End navbar-collapse collapse -->        

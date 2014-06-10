@@ -568,7 +568,9 @@ final class Applicant {
 	}
 
 	public static function getApplicantsByTerm($term, $app_status, $compensation) {
-		$sql = 'SELECT *
+		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
+					Applications.compensation, Applications.appStatus,
+					Applications.qualifications
 				FROM Applications, Positions, Courses, Students, Users
 				WHERE Applications.studentID = Users.userID AND
 					Applications.studentID = Students.userID AND
@@ -1092,7 +1094,7 @@ function getPayrollByTerm($termID){
 	$term = Term::getTermByID($termID);
 
 	if ($term) {
-		return Applicant::getApplicantsByTerm($term, APPROVED, 'paid');
+		return Applicant::getApplicantsByTerm($term, APPROVED, 'pay');
 	} else {
 		return array();
 	}

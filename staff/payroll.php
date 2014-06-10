@@ -91,11 +91,11 @@
 													<label class="control-label" for="term">Term</label>
 													<select name="term" class="form-control" placeholder="Term">
 														<!-- Still need to use PHP to render these dynamically -->
-														<option>Fall-2013</option>
-														<option>Spring-2014</option>
-														<option>Summer-2014</option>
-														<option>Fall-2014</option>
-														<option>Spring-2015</option>
+														<option>Fall 2013</option>
+														<option>Spring 2014</option>
+														<option>Summer 2014</option>
+														<option>Fall 2014</option>
+														<option>Spring 2015</option>
 													</select> <!-- End select -->										
 													</div> <!-- End column -->									
 												</div> <!-- End form-group -->
@@ -111,16 +111,19 @@
 
 									<?php
 									
-									$term = "Fall-2014";
+									$term = CURRENT_TERM;
 									$assistants = getPayrollByTerm($term);
 									
 									foreach($assistants as $assistant){
+										$student = $assistant->getStudent();
+										$position = $assistant->getPosition();
+										$course = $position->getCourse();
 									
 									?>
 									
 									<tr>
-										<td><?= $assistant['studentID'] ?></td> <td><?= $assistant['firstName'] ?></td> <td><?= $assistant['lastName'] ?></td> <td><?= $assistant['email'] ?></td><td><?= $assistant['courseNumber'] ?></td><td><?= $assistant['type'] ?></td><td><?= $assistant['classYear'] ?></td>
-										<td><?= $assistant['compensation'] ?></td>
+										<td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $course->getCRN() ?></td><td><?= $position->getPositionType() ?></td><td><?= $student->getClassYear() ?></td>
+										<td><?= $assistant->getCompensation() ?></td>
 									</tr>
 									<?php
 									

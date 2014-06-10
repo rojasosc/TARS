@@ -11,9 +11,9 @@
 
 /* Database login credentials */
 const DATABASE_PATH = 'localhost';
-const DATABASE_USERNAME = 'root';
-const DATABASE_PASSWORD = '1234';
-const DATABASE_NAME = 'TARS';
+const DATABASE_USERNAME = 'tars';
+const DATABASE_PASSWORD = 'TL37LJvv69A6vJ5p';
+const DATABASE_NAME = 'tars';
 const DATABASE_TYPE = 'mysql';
 
 const STUDENT = 0;
@@ -451,8 +451,10 @@ final class Position {
 		if (!empty($search_field)) {
 			$i = 1;
 			foreach (explode(' ', $search_field) as $word) {
-				$sql .= "(Courses.department = :word$i OR Courses.courseNumber = :word$i OR
-					INSTR(Courses.courseTitle, :word$i)) AND ";
+				$sql .= "(Courses.department = :word$i OR
+					Courses.courseNumber = :word$i OR
+					INSTR(Courses.courseTitle, :word$i) OR
+					CONCAT(Courses.department, Courses.courseNumber) = :word$i) AND ";
 				$args[":word$i"] = $word;
 				$i++;
 			}

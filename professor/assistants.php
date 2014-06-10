@@ -79,7 +79,6 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				<div class="container">
 				<p>Email: <?=$student->getEmail()?> </p>
 				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
-				<p>Home Phone: <?=$student->getHomePhone()?> </p>
 				</div>
 				
 				<h3>About Me</h3>

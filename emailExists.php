@@ -1,7 +1,7 @@
 <?php
 	include('db.php');
 	
-	$exists = emailExists($_POST['email']);
+	$exists = emailAvailable($_POST['email']);
 	
 	echo json_encode(array('valid' => $exists));
 ?>

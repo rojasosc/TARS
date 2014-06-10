@@ -808,8 +808,8 @@ function endSession(){
 *  Purpose: Checks if an email is in use.
 *  Returns: True if in use and false otherwise.
 **/	
-function emailExists($email){
-	return User::checkEmailExists($email);
+function emailAvailable($email){
+	return User::checkEmailAvailable($email);
 } 
 
 /********************

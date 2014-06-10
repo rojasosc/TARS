@@ -15,9 +15,11 @@ SET time_zone = "+00:00";
 -- Database: `TARS`
 --
 
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS Teaches;
 DROP TABLE IF EXISTS Feedback;
 DROP TABLE IF EXISTS Applications;
+DROP TABLE IF EXISTS Assistantship;
 DROP TABLE IF EXISTS Positions;
 DROP TABLE IF EXISTS CourseSessions;
 DROP TABLE IF EXISTS Sessions;
@@ -29,6 +31,7 @@ DROP TABLE IF EXISTS Students;
 DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS Place;
 DROP TABLE IF EXISTS Places;
+SET FOREIGN_KEY_CHECKS=1;
 
 --
 -- Table structure for table `Places`

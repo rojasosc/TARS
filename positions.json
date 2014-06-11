@@ -1,0 +1,29 @@
+{
+	"termYear":2014,
+	"termSemester":"fall",
+	"defaultEmailDomain":"cs.rochester.edu",
+	"courses":[
+	{
+		"crn":30105,
+		"dep":"CSC",
+		"number":"171",
+		"title":"The Science of Programming",
+		"website":"http://cs.rochester.edu/courses/171/fall2014/",
+		"instructors":[
+		{"fname":"Ted","lname":"Pawlicki","email":"pawlicki@"}],
+		"sessions":[
+		{"weekdays":"WF","begin":"10:25","end":"11:40","building":"HOYT","room":"AUD"}],
+		"positions":[
+		{"type":"workshopsuper","count":1},
+		{"type":"workshop","count":9},
+		{"type":"lab","count":2,"sessions":[
+			{"weekdays":"TR","begin":"11:05","end":"12:20","building":"GAVET","room":"244"}]},
+		{"type":"lab","count":2,"sessions":[
+			{"weekdays":"TR","begin":"18:15","end":"19:30","building":"GAVET","room":"244"}]},
+		{"type":"lab","count":2,"sessions":[
+			{"weekdays":"TR","begin":"12:30","end":"13:45","building":"GAVET","room":"244"}]},
+		{"type":"lab","count":2,"sessions":[
+			{"weekdays":"TR","begin":"16:50","end":"18:05","building":"GAVET","room":"244"}]}]
+	}]
+}
+

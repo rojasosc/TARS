@@ -308,8 +308,8 @@ final class Student extends User {
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
 
 		return Database::executeInsert('INSERT INTO Students
-			(studentID, userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
-			(:id, :id, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
+			(userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
+			(:id, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
 			array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
 				  ':major' => $major, ':gpa' => $gpa,
 				  ':classYear' => $classYear, ':aboutMe' => $aboutMe));
@@ -352,11 +352,11 @@ final class Student extends User {
 	public function updateProfile($firstName, $lastName, $mobilePhone,
 		$major, $classYear, $gpa, $aboutMe) {
 		$sql = 'UPDATE Students
-				INNER JOIN Users ON Users.userID = Students.studentID
+				INNER JOIN Users ON Users.userID = Students.userID
 				SET firstName = :firstName, lastName = :lastName,
 					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
 					gpa = :gpa, aboutMe = :aboutMe
-				WHERE studentID = :id';
+				WHERE userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 			':mobilePhone'=>$mobilePhone, ':major'=>$major,
 			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
@@ -387,7 +387,7 @@ final class Professor extends User {
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, PROFESSOR);
 
 		return Database::executeInsert('INSERT INTO Professors
-			(professorID, userID, officeID, officePhone, mobilePhone) VALUES
+			(userID, officeID, officePhone, mobilePhone) VALUES
 			(:id, :id, :officeID, :officePhone, :mobilePhone)',
 			array(':id' => $userID, ':officeID' => $officeID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
@@ -438,8 +438,8 @@ final class Staff extends User {
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STAFF);
 
 		return Database::executeInsert('INSERT INTO Staff
-			(staffID, userID, officePhone, mobilePhone) VALUES
-			(:id, :id, :officePhone, :mobilePhone)',
+			(userID, officePhone, mobilePhone) VALUES
+			(:id, :officePhone, :mobilePhone)',
 			array(':id' => $userID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
 	}
@@ -1152,9 +1152,9 @@ function getUnverifiedStudents(){
 
 	$conn = open_database();
 	
-	$sql = "SELECT Students.studentID, Students.firstName, Students.lastName, Users.email, Students.gpa\n"
+	$sql = "SELECT Students.userID, Students.firstName, Students.lastName, Users.email, Students.gpa\n"
 	. "FROM Students,Users\n"
-	. "WHERE Students.studentID = Users.userID AND Students.status = 0";
+	. "WHERE Students.userID = Users.userID AND Students.status = 0";
 	
 	$result = mysqli_query($conn,$sql);
 	
@@ -1189,7 +1189,7 @@ function setStatus($studentID,$status){
 
 	$conn = open_database();
 	
-	$sql = "UPDATE Students SET status = '$status' WHERE Students.studentID = '$studentID'";
+	$sql = "UPDATE Students SET status = '$status' WHERE Students.userID = '$studentID'";
 	
 	mysqli_query($conn,$sql);
 	
@@ -1236,7 +1236,7 @@ function updateStudent($firstName, $lastName,$email,$homePhone,$mobilePhone,$cla
 	$aboutMe = mysqli_real_escape_string($conn,$aboutMe);
 	
 	$studentID = getUserID($email);
-	$sql = "UPDATE Students SET Students.firstName = '$firstName', Students.lastName = '$lastName', Students.homePhone = '$homePhone', Students.mobilePhone = '$mobilePhone', Students.classYear = '$classYear', Students.major = '$major', Students.gpa = '$gpa', Students.aboutMe = '$aboutMe' WHERE Students.studentID = '$studentID'";		
+	$sql = "UPDATE Students SET Students.firstName = '$firstName', Students.lastName = '$lastName', Students.homePhone = '$homePhone', Students.mobilePhone = '$mobilePhone', Students.classYear = '$classYear', Students.major = '$major', Students.gpa = '$gpa', Students.aboutMe = '$aboutMe' WHERE Students.userID = '$studentID'";		
 	mysqli_query($conn,$sql);
 	
 	close_database($conn);	

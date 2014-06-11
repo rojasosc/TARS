@@ -14,7 +14,7 @@
 		$email = $_SESSION['email'];
 		
 		/* Obtain professor associate array representation */	
-		$professor = getProfessor($email);
+		$professor = User::getUserByEmail($email, PROFESSOR);
 
 		if (!$professor) {
 			/* redirect to login page if not a professor */

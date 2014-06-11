@@ -877,42 +877,8 @@ final class Course {
 	private $termID;
 }
 
+/** Connect to the database and create/use PDO object. */
 Database::connect();
-
-/* Function getUserID
-*  Purpose: Obtains an existing users ID via their email address.
-*  Returns: integer userID
-**/
-function getUserID($email) {
-	if ($user_obj = User::getUserByEmail($email)) {
-		return $user_obj->getID();
-	}
-	return false;
-}
-
-/* Function 
-*  Purpose: 
-*  Returns: 
-**/	
-function getStudent($email) {
-	return User::getUserByEmail($email, STUDENT);
-}
-
-/* Function 
-*  Purpose: 
-*  Returns: 
-**/	
-function getProfessor($email) {
-	return User::getUserByEmail($email, PROFESSOR);
-}	
-
-/* Function 
-*  Purpose: 
-*  Returns: 
-**/	
-function getStaff($email) {
-	return User::getUserByEmail($email, STAFF);
-}	
 
 /***********************
 * END DATABASE UTILITIES

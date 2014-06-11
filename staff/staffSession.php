@@ -9,7 +9,7 @@
 		exit;
 	} else {
 		$email = $_SESSION['email'];	//Extract the email from the session to fetch a staff object
-		$staff = getStaff($email);		//Fetch said staff object
+		$staff = User::getUserByEmail($email, STAFF);		//Fetch said staff object
 		if (!$staff) {
 			header('Location: ../index.php');
 			exit;

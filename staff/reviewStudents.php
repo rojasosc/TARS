@@ -48,10 +48,7 @@
 		foreach($students as $student){
 			
 			/*Get studentID */
-			$studentID = $student['studentID'];
-			
-			/*Get profile array representation */
-			$student = getStudent($student[3]);
+			$studentID = $student->getID();
 			
 			if(!in_array($studentID,$profilesMade)){
 			
@@ -71,21 +68,20 @@
 			
 				<h3>Personal Information</h3>
 				<div class="container">
-				<p>Major: <?=$student['major']?></p>
-				<p>GPA: <?=$student['gpa']?></p>
-				<p>Class Year: <?=$student['classYear']?></p>
+				<p>Major: <?=$student->getMajor()?></p>
+				<p>GPA: <?=$student->getGPA()?></p>
+				<p>Class Year: <?=$student->getClassYear()?></p>
 				</div>
 				
 				<h3>Contact Information</h3>
 				<div class="container">
-				<p>Email: email </p>
-				<p>Mobile Phone: <?=$student['homePhone']?> </p>
-				<p>Home Phone: <?=$student['mobilePhone']?> </p>
+				<p>Email: <?=$student->getEmail()?> </p>
+				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
 				</div>
 				
 				<h3>About Me</h3>
 				<div class="container">
-				<p><?=$student['aboutMe']?></p>
+				<p><?=$student->getAboutMe()?></p>
 				
 				</div>
 				

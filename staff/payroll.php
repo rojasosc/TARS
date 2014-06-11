@@ -106,7 +106,7 @@
 							<div class="container" id="resultsContainer">
 								<div class="row">
 									<table class="table table-striped">
-									<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
+									<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
 									<!-- Note: use Ajax to render table content -->
 
 									<?php
@@ -122,7 +122,7 @@
 									?>
 									
 									<tr>
-										<td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $course->getCRN() ?></td><td><?= $position->getPositionType() ?></td><td><?= $student->getClassYear() ?></td>
+										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $course->getCRN() ?></td><td><?= $position->getPositionType() ?></td><td><?= $student->getClassYear() ?></td>
 										<td><?= $assistant->getCompensation() ?></td>
 									</tr>
 									<?php

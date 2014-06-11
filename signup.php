@@ -128,6 +128,12 @@
 										<input type="text" class="form-control" name="gpa" placeholder="GPA"/>
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="universityID">University Student ID</label>
+										<input type="text" class="form-control" name="universityID" placeholder="University ID"/>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->								
 							</div> <!-- End row -->	
 							<div class="row">
 								<div class="col-md-4">

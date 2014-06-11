@@ -178,7 +178,24 @@ $(document).ready(function () {
 			}
 
 			}
-		}	    	
+		},   	
+		universityID: {
+			message: 'Your University ID is not valid',
+			validators: {
+			notEmpty: {
+				message: 'Your University ID is required and can\'t be empty'
+			},
+			stringLength: {
+				min: 8,
+				max: 8,
+				message: 'Your University ID must be 8 digits long'
+			},
+			regexp: {
+				regexp: /^[0-9]+$/,
+				message: 'Your University ID can only consist of numerical digits'
+			}
+			}
+		},	 
 	} /* close fields */		
 });
 

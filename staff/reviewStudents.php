@@ -21,8 +21,8 @@
 	
   <?php
 		$profilesMade = array();
-		$students = getUnverifiedStudents();
-		$totalUnverified = count($students);
+		$applicants = getUnverifiedStudents();
+		$totalUnverified = count($applicants);
 		$totalStudents = totalAssistantCount();
 		
 		$totalVerified = $totalStudents - $totalUnverified;
@@ -44,8 +44,10 @@
 			$progress = "danger";
 		}		
 		
-	if($students != NULL) {
-		foreach($students as $student){
+	if($applicants != NULL) {
+		foreach($applicants as $applicant){
+
+			$student = $applicant->getStudent();
 			
 			/*Get studentID */
 			$studentID = $student->getID();
@@ -62,7 +64,7 @@
 			<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $student['firstName']?>'s Profile</h4>
+				<h4 class="modal-title" id="myProfileLabel"> <?= $student->getFirstName()?>'s Profile</h4>
 			</div>
 			<div class="modal-body">
 			
@@ -213,16 +215,17 @@
 												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>View Profile</th><th>Status</th><th>Comment</th></tr>
 												<?php
 												
-												$students = getUnverifiedStudents();
+												$applicants = getUnverifiedStudents();
 												$tableEntry = 0;
-												if($students != NULL) {
-												foreach($students as $student){
+												if($applicants != NULL) {
+												foreach($applicants as $applicant){
+													$student = $applicant->getStudent();
 													$buttonGroupName = "action" . $tableEntry;
-													$myProfileID = "myProfile". $student['studentID'];
+													$myProfileID = "myProfile". $student->getID();
 												
 												?>
 												
-												<tr><td><?= $student['studentID'] ?></td><td><?= $student['firstName']?></td><td><?= $student['lastName'] ?></td><td><?= $student['email'] ?></td><td><?= $student['gpa']?></td>
+												<tr><td><?= $student->getUniversityID() ?></td><td><?= $student->getFirstName()?></td><td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $student->getGPA()?></td>
 												<td>
 												<a type="button" data-toggle="modal" href="#<?= $myProfileID?>" class="btn btn-default">
 												<span class="glyphicon glyphicon-user"></span> Profile</a>			

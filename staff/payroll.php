@@ -83,32 +83,32 @@
 						<div class="panel-body">
 							<div class="container" id="payrollContainer">
 								<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
-									<fieldset>
-										<legend>Select Term</legend>
-										<div class="row">
-												<div class="col-md-4">
-													<div class="form-group">
-													<label class="control-label" for="term">Term</label>
-													<select name="term" class="form-control" placeholder="Term">
-														<!-- Still need to use PHP to render these dynamically -->
-														<option>Fall 2013</option>
-														<option>Spring 2014</option>
-														<option>Summer 2014</option>
-														<option>Fall 2014</option>
-														<option>Spring 2015</option>
-													</select> <!-- End select -->										
-													</div> <!-- End column -->									
-												</div> <!-- End form-group -->
+								<legend>Select Term</legend>
+									<div class="row">
+											<div class="col-md-10">										
+												<label class="control-label" for="term">Term</label>
+												<select name="term" class="form-control" placeholder="Term">
+													<!-- Still need to use PHP to render these dynamically -->
+													<option>Fall 2014</option>
+													<option>Spring 2015</option>
+													<option>Summer 2015</option>
+													<option>Fall 2015</option>
+													<option>Spring 2016</option>
+												</select> <!-- End select -->										
+											</div> <!-- End column -->										
 										</div> <!-- End row --->
-									</fieldset>
+									<br>	
+									<div class="row">
+										<div class="col-md-10">
+											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
+										</div> <!-- End col-md-3 -->
+									</div> <!-- End row --> 											
 								</form> <!-- End form -->
 							</div>
 							<div class="container" id="resultsContainer">
 								<div class="row">
 									<table class="table table-striped">
 									<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
-									<!-- Note: use Ajax to render table content -->
-
 									<?php
 									
 									$term = CURRENT_TERM;
@@ -130,15 +130,9 @@
 									} /* Payroll closing brace */
 									
 									?>
-									
 									</table> <!-- End Table -->							
 								</div> <!-- End row -->							
-							</div>	<!-- End results container -->
-							<div class="row">
-								<div class="col-md-3">
-									<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
-								</div> <!-- End col-md-3 -->
-							</div> <!-- End row --> 							
+							</div>	<!-- End results container -->						
 						</div> <!-- End panel-body -->
 					</div> <!-- End panel panel-success -->
 			</div>

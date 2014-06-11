@@ -160,8 +160,9 @@ final class Database {
 
 final class Place {
 	public static function getPlaceByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Places WHERE placeID = :id',
-			array(':id' => $id));
+		$sql = 'SELECT * FROM Places WHERE placeID = :id';
+		$args = array(':id' => $id);
+		$row = Database::executeGetRow($sql, $args);
 		return new Place($row);
 	}
 
@@ -170,6 +171,10 @@ final class Place {
 		$this->room = $row['room'];
 		$this->roomType = $row['roomType'];
 	}
+
+	public function getBuilding() { return $this->building; }
+	public function getRoom() { return $this->room; }
+	public function getRoomType() { return $this->roomType; }
 
 	private $building;
 	private $room;
@@ -303,16 +308,17 @@ abstract class User {
 
 final class Student extends User {
 	public static function insertStudent($email, $password_hash, $firstName, $lastName,
-		$mobilePhone, $major, $gpa, $classYear, $aboutMe) {
+		$mobilePhone, $major, $gpa, $classYear, $aboutMe, $universityID) {
 
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
 
-		return Database::executeInsert('INSERT INTO Students
-			(userID, mobilePhone, major, gpa, classYear, aboutMe) VALUES
-			(:id, :mobilePhone, :major, :gpa, :classYear, :aboutMe)',
-			array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
-				  ':major' => $major, ':gpa' => $gpa,
-				  ':classYear' => $classYear, ':aboutMe' => $aboutMe));
+		$sql = 'INSERT INTO Students
+				(userID, mobilePhone, major, gpa, classYear, aboutMe, universityID) VALUES
+				(:id, :mobilePhone, :major, :gpa, :classYear, :aboutMe, :universityID)';
+		$args = array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
+				  ':major' => $major, ':gpa' => $gpa, ':universityID' => $universityID,
+				  ':classYear' => $classYear, ':aboutMe' => $aboutMe);
+		return Database::executeInsert($sql, $args);
 	}
 
 	public function __construct($user_row, $student_row) {
@@ -326,6 +332,7 @@ final class Student extends User {
 			$this->aboutMe = $student_row['aboutMe'];
 			$this->status = $student_row['status'];
 			$this->reputation = $student_row['reputation'];
+			$this->universityID = $student_row['universityID'];
 		}
 	}
 
@@ -370,6 +377,7 @@ final class Student extends User {
 	public function getAboutMe() { return $this->aboutMe; }
 	public function getStatus() { return $this->status; }
 	public function getReputation() { return $this->reputation; }
+	public function getUniversityID() { return $this->universityID; }
 
 	private $mobilePhone;
 	private $major;
@@ -378,6 +386,7 @@ final class Student extends User {
 	private $aboutMe;
 	private $status;
 	private $reputation;
+	private $universityID;
 }
 
 final class Professor extends User {
@@ -402,6 +411,19 @@ final class Professor extends User {
 			$this->officePhone = $professor_row['officePhone'];
 			$this->mobilePhone = $professor_row['mobilePhone'];
 		}
+	}
+
+	public function updateProfile($firstName, $lastName, $place, $officePhone, $mobilePhone) {
+		$sql = 'UPDATE Professors
+				INNER JOIN Users ON Users.userID = Professors.userID
+				SET firstName = :firstName, lastName = :lastName,
+					office = :office, officePhone = :officePhone,
+					mobilePhone = :mobilePhone
+				WHERE userID = :id';
+		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
+			':office' => $place->getID(), ':officePhone' => $officePhone,
+			':mobilePhone'=>$mobilePhone);
+		Database::execute($sql, $args);
 	}
 
 	public function getCourses() {
@@ -856,7 +878,7 @@ function emailAvailable($email){
 ********************/
 
 
-function registerStudent($firstName, $lastName,$email,$password,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
+function registerStudent($firstName, $lastName,$email,$password,$mobilePhone,$classYear,$major,$gpa,$aboutMe,$universityID){
 
 	/* Note: $password does not require database escaping; it is not being put in the database.
 	 *       Only the result of password_hash() is, and that is escaped by being a parameter
@@ -865,7 +887,7 @@ function registerStudent($firstName, $lastName,$email,$password,$mobilePhone,$cl
 	$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 	Student::insertStudent($email, $password_hash, $firstName, $lastName,
-		$mobilePhone, $major, $gpa, $classYear, $aboutMe);
+		$mobilePhone, $major, $gpa, $classYear, $aboutMe, $universityID);
 }
 
 /* Function registerProfessor
@@ -1148,7 +1170,7 @@ function getOffice($building,$room){
 
 function getUnverifiedStudents(){
 
-	return array();
+	return Applicant::getApplicantsByTerm(Term::getTermByID(CURRENT_TERM), PENDING, 'pay');
 
 	$conn = open_database();
 	

@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `aboutMe` longtext NOT NULL,
   `status` int(11) NOT NULL,
   `reputation` int(11) NOT NULL,
+  `universityID` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)

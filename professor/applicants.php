@@ -75,7 +75,7 @@ and are color coded to emphasize priority.
 				
 				<h3>Contact Information</h3>
 				<div class="container">
-				<p>Email: email </p>
+				<p>Email: <?=$student->getEmail()?> </p>
 				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
 				</div>
 				

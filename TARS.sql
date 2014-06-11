@@ -61,7 +61,9 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `type` int(11) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  UNIQUE KEY (`email`)
+  UNIQUE KEY (`email`),
+  KEY (`firstName`),
+  KEY (`lastName`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
@@ -142,6 +144,9 @@ CREATE TABLE IF NOT EXISTS `Courses` (
 
   PRIMARY KEY (`courseID`),
   UNIQUE KEY (`crn`, `termID`),
+  KEY (`department`),
+  KEY (`courseNumber`),
+  KEY (`courseTitle`),
   FOREIGN KEY (`termID`) REFERENCES `Terms` (`termID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

@@ -109,7 +109,7 @@ $terms = Term::getAllTerms();
 									<label>
 										Compensation:
 										<select name="compensation" class="form-control" id="compensation">
-											<option value="paid">Paid</option>
+											<option value="pay">Paid</option>
 											<option value="credit">Credit</option>
 										</select>
 									</label>

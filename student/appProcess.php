@@ -5,6 +5,10 @@
 		$pID = $_POST['positionID'];
 		$comp = $_POST['compensation'];
 		$qual = $_POST['qualifications'];
-		Student::apply($pID, $comp, $qual);
+		$studentID = $_POST['studentID'];
+		
+		$student = User::getUserByID($studentID, STUDENT);
+		$student->apply($pID, $comp, $qual);
 	}
 ?>
+

@@ -19,14 +19,16 @@ $(document).ready(function() {
     //Submit a post request to search_process.php
     $('#application').submit(function(event) {
         url = $('#application').attr('action');
+		studentID = $('#studentID').val();
         compensation = $('#compensation').val();
         qualifications = $('#qualifications').val();
 		appModalBody = $(this).closest(".modal-body");
 		appModalFooter = appModalBody.next('.modal-footer');
 		appFormHTML = appModalBody.html();
-		appFormButtons = appModalFooter.html();
+		appFormButtons = appModalFooter.html();	
         $.post(url, {
             positionID: positionID,
+			studentID: studentID,
             compensation: compensation,
             qualifications: qualifications
         }, function(data) {

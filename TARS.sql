@@ -70,7 +70,6 @@ CREATE TABLE IF NOT EXISTS `Users` (
 -- Represents a Student User
 --
 CREATE TABLE IF NOT EXISTS `Students` (
-  `studentID` bigint(20) NOT NULL,
   `userID` bigint(20) NOT NULL,
   `mobilePhone` bigint(20) NOT NULL,
   `major` varchar(75) NOT NULL,
@@ -80,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `status` int(11) NOT NULL,
   `reputation` int(11) NOT NULL,
 
-  PRIMARY KEY (`studentID`),
+  PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -90,13 +89,12 @@ CREATE TABLE IF NOT EXISTS `Students` (
 -- Represents the Professor Users
 --
 CREATE TABLE IF NOT EXISTS `Professors` (
-  `professorID` bigint(20) NOT NULL,
   `userID` bigint(20) NOT NULL,
   `officeID` bigint(20) NOT NULL,
   `officePhone` bigint(20) NOT NULL,
   `mobilePhone` bigint(20) NOT NULL,
 
-  PRIMARY KEY (`professorID`),
+  PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`),
   FOREIGN KEY (`officeID`) REFERENCES `Places` (`placeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -107,12 +105,11 @@ CREATE TABLE IF NOT EXISTS `Professors` (
 -- Represents a Staff User.
 --
 CREATE TABLE IF NOT EXISTS `Staff` (
-  `staffID` bigint(20) NOT NULL,
   `userID` bigint(20) NOT NULL,
   `officePhone` bigint(20) NOT NULL,
   `mobilePhone` bigint(20) NOT NULL,
 
-  PRIMARY KEY (`staffID`),
+  PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

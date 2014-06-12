@@ -139,7 +139,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary" form="bugrep" value="Submit">Add Comment</button>
+						<button type="submit" class="btn btn-primary" name="submitComment" id="submitButton">Add Comment</button>
 					</div>
 				</div>
 			</div>
@@ -210,7 +210,7 @@
 								<p class="panelHeader">Students</p>
 							</div> <!-- End panel-heading -->
 									<div class="panel-body">
-										<form action="reviewProcess.php" method="post" id="formid">
+										<form action="reviewProcess.php" method="post" id="reviewTable">
 											<table class="table table-striped">
 												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>View Profile</th><th>Status</th><th>Comment</th></tr>
 												<?php
@@ -230,22 +230,9 @@
 												<a type="button" data-toggle="modal" href="#<?= $myProfileID?>" class="btn btn-default">
 												<span class="glyphicon glyphicon-user"></span> Profile</a>			
 												</td>
+												<td>Status</td>
 												<td>
-													<div class="btn-group" data-toggle="buttons">
-														<label name="studentStatus" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Verify">
-														<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $student['userID'] ?>" value="2 <?= $student['studentID'] ?>"><span class="glyphicon glyphicon-ok"></span>
-														</label>
-														<label name="studentStatus" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-														<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $student['userID'] ?>" value="1 <?= $student['studentID'] ?>"><span class="glyphicon glyphicon-remove"></span>
-														</label>
-														<label name="studentStatus" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-														<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $application['userID'] ?>" value="0 0"><span class="glyphicon glyphicon-time"></span>												
-														</label>														
-													</div> <!-- End btn-group -->
-													
-												</td>
-												<td>
-												<a type="button" data-toggle="modal" href="#comment" class="btn btn-default">
+												<a type="button" href="#comment" data-toggle="modal" class="btn btn-default">
 												<span class="glyphicon glyphicon-comment"></span> Comment</a>
 												</td>
 												</tr>
@@ -308,6 +295,5 @@
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

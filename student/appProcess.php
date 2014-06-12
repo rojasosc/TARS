@@ -1,6 +1,6 @@
 <?php
 	include("../db.php");
-	if(isset($_POST)) {
+	if(!empty($_POST)) {
 		echo 'post isset';
 		$pID = $_POST['positionID'];
 		$comp = $_POST['compensation'];

@@ -422,7 +422,7 @@ final class Professor extends User {
 				SET firstName = :firstName, lastName = :lastName,
 					office = :office, officePhone = :officePhone,
 					mobilePhone = :mobilePhone
-				WHERE userID = :id';
+				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 			':office' => $place->getID(), ':officePhone' => $officePhone,
 			':mobilePhone'=>$mobilePhone);

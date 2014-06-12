@@ -1,7 +1,6 @@
 <?php  
-    include('staffSession.php');
+	include('staffSession.php');
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -17,30 +16,30 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>		
-		<script rel="text/javascript" src="findProfessorAccount.js"></script>
+		<script rel="text/javascript" src="editProfessor.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN Edit Profile Modal-->
-		<div class="modal fade" id="editProfileID" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
+		<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h1 class="modal-title">Edit (name)'s Profile</h1>
-					</div> 
+						<h1 class="modal-title" id="modalHeader"></h1>
+					</div> <!-- End modal-header -->
 					<div class="modal-body">
 						<form action="updateProfessorProcess.php" class="form-horizontal" id="updateForm" method="post">
 							<div class="row">
 								<div class="col-md-4">				
 									<div class="form-group"> 				
 										<label class="control-label" for="firstName">First Name</label>
-											<input id="firstName" type="text" class="form-control" name="firstName"/>																					
+											<input id="firstName" type="text" class="form-control" name="firstName">																					
 									</div> <!-- End form-group -->											
 								</div> <!-- End column -->
 									<div class="col-md-4">
 										<div class="form-group">
 											<label class="control-label" for="firstName">Last Name</label>
-												<input id="lastName" type="text" class="form-control" name="lastName" />													
+												<input id="lastName" type="text" class="form-control" name="lastName">													
 										</div> <!-- End form-group -->							
 									</div>	<!-- End column -->						
 							</div> <!-- End row -->
@@ -48,34 +47,25 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input id="email" type="email" class="form-control" name="email"/>					
+										<input id="email" type="email" class="form-control" name="email">					
 									</div> <!-- End form-group -->							
 								</div>	<!-- End column -->						
-							</div> <!-- End row -->
-							<div class="row">
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label" for="homePhone">Home Phone</label>
-										<input id="homePhone" type="tel" class="form-control" name="homePhone" placeholder="Home Phone"/>
-									</div> <!-- End form-group -->
-								</div> <!-- End column -->
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
-										<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone"/>
+										<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone">
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
-							</div> <!-- End row -->					
+							</div> <!-- End row -->				
 						</form> <!-- End form -->					
 					</div> <!-- End modal-body -->
-				</div> <!-- End modal-content -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 						<button id="updateButton" type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
-					</div>
-				</div>
-			</div>
-		</div>
+					</div> <!-- End modal-footer -->			
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal dialog -->
+		</div> <!-- End modal fade -->
 		<!-- END Edit Profile Modal-->    	
 	
 		<!-- BEGIN page-wrapper -->
@@ -117,7 +107,7 @@
 									<li class="dropdown">
 										<a href="manageStudents.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Students<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="editStudent.php">Edit Account</a></li>
+											<li class="active"><a href="editStudent.php">Edit Account</a></li>
 											<li><a href="reviewStudents.php">Review Students</a></li>
 										</ul> <!-- End drop down unordered list -->
 									</li> <!-- End drop down list item -->
@@ -144,77 +134,63 @@
 							<h3>Filter Constraints</h3>
 						</div> <!-- end row -->
 						<div class="row">
-							<form class="form-horizontal" id="findAccountForm" method="post" action="findProfessorAccount.php">
+							<form class="form-horizontal" id="searchUsersForm" method="post" action="searchUsers.php">
 								<div class="row">
 									<div class="col-md-10">
 											<label class="control-label" for="emailSearch">Email</label>
-												<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email"/>																				
+											<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email">																				
 									</div> <!-- End column -->					
 								</div> <!-- End row -->
 								<div class="row">
 									<div class="col-md-10">
 											<label class="control-label" for="firstName">First Name</label>
-												<input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name"/>																				
+												<input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name">																				
 									</div> <!-- End column -->					
 								</div> <!-- End row -->
 								<div class="row">
 									<div class="col-md-10">
 											<label class="control-label" for="lastName">Last Name</label>
-												<input id="lastName" type="text" class="form-control" name="lastName" placeholder="Last Name"/>																				
-									</div> <!-- End column -->					
+												<input id="lastName" type="text" class="form-control" name="lastName" placeholder="Last Name">																				
+									</div> <!-- End column -->
+									<div class="col-md-4" id="searchType">
+										<div class="form-group">
+												<input type="text" class="form-control" name="searchType" value="1">													
+										</div> <!-- End form-group -->							
+									</div>	<!-- End column -->										
 								</div> <!-- End row -->								
 								<br>
 								<div class="row">
 									<div class="col-md-6">
-										<button id="submitButton"  type="submit" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Search</button>
+										<button id="searchButton"  type="submit" name="searchButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Search</button>
 									</div> <!-- End column -->
 								</div> <!-- End row -->	
 							</form> <!-- End form-horizontal -->
-						</div>
+						</div> <!-- End row -->
 					</div> <!-- End container -->	
-				<div class="container" id="results">
-					<div class="row">
-						<div class="col-md-4">
-							<h3>Results</h3>
-						</div> <!-- End column -->
-					</div> <!-- End container -->	
-					<div class="row">
-						<div class="col-md-12">
-							<table class="table table-striped">
-										<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>Profile</th></tr>									
-										<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#editProfileID" class="btn btn-default">
-											<span class="glyphicon glyphicon-wrench"></span> Profile</a>
-											</td>
-										</tr> 
-										<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#editProfileID" class="btn btn-default">
-											<span class="glyphicon glyphicon-wrench"></span> Profile</a>
-											</td>
-										</tr> 	
-										<tr><td>3</td> <td>Jinze</td> <td>Ahn</td> <td>jan2@u.rochester.edu</td><td>CSC171</td><td>Lab TA</td><td>4.00</td><td><a type="button" type="button" data-toggle="modal" href="#editProfileID" class="btn btn-default">
-											<span class="glyphicon glyphicon-wrench"></span> Profile</a>
-											</td>
-										</tr> 											
-							</table> <!-- End table table-striped -->									
-						</div> <!-- End column -->
-					</div> <!-- End row -->
-					<div class="row">
-						<div class="col-md-4">
-						</div> <!-- End column -->
-						<div class="col-md-4">
-							<ul class="pagination navbar-right">
-								<li class="disabled"><span>&laquo;</span></li>
-								<li class="active"><a href="#"><span>1 <span class="sr-only">(current)</span></span></a></li>
-								<li ><a href="#"><span>2 <span class="sr-only">(current)</span></span></a></li>
-								<li ><a href="#"><span>3 <span class="sr-only">(current)</span></span></a></li>
-								<li ><a href="#"><span>4 <span class="sr-only">(current)</span></span></a></li>
-								<li class="disabled"><span>&laquo;</span></li>
-							</ul>							
-						</div> <!-- End column -->
-					</div> <!-- End row -->
-				</div> <!-- End results container -->	
-				
-				</div> <!-- End Outer-container -->
-			</div>
+					
+					<div class="container" id="result">
+						<div class="row">
+							<div class="col-md-4">
+								<h3 class="btn-default">Results</h3>
+							</div> <!-- End column -->
+						</div> <!-- End row -->						
+						<div class="row">
+							<div class="col-md-12">
+								<table class="table table-striped" id="resultTable">
+									<tr><th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th><tr>
+								</table> <!-- End table table-striped -->									
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+						<!-- TODO: Implement pagination every 10 rows -->				
+					</div> <!-- End container -->
+					<div class="jumbotron" id="emptyResult">
+						<div class="row" id="testRow" data-id="14">
+							<div class="col-md-12">
+								<p>No Professors Found</p>
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+					</div> <!-- End jumbotron no results -->					
+				</div>
 			<!-- END Page Content --> 
 	    
 			<!--BEGIN Page Footer -->
@@ -242,6 +218,5 @@
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

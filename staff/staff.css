@@ -114,6 +114,7 @@ th,td {
 	border-right-style: solid;
 	border-right-color: #3C763D;
 	padding: 10px;
+	
 }
 
 #resultsContainer{
@@ -178,7 +179,7 @@ td{
 }
 
 
-#results{
+#result{
 	
 	float:right;
 	width: 75%;

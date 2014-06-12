@@ -1,12 +1,5 @@
 <?php  
     include('studentSession.php');
-	if(!empty($_POST)) {
-		$student->updateProfile($_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'], $_POST['gpa'], $_POST['qual-hist']);
-		$student = getStudent($email);
-		$fn = $student->getFirstName();
-		$ln = $student->getLastName();
-		$brand = $fn[0].". ".$ln;
-	}
 ?>
 
 <!DOCTYPE html>
@@ -79,19 +72,19 @@
 					</div>
 					<div class="panel-body">
 						<div class="container-fluid display-area">
-							<form role="form" action="profile.php" method="post" id="profile">
+							<form role="form" action="profileProcess.php" method="post" id="profile">
 								<div class="row">
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>First Name:
-												<input class="form-control" type="text" name="fn" size="32" value="<?=$fn?>" />
+												<input class="form-control" type="text" name="fn" size="30" value="<?=$fn?>" />
 											</label>
 										</div>
 									</div>
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>Last Name:
-												<input class="form-control" type="text" name="ln" size="32" value="<?=$ln?>" />	
+												<input class="form-control" type="text" name="ln" size="30" value="<?=$ln?>" />	
 											</label>
 										</div>
 									</div>
@@ -100,14 +93,14 @@
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>E-mail:
-												<input class="form-control" readonly="readonly" type="email" name="email" size="64" value="<?=$email?>" />
+												<input class="form-control" readonly="readonly" type="email" name="email" size="30" value="<?=$email?>" />
 											</label>
 										</div>
 									</div>
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>Phone Number:
-												<input class="form-control" type="text" name="pn" size="11" value="<?=$student->getMobilePhone()?>" />
+												<input class="form-control" type="text" name="pn" size="30" value="<?=$student->getMobilePhone()?>" />
 											</label>
 										</div>
 									</div>
@@ -116,21 +109,21 @@
 									<div class="col-xs-4">
 										<div class="form-group">
 											<label>Major:
-												<input class="form-control" type="text" name="mjr" size="32" value="<?=$student->getMajor()?>" />
+												<input class="form-control" type="text" name="mjr" size="30" value="<?=$student->getMajor()?>" />
 											</label>		
 										</div>
 									</div>
 									<div class="col-xs-4">
 										<div class="form-group">
 											<label>Class Year:
-												<input class="form-control" type="text" name="year" size="32" value="<?=$student->getClassYear()?>" />
+												<input class="form-control" type="text" name="year" size="30" value="<?=$student->getClassYear()?>" />
 											</label>
 										</div>
 									</div>
 									<div class="col-xs-4">
 										<div class="form-group">
 											<label>Cumulative GPA:
-												<input class="form-control" type="text" name="gpa" size="32" value="<?=$student->getGPA()?>" />
+												<input class="form-control" type="text" name="gpa" size="30" value="<?=$student->getGPA()?>" />
 											</label>
 										</div>
 									</div>

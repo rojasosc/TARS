@@ -1,5 +1,4 @@
 $(document).ready(function(){
-	alert("hi");
 	//Attach the boostrap validator js to the form
 	$('#profile').bootstrapValidator({
 		message: 'This value is invalid',
@@ -12,7 +11,8 @@ $(document).ready(function(){
 			var url = $('#profile').attr('action');
 			var data = $('#profile :input').serializeArray();
 			$.post(url, data, function(data) {
-				alert('Callback function');
+				//I should probably have a different mechanism for this
+				alert('Your profile has been successfully updated!');
 			});
 		},
 		fields: {
@@ -27,7 +27,7 @@ $(document).ready(function(){
 						message: 'Your first name must have at least one character'
 					},
 					regexp: {
-						regexp: /^[a-zA-Z" "]+$/,
+						regexp: /^[\D\s]+$/,
 						message: 'Your first name can only consist of English alphabet letters'
 					}
 				}
@@ -43,7 +43,7 @@ $(document).ready(function(){
 						message: 'Your last name must have at least one character'
 					},
 					regexp: {
-						regexp: /^[a-zA-Z" "]+$/,
+						regexp: /^[\D\s]+$/,
 						message: 'Your last name can only consist of English alphabet letters'
 					}
 				}
@@ -60,7 +60,7 @@ $(document).ready(function(){
 						message: 'Your phone number must include at least the area code in addition to the 7 standard digits'
 					},
 					regexp: {
-						regexp: /^[0-9]{10, 11}$/,
+						regexp: /^[0-9]+$/,
 						message: 'Your phone number can only contain numbers'
 					}
 				}
@@ -77,8 +77,8 @@ $(document).ready(function(){
 						message: 'Your class year must be exactly 4 digits'
 					},
 					regexp: {
-						regexp: /^[0-9]{4}$/,
-						message: 'Your class year can only contain numbers'
+						regexp: /^[0-9]+$/,
+						message: 'Your class year can contain only numbers'
 					}
 				}
 			},

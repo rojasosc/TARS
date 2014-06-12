@@ -79,7 +79,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="container-fluid display-area">
-							<form role="form" action="profileProcess.php" method="post" id="profile">
+							<form role="form" action="profile.php" method="post" id="profile">
 								<div class="row">
 									<div class="col-xs-6">
 										<div class="form-group">

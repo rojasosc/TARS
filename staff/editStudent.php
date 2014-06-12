@@ -53,7 +53,7 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input id="email" type="email" class="form-control" name="email">					
+										<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
 									</div> <!-- End form-group -->							
 								</div>	<!-- End column -->						
 								<div class="col-md-4">

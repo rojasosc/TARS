@@ -198,10 +198,14 @@ abstract class User {
 	public static function getUserByID($id, $check_type = -1) {
 		$sql = 'SELECT * FROM Users WHERE userID = :id';
 		$args = array(':id' => $id);
+		if ($check_type >= 0) {
+			$sql .= ' AND type = :type';
+			$args[':type'] = $check_type;
+		}
 		$user_row = Database::executeGetRow($sql, $args);
 
 		if ($user_row) {
-			return User::getUserSubclassObject($user_row, $check_type);
+			return User::getUserSubclassObject($user_row);
 		} else {
 			return false;
 		}
@@ -210,20 +214,21 @@ abstract class User {
 	public static function getUserByEmail($email, $check_type = -1) {
 		$sql = 'SELECT * FROM Users WHERE email = :email';
 		$args = array(':email' => $email);
+		if ($check_type >= 0) {
+			$sql .= ' AND type = :type';
+			$args[':type'] = $check_type;
+		}
 		$user_row = Database::executeGetRow($sql, $args);
 
 		if ($user_row) {
-			return User::getUserSubclassObject($user_row, $check_type);
+			return User::getUserSubclassObject($user_row);
 		} else {
 			return false;
 		}
 	}
 
-	private static function getUserSubclassObject($user_row, $check_type) {
+	private static function getUserSubclassObject($user_row) {
 		$args = array(':id' => $user_row['userID']);
-		if ($check_type >= 0 && $check_type != $user_row['type']) {
-			return false;
-		}
 		switch ($user_row['type']) {
 		case STUDENT:
 			$row = Database::executeGetRow('SELECT * FROM Students WHERE userID = :id', $args);
@@ -256,15 +261,13 @@ abstract class User {
 			$sql .= 'INSTR(lastName, :lastName) AND ';
 			$args[':lastName'] = $lastName;
 		}
+		if ($check_type >= 0) {
+			$sql .= 'type = :type AND ';
+			$args[':type'] = $check_type;
+		}
 		$sql .= '1 ORDER BY lastName DESC, firstName DESC';
 		$rows = Database::executeGetAllRows($sql, $args);
-		return array_filter(array_map(function ($row) {
-			if ($row) {
-				return User::getUserSubclassObject($row, $check_type);
-			} else {
-				return false;
-			}
-		}, $rows), function ($obj) { return $obj !== false; });
+		return array_map(function ($row) { return User::getUserSubclassObject($row); }, $rows);
 	}
 
 

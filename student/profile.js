@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+	alert("hi");
 	//Attach the boostrap validator js to the form
 	$('#profile').bootstrapValidator({
 		message: 'This value is invalid',
@@ -60,7 +60,7 @@ $(document).ready(function(){
 						message: 'Your phone number must include at least the area code in addition to the 7 standard digits'
 					},
 					regexp: {
-						regexp: /^[0-9]{10, 11}$/
+						regexp: /^[0-9]{10, 11}$/,
 						message: 'Your phone number can only contain numbers'
 					}
 				}
@@ -77,7 +77,7 @@ $(document).ready(function(){
 						message: 'Your class year must be exactly 4 digits'
 					},
 					regexp: {
-						regexp: /^[0-9]{4}$/
+						regexp: /^[0-9]{4}$/,
 						message: 'Your class year can only contain numbers'
 					}
 				}
@@ -94,7 +94,7 @@ $(document).ready(function(){
 						message: 'Your GPA must have the following format: \'A.BC\''
 					},
 					regexp: {
-						regexp: /^[0-4][.][0-9]{2}$/
+						regexp: /^[0-4][.][0-9]{2}$/,
 						message: 'Your GPA must be a valid 3 digit decimal number'
 					}
 				}

@@ -34,7 +34,7 @@ $(document).ready(function() {
         }, function(data) {
             appModalBody.html('<p>Thank you for applying for this position!<br/>We hope to be able to get back to you soon with our decision.</p>');
             appModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="appOK">OK</button>');
-			alert(data);
+			currPos.hide(800);
 		});
         event.preventDefault();
     });
@@ -42,6 +42,5 @@ $(document).ready(function() {
 	$('#applymodal').on('hidden.bs.modal', function(event) {
 		appModalBody.html(appFormHTML);
 		appModalFooter.html(appFormButtons);
-		currPos.hide(800);
 	});
 });

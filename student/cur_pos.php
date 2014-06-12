@@ -1,6 +1,6 @@
 <?php  
     include('studentSession.php');
-	$positions = studentPositions($email);
+	$positions = $student->getApplications(APPROVED);
 ?>
 
 <!DOCTYPE html>
@@ -12,10 +12,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<title>TARS</title>
-		
+		<!-- BEGIN CSS -->
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 		<link href="cur_pos.css" rel="stylesheet">
+		<!-- END CSS -->
+		<!-- BEGIN Scripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="cur_pos.js"></script>
+		<!-- END Scripts -->
 		
 	</head>
   
@@ -29,7 +35,7 @@
 						<h1 class="modal-title">Email Professor</h1>
 					</div>
 					<div class="modal-body">
-						<form action="cur_pos.php" method="post" id="emailprof">
+						<form action="cur_pos.php" method="post" id="emailForm">
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-12">
@@ -81,12 +87,13 @@
 										</textarea>
 									</div>
 								</div>
+								<input id="studentID" type="hidden" value="<?=$student->getID()?>" />
 							</fieldset>
 						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-success" form="withdrawForm" value="Submit">Withdraw</button>
+						<button type="submit" class="btn btn-success" form="withdrawForm" id="#withdrawConfirm" value="Submit">Withdraw</button>
 					</div>
 				</div>
 			</div>
@@ -154,15 +161,15 @@
 										$position = $row->getPosition();
 								?>
 									<tr>
-										<td><?= $row->getID()?></td>
+										<td class="positionID"><?= $position->getID()?></td>
 										<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
 										<td><?= $course->getTitle()?></td>
 										<td><?= $position->getPositionType()?></td>
 										<td><?= "TBD"?></td>
 										<td><?= $position->getTime()?></td>
 										<td><?= $row->getCompensation()?></td>
-										<td><a class="btn btn-default" href="#emailModal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
-										<td><a class="btn btn-default" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
+										<td><a class="btn btn-default emailButton" href="#emailModal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
+										<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 									</tr>
 								<?php
 									}
@@ -200,10 +207,5 @@
 	
 		</div> 
 		<!-- End page-wrapper -->
-		
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<!-- END Scripts -->
 	</body>
 </html>

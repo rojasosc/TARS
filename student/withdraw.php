@@ -1,5 +1,9 @@
 <?php
 	include('../db.php');
-	echo "Nothing here just yet, mate!";
-	echo "\nExcept maybe Github bugging out on me.";
+	if(isset($_POST)){
+		$positionID = $_POST['positionID'];
+		$studentID = $_POST['studentID'];
+		$student = User::getUserByID($studentID, STUDENT);
+		$student->withdraw($positionID);
+	}
 ?>

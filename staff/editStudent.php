@@ -47,7 +47,7 @@
 											<label class="control-label" for="firstName">Last Name</label>
 												<input id="lastName" type="text" class="form-control" name="lastName">													
 										</div> <!-- End form-group -->							
-									</div>	<!-- End column -->						
+									</div>	<!-- End column -->										
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-4">
@@ -198,7 +198,12 @@
 									<div class="col-md-10">
 											<label class="control-label" for="lastName">Last Name</label>
 												<input id="lastName" type="text" class="form-control" name="lastName" placeholder="Last Name">																				
-									</div> <!-- End column -->					
+									</div> <!-- End column -->
+									<div class="col-md-4" id="searchType">
+										<div class="form-group">
+												<input type="text" class="form-control" name="searchType" value="0">													
+										</div> <!-- End form-group -->							
+									</div>	<!-- End column -->										
 								</div> <!-- End row -->								
 								<br>
 								<div class="row">

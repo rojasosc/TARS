@@ -366,7 +366,7 @@ final class Student extends User {
 				SET firstName = :firstName, lastName = :lastName,
 					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
 					gpa = :gpa, aboutMe = :aboutMe
-				WHERE userID = :id';
+				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 			':mobilePhone'=>$mobilePhone, ':major'=>$major,
 			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);

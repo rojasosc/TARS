@@ -47,7 +47,7 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input id="email" type="email" class="form-control" name="email">					
+										<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
 									</div> <!-- End form-group -->							
 								</div>	<!-- End column -->						
 								<div class="col-md-4">
@@ -56,7 +56,40 @@
 										<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone">
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
-							</div> <!-- End row -->				
+							</div> <!-- End row -->
+							<legend>Office</legend>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="building">Building</label>
+										<select name="building" class="form-control" placeholder="Building">
+											<option>CSB</option>
+											<option>LATT</option>
+											<option>Meliora</option>
+										</select> <!-- End select -->										
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="room">Room</label>
+										<select name="room" class="form-control" placeholder="Room">
+											<option>306</option>
+											<option>233</option>
+											<option>255</option>
+											<option>219</option>
+											<option>393</option>
+										</select> <!-- End select -->										
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->							
+							</div> <!-- End Row -->	
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="homePhone">Office Phone</label>
+										<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->						
+							</div> <!-- End row -->							
 						</form> <!-- End form -->					
 					</div> <!-- End modal-body -->
 					<div class="modal-footer">

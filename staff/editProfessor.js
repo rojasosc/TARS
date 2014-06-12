@@ -109,5 +109,5 @@ function fillUpdateForm(user){
 	$("[name='lastName']",$updateForm).val(professor['lastName']);
 	$("[name='email']",$updateForm).val(professor['email']);
 	$("[name='mobilePhone']",$updateForm).val(professor['mobilePhone']);
-	
+	$("[name='officePhone']",$updateForm).val(professor['officePhone']);
 }

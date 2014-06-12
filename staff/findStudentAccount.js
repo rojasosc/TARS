@@ -9,6 +9,7 @@ $(document).ready(function() {
 	
 	$resultTable.hide();
 	$noResults.hide();
+	$('#searchType').hide();
 	
 	/* Bind buttons */
 	$('#searchButton').click(findUsers);
@@ -32,7 +33,7 @@ function findUsers(){
 	var email = $('#emailSearch').val();
 	var url = $searchForm.attr('action');
 	var data = $('#searchUsersForm :input').serializeArray();
-	
+
 	/* AJAX POST request to obtain results */	
 	$.post(url,data,function (users){ displayResults(users); });
 		

@@ -25,6 +25,7 @@ const PENDING = 0;
 const STAFF_VERIFIED = 1;
 const REJECTED = 2;
 const APPROVED = 3;
+const WITHDRAWN = 4;
 
 // TODO: use a configurable option or something
 // 2 is internal ID of current Term row/object (fall 2014) in TARS-testdata.sql
@@ -370,6 +371,14 @@ final class Student extends User {
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 			':mobilePhone'=>$mobilePhone, ':major'=>$major,
 			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
+		Database::execute($sql, $args);
+	}
+	
+	public function withdraw($positionID){
+		$sql = 'UPDATE Applications
+				SET appStatus = :status
+				WHERE positionID = :positionID AND studentID = :studentID';
+		$args = array(':status' => WITHDRAWN, ':positionID' => $positionID, ':studentID' => $this->getID());
 		Database::execute($sql, $args);
 	}
 

@@ -1,7 +1,7 @@
 <?php  
     include('studentSession.php');
 	if(!empty($_POST)) {
-		$student->updateProfile($_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'], $_POST['gpa'], $_POST['qual-hist']);
+		updateProfile($email, $_POST['fn'], $_POST['ln'], $_POST['pn'], $_POST['mjr'], $_POST['year'], $_POST['gpa'], $_POST['qual-hist']);
 		$student = getStudent($email);
 		$fn = $student->getFirstName();
 		$ln = $student->getLastName();
@@ -18,18 +18,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<title>TARS</title>
-		<!-- BEGIN CSS -->
+		
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../bootstrapValidator.min.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 		<link href="profile.css" rel="stylesheet">
-		<!-- END CSS -->
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script src="../bootstrapValidator.min.js"></script>
-		<script src="profile.js"></script>
-		<!-- END Scripts -->
 		
 	</head>
   
@@ -127,7 +119,7 @@
 									</label>
 								</div>
 								<div class="row">
-									<input class="btn btn-primary btn-lg" id="submitButton" name="submitButton" type="submit" value="Save" />
+									<input class="btn btn-primary btn-lg submitbutton" type="submit" value="Save" />
 								</div>
 							</form>
 						</div>
@@ -162,5 +154,10 @@
 	
 		</div> 
 		<!-- End page-wrapper -->
+		
+		<!-- BEGIN Scripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<!-- END Scripts -->
 	</body>
 </html>

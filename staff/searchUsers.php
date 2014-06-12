@@ -1,7 +1,7 @@
 <?php
 	ini_set("display_errors",1);
 	include('../db.php');
-	$usersFound = User::findUsers($_POST['emailSearch'],$_POST['firstName'],$_POST['lastName'],STUDENT);
+	$usersFound = User::findUsers($_POST['emailSearch'],$_POST['firstName'],$_POST['lastName'],$_POST['searchType']);
 	$usersTable = array();
 	
 	/* Add each user to the usersTable to be encoded into a JSON object */

@@ -83,12 +83,6 @@
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="homePhone">Home Phone</label>
-										<input type="tel" class="form-control" name="homePhone" placeholder="Home Phone"/>
-									</div> <!-- End form-group -->
-								</div> <!-- End column -->
-								<div class="col-md-4">
-									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
 										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone"/>
 									</div> <!-- End form-group -->

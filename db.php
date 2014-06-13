@@ -281,9 +281,9 @@ abstract class User {
 	}
 
 	public static function checkEmailAvailable($email) {
-		$count = Database::getScalar('SELECT COUNT(*) FROM Users WHERE email = :email',
+		$count = Database::executeGetScalar('SELECT COUNT(*) FROM Users WHERE email = :email',
 			array(':email' => $email));
-		return $count == 0;
+		return $count == 0;		
 	}
 
 	protected function __construct($user_row) {

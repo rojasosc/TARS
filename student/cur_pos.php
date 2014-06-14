@@ -1,6 +1,7 @@
 <?php  
     include('studentSession.php');
 	$positions = $student->getApplications(APPROVED);
+	$currentApps = $student->getApplications(PENDING);
 ?>
 
 <!DOCTYPE html>
@@ -26,40 +27,6 @@
 	</head>
   
 	<body>
-		<!-- BEGIN Email Modal -->
-		<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailmodalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h1 class="modal-title">Email Professor</h1>
-					</div>
-					<div class="modal-body">
-						<form action="cur_pos.php" method="post" id="emailForm">
-							<fieldset>
-								<div class="row">
-									<div class="col-xs-12">
-										Subject: <input type="text" name="subject" class="form-control" size="64"/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										Content:
-										<textarea class="form-control" rows="8" cols="64" form="emailprof">
-										</textarea>
-									</div>
-								</div>
-							</fieldset>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-primary" form="passrecov" value="Submit">Send</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END Email Modal -->
 		<!-- BEGIN Withdraw Modal -->
 		<div class="modal fade" id="withdrawModal" tabindex="-1" role="dialog" aria-labelledby="withdrawModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -69,7 +36,7 @@
 						<h1 class="modal-title">Withdraw From Position</h1>
 					</div>
 					<div class="modal-body">
-						<form action="withdraw.php" method="post" id="withdrawForm">
+						<form action="withdraw.php" method="post" class="withdrawForm">
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-10 col-xs-offset-1">
@@ -92,7 +59,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal" id="cancelWithdraw">Cancel</button>
 						<button type="submit" class="btn btn-success" form="withdrawForm" id="#withdrawConfirm" value="Submit">Withdraw</button>
 					</div>
 				</div>
@@ -137,47 +104,84 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">	    
-					<div class="panel panel-primary"> 
-						<div class="panel-heading">
-							<h1 class="panel-title">My Current Positions</h1>
-						</div>
-						<div class="panel-body">	
-							<!-- BEGIN Current Positions Table -->
-							<table class="table table-striped">
-								<tr>
-									<th>Position ID</th>
-									<th>Course Number</th>
-									<th>Course Name</th>
-									<th>Type</th>
-									<th>Location</th>
-									<th>Time</th>
-									<th>Compensation</th>
-									<th>Email</th>
-									<th>Withdraw</th>
-								</tr>
-								<?php
-									foreach($positions as $row) {
-										$course = $row->getPosition()->getCourse();
-										$position = $row->getPosition();
-								?>
-									<tr>
-										<td class="positionID"><?= $position->getID()?></td>
-										<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
-										<td><?= $course->getTitle()?></td>
-										<td><?= $position->getPositionType()?></td>
-										<td><?= "TBD"?></td>
-										<td><?= $position->getTime()?></td>
-										<td><?= $row->getCompensation()?></td>
-										<td><a class="btn btn-default emailButton" href="#emailModal" data-toggle="modal"><span class="glyphicon glyphicon-envelope"></span> Email</a></td>
-										<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
-									</tr>
-								<?php
-									}
-								?>
-							</table>
-							<!-- END Current Positions Table -->
-						</div>
+				<div class="panel panel-primary"> 
+					<div class="panel-heading">
+						<h1 class="panel-title">My Current Positions</h1>
 					</div>
+					<div class="panel-body">	
+						<!-- BEGIN Current Positions Table -->
+						<table class="table table-striped">
+							<tr>
+								<th>Position ID</th>
+								<th>Course Number</th>
+								<th>Course Name</th>
+								<th>Type</th>
+								<th>Location</th>
+								<th>Time</th>
+								<th>Compensation</th>
+								<th>Withdraw</th>
+							</tr>
+							<?php
+		foreach($positions as $row) {
+		$course = $row->getPosition()->getCourse();
+		$position = $row->getPosition();
+							?>
+							<tr>
+								<td class="positionID"><?= $position->getID()?></td>
+								<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
+								<td><?= $course->getTitle()?></td>
+								<td><?= $position->getPositionType()?></td>
+								<td><?= "TBD"?></td>
+								<td><?= $position->getTime()?></td>
+								<td><?= $row->getCompensation()?></td>
+								<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
+							</tr>
+							<?php
+		}
+							?>
+						</table>
+						<!-- END Current Positions Table -->
+					</div>
+				</div>
+				<div class="panel panel-primary"> 
+					<div class="panel-heading">
+						<h1 class="panel-title">My Pending Applications</h1>
+					</div>
+					<div class="panel-body">	
+						<!-- BEGIN Current Positions Table -->
+						<table class="table table-striped">
+							<tr>
+								<th>Position ID</th>
+								<th>Course Number</th>
+								<th>Course Name</th>
+								<th>Type</th>
+								<th>Location</th>
+								<th>Time</th>
+								<th>Compensation</th>
+								<th>Withdraw</th>
+							</tr>
+							<?php
+		foreach($currentApps as $app) {
+		$appCourse = $app->getPosition()->getCourse();
+		$appPosition = $app->getPosition();
+							?>
+							<tr>
+								<td class="positionID"><?= $appPosition->getID()?></td>
+								<td><?= $appCourse->getDepartment()." ".$appCourse->getNumber()?></td>
+								<td><?= $appCourse->getTitle()?></td>
+								<td><?= $appPosition->getPositionType()?></td>
+								<td><?= "TBD"?></td>
+								<td><?= $appPosition->getTime()?></td>
+								<td><?= $app->getCompensation()?></td>
+								<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
+							</tr>
+							<?php
+		}
+							?>
+						</table>
+						<!-- END Current Positions Table -->
+					</div>
+				</div>
 			</div>
 			<!-- END Page Content --> 
 	    

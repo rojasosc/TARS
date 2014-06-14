@@ -195,7 +195,8 @@ function showBuildings(buildings){
 	var buildings = eval('(' + buildings + ')');
 	for(var i = 0; i < buildings.length; i++){
 		$buildingSelect.append("<option>" + buildings[i]['building'] + "</option>");;
-	}	
+	}
+	$buildingSelect.trigger('change');
 }
 
 function getRooms(){

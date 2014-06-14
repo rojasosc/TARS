@@ -4,6 +4,9 @@ $(document).ready(function() {
 	$searchForm = $('#searchUsersForm');
 	$updateForm = $('#updateForm');
 	$profileModal = $('#editProfileModal');
+	$buildingSelect = $('#buildings');
+	$roomSelect = $('#rooms');
+	
 	
 	preventRedirection();
 	
@@ -14,6 +17,8 @@ $(document).ready(function() {
 	/* Bind buttons */
 	$('#searchButton').click(findUsers);
 	$('#updateButton').click(updateUser);
+	
+	$buildingSelect.bind('change',getRooms);
 
 	/*TODO: Keep track of the users currently being displayed to avoid 
 	 *duplicate rows. As of now the table is recreated after every search.
@@ -98,7 +103,7 @@ function displayUpdateForm(){
 	}
 	/* Submit a POST request */
 	$.post(url,data,function (user){ fillUpdateForm(user); });
-	
+	getBuildings();
 }
 
 function fillUpdateForm(user){
@@ -114,4 +119,45 @@ function fillUpdateForm(user){
 	$("[name='officePhone']",$updateForm).val(professor['officePhone']);
 	$("[name='building']",$updateForm).val(professor['building']);
 	$("[name='room']",$updateForm).val(professor['room']);
+}
+
+function getBuildings(){
+	var url = 'fetchBuildings.php';
+	var data = {
+		building: url
+	}
+	$.post(url,data,function (buildings) { showBuildings(buildings); } );
+}
+
+function showBuildings(buildings){
+	var buildings = eval('(' + buildings + ')');
+	for(var i = 0; i < buildings.length; i++){
+		$buildingSelect.append("<option>" + buildings[i]['building'] + "</option>");;
+	}
+	$buildingSelect.trigger('change');
+}
+
+function getRooms(){
+	var url = 'fetchRooms.php';
+	var data = {
+		building: $(this).val()
+	}
+	removeRooms();
+	$.post(url,data,function (rooms) { showRooms(rooms); } );
+}
+
+function showRooms(rooms){
+	var rooms = eval('(' + rooms + ')');
+	for(var i = 0; i < rooms.length; i++){
+		addRoom(rooms[i]);
+	}
+	
+}
+
+function removeRooms(){
+	$roomSelect.find('option').remove();
+}
+
+function addRoom(room){
+	$roomSelect.append("<option>" + room + "</option>");
 }

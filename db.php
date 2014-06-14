@@ -334,8 +334,10 @@ abstract class User {
 }
 
 final class Student extends User {
-	public static function insertStudent($email, $password_hash, $firstName, $lastName,
+	public static function registerStudent($email, $password, $firstName, $lastName,
 		$mobilePhone, $major, $gpa, $classYear, $aboutMe, $universityID) {
+
+		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
 
@@ -880,13 +882,9 @@ final class Course {
 /** Connect to the database and create/use PDO object. */
 Database::connect();
 
-/***********************
-* END DATABASE UTILITIES
-************************/	
-
-/****************
-* LOGIN FUNCTIONS
-*****************/	
+/********************
+* SESSION FUNCTIONS *
+********************/
 
 /* Function login
 *  Purpose: Logs a user in.  Verifies that user's input password field against
@@ -939,13 +937,6 @@ function endSession(){
 	session_destroy(); 
 }
 
-/* Function emailExists
-*  Purpose: Checks if an email is in use.
-*  Returns: True if in use and false otherwise.
-**/	
-function emailAvailable($email){
-	return User::checkEmailAvailable($email);
-} 
 
 /********************
 * END LOGIN FUNCTIONS
@@ -957,17 +948,6 @@ function emailAvailable($email){
 ********************/
 
 
-function registerStudent($firstName, $lastName,$email,$password,$mobilePhone,$classYear,$major,$gpa,$aboutMe,$universityID){
-
-	/* Note: $password does not require database escaping; it is not being put in the database.
-	 *       Only the result of password_hash() is, and that is escaped by being a parameter
-	 *       in the prepared statement.
-	 */
-	$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-	Student::insertStudent($email, $password_hash, $firstName, $lastName,
-		$mobilePhone, $major, $gpa, $classYear, $aboutMe, $universityID);
-}
 
 /* Function registerProfessor
 *  Purpose: Creates a new account for a professor. 

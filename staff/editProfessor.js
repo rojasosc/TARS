@@ -55,7 +55,7 @@ function updateUser(){
 		'room': $("[name='room']",$updateForm).val()
 	}
 	/* AJAX POST request to obtain results */	
-	$.post(url,data,function (user){ alert(user); });
+	$.post(url,data,function (){ });
 
 	/*TODO: Obtain a confirmation from the PHP script on success/failure and 
 	 * notify the user */

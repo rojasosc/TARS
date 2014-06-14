@@ -419,7 +419,7 @@ final class Professor extends User {
 
 		return Database::executeInsert('INSERT INTO Professors
 			(userID, officeID, officePhone, mobilePhone) VALUES
-			(:id, :id, :officeID, :officePhone, :mobilePhone)',
+			(:id, :officeID, :officePhone, :mobilePhone)',
 			array(':id' => $userID, ':officeID' => $officeID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
 		}

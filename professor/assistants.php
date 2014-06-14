@@ -34,76 +34,44 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="applicants.js"></script>
 	</head> 
 	<body>
-  <?php
-	$profilesMade = array();
-	
-	foreach($courses as $course){
-	
-		$courseID = $course->getID();
-		/* Array of current assistants */
-		$assistants = getFilledPositionsForCourse($email,$course);
-		
-		foreach($assistants as $assistant){
-			
-			/*Get studentID */
-			$student = $assistant->getStudent();
-
-			$studentID = $student->getID();
-			
-			if(!in_array($studentID,$profilesMade)){
-			
-				$myProfileID = "myProfile". $studentID;
-				$profilesMade[count($profilesMade)-1] = $studentID;
-			?>
-			
 			<!-- Profile Modal -->
-			<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $student->getFirstName()?>'s Profile</h4>
-			</div>
-			<div class="modal-body">
-			
-				<h3>Personal Information</h3>
-				<div class="container">
-				<p>Major: <?=$student->getMajor()?></p>
-				<p>GPA: <?=$student->getGPA()?></p>
-				<p>Class Year: <?=$student->getClassYear()?></p>
-				</div>
-				
-				<h3>Contact Information</h3>
-				<div class="container">
-				<p>Email: <?=$student->getEmail()?> </p>
-				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
-				</div>
-				
-				<h3>About Me</h3>
-				<div class="container">
-				<p><?=$student->getAboutMe()?></p>
-				
-				</div>
-				
-			</div>
-			<div class="modal-footer">
-				
-				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-			</div>
-			</div>
-			</div>
-			</div>
-
+			<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="studentModalTitle"></h4>
+						</div>
+						<div class="modal-body">			
+							<h3>Personal Information</h3>
+							<div class="container">
+								<p id="studentMajor"></p>
+								<p id="studentGPA"></p>
+								<p id="studentClassYear"></p>
+							</div> <!-- End container -->
+							
+							<h3>Contact Information</h3>
+							<div class="container">
+								<p id="studentEmail"></p>
+								<p id="studentMobilePhone"></p>
+							</div> <!-- End container -->
+							
+							<h3>About Me</h3>
+							<div class="container">
+								<p id="studentAboutMe"></p>	
+							</div> <!-- End container -->							
+						</div> <!-- End modal body -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						</div> <!-- End modal-footer -->
+					</div> <!-- End modal-content -->
+				</div> <!-- End modal-dialog -->
+			</div> <!-- End modal fade -->
 			<!-- End Profile Modal -->
 			
-			<?php
-			}
-		}	
-	}
-
-    ?>
 	<!-- Begin Email Modal -->
 <div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -193,6 +161,9 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!--END Page Header -->	  	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div class="row">
+					<h1 class="panelHeader">My Assistants</h1>
+				</div> <!-- End row -->			
 							
 				<!-- Course Panels -->
 				<?php
@@ -217,11 +188,11 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 					<div class="container">					
 						<div class="panel panel-primary">
 							<div class="panel-heading">
-								<h4 data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
+								<h4 class="panelHeader" data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
 							</div> <!-- End panel-heading -->
 								<div class="collapse panel-collapse" id="<?= $panelID ?>">
 									<div class="panel-body">
-										<form action="selections.php" method="post" id="formid">
+
 											<table class="table table-striped">
 												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Type</th><th>View Profile</th></tr>
 											<?php
@@ -234,8 +205,10 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 												
 											?>
 											
-											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
-											<span class="glyphicon glyphicon-user"></span> Profile</a>
+											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
+												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
+												<span class="glyphicon glyphicon-user"></span></button>
+												</td>
 											</tr> 											
 											
 											<?php
@@ -245,7 +218,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											
 											?>
 											</table> <!-- End table -->
-										</form> <!-- End form -->
+
 									</div> <!-- End panel-body -->									
 								</div> <!-- End collapse panel-collapse -->
 							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">

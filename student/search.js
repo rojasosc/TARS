@@ -12,6 +12,7 @@ $(document).ready(function() {
 
     //Get the positionID of the position student is applying ot
     $('.applyButton').on('click', function() {
+		// TODO: explicitly indicate which position this application is for to the user
         currPos = $(this).closest('tr');
 		positionID = currPos.find(".positionID").text();
 	});
@@ -32,10 +33,15 @@ $(document).ready(function() {
             compensation: compensation,
             qualifications: qualifications
         }, function(data) {
-            appModalBody.html('<p>Thank you for applying for this position!<br/>We hope to be able to get back to you soon with our decision.</p>');
-            appModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="appOK">OK</button>');
-			currPos.hide(800);
-		});
+			if (data.success) {
+				appModalBody.html('<p>Thank you for applying for this position!<br/>We hope to be able to get back to you soon with our decision.</p>');
+				appModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="appOK">OK</button>');
+				currPos.hide(800);
+			} else {
+				appModalFooter.append('<div class="error"><p><b>' + data.error.title + '</b></p><br>' +
+					'<p>' + data.error.message + '</p></div>');
+			}
+		}, 'json');
         event.preventDefault();
     });
 	

@@ -1,13 +1,29 @@
 <?php  
 include('studentSession.php');
+include('../formInput.php');
 
-$search = isset($_POST['search']) ? $_POST['search'] : '';
-$term = isset($_POST['term']) ? $_POST['term'] : -1;
-$type = isset($_POST['type']) ? $_POST['term'] : null;
+$form_args = get_form_values(array('search','term','type'));
 
-$positions = Position::findPositions($search, $term, $type);
+try {
+	if (!$form_args['term']) {
+		$form_args['term'] = CURRENT_TERM;
+	}
+	if (!$form_args['type']) {
+		$form_args['type'] = -1; // "Any"
+	}
+	$positions = Position::findPositions(
+		$form_args['search'], $form_args['term'], $form_args['type']);
+} catch (PDOException $ex) {
+	Error::setError(Error::EXCEPTION, 'Error getting position list.', $ex);
+	$positions = array();
+}
 
-$terms = Term::getAllTerms();
+try {
+	$terms = Term::getAllTerms();
+} catch (PDOException $ex) {
+	Error::setError(Error::EXCEPTION, 'Error getting term list.', $ex);
+	$terms = array();
+}
 ?>
 
 <!DOCTYPE html>
@@ -109,7 +125,7 @@ $terms = Term::getAllTerms();
 									<label>
 										Compensation:
 										<select name="compensation" class="form-control" id="compensation">
-											<option value="pay">Paid</option>
+											<option value="pay">Pay</option>
 											<option value="credit">Credit</option>
 										</select>
 									</label>
@@ -183,7 +199,7 @@ $terms = Term::getAllTerms();
 								<div class="row" id="inputrow">
 									<div class="col-xs-6">
 										Search:
-										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=$search?>"/>
+										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=get_form_value('search')?>"/>
 									</div>
 									<div class="col-xs-3">
 										Term:
@@ -191,7 +207,7 @@ $terms = Term::getAllTerms();
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>" <?php if($term == $term_opt->getID()){?>selected="selected"<?php }?>><?=$term_opt->toString()?></option>
+											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', CURRENT_TERM) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->toString()?></option>
 										<?php
 										}
 										?>
@@ -200,10 +216,14 @@ $terms = Term::getAllTerms();
 									<div class="col-xs-3">
 										Type:
 										<select name="type" class="form-control">
-											<option value="All" <?php if(strcmp($type, 'All') == 0){?>selected="selected"<?php }?>>All</option>
-											<option value="Workshop Leader" <?php if(strcmp($type, 'Workshop Leader') == 0){?>selected="selected"<?php }?>>Workshop Leader</option>
-											<option value="Lab TA" <?php if(strcmp($type, 'Lab TA') == 0){?>selected="selected"<?php }?>>Lab TA</option>
-											<option value="Grader" <?php if(strcmp($type, 'Grader') == 0){?>selected="selected"<?php }?>>Grader</option>
+										<?php
+										$type_opts = array(-1 => 'Any', 1 => 'Workshop Leader', 2 => 'Lab TA', 3 => 'Grader');
+										foreach ($type_opts as $index => $type_opt) {
+										?>
+											<option value="<?=$index?>"<?php if(get_form_value('type', -1) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+										<?php
+										}
+										?>
 										</select>
 									</div>
 								</div>
@@ -235,7 +255,7 @@ $terms = Term::getAllTerms();
 												<td class="positionID"><?=$position->getID()?></td>
 												<td><?=$course->getDepartment()?><?=$course->getNumber()?></td>
 												<td><?=$course->getTitle()?></td>
-												<td><?=$professor->getFirstName()[0].". ".$professor->getLastName()?></td>
+												<td><?=$professor->getFILName()?></td>
 												<td><?=$position->getPositionType()?></td>
 												<td><?=$position->getTime()?></td>
 												<td>

@@ -5,11 +5,11 @@
  * Gets the value submitted in this form field,
  * or false if nothing was submitted or the field was left blank.
  */
-function get_form_value($key) {
+function get_form_value($key, $default = false) {
 	if (isset($_POST[$key]) && !empty($_POST[$key])) {
 		return $_POST[$key];
 	} else {
-		return false;
+		return $default;
 	}
 }
 

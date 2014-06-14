@@ -325,6 +325,11 @@ abstract class User {
 	public function getFirstName() { return $this->firstName; }
 	public function getLastName() { return $this->lastName; }
 
+	/* "first-initial last" name */
+	public function getFILName() {
+		return "{$this->firstName[0]}. {$this->lastName}";
+	}
+
 	protected $id;
 	protected $email;
 	protected $password;
@@ -1126,51 +1131,6 @@ function getCourseIDS($email){
 /************************
 * END PROFESSOR FUNCTIONS
 *************************/
-
-/*******************
-* STUDENT FUNCTIONS
-********************/
-
-/* Function studentPositions
-*  Purpose: Fetch all of the student's currently held TA-ing positions from the database
-*  Returns: An array of associative arrays with all the student's TA position information
-**/
-
-function studentPositions($email){
-
-	$student = User::getUserByEmail($email, STUDENT);
-
-	if ($student) {
-		return $student->getApplications(APPROVED);
-	} else {
-		return array();
-	}
-}
-
-/* Function updateProfile
-*  Purpose: Edit the database entries that correspond to the student's information with newly submitted ones from the student
-*  Returns: absolutely nothing
-**/
-function updateProfile($email, $firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe){
-	$student = User::getUserByEmail($email, STUDENT);
-
-	if ($student) {
-		$student->updateProfile($firstName, $lastName, $mobilePhone, $major, $classYear, $gpa, $aboutMe);
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/* Function search
-*  Purpose: Search the database for TA positions with the specified attributes
-*  Returns: An array of associative arrays that represent individual positions
-**/
-
-function search($search, $term, $type) {
-
-	return Position::findPositions($search, $term, $type);
-}
 
 /* Function apply
 *  Purpose: Register a student's application in the database

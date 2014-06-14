@@ -180,6 +180,13 @@ final class Place {
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Place($row); }, $rows);
 	}
+	
+	public static function getBuildings(){
+		$sql = 'SELECT DISTINCT building FROM Places';
+		$args = array();
+		$rows = Database::executeGetAllRows($sql, $args);
+		return $rows;
+	}
 	private function __construct($row) {
 		$this->placeID = $row['placeID'];
 		$this->building = $row['building'];

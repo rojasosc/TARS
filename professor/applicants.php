@@ -1,10 +1,9 @@
 <?php
 	include('professorSession.php');
-
-	/* Obtain a CRN and a courseNumber */
+	ini_set('display_errors',1);
 	
-	$courses = getCourses($email);
-
+	/* Obtain courses */
+	$courses = $professor->getCourses();	
 ?>
 <!-- 
 
@@ -17,7 +16,6 @@ and are color coded to emphasize priority.
 -->
 <!DOCTYPE html>
 <html lang="en">
-
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,76 +30,41 @@ and are color coded to emphasize priority.
 		<script src="applicants.js"></script>
 		
 	</head>
-  
 	<body>
-	
-		
-	
-  <?php
-	$profilesMade = array();
-	
-	foreach($courses as $course){
-	
-		$courseID = $course->getCRN();
-		$applications = getApplicationsByCourse($email,$course);
-		
-		foreach($applications as $application){
-			
-			/*Get studentID */
-			$student = $application->getStudent();
-			
-			if(!in_array($student->getID(),$profilesMade)){
-			
-				$myProfileID = "myProfile". $student->getID();
-				$profilesMade[] = $student->getID();
-			?>
-			
 			<!-- Profile Modal -->
-			<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $student->getFirstName()?>'s Profile</h4>
-			</div>
-			<div class="modal-body">
-			
-				<h3>Personal Information</h3>
-				<div class="container">
-				<p>Major: <?=$student->getMajor()?></p>
-				<p>GPA: <?=$student->getGPA()?></p>
-				<p>Class Year: <?=$student->getClassYear()?></p>
-				</div>
-				
-				<h3>Contact Information</h3>
-				<div class="container">
-				<p>Email: <?=$student->getEmail()?> </p>
-				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
-				</div>
-				
-				<h3>About Me</h3>
-				<div class="container">
-				<p><?=$student->getAboutMe()?></p>
-				
-				</div>
-				
-			</div>
-			<div class="modal-footer">
-				
-				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-			</div>
-			</div>
-			</div>
-			</div>
-
-			<!-- End Profile Modal -->
-			
-			<?php
-			}
-		}	
-	}
-
-    ?>
+			<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="studentModalTitle"></h4>
+						</div>
+						<div class="modal-body">			
+							<h3>Personal Information</h3>
+							<div class="container">
+								<p id="studentMajor"></p>
+								<p id="studentGPA"></p>
+								<p id="studentClassYear"></p>
+							</div> <!-- End container -->
+							
+							<h3>Contact Information</h3>
+							<div class="container">
+								<p id="studentEmail"></p>
+								<p id="studentMobilePhone"></p>
+							</div> <!-- End container -->
+							
+							<h3>About Me</h3>
+							<div class="container">
+								<p id="studentAboutMe"></p>	
+							</div> <!-- End container -->							
+						</div> <!-- End modal body -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						</div> <!-- End modal-footer -->
+					</div> <!-- End modal-content -->
+				</div> <!-- End modal-dialog -->
+			</div> <!-- End modal fade -->
+			<!-- End Profile Modal -->	
 		<div id="page-wrapper">
 			<!-- BEGIN Page Header -->
 			<div id="header">
@@ -153,138 +116,124 @@ and are color coded to emphasize priority.
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
-				<!-- Course Panels -->
-				<?php
-				/*Obtain positionIDS that are in the Assistantship table
-				and that match a particular CRN	
-				Pack these apps into a panel... repeat.
-				*/
-				$tableEntry = 0;
-				foreach($courses as $course){
-							
-				$courseID = $course->getCRN();
-				$courseTitle = $course->getTitle();
-
-				/* applications for this particular course */
-				$applications = getApplicationsByCourse($email,$course);
-				$totalCoursePositions = countTotalPositions($email,$course); /* positions to be filled */
-				$filledPositions = count(getFilledPositionsForCourse($email,$course)); /* positions that have been filled */
-				
-				/* Flag all positions filled for a particular course */
-// 				$full = false;
-// 				if($filledPositions == $totalCoursePositions){
-// 				
-// 					$full = true;
-// 				
-// 				}
-				
-				/* After a selection, disable other applications with the same courseID */
-				
-				/* For use in the progress bar */
-				if ($totalCoursePositions == 0) {
-					$totalCoursePositions++;
-				}
-				$ratio = $filledPositions/$totalCoursePositions;
-				$percentage = $ratio * 100;
-				
-				if($ratio > .66){
-				
-					$progress = "success";
-				
-				}elseif($ratio > .33){
-				
-					$progress = "warning";
-				}else{
-				
-					$progress = "danger";
-				}
-				
-				/* create a new panel */ 
-				$panelID = "coursePanel" . $courseID;
-
-				$coursePanelName = $course->getDepartment().$course->getNumber().
-					'-'.$course->getTitle();
-				
-				?>
-				
 				<div class="row">
-					<div class="container">					
-						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4 data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
-							</div> <!-- End panel-heading -->
-								<div class="collapse panel-collapse" id="<?= $panelID ?>">
-									<div class="panel-body">
-										<form action="selections.php" method="post" id="formid">
-											<table class="table table-striped">
-												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th> <th>GPA</th><th>View Profile</th><th>Action</th></tr>
-											<?php
-											
-											/* Insert each application */
-											foreach($applications as $application){
-							
-												$buttonGroupName = "action" . $tableEntry;
-												$student = $application->getStudent();
-												$profileID = "myProfile" .$student->getID();
-												
-											?>
-											
-											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $course->getDepartment().$course->getNumber()?></td><td><?= $application->getPosition()->getPositionType() ?></td><td><?= $student->getGPA() ?></td><td><a type="button" type="button" data-toggle="modal" href="#<?=$profileID?>" class="btn btn-default">
-											<span class="glyphicon glyphicon-user"></span> Profile</a>
-											</td>
-											<td>
-												<div class="btn-group" data-toggle="buttons">
-													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Approve">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="app<?= $student->getID() ?>" value="3 <?= $student->getID() ?> <?= $application->getPosition()->getID() ?>"><span class="glyphicon glyphicon-ok"></span>
-													</label>
-													<label name="lectureSelections" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Reject">
-													<input type="radio" checked="false" name="<?= $buttonGroupName ?>" id="rej<?= $student->getID() ?>" value="2 <?= $student->getID() ?> <?= $application->getPosition()->getID() ?>"><span class="glyphicon glyphicon-remove"></span>
-													</label>
-													<label name="lectureSelections" class="btn btn-default active" data-toggle="tooltip" data-placement="bottom" title="Undecided">
-													<input type="radio" checked="true" name="<?= $buttonGroupName ?>" id="app<?= $student->getID() ?>" value="0 0 0"><span class="glyphicon glyphicon-time"></span>												
-													</label>
-												</div> <!-- End btn-group -->
-											</td>
-											</tr> 											
-											
-											<?php
-											/* Table entry closing brace */
-											$tableEntry++;
-											}
-											
-											?>
-											</table> <!-- End table -->
-										
-									</div> <!-- End panel-body -->									
-								</div> <!-- End collapse panel-collapse -->
-								<div class="panel-footer">
-									<div class="row">
-										<div class="col-md-3">
-											<button name="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-circle"></span> Confirm</button>
-										</div> <!-- End column -->
-										</form> <!-- End form -->								
-									</div> <!-- End row -->
-									<strong>Positions Filled</strong>
-									<div class="progress progress-striped active">
-										<div class="progress-bar progress-bar-<?= $progress ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
-										<?= $filledPositions?>/<?=$totalCoursePositions ?> Positions Filled.
-										</div> <!-- End progress-bar progress-bar-danger -->
-									</div> <!-- End progress-bar -->
-								</div> <!-- End panel-footer -->								
-						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->	
+					<h1 class="panelHeader">My Applicants</h1>
 				</div> <!-- End row -->
-				
-				<?php
-				
-				/* Course panels closing brace */
-				}
-				
-				?>		
-
-				<!-- END Course Panels -->
-			</div>
-			
+				<div class="container" id="contentWrapper">
+					<!-- Course Panels -->
+					<div class="container" id="coursesContainer">
+						 <?php											
+							foreach($courses as $course){	
+								$courseCRN = $course->getCRN();
+								$courseTitle = $course->getTitle();
+								
+								$applications = getApplicationsByCourse($email,$course);	/* All applications for this course */
+								
+								/*TODO: Get total positions of a particular type and course.
+								For instance, all the graders for CSC 172.*/
+								
+								$totalGraders;
+								$currentGraders;
+								$totalLabTAs;
+								$currentLabTAs;
+								$totalWorkshopLeaders;
+								$currentWorkshopLeaders;
+								
+								/*TODO: Mark workshop super leader positions in the db so that we 
+								 can highlight them on professor pages. */
+								 
+								 /*TODO: Determine the color of the progress bars based on current/total ratio */
+								 
+						?>				
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h4 class="panelHeader" data-toggle="collapse" data-target="#coursePanel<?=$courseCRN?>"><?= $courseTitle ?></h4>
+								</div> <!-- End panel-heading -->
+									<div class="collapse panel-collapse" id="coursePanel<?=$courseCRN?>">
+										<div class="panel-body">
+										<!--TODO: Find a user-friedly way to display 
+										applicants using AJAX to prevent workflow errors
+										(e.g. accepting two applicants into the same position)
+										. Idea: color code rows, maybe? Update all submit requests
+										to use AJAX.
+										 -->
+											<table class="table table-striped" id="<?= $courseCRN ?>">
+												<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Type</th><th>GPA</th><th>Profile</th><th>Action</th></tr>
+												<?php
+													foreach($applications as $application){ 
+														$student = $application->getStudent();
+														$applicationID = $application->getID();
+														$universityID = $student->getID();
+														
+														
+												?>
+												
+												<tr>
+												<td><?= $universityID ?></td> 
+												<td><?= $student->getFirstName() ?></td>
+												<td><?= $student->getlastName() ?></td>
+												<td><?= $student->getEmail() ?></td>
+												<td><?= $application->getPosition()->getPositionType() ?></td>
+												<td><?= $student->getGPA()?></td>
+												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $universityID ?>" class="btn btn-default circle profile">
+												<span class="glyphicon glyphicon-user"></span></button>
+												</td>
+												<td>	<form id="course1">
+													<div class="btn-group" data-toggle="buttons" data-appID="<?=$applicationID ?>" data-universityID="<?= $universityID ?>">
+														<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve">
+															<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>" checked><span class="glyphicon glyphicon-ok"></span>
+														</label>
+														<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
+															<input type="radio" name="<?= $applicationID ?>" id="deny" value="<?= REJECTED ?>" checked><span class="glyphicon glyphicon-remove"></span>
+														</label>
+														<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
+															<input type="radio" name="<?= $applicationID ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
+														</label>
+													</div> <!-- End btn-group -->
+													</form>
+												</td>
+												</tr> 													
+												<?php	} ?>	<!-- Finished looping through every application -->											
+											</table> <!-- End table table-striped -->
+										 
+										</div> <!-- End panel-body -->										
+									</div> <!-- End collapse panel-collapse -->
+										<div class="panel-footer">
+											<div class="row">
+												<div class="col-xs-4">
+													<strong>Graders</strong>
+													<div class="progress progress-striped active">
+														<div class="progress-bar progress-bar-primary"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+														</div> <!-- End progress-bar progress-bar-danger -->
+													</div> <!-- End progress-bar -->												
+												</div> <!-- End column -->
+												<div class="col-xs-4">
+													<strong>Lab TAs</strong>
+													<div class="progress progress-striped active">
+														<div class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+														</div> <!-- End progress-bar progress-bar-danger -->		
+													</div> <!-- End progress-bar -->												
+												</div> <!-- End column -->
+												<div class="col-xs-4">
+													<strong>Workshop Leaders</strong>
+													<div class="progress progress-striped active">
+														<div class="progress-bar progress-bar-danger"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+														</div> <!-- End progress-bar progress-bar-danger -->
+													</div> <!-- End progress-bar -->												
+												</div> <!-- End column -->											
+											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-xs-4">
+													<button name="applyDecision" data-courseID="<?= $courseCRN ?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Confirm Decisions</button>												
+												</div> <!-- End column -->
+											</div> <!-- End row -->
+										</div> <!-- End panel-footer -->									
+							</div> <!-- End panel panel-primary -->
+						<?php } ?> <!-- Finished looping through every course -->	
+						</div> <!-- End container -->
+					<!-- End Course Panels -->			
+				</div> <!-- End container content-wrapper-->
+			</div>	
 			<!-- END Page Content --> 
 	    
 			<!--BEGIN Page Footer -->
@@ -310,7 +259,6 @@ and are color coded to emphasize priority.
 				</div> <!-- End row -->
 			</div>
 			<!--END Page Footer -->
-	
 		</div> 
 		<!-- End page-wrapper -->	
 	</body>

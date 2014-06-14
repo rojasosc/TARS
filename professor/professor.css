@@ -64,11 +64,15 @@ th,td {
 
 }
 
-.panel-heading{
-	height: 50px;
+.panelHeader{	
+	text-align: center;
+	font-weight: bold;
 }
 
-
+.circle{
+	
+	border-radius: 100%;
+}
 /*
  * Everything below is NavBar coloring
  */

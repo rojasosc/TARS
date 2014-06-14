@@ -1,6 +1,9 @@
 $(document).ready(function() {
-	$('#createAccountBody').toggle();
-	
+	$('#createAccountBody').toggle('show');
+	$buildingSelect = $('#buildings');
+	$roomSelect = $('#rooms');
+	getBuildings();
+	$buildingSelect.bind('change',getRooms);
 	/*Attach a bootstrapValidator to the form*/	
 	$('#createAccountForm').bootstrapValidator({
 		message: 'This value is not valid',
@@ -174,9 +177,50 @@ function refreshForm(){
 	$('#createAccountPanel').collapse('show');
 	
 }
+
 function clearInput() {
 	$("#createAccountForm :input").each(function() { $(this).val(''); });
 }
 
+
+function getBuildings(){
+	var url = 'fetchBuildings.php';
+	var data = {
+		building: url
+	}
+	$.post(url,data,function (buildings) { showBuildings(buildings); } );
+}
+
+function showBuildings(buildings){
+	var buildings = eval('(' + buildings + ')');
+	for(var i = 0; i < buildings.length; i++){
+		$buildingSelect.append("<option>" + buildings[i]['building'] + "</option>");;
+	}	
+}
+
+function getRooms(){
+	var url = 'fetchRooms.php';
+	var data = {
+		building: $(this).val()
+	}
+	removeRooms();
+	$.post(url,data,function (rooms) { showRooms(rooms); } );
+}
+
+function showRooms(rooms){
+	var rooms = eval('(' + rooms + ')');
+	for(var i = 0; i < rooms.length; i++){
+		addRoom(rooms[i]);
+	}
+	
+}
+
+function removeRooms(){
+	$roomSelect.find('option').remove();
+}
+
+function addRoom(room){
+	$roomSelect.append("<option>" + room + "</option>");
+}
 
 

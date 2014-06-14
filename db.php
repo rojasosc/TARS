@@ -166,8 +166,16 @@ final class Place {
 		$row = Database::executeGetRow($sql, $args);
 		return new Place($row);
 	}
+	
+	public static function getPlaceByBuildingAndRoom($building, $room){
+		$sql = 'SELECT * FROM Places WHERE building = :building AND room = :room';
+		$args = array(':building' => $building, ':room' => $room);
+		$row = Database::executeGetRow($sql, $args);
+		return new Place($row);
+	}
 
 	private function __construct($row) {
+		$this->placeID = $row['placeID'];
 		$this->building = $row['building'];
 		$this->room = $row['room'];
 		$this->roomType = $row['roomType'];
@@ -176,10 +184,12 @@ final class Place {
 	public function getBuilding() { return $this->building; }
 	public function getRoom() { return $this->room; }
 	public function getRoomType() { return $this->roomType; }
+	public function getPlaceID() { return $this->placeID; }
 
 	private $building;
 	private $room;
 	private $roomType;
+	private $placeID;
 }
 
 /*
@@ -425,15 +435,15 @@ final class Professor extends User {
 		}
 	}
 
-	public function updateProfile($firstName, $lastName, $place, $officePhone, $mobilePhone) {
+	public function updateProfile($firstName, $lastName, $officeID, $officePhone, $mobilePhone) {
 		$sql = 'UPDATE Professors
 				INNER JOIN Users ON Users.userID = Professors.userID
 				SET firstName = :firstName, lastName = :lastName,
-					office = :office, officePhone = :officePhone,
+					officeID = :officeID, officePhone = :officePhone,
 					mobilePhone = :mobilePhone
 				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':office' => $place->getID(), ':officePhone' => $officePhone,
+			':officeID' => $officeID, ':officePhone' => $officePhone,
 			':mobilePhone'=>$mobilePhone);
 		Database::execute($sql, $args);
 	}

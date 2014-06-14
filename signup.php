@@ -1,3 +1,48 @@
+<?php
+
+require('db.php');
+require('formInput.php');
+require('error.php');
+
+
+if (isset($_POST['submitButton'])) {
+	$form_args = get_form_values(array(
+		'email','emailConfirm','password','passwordConfirm','firstName','lastName',
+		'mobilePhone','major','gpa','classYear','aboutMe','universityID'));
+
+	$invalid_values = get_invalid_values($form_args);
+	if (count($invalid_values) > 0) {
+		Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
+			$invalid_values);
+	} else {
+		// manually validate emailConfirm and passwordConfirm fields for now...
+		if ($form_args['email'] != $form_args['emailConfirm']) {
+			Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
+				array('emailConfirm'));
+		} elseif ($form_args['password'] != $form_args['passwordConfirm']) {
+			Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
+				array('passwordConfirm'));
+		} else {
+			try {
+				Student::registerStudent(
+					$form_args['email'], $form_args['password'],
+					$form_args['firstName'], $form_args['lastName'],
+					$form_args['mobilePhone'], $form_args['major'],
+					$form_args['gpa'], $form_args['classYear'],
+					$form_args['aboutMe'], $form_args['universityID']);
+				// TODO: go to "successful sign in" landing that sends email confirm.
+				header('Location: .');
+				exit;
+			} catch (PDOException $ex) {
+				Error::setError(Error::EXCEPTION, 'Error creating an account.',
+					$ex);
+			}
+		}
+	}
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,19 +79,20 @@
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron" id="formBox">
+						<?php Error::putError(); ?>
 						<h2>Sign Up</h2>
-						<form action="process.php" class="form-horizontal" id="signupForm" method="post">
+						<form action="signup.php" class="form-horizontal" id="signupForm" method="post">
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">First Name</label>
-										<input type="text" class="form-control" name="firstName" placeholder="First Name"/>														
+										<input type="text" class="form-control" name="firstName" placeholder="First Name" value="<?=get_form_value('firstName')?>" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">Last Name</label>
-										<input type="text" class="form-control" name="lastName" placeholder="Last Name"/>													
+										<input type="text" class="form-control" name="lastName" placeholder="Last Name" value="<?=get_form_value('lastName')?>" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -54,29 +100,27 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email"/>
-										
+										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email" value="<?=get_form_value('email')?>" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="emailConfirm">Re-Enter Email</label>
-										<input type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
-														
+										<label class="control-label" for="emailConfirm">Re-type Email</label>
+										<input type="email" class="form-control" name="emailConfirm" autocomplete="off" placeholder="Confirm Email" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="password">Create Password</label>
-										<input type="password" class="form-control" name="password" placeholder="Create Password"/>					
+										<label class="control-label" for="password">Password</label>
+										<input type="password" class="form-control" name="password" placeholder="Create Password" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="passwordConfirm">Confirm Password</label>
-										<input type="password" class="form-control" name="passwordConfirm" placeholder="Confirm Password"/>					
+										<label class="control-label" for="passwordConfirm">Re-type Password</label>
+										<input type="password" class="form-control" name="passwordConfirm" autocomplete="off" placeholder="Confirm Password" />
 									</div> <!-- End form-group -->						
 								</div>							
 							</div> <!-- End row -->	
@@ -84,7 +128,7 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
-										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone"/>
+										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone" value="<?=get_form_value('mobilePhone')?>" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
@@ -119,13 +163,13 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="GPA">GPA</label>
-										<input type="text" class="form-control" name="gpa" placeholder="GPA"/>
+										<input type="text" class="form-control" name="gpa" placeholder="GPA" value="<?=get_form_value('gpa')?>" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="universityID">University Student ID</label>
-										<input type="text" class="form-control" name="universityID" placeholder="University ID"/>
+										<input type="text" class="form-control" name="universityID" placeholder="University ID" value="<?=get_form_value('universityID')?>" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
@@ -133,7 +177,7 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="aboutMe">About Me</label>
-										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."></textarea>
+										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."><?=get_form_value('aboutMe')?></textarea>
 									</div> <!-- End form-group -->
 								</div> <!-- End row -->
 							</div> <!-- End row -->

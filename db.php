@@ -456,6 +456,8 @@ final class Professor extends User {
 		}
 		return $this->office;
 	}
+	
+	public function getOfficeID() { return $this->officeID; }
 	public function getOfficePhone() { return $this->officePhone; }
 	public function getMobilePhone() { return $this->mobilePhone; }
 

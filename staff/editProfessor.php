@@ -63,6 +63,7 @@
 									<div class="form-group">
 										<label class="control-label" for="building">Building</label>
 										<select name="building" class="form-control" placeholder="Building">
+											<!--TODO: Use jQuery to fill in these options -->
 											<option>CSB</option>
 											<option>LATT</option>
 											<option>Meliora</option>
@@ -72,12 +73,14 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="room">Room</label>
+										<!--TODO: Use jQuery to fill in these options -->
 										<select name="room" class="form-control" placeholder="Room">
 											<option>306</option>
 											<option>233</option>
-											<option>255</option>
-											<option>219</option>
-											<option>393</option>
+											<option>608</option>
+											<option>106</option>
+											<option>722</option>
+											<option>715</option>
 										</select> <!-- End select -->										
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->							

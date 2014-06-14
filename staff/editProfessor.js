@@ -49,11 +49,13 @@ function updateUser(){
 		'firstName': $("[name='firstName']",$updateForm).val(),
 		'lastName': $("[name='lastName']",$updateForm).val(),
 		'email': $("[name='email']",$updateForm).val(),
-		'mobilePhone': $("[name='mobilePhone']",$updateForm).val()
+		'mobilePhone': $("[name='mobilePhone']",$updateForm).val(),
+		'officePhone': $("[name='officePhone']",$updateForm).val(),
+		'building': $("[name='building']",$updateForm).val(),
+		'room': $("[name='room']",$updateForm).val()
 	}
-	
 	/* AJAX POST request to obtain results */	
-	$.post(url,data,function (info){ });
+	$.post(url,data,function (user){ alert(user); });
 
 	/*TODO: Obtain a confirmation from the PHP script on success/failure and 
 	 * notify the user */
@@ -110,4 +112,6 @@ function fillUpdateForm(user){
 	$("[name='email']",$updateForm).val(professor['email']);
 	$("[name='mobilePhone']",$updateForm).val(professor['mobilePhone']);
 	$("[name='officePhone']",$updateForm).val(professor['officePhone']);
+	$("[name='building']",$updateForm).val(professor['building']);
+	$("[name='room']",$updateForm).val(professor['room']);
 }

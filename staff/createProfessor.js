@@ -2,7 +2,7 @@ $(document).ready(function() {
 	$('#createAccountBody').toggle();
 	
 	/*Attach a bootstrapValidator to the form*/	
-	$('#createAccountForm ').bootstrapValidator({
+	$('#createAccountForm').bootstrapValidator({
 		message: 'This value is not valid',
 		feedbackIcons: {
 			valid: 'glyphicon glyphicon-ok',
@@ -11,17 +11,7 @@ $(document).ready(function() {
 			
 		},
 		submitHandler: function(validator, form, submitButton) {
-			// Ajax post(url,data,callback function)
-			var url = $('#createAccountForm').attr('action');
-			var data = $('#createAccountForm :input').serializeArray();
-
-			$.post(url,data,function (info){  
-				clearInput(); 
-				$('#createAccountBody').collapse('toggle');
-				$('#createdProfessors').html(info).fadeIn();
-				$('#createAccountBody').collapse('toggle');
-				});
-			
+				createProfessor();
 		},
 		fields: {
 			firstName: {
@@ -31,7 +21,7 @@ $(document).ready(function() {
 						message: 'a first name is required and cannot be empty'
 					},
 					stringLength: {
-						min: 4,
+						min: 2,
 						max: 30,
 						message: 'a first name must be between 2 and 30 characters long'
 					},
@@ -165,35 +155,28 @@ $(document).ready(function() {
 				}
 			}  
 		} /* END Fields */				
-    }); /* END bootstrapValidatorf */
+    }); /* END bootstrapValidator */
     
- $('#submitButton').click(function(){
-	    // Ajax post(url,data,callback function)
+	$('#submitButton').click(function(){ createProfessor(); });
+	$("#createAccountForm").submit(function(event){ return false; });
+});
+
+function createProfessor(){
 	    var url = $('#createAccountForm').attr('action');
 	    var data = $('#createAccountForm :input').serializeArray();
-	    $.post(url,data,function (user){  
-		clearInput(); 
-		$('#createAccountForm ').fadeOut(600);
-		$('#formBox').html(info).fadeIn();
-	});
-});
+	    $.post(url,data,function () { refreshForm(); });		
+}
 
-});
-
-function createProfessor(user){
-	
+function refreshForm(){
+	clearInput();
+	$('#createAccountPanel').collapse('hide');
+	$('#createAccountForm').data('bootstrapValidator').resetForm();
+	$('#createAccountPanel').collapse('show');
 	
 }
-/*Clears all the fields in the registration form*/
 function clearInput() {
-	$("#createAccountForm :input").each( function() {
-	   $(this).val('');
-	});
+	$("#createAccountForm :input").each(function() { $(this).val(''); });
 }
 
-/*Prevents a page redirection to the php page.*/
-$("#createAccountForm").submit(function(event){
-		
-  return false;
-});
+
 

@@ -80,7 +80,7 @@
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div class="container" id="formBox">
-						<div class="panel panel-success">
+						<div class="panel panel-success" id="createAccountPanel">
 							<div class="panel-heading">
 								<p class="panelHeader">New Professor Account</p>
 							</div> <!-- End panel-heading -->
@@ -162,11 +162,11 @@
 													<div class="form-group">
 														<label class="control-label" for="room">Room</label>
 														<select name="room" class="form-control" placeholder="Room">
-															<option>306</option>
+															<option>715</option>
 															<option>233</option>
 															<option>255</option>
 															<option>219</option>
-															<option>393</option>
+															<option>608</option>
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->

@@ -1038,9 +1038,11 @@ function countTotalPositions($email,$course_obj){
 *  Returns: nothing.
 **/
 function setPositionStatus($studentID,$positionID,$status){
-	$student_obj = User::getUserByEmail($email, STUDENT);
+	
+	$student_obj = User::getUserByID($studentID, STUDENT);
 	$position_obj = Position::getPositionByID($positionID);
-
+	print_r($student_obj);
+	print_r($position_obj);
 	if ($student_obj && $position_obj) {
 		Applicant::setPositionStatus($student_obj, $position_obj, $status);
 	}

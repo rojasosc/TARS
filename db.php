@@ -174,6 +174,12 @@ final class Place {
 		return new Place($row);
 	}
 
+	public static function getPlacesByBuilding($building){
+		$sql = 'SELECT * FROM Places WHERE building = :building';
+		$args = array(':building' => $building);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Place($row); }, $rows);
+	}
 	private function __construct($row) {
 		$this->placeID = $row['placeID'];
 		$this->building = $row['building'];

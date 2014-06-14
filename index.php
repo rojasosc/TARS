@@ -1,35 +1,47 @@
 <?php
-	include ("db.php");
+require('db.php');
+require('formInput.php');
+require('error.php');
 
-	if(isset($_POST['submit'])){
-
-        $userName = isset($_POST['email']) ? $_POST['email'] : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
-        if (!empty($userName) && !empty($password)) {
-            $user = login($userName, $password);
-        }
+if (isset($_POST['submit'])) {
+	$form_args = get_form_values(array('email','password'));
 	
-		if($user){
-		
-			/* User type */
-			$type = $user->getObjectType();
-			
-			if($type == STUDENT){
-				
-				header('Location: student/student.php');	
-			}elseif($type == PROFESSOR){
-			
-				header('Location: professor/professor.php');	
-			}else{	
-			
-				header('Location: staff/staff.php');
-			}	
-		}else{
-
-			header('Location: index.php');
+	if (!$form_args['email']) {
+		Error::setError(Error::FORM_SUBMISSION, 'Error logging in.',
+			array('email'));
+	} elseif (!$form_args['password']) {
+		Error::setError(Error::FORM_SUBMISSION, 'Error logging in.',
+			array('password'));
+	} else {
+		try {
+			$login_user = login($form_args['email'], $form_args['password']);
+		} catch (Exception $ex) {
+			Error::setError(Error::EXCEPTION, 'Error logging in.', $ex);
 		}
-		exit;
+
+		if ($login_user) {
+			/* User type */
+			$type = $login_user->getObjectType();
+			
+			if ($type == STUDENT) {
+				header('Location: student/student.php');
+				exit;
+			} elseif ($type == PROFESSOR) {
+				header('Location: professor/professor.php');
+				exit;
+			} elseif ($type == STAFF) {
+				header('Location: staff/staff.php');
+				exit;
+			} else {
+				Error::setError(Error::EXCEPTION, 'Error logging in.',
+					new Exception('Admin not implemented!'));
+			}
+		} else {
+			Error::setError(Error::CUSTOM_MESSAGE, 'Error logging in.',
+				'The email or password you entered is incorrect.');
+		}
 	}
+}
 ?>
 
 <!DOCTYPE html>
@@ -138,11 +150,12 @@
 				<div id="login">
 					<form action="index.php" method="post">
 						<fieldset>
+							<?php Error::putError(); ?>
 							<h2 class="center" id="colorWhite">Sign In</h2>
 							<div class="row">
 								<div class="col-md-10">
 									<label id="colorWhite">Email</label>
-									<input type="email" name="email" class="form-control" place-holder="">
+									<input type="email" name="email" class="form-control" place-holder="" value="<?=get_form_value('email')?>">
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">

@@ -9,6 +9,7 @@ class Error {
 
 	const EXCEPTION = 1;
 	const FORM_SUBMISSION = 2;
+	const CUSTOM_MESSAGE = 3;
 
 	/**
 	 * Call this function when an error occurs.
@@ -28,21 +29,22 @@ class Error {
 			return;
 		}
 
+		echo '<div class="error"><p><b>'.htmlentities($e->msg).'</b></p>';
 		switch ($e->type) {
 		case Error::EXCEPTION:
-			echo '<div class="error"><p><b>'.htmlentities($e->msg).
-				'</b></p><p>An exception occurred!'.
-				'<br/>'.htmlentities($e->object->getMessage()).'</p></div>';
+			echo '<p>aAn exception occurred!<br/>';
+			echo htmlentities($e->object->getMessage()).'</p></div>';
 			break;
 		case Error::FORM_SUBMISSION:
-			echo '<div class="error"><p><b>'.htmlentities($e->msg).
-				'</b></p><p>The following fields are not valid:<ul>';
+			echo '<p>The following fields are not valid:<ul>';
 			foreach ($e->object as $element) {
 				echo '<li>'.htmlentities($element).'</li>';
 			}
 			echo '</ul>Please fill in these fields to continue.</p></div>';
 			break;
-
+		case Error::CUSTOM_MESSAGE:
+			echo htmlentities($e->object).'</p></div>';
+			break;
 		}
 
 		Error::$error = null;

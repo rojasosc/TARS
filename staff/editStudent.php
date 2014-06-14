@@ -1,10 +1,5 @@
 <?php  
-   
 	include('staffSession.php');
-    
-    	ini_set("display_errors",1);
-    	
-    	
 
 ?>
 <!DOCTYPE html>

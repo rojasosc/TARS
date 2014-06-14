@@ -150,7 +150,7 @@
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label class="control-label" for="building"></label>
+														<label class="control-label" for="building">Building</label>
 														<select name="building" class="form-control" placeholder="Building">
 															<option>CSB</option>
 															<option>LATT</option>
@@ -169,7 +169,8 @@
 															<option>393</option>
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
-												</div> <!-- End column -->							
+												</div> <!-- End column -->
+												
 											</div> <!-- End Row -->												
 											<br>
 											<div class="row">

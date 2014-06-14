@@ -120,18 +120,13 @@ th,td {
 #resultsContainer{
 	float:right;
 	width: 75%;
-	
+
 }
 
 #termContainer {
-
-	border-radius: 15px;
-	border: groove;
 	padding: 25px;
 	margin-bottom: 20px;
 	color: black;
-	
-	
 }
 
 .termHeader{
@@ -172,9 +167,8 @@ td{
 	
 	float:left;
 	width: 25%;
-	border-right-style: solid;
-	border-right-color: #3C763D;
-	padding: 10px;	
+	padding: 10px;
+	height: 100%;
 	
 }
 
@@ -183,7 +177,9 @@ td{
 	
 	float:right;
 	width: 75%;
-	
+	border-left-style: solid;
+	border-left-color: #3C763D;
+	margin-bottom: 10px;
 }
 
 
@@ -199,15 +195,15 @@ td{
 	
 	float:left;
 	width: 25%;
-	border-right-style: solid;
-	border-right-color: #3C763D;
 	padding: 10px;		
 }
 
 #editTermForms{
 
 	float:right;
-	width: 75%;		
+	width: 75%;
+	border-left-style: solid;
+	border-left-color: #3C763D;
 }
 
 #navTabs li {

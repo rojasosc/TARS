@@ -1,5 +1,26 @@
 <?php  
-    include('studentSession.php');
+include('studentSession.php');
+include('../formInput.php');
+include('../error.php');
+
+if (isset($_POST['submitButton'])) {
+	$form_args = get_form_values(array(
+		'firstName','lastName','mobilePhone','major','classYear','gpa','aboutMe'));
+	$invalid_values = get_invalid_values($form_args);
+	if (count($invalid_values) > 0) {
+		Error::setError(Error::FORM_SUBMISSION, 'Error modifying your profile.',
+			$invalid_values);
+	} else {
+		try {
+			// use session $student
+			$student->updateProfile($form_args['firstName'],$form_args['lastName'],
+				$form_args['mobilePhone'], $form_args['major'], $form_args['classYear'],
+				$form_args['gpa'], $form_args['aboutMe']);
+		} catch (PDOException $ex) {
+			Error::setError(Error::EXCEPTION, $ex);
+		}
+	}
+}
 ?>
 
 <!DOCTYPE html>
@@ -72,19 +93,19 @@
 					</div>
 					<div class="panel-body">
 						<div class="container-fluid display-area">
-							<form role="form" action="profileProcess.php" method="post" id="profile">
+							<form role="form" action="profile.php" method="post" id="profile">
 								<div class="row">
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>First Name:
-												<input class="form-control" type="text" name="fn" size="30" value="<?=$fn?>" />
+												<input class="form-control" type="text" name="firstName" size="30" value="<?=$fn?>" />
 											</label>
 										</div>
 									</div>
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>Last Name:
-												<input class="form-control" type="text" name="ln" size="30" value="<?=$ln?>" />	
+												<input class="form-control" type="text" name="lastName" size="30" value="<?=$ln?>" />	
 											</label>
 										</div>
 									</div>
@@ -100,7 +121,7 @@
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>Phone Number:
-												<input class="form-control" type="text" name="pn" size="30" value="<?=$student->getMobilePhone()?>" />
+												<input class="form-control" type="text" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" />
 											</label>
 										</div>
 									</div>
@@ -109,14 +130,14 @@
 									<div class="col-xs-4">
 										<div class="form-group">
 											<label>Major:
-												<input class="form-control" type="text" name="mjr" size="30" value="<?=$student->getMajor()?>" />
+												<input class="form-control" type="text" name="major" size="30" value="<?=$student->getMajor()?>" />
 											</label>		
 										</div>
 									</div>
 									<div class="col-xs-4">
 										<div class="form-group">
 											<label>Class Year:
-												<input class="form-control" type="text" name="year" size="30" value="<?=$student->getClassYear()?>" />
+												<input class="form-control" type="text" name="classYear" size="30" value="<?=$student->getClassYear()?>" />
 											</label>
 										</div>
 									</div>
@@ -131,7 +152,7 @@
 								<div class="row col-xs-12">
 									<div class="form-group">
 										<label>Qualifications and TA-ing history: <br />
-											<textarea class="form-control" rows="10" cols="100" name="qual-hist" form="profile"><?=$student->getAboutMe()?></textarea>
+											<textarea class="form-control" rows="10" cols="100" name="aboutMe" form="profile"><?=$student->getAboutMe()?></textarea>
 										</label>
 									</div>
 								</div>

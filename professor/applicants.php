@@ -1,6 +1,6 @@
 <?php
 	include('professorSession.php');
-	
+	ini_set('display_errors',1);
 	/* Obtain courses */
 	$courses = $professor->getCourses();	
 ?>
@@ -131,18 +131,18 @@ and are color coded to emphasize priority.
 								/*TODO: Get total positions of a particular type and course.
 								For instance, all the graders for CSC 172.*/
 								
-								$totalGraders;
-								$currentGraders;
-								$totalLabTAs;
-								$currentLabTAs;
-								$totalWorkshopLeaders;
-								$currentWorkshopLeaders;
+								$totalGraders = $course->getTotalPositionsByType($professor, "Grader");
+								$currentGraders = $course->getCurrentPositionsByType($professor, "Grader");
+								$totalLabTAs = $course->getTotalPositionsByType($professor, "Lab TA");
+								$currentLabTAs = $course->getCurrentPositionsByType($professor, "Lab TA");
+								$totalWorkshopLeaders = $course->getTotalPositionsByType($professor, "Workshop Leader");
+								$currentWorkshopLeaders = $course->getCurrentPositionsByType($professor, "Workshop Leader");
 								
 								/*TODO: Mark workshop super leader positions in the db so that we 
 								 can highlight them on professor pages. */
 								 
-								 /*TODO: Determine the color of the progress bars based on current/total ratio */
-								 
+								 /* Determine the color of the progress bars based on current/total ratio */
+								include('progressBars.php');
 						?>				
 							<div class="panel panel-primary">
 								<div class="panel-heading">
@@ -202,21 +202,21 @@ and are color coded to emphasize priority.
 												<div class="col-xs-4">
 													<strong>Graders</strong>
 													<div class="progress progress-striped active">
-														<div class="progress-bar progress-bar-primary"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+														<div class="progress-bar progress-bar-<?= $graderBar ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $graderRatio * 100 ?>%">
 														</div> <!-- End progress-bar progress-bar-danger -->
 													</div> <!-- End progress-bar -->												
 												</div> <!-- End column -->
 												<div class="col-xs-4">
 													<strong>Lab TAs</strong>
 													<div class="progress progress-striped active">
-														<div class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+														<div class="progress-bar progress-bar-<?= $labTAsBar ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $labTAsRatio * 100 ?>%">
 														</div> <!-- End progress-bar progress-bar-danger -->		
 													</div> <!-- End progress-bar -->												
 												</div> <!-- End column -->
 												<div class="col-xs-4">
 													<strong>Workshop Leaders</strong>
 													<div class="progress progress-striped active">
-														<div class="progress-bar progress-bar-danger"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+														<div class="progress-bar progress-bar-<?= $workshopLeaderBar ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $workShopLeaderRatio * 100 ?>%">
 														</div> <!-- End progress-bar progress-bar-danger -->
 													</div> <!-- End progress-bar -->												
 												</div> <!-- End column -->											

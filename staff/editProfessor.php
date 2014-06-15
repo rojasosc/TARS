@@ -196,13 +196,19 @@
 					<div class="container" id="result">
 						<div class="row">
 							<div class="col-md-4">
-								<h3 class="btn-default">Results</h3>
+								<h3>Results</h3>
 							</div> <!-- End column -->
 						</div> <!-- End row -->						
 						<div class="row">
 							<div class="col-md-12">
-								<table class="table table-striped" id="resultTable">
-									<tr><th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th><tr>
+								<table class="table table-striped table-hover" id="resultTable">
+									<thead>
+										<tr>
+										<th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
 								</table> <!-- End table table-striped -->									
 							</div> <!-- End column -->
 						</div> <!-- End row -->

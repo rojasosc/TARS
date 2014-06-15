@@ -211,8 +211,8 @@
 							</div> <!-- End panel-heading -->
 									<div class="panel-body">
 										<form action="reviewProcess.php" method="post" id="reviewTable">
-											<table class="table table-striped">
-												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>View Profile</th><th>Status</th><th>Comment</th></tr>
+											<table class="table table-striped table-hover">
+												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Status</th><th>Comment</th></tr>
 												<?php
 												
 												$applicants = getUnverifiedStudents();
@@ -228,12 +228,12 @@
 												<tr><td><?= $student->getUniversityID() ?></td><td><?= $student->getFirstName()?></td><td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $student->getGPA()?></td>
 												<td>
 												<a type="button" data-toggle="modal" href="#<?= $myProfileID?>" class="btn btn-default">
-												<span class="glyphicon glyphicon-user"></span> Profile</a>			
+												<span class="glyphicon glyphicon-user circle"></span></a>			
 												</td>
 												<td>Status</td>
 												<td>
 												<a type="button" href="#comment" data-toggle="modal" class="btn btn-default">
-												<span class="glyphicon glyphicon-comment"></span> Comment</a>
+												<span class="glyphicon glyphicon-comment"></span></a>
 												</td>
 												</tr>
 												

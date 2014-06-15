@@ -65,7 +65,7 @@ th,td {
     padding-top: 0px;
     padding-bottom: 0px;
     color: #a2c2db;
-    height: 52px;
+    height: 60px;
     margin-top: 90px;
 
 }
@@ -107,14 +107,10 @@ th,td {
 	
 }
 
-#payrollContainer{
-	
+#payrollContainer{	
 	float:left;
 	width: 25%;
-	border-right-style: solid;
-	border-right-color: #3C763D;
 	padding: 10px;
-	
 }
 
 #resultsContainer{
@@ -152,33 +148,17 @@ table th{
 	color: black;
 }
 
-tr:nth-child(even) {
-	background: #CCC;
-	
-}
-
-td{
-	
-	color: black;
-}
-
-
 #search{
-	
 	float:left;
 	width: 25%;
 	padding: 10px;
 	height: 100%;
-	
 }
 
 
-#result{
-	
+#result{	
 	float:right;
 	width: 75%;
-	border-left-style: solid;
-	border-left-color: #3C763D;
 	margin-bottom: 10px;
 }
 
@@ -202,8 +182,6 @@ td{
 
 	float:right;
 	width: 75%;
-	border-left-style: solid;
-	border-left-color: #3C763D;
 }
 
 #navTabs li {
@@ -217,6 +195,11 @@ td{
 	margin: 10px;
 	margin-left: 0;	
 	border-radius: 10px;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+	background-color: #3498db;
+
+	
 }
 
 #navTabs a {

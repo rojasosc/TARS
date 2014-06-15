@@ -178,7 +178,7 @@ and are color coded to emphasize priority.
 												<span class="glyphicon glyphicon-user"></span></button>
 												</td>
 												<td>	<form id="course1">
-													<div class="btn-group" data-toggle="buttons" data-appID="<?=$applicationID ?>" data-universityID="<?= $universityID ?>">
+													<div class="btn-group" data-toggle="buttons" data-positionID="<?= $application->getPosition()->getID() ?>" data-universityID="<?= $universityID ?>">
 														<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve">
 															<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>" checked><span class="glyphicon glyphicon-ok"></span>
 														</label>

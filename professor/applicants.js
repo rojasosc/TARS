@@ -41,7 +41,7 @@ function getDecisions(){
 
 function submitDecisions($application){
 	var universityID = $application.data('universityid');
-	var positionID = $application.data('appid');
+	var positionID = $application.data('positionid');
 	var decision = $('input:checked',$application).val();
 	var url = "selections.php";
 	var data = {
@@ -49,6 +49,6 @@ function submitDecisions($application){
 		positionID: positionID,
 		decision: decision
 	}
-	//alert(data['universityID']+ " " +data['positionID']+ " " +data['decision'])
+	alert(data['universityID']+ " " +data['positionID']+ " " +data['decision'])
 	$.post(url,data,function () {});
 }

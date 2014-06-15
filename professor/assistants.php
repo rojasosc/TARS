@@ -180,8 +180,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				/* create a new panel */ 
 				$panelID = "coursePanel" . $course->getID();
 
-				$coursePanelName = $course->getDepartment().$course->getNumber().
-					'-'.$course->getTitle();
+				$coursePanelName = $course->getTitle();
 				?>
 				
 				<div class="row">

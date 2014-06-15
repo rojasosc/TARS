@@ -564,6 +564,7 @@ final class Position {
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Position($row); }, $rows);
 	}
+	
 
 	private function __construct($row) {
 		$this->id = $row['positionID'];
@@ -648,6 +649,8 @@ final class Applicant {
 					Applications.positionID = Positions.positionID AND
 					Positions.courseID = :course_id AND
 					Teaches.courseID = Courses.courseID AND
+					Teaches.professorID = :prof_id AND
+					Teaches.professorID = Positions.professorID AND					
 					Courses.courseID = :course_id
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status,
@@ -775,6 +778,23 @@ final class Course {
 			$args = array(':prof_id' => $prof->getID(), ':course_id' => $this->id);
 		}
 		return Database::executeGetScalar($sql, $args);
+	}
+	
+	public function getTotalPositionsByType($professor, $type){
+		$sql = 'SELECT COUNT(*) FROM Positions
+			WHERE courseID = :course_id AND professorID = :prof_id AND posType = :pos_type';
+		$args = array(':course_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
+		return Database::executeGetScalar($sql, $args);
+		
+	}
+	
+	public function getCurrentPositionsByType($professor, $type){
+		$sql = 'SELECT COUNT(*) FROM Positions
+			INNER JOIN Applications ON Positions.positionID = Applications.positionID
+			WHERE Positions.courseID = :course_id AND Positions.professorID = :prof_id 
+			AND Positions.posType = :pos_type AND Applications.appStatus = 3';
+		$args = array(':course_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
+		return Database::executeGetScalar($sql, $args);	
 	}
 
 

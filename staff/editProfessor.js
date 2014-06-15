@@ -70,7 +70,7 @@ function updateUser(){
 function displayResults(users){
 	/* Clear any existing results */
 	$('#resultTable').hide();
-	$('#resultTable').html('');
+	$('#resultTable').find('tbody').remove();
 	/* Associative array of a user */
 	var professors = eval('(' + users + ')');
 	/* Render results table */

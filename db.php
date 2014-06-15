@@ -1132,24 +1132,6 @@ function getCourseIDS($email){
 * END PROFESSOR FUNCTIONS
 *************************/
 
-/* Function apply
-*  Purpose: Register a student's application in the database
-*  Returns: Absolutely nothing
-**/
-
-function apply($positionID, $studentID, $compensation, $qualifications) {
-	$student = User::getUserByID($studentID, STUDENT);
-	$position = Position::getPositionByID($positionID);
-
-	if ($student && $position) {
-		$student->apply($position, $compensation, $qualifications);
-	}
-}
-
-/***********************
-* END STUDENT FUNCTIONS
-************************/
-
 /****************
 * STAFF FUNCTIONS
 *****************/

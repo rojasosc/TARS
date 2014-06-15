@@ -72,14 +72,6 @@ $(document).ready(function () {
 			notEmpty: {
 				message: 'An email confirmation is required and can\'t be empty'
 			},
-			emailAddress: {
-				message: 'Your input is not a valid email address'
-			},
-			remote: {
-				message: 'This email is already in use',
-				url: 'emailExists.php'
-				
-			},				    
 			identical: {
 				field: 'email',
 				message: 'Email addresses don\'t match'
@@ -109,15 +101,6 @@ $(document).ready(function () {
 			validators: {
 			notEmpty: {
 				message: 'Your password is required and can\'t be empty'
-			},
-			stringLength: {
-				min: 6,
-				max: 20,
-				message: 'Your password must be between 6 and 20 characters long'
-			},
-			regexp: {
-				regexp: /^[a-zA-Z0-9]+$/,
-				message: 'Your password can only consist of alphabetical and numerical characters'
 			},
 			identical: {
 				field: 'password',

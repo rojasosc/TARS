@@ -107,7 +107,7 @@
 							</div>
 							<div class="container" id="resultsContainer">
 								<div class="row">
-									<table class="table table-striped">
+									<table class="table table-striped table-hover">
 									<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
 									<?php
 									

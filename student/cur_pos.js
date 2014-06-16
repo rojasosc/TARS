@@ -1,28 +1,47 @@
 $(document).ready(function() {
+	//Helper variables
 	var curPos;
 	var studentID;
 	var positionID;
-    var emailModalBody = $('#emailModal').find('.modal-body');
-    var emailModalFooter = $('#emailModal').find('.modal-footer')
-    var emailModalHTML = emailModalBody.html();
-    var emailModalButtons = emailModalFooter.html();
-    var withdrawModalBody = $('#withdrawModal').find('.modal-body');
-    var withdrawModalFooter = $('#withdrawModal').find('.modal-footer');
-    var withdrawModalHTML = withdrawModalBody.html();
-    var withdrawModalButtons = withdrawModalFooter.html();
+	//Target specific parts of the modal
+    var releaseModalBody = $('#releaseModal').find('.modal-body');
+    var releaseModalFooter = $('#releaseModal').find('.modal-footer');
+	var withdrawModalBody = $('#withdrawModal').find('.modal-body');
+	var withdrawModalFooter = $('#withdrawModal').find('.modal-footer');
+	//Saving some form HTML
+    var releaseModalHTML = releaseModalBody.html();
+    var releaseModalButtons = releaseModalFooter.html();
+	var withdrawModalHTML = withdrawModalBody.html();
+	var withdrawModalButtons = withdrawModalFooter.html();
+	
+	$('.releaseButton').on('click', function(){
+		curPos = $(this).closest('tr');
+		positionID = curPos.find('.positionID').text();
+	});
 	
 	$('.withdrawButton').on('click', function(){
 		curPos = $(this).closest('tr');
 		positionID = curPos.find('.positionID').text();
+		alert(withdrawModalHTML);
+		alert(withdrawModalButtons);
 	});
-    $('#emailForm').submit(function(event) {
-        alert('Email should be sent to professor');
-		emailModalBody.html('<p>Your Email has been sent successfully!</p>');
-		emailModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="emailOK">OK</button>');
+
+    $('#releaseForm').submit(function(event) {
+        alert('Email notification should be sent to the staff and professor');
+		var url = $('#releaseForm').attr('action');
+		studentID = $('#studentID').val();
+		$.post(url, {
+			positionID: positionID,
+			studentID: studentID
+		}, function(data) {
+			releaseModalBody.html('<p>You have been withdrawn from this position.</p>');
+			releaseModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="releaseOK">OK</button>');
+			curPos.hide(800);
+		});
 		event.preventDefault();
     });
-
-    $('#withdrawForm').submit(function(event) {
+	
+	$('#withdrawForm').submit(function(event) {
         alert('Email notification should be sent to the staff and professor');
 		var url = $('#withdrawForm').attr('action');
 		studentID = $('#studentID').val();
@@ -36,11 +55,12 @@ $(document).ready(function() {
 		});
 		event.preventDefault();
     });
+	
+	$('#releaseModal').on('hidden.bs.modal', function(event){
+		releaseModalBody.html(releaseModalHTML);
+		releaseModalFooter.html(releaseModalButtons);
+	});
 
-    $('#emailModal').on('hidden.bs.modal', function(event) {
-        emailModalBody.html(emailModalHTML);
-		emailModalFooter.html(emailModalButtons);
-    });
 	$('#withdrawModal').on('hidden.bs.modal', function(event){
 		withdrawModalBody.html(withdrawModalHTML);
 		withdrawModalFooter.html(withdrawModalButtons);

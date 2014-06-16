@@ -748,6 +748,48 @@ final class Term {
 	private $session;
 }
 
+final class Feedback {
+	public static function getCommentByID($feedbackID){
+		$sql = "SELECT * FROM Feedback WHERE feedbackID = :feedbackID";
+		$args = array('feedbackID' => $feedbackID);
+		$row = Database::executeGetRow($sql,$args);
+		return new Feedback($row);
+	}
+	
+	public static function getCommentsFromStaff($studentID){
+	
+	}
+	
+	public static function getCommentsFromProfessors($studentID){
+	}
+	
+	public static function newComment($studentID,$commenterID,$comment){
+		$sql = "INSERT INTO Feedback (studentID,commenterID,comment) VALUES (:studentID,:commenterID,:comment)";
+		$args = array(':studentID' => $studentID, ':commenterID' => $commenterID,':comment' => $comment);
+		Database::executeInsert($sql,$args);
+	}
+	
+	public function __construct($row){
+		$this->feedbackID = $row['feedbackID'];
+		$this->studentID = $row['studentID'];
+		$this->commenterID = $row['commenterID'];
+		$this->date_Time = $row['dateTime'];
+		$this->comment = $row['comment'];
+	}
+	
+	public function getCommentID(){ return $this->feedbackID; }
+	public function getStudentID(){ return $this->studentID; }
+	public function getCommentorID(){ return $this->commenterID; }
+	public function getDateTime(){ return $this->date_Time; }
+	public function getComment(){ return $this->comment; }
+	
+	private $feedbackID;
+	private $studentID;
+	private $commenterID;
+	private $date_Time;
+	private $comment;
+}
+
 final class Course {
 	public static function getCourseByID($id) {
 		$sql = 'SELECT * FROM Courses WHERE courseID = :id';

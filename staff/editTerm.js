@@ -1,36 +1,19 @@
-$(function(){
-
-	/* obtain relevant component references (jQuery Objects) */
-	
-	$term = $('#selectTerm'); /* term drop table */
-	
+$(document).ready(function () {
+	$term = $('#selectTerm');
 	$updateCourseContainer = $('#updateCourseContainer');
-	
-	
-	$course = $('#selectCourse'); /* course drop table */
-	
-	$professor = $('#selectProfessor'); /* professor drop table */
+	$course = $('#selectCourse');
+	$professor = $('#selectProfessor');
 		
-	/* bind components */
-	
+	/* bind components */	
 	$term.bind('change',displayTerm);
 	$course.bind('change',showCourse);
 	$course.bind('change',showProfessors);
 	$professor.bind('change',showCourse);
 	
 	/* prevent a page redirection */
-	
-	$('#updateCourseForm').submit(function (){
-		
-		return false;
-	});
-	
-	$('#newCourseForm').submit(function (){
-		
-		return false;
-	});
+	$('#updateCourseForm').submit(function (){ return false; });
+	$('#newCourseForm').submit(function (){ return false; });
 
-	
 	$('#updateCourseButton').bind('click',updateCourse);
 	$('#newCourseButton').bind('click',newCourse);
 	

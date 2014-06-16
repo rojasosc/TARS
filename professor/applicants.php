@@ -1,6 +1,5 @@
 <?php
 	include('professorSession.php');
-	ini_set('display_errors',1);
 	/* Obtain courses */
 	$courses = $professor->getCourses();	
 ?>

@@ -1,10 +1,6 @@
 <?php
-	include('professorSession.php');
-
-	/* Obtain a CRN and a courseNumber */
-	
+	include('professorSession.php');	
 	$courses = getCourses($email);
-
 ?>
 <!-- A template for TARS.
 
@@ -265,11 +261,6 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	
 		</div> 
 		<!-- End page-wrapper -->
-		
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<!-- END Scripts -->
 	</body>
 </html>
 	

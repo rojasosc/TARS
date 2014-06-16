@@ -49,6 +49,5 @@ function submitDecisions($application){
 		positionID: positionID,
 		decision: decision
 	}
-	alert(data['universityID']+ " " +data['positionID']+ " " +data['decision'])
 	$.post(url,data,function () {});
 }

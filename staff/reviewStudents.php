@@ -15,136 +15,46 @@
 		<link href="staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="comments.js"></script>
 	</head>
 	<body>
-	
-	
-  <?php
-		$profilesMade = array();
-		$applicants = getUnverifiedStudents();
-		$totalUnverified = count($applicants);
-		$totalStudents = totalAssistantCount();
-		
-		$totalVerified = $totalStudents - $totalUnverified;
-		
-		
-		/* For use in the progress bar */
-		$ratio = $totalVerified/$totalStudents;
-		$percentage = $ratio * 100;
-				
-		if($ratio > .66){
-				
-			$progress = "success";
-				
-		}elseif($ratio > .33){
-				
-			$progress = "warning";
-		}else{
-				
-			$progress = "danger";
-		}		
-		
-	if($applicants != NULL) {
-		foreach($applicants as $applicant){
-
-			$student = $applicant->getStudent();
-			
-			/*Get studentID */
-			$studentID = $student->getID();
-			
-			if(!in_array($studentID,$profilesMade)){
-			
-				$myProfileID = "myProfile". $studentID;
-				$profilesMade[] = $studentID;
-			?>
-			
-			<!-- Profile Modal -->
-			<div class="modal fade" id = "<?=$myProfileID?>" tabindex="-1" role="dialog" aria-labelledby="myProfileLabel" aria-hidden="true">
-			<div class="modal-dialog">
+	<!-- BEGIN Comment Modal-->
+	<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
 			<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel"> <?= $student->getFirstName()?>'s Profile</h4>
-			</div>
-			<div class="modal-body">
-			
-				<h3>Personal Information</h3>
-				<div class="container">
-				<p>Major: <?=$student->getMajor()?></p>
-				<p>GPA: <?=$student->getGPA()?></p>
-				<p>Class Year: <?=$student->getClassYear()?></p>
-				</div>
-				
-				<h3>Contact Information</h3>
-				<div class="container">
-				<p>Email: <?=$student->getEmail()?> </p>
-				<p>Mobile Phone: <?=$student->getMobilePhone()?> </p>
-				</div>
-				
-				<h3>About Me</h3>
-				<div class="container">
-				<p><?=$student->getAboutMe()?></p>
-				
-				</div>
-				
-			</div>
-			<div class="modal-footer">
-				
-				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-			</div>
-			</div>
-			</div>
-			</div>
-
-			<!-- End Profile Modal -->
-			
-			<?php
-			}
-		}	
-	
-	}
-    ?>	
-    
-		<!-- BEGIN Comment Modal-->
-		<div class="modal fade" id="comment" tabindex="-1" role="dialog" aria-labelledby="bugModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h1 class="modal-title">Student Comment</h1>
-					</div> 
-					<div class="modal-body">
-						<p>
-							Enter a comment for (studentName) in the space provided.<br>
-							These comments are made visible to professors and are used to filter applications.
-						</p>
-						<form action="commentProcess.php" method="post" id="comment">
-							<fieldset>
-								<div class="row">
-									<div class="col-xs-5 col-xs-offset-1">
-										<label>
-											Subject: <input class="form-control" type="text" name="commentSubject" size="32"/>
-										</label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-10 col-xs-offset-1">
-										<label>
-											<textarea class="form-control" rows="4" cols="64"></textarea>
-										</label>
-									</div>
-								</div>
-							</fieldset>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary" name="submitComment" id="submitButton">Add Comment</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END Comment Modal-->    
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h1 class="modal-title">Student Comment</h1>
+				</div> <!-- End modal-header -->
+				<div class="modal-body">
+					<form action="newComment.php" method="post" id="commentForm" class="form-horizontal">
+						<fieldset>
+							<legend>New Comment</legend>
+							<div class="row">
+								<div class="col-xs-10">
+									<div class="form-group">
+										<input type="text" name="subject" class="form-control" placeholder="Subject">
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<textarea name="commentText" class="form-control"></textarea>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+							</div> <!-- End row -->							
+						</fieldset> <!-- End comment fieldset -->
+					</form> <!-- End comment form -->
+				</div> <!-- End modal-body -->
+				<div class="modal-footer">
+					<button class="btn btn-danger" data-dismiss="modal">Close</button>
+					<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+				</div> <!-- End modal-footer -->				
+			</div> <!-- End modal-content -->
+		</div> <!-- End modal-dialog -->
+	</div> <!-- End modal fade -->	
+	<!-- END Comment Modal-->    
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
@@ -210,7 +120,6 @@
 								<p class="panelHeader">Students</p>
 							</div> <!-- End panel-heading -->
 									<div class="panel-body">
-										<form action="reviewProcess.php" method="post" id="reviewTable">
 											<table class="table table-striped table-hover">
 												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Status</th><th>Comment</th></tr>
 												<?php
@@ -225,15 +134,20 @@
 												
 												?>
 												
-												<tr><td><?= $student->getUniversityID() ?></td><td><?= $student->getFirstName()?></td><td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $student->getGPA()?></td>
+												<tr>
+												<td><?= $student->getUniversityID() ?></td>
+												<td><?= $student->getFirstName()?></td>
+												<td><?= $student->getLastName() ?></td>
+												<td><?= $student->getEmail() ?></td>
+												<td><?= $student->getGPA()?></td>
 												<td>
 												<a type="button" data-toggle="modal" href="#<?= $myProfileID?>" class="btn btn-default">
 												<span class="glyphicon glyphicon-user circle"></span></a>			
 												</td>
 												<td>Status</td>
 												<td>
-												<a type="button" href="#comment" data-toggle="modal" class="btn btn-default">
-												<span class="glyphicon glyphicon-comment"></span></a>
+												<button data-toggle="modal" data-target="#commentModal" data-staffID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
+												<span class="glyphicon glyphicon-comment"></span></button>
 												</td>
 												</tr>
 												
@@ -246,21 +160,7 @@
 												
 											</table> <!-- End table -->
 										
-									</div> <!-- End panel-body -->									
-								<div class="panel-footer">
-									<div class="row">
-										<div class="col-md-3">
-											<button name="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-circle"></span> Apply Changes</button>
-										</div> <!-- End column -->
-										</form> <!-- End form -->								
-									</div> <!-- End row -->
-									<strong>Students Reviewed</strong>
-									<div class="progress progress-striped active">
-										<div class="progress-bar progress-bar-<?= $progress ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:<?= $percentage?>%">
-										<?= $totalVerified?>/<?= $totalStudents?> Students Reviewed
-										</div> <!-- End progress-bar progress-bar-danger -->
-									</div> <!-- End progress-bar -->
-								</div> <!-- End panel-footer -->								
+									</div> <!-- End panel-body -->																	
 						</div> <!-- End panel panel-primary -->
 					</div> <!-- End container -->	
 				</div> <!-- End row -->	

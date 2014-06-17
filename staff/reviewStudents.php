@@ -16,8 +16,45 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="comments.js"></script>
+		<script src="profiles.js"></script>
+		<script src="reviewStudents.js"></script>
 	</head>
 	<body>
+			<!-- Profile Modal -->
+			<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="studentModalTitle"></h4>
+						</div>
+						<div class="modal-body">			
+							<h3>Personal Information</h3>
+							<div class="container">
+								<p id="studentMajor"></p>
+								<p id="studentGPA"></p>
+								<p id="studentClassYear"></p>
+							</div> <!-- End container -->
+							
+							<h3>Contact Information</h3>
+							<div class="container">
+								<p id="studentEmail"></p>
+								<p id="studentMobilePhone"></p>
+							</div> <!-- End container -->
+							
+							<h3>About Me</h3>
+							<div class="container">
+								<p id="studentAboutMe"></p>	
+							</div> <!-- End container -->							
+						</div> <!-- End modal body -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						</div> <!-- End modal-footer -->
+					</div> <!-- End modal-content -->
+				</div> <!-- End modal-dialog -->
+			</div> <!-- End modal fade -->
+			<!-- End Profile Modal -->
+			
 	<!-- BEGIN Comment Modal-->
 	<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -124,14 +161,11 @@
 												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Status</th><th>Comment</th></tr>
 												<?php
 												
-												$applicants = getUnverifiedStudents();
+												$studentsToReview = Student::getStudentsToReview();
 												$tableEntry = 0;
-												if($applicants != NULL) {
-												foreach($applicants as $applicant){
-													$student = $applicant->getStudent();
-													$buttonGroupName = "action" . $tableEntry;
-													$myProfileID = "myProfile". $student->getID();
-												
+												if($studentsToReview != NULL) {
+												foreach($studentsToReview as $student){
+
 												?>
 												
 												<tr>
@@ -141,17 +175,28 @@
 												<td><?= $student->getEmail() ?></td>
 												<td><?= $student->getGPA()?></td>
 												<td>
-												<a type="button" data-toggle="modal" href="#<?= $myProfileID?>" class="btn btn-default">
-												<span class="glyphicon glyphicon-user circle"></span></a>			
+												<button data-toggle="modal" data-target="#studentProfileModal" data-userID="<?= $student->getID() ?>" class="btn btn-default circle profile">
+												<span class="glyphicon glyphicon-user"></span></button>			
 												</td>
-												<td>Status</td>
+												<td>	<form>
+													<div class="btn-group" data-toggle="buttons" data-userID="<?= $student->getID() ?>">
+														<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Verify">
+															<input type="radio" name="<?= $student->getID() ?>" id="approve" value="<?= STAFF_VERIFIED ?>" checked><span class="glyphicon glyphicon-ok"></span>
+														</label>
+														<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
+															<input type="radio" name="<?= $student->getID() ?>" id="deny" value="<?= PENDING ?>" checked><span class="glyphicon glyphicon-remove"></span>
+														</label>
+														<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
+															<input type="radio" name="<?= $student->getID() ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
+														</label>
+													</div> <!-- End btn-group -->
+													</form>
+												</td>
 												<td>
 												<button data-toggle="modal" data-target="#commentModal" data-staffID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
 												<span class="glyphicon glyphicon-comment"></span></button>
 												</td>
-												</tr>
-												
-												
+												</tr>							
 												<?php
 												$tableEntry++;
 												}
@@ -159,8 +204,14 @@
 												?>
 												
 											</table> <!-- End table -->
-										
-									</div> <!-- End panel-body -->																	
+									</div> <!-- End panel-body -->
+										<div class="panel-footer">
+											<div class="row">
+												<div class="col-xs-4">
+													<button name="applyDecision" id="applyDecisions" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Confirm Decisions</button>												
+												</div> <!-- End column -->
+											</div> <!-- End row -->
+										</div> <!-- End panel-footer -->									
 						</div> <!-- End panel panel-primary -->
 					</div> <!-- End container -->	
 				</div> <!-- End row -->	

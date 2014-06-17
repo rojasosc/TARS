@@ -391,7 +391,7 @@ final class Student extends User {
 				ORDER BY department DESC, courseNumber ASC';
 		$args = array(':student_id' => $this->id, ':status' => $status);
 		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Applicant($row); }, $rows);
+		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
 	
 
@@ -628,9 +628,8 @@ final class Position {
 	private $posType;
 }
 
-// TODO: a better name to describe this than Applicant and Applications is "Application"
-final class Applicant {
-	// TODO: this should be in relation to the Applicant database object instead of Position
+final class Application {
+	// TODO: this should be in relation to the Application database object instead of Position
 	public static function setPositionStatus($student, $position, $status) {
 		$sql = 'UPDATE Applications
 				SET appStatus = :status
@@ -640,13 +639,13 @@ final class Applicant {
 		Database::execute($sql, $args);
 	}
 
-	public static function getApplicantByID($id) {
+	public static function getApplicationByID($id) {
 		$row = Database::executeGetRow('SELECT * FROM Applications WHERE appID = :id',
 			array(':id' => $id));
-		return new Applicant($row);
+		return new Application($row);
 	}
 
-	private static function generateGetApplicantsRequest($course, $professor, $term, $status, $compensation, $is_count) {
+	private static function generateGetApplicationsRequest($course, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
 		$args = array();
 		if ($course != null) {
@@ -677,7 +676,8 @@ final class Applicant {
 		$sql = "SELECT $sql_sel FROM Applications
 				INNER JOIN Positions ON Applications.positionID = Positions.positionID
 				INNER JOIN Courses ON Positions.courseID = Courses.courseID
-				WHERE $sql_where 1";
+				WHERE $sql_where 1
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC";
 		return array($sql, $args);
 	}
 
@@ -685,8 +685,8 @@ final class Applicant {
 	 * General purpose function to get application object count.
 	 *
 	 */
-	public static function getApplicantCount($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
-		list($sql, $args) = Applicant::generateGetApplicantsRequest(
+	public static function getApplicationCount($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+		list($sql, $args) = Application::generateGetApplicationsRequest(
 			$course, $professor, $term, $status, $compensation, true);
 		return Database::executeGetScalar($sql, $args);
 	}
@@ -695,70 +695,11 @@ final class Applicant {
 	 * General purpose function to get application object count.
 	 *
 	 */
-	public static function getApplicants($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
-		list($sql, $args) = Applicant::generateGetApplicantsRequest(
+	public static function getApplications($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+		list($sql, $args) = Application::generateGetApplicationsRequest(
 			$course, $professor, $term, $status, $compensation, false);
 		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Applicant($row); }, $rows);
-	}
-
-	// TODO pagination?
-	public static function getApplicantsByProfessor($prof_obj, $app_status) {
-		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
-					Applications.compensation, Applications.appStatus,
-					Applications.qualifications
-				FROM Applications, Users, Courses, Positions, Students, Teaches
-				WHERE Applications.studentID = Users.userID AND
-					Applications.studentID = Students.userID AND
-					Applications.appStatus = :status AND
-					Applications.positionID = Positions.positionID AND
-					Positions.courseID = Courses.courseID AND
-					Teaches.courseID = Courses.courseID AND
-					Teaches.professorID = :prof_id
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
-		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status);
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Applicant($row); }, $rows);
-	}
-
-	public static function getApplicantsByProfessorAndCourse($prof_obj, $course_obj, $app_status) {
-		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
-					Applications.compensation, Applications.appStatus,
-					Applications.qualifications
-				FROM Applications, Users, Courses, Positions, Students, Teaches
-				WHERE Applications.studentID = Users.userID AND
-					Applications.studentID = Students.userID AND
-					Applications.appStatus = :status AND
-					Applications.positionID = Positions.positionID AND
-					Positions.courseID = :course_id AND
-					Teaches.courseID = Courses.courseID AND
-					Teaches.professorID = :prof_id AND
-					Teaches.professorID = Positions.professorID AND					
-					Courses.courseID = :course_id
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
-		$args = array(':prof_id' => $prof_obj->getID(), ':status' => $app_status,
-			':course_id' => $course_obj->getID());
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Applicant($row); }, $rows);
-	}
-	
-	public static function getApplicantsByTerm($term, $app_status, $compensation) {
-		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
-					Applications.compensation, Applications.appStatus,
-					Applications.qualifications
-				FROM Applications, Positions, Courses, Students, Users
-				WHERE Applications.studentID = Users.userID AND
-					Applications.studentID = Students.userID AND
-					Courses.courseID = Positions.courseID AND
-					Positions.positionID = Applications.studentID AND
-					Applications.appStatus = :status AND
-					Applications.compensation = :compensation AND
-					Courses.termID = :termID
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
-		$args = array(':termID' => $term->getID(), ':status' => $app_status,
-			':compensation' => $compensation);
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Applicant($row); }, $rows);
+		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
 
 	public function __construct($row) {

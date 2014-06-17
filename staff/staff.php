@@ -1,7 +1,7 @@
 <?php  
 	include('staffSession.php');
 	$term = Term::getTermByID(CURRENT_TERM);
-    $totalUnverified = Applicant::getApplicantCount(null, null, $term, PENDING);
+    $totalUnverified = Application::getApplicationCount(null, null, $term, PENDING);
 
 ?>
 

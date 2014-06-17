@@ -172,7 +172,7 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				foreach($courses as $course){
 				
 				/* assistants for this particular course */
-				$assistants = Applicant::getApplicants($course, $professor, $term, APPROVED);
+				$assistants = Application::getApplications($course, $professor, $term, APPROVED);
 								
 				/* create a new panel */ 
 				$panelID = "coursePanel" . $course->getID();

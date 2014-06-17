@@ -126,7 +126,7 @@ and are color coded to emphasize priority.
 								$courseCRN = $course->getCRN();
 								$courseTitle = $course->getTitle();
 								
-								$applications = Applicant::getApplicants($course, $professor, $term, PENDING);	/* All applications for this course */
+								$applications = Application::getApplications($course, $professor, $term, PENDING);	/* All applications for this course */
 								
 								/*TODO: Get total positions of a particular type and course.
 								For instance, all the graders for CSC 172.*/

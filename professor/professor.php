@@ -4,7 +4,7 @@
 
 	$term = Term::getTermByID(CURRENT_TERM);
 	/* Obtain the number of pending applications */
-	$pendingApps = Applicant::getApplicantCount(null, $professor, $term, PENDING);
+	$pendingApps = Application::getApplicationCount(null, $professor, $term, PENDING);
 	
 	
 	/* Obtain a CRN and a courseNumber */

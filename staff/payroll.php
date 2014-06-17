@@ -112,7 +112,7 @@
 									<?php
 									
 									$term = Term::getTermByID(CURRENT_TERM);
-									$assistants = Applicant::getApplicants(null, null, $term, APPROVED, 'pay');
+									$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
 									
 									foreach($assistants as $assistant){
 										$student = $assistant->getStudent();

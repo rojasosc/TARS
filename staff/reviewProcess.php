@@ -1,22 +1,5 @@
 <?php
-
-include('../db.php');
-
-foreach($_POST as $action){
-	$IDs = explode(" ",$action);
-
-	$status = $IDs[0];
-	$studentID = $IDs[1];
-
-	echo $status . " " . $studentID . "<br>";
-
-	if(!!$status){
-
-		setStatus($studentID,$status);
-	}
-
-
-}
-
-header('Location: verifyStudents.php');
-
+	include('../db.php');
+	ini_set('display_errors',1);
+	Student::setStudentStatus($_POST['userID'],$_POST['status']);
+?>

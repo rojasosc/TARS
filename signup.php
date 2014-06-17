@@ -88,6 +88,9 @@ if ($signup_success) {
 						<?php Error::putError(); ?>
 						<h2>Sign Up</h2>
 						<form action="signup.php" class="form-horizontal" id="signupForm" method="post">
+							<!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
+							<input style="display:none" type="text" name="fakeusernameremembered"/>
+							<input style="display:none" type="password" name="fakepasswordremembered"/>
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">

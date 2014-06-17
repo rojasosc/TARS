@@ -352,7 +352,8 @@ final class Student extends User {
 		$args = array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
 				  ':major' => $major, ':gpa' => $gpa, ':universityID' => $universityID,
 				  ':classYear' => $classYear, ':aboutMe' => $aboutMe);
-		return Database::executeInsert($sql, $args);
+		Database::executeInsert($sql, $args);
+		return $userID;
 	}
 
 	public function __construct($user_row, $student_row) {
@@ -458,7 +459,8 @@ final class Professor extends User {
 				(:id, :officeID, :officePhone, :mobilePhone)';
 		$args = array(':id' => $userID, ':officeID' => $officeID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
-		return Database::executeInsert($sql, $args);
+		Database::executeInsert($sql, $args);
+		return $userID;
 	}
 
 	public function __construct($user_row, $professor_row) {
@@ -527,7 +529,8 @@ final class Staff extends User {
 				(:id, :officePhone, :mobilePhone)';
 		$args = array(':id' => $userID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
-		return Database::executeInsert($sql, $args);
+		Database::executeInsert($sql, $args);
+		return $userID;
 	}
 
 	public function __construct($user_row, $staff_row) {

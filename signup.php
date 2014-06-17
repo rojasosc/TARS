@@ -1,45 +1,6 @@
 <?php
 
 require('db.php');
-require('formInput.php');
-require('error.php');
-require('email.php');
-
-$signup_success = false;
-if (isset($_POST['submitButton'])) {
-	$form_args = get_form_values(array(
-		'email','emailConfirm','password','passwordConfirm','firstName','lastName',
-		'mobilePhone','major','gpa','classYear','aboutMe','universityID'));
-
-	$invalid_values = get_invalid_values($form_args);
-	if (count($invalid_values) > 0) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
-			$invalid_values);
-	} else {
-		// manually validate emailConfirm and passwordConfirm fields for now...
-		if ($form_args['email'] != $form_args['emailConfirm']) {
-			Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
-				array('emailConfirm'));
-		} elseif ($form_args['password'] != $form_args['passwordConfirm']) {
-			Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
-				array('passwordConfirm'));
-		} else {
-			try {
-				$studentID = Student::registerStudent(
-					$form_args['email'], $form_args['password'],
-					$form_args['firstName'], $form_args['lastName'],
-					$form_args['mobilePhone'], $form_args['major'],
-					$form_args['gpa'], $form_args['classYear'],
-					$form_args['aboutMe'], $form_args['universityID']);
-				email_signup_token($studentID, true);
-				$signup_success = true;
-			} catch (PDOException $ex) {
-				Error::setError(Error::EXCEPTION, 'Error creating an account.',
-					$ex);
-			}
-		}
-	}
-}
 
 
 ?>
@@ -79,15 +40,8 @@ if (isset($_POST['submitButton'])) {
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron" id="formBox">
-<?php
-if ($signup_success) {
-?><p>We have sent you an email confirmation (NYI).</p><p>Start seeking available positions by <a href=".">signig in</a> with your email address and password.</p>
-<?php
-} else {
-?>
-						<?php Error::putError(); ?>
 						<h2>Sign Up</h2>
-						<form action="signup.php" class="form-horizontal" id="signupForm" method="post">
+						<form action="process.php" class="form-horizontal" id="signupForm" method="post">
 							<!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
 							<input style="display:none" type="text" name="fakeusernameremembered"/>
 							<input style="display:none" type="password" name="fakepasswordremembered"/>
@@ -95,13 +49,13 @@ if ($signup_success) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">First Name</label>
-										<input type="text" class="form-control" name="firstName" placeholder="First Name" value="<?=get_form_value('firstName')?>" />
+										<input type="text" class="form-control" name="firstName" placeholder="First Name" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">Last Name</label>
-										<input type="text" class="form-control" name="lastName" placeholder="Last Name" value="<?=get_form_value('lastName')?>" />
+										<input type="text" class="form-control" name="lastName" placeholder="Last Name" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -109,7 +63,7 @@ if ($signup_success) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email" value="<?=get_form_value('email')?>" />
+										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
@@ -137,7 +91,7 @@ if ($signup_success) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
-										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone" value="<?=get_form_value('mobilePhone')?>" />
+										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
@@ -172,13 +126,13 @@ if ($signup_success) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="GPA">GPA</label>
-										<input type="text" class="form-control" name="gpa" placeholder="GPA" value="<?=get_form_value('gpa')?>" />
+										<input type="text" class="form-control" name="gpa" placeholder="GPA" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="universityID">University Student ID</label>
-										<input type="text" class="form-control" name="universityID" placeholder="University ID" value="<?=get_form_value('universityID')?>" />
+										<input type="text" class="form-control" name="universityID" placeholder="University ID" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
@@ -186,7 +140,7 @@ if ($signup_success) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="aboutMe">About Me</label>
-										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."><?=get_form_value('aboutMe')?></textarea>
+										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."></textarea>
 									</div> <!-- End form-group -->
 								</div> <!-- End row -->
 							</div> <!-- End row -->
@@ -197,9 +151,6 @@ if ($signup_success) {
 								</div> <!-- End column -->
 							</div> <!-- End row -->								
 						</form>
-<?php
-}
-?>
 					</div> <!-- End jumbotron -->			
 				</div> <!-- End container -->
 			</div>

@@ -8,6 +8,14 @@ $(document).ready(function () {
 		invalid: 'glyphicon glyphicon-remove',
 		validating: 'glyphicon glyphicon-refresh'
 		},
+		submitHandler: function(validator, form, submitButton) {
+		// Ajax post(url,data,callback function)
+		var url = $('#signupForm').attr('action');
+		var data = $('#signupForm :input').serializeArray();
+		$.post(url,data,function (info){
+				displayConfirmation();  //Remove the form and display a confirmation.
+				});
+		},
 		fields: {
 		firstName: {
 			message: 'Your first name is not valid',

@@ -55,7 +55,10 @@ CREATE TABLE IF NOT EXISTS `Places` (
 CREATE TABLE IF NOT EXISTS `Users` (
   `userID` bigint(20) NOT NULL AUTO_INCREMENT,
   `email` varchar(254) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) NULL,
+  `passwordToken` int(11) NULL,
+  `passwordTokenExpire` datetime NULL,
+  `accountState` enum('new','active','reset') NOT NULL,
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
   `type` int(11) NOT NULL,

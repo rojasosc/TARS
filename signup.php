@@ -3,6 +3,7 @@
 require('db.php');
 require('formInput.php');
 require('error.php');
+require('email.php');
 
 
 if (isset($_POST['submitButton'])) {
@@ -24,7 +25,7 @@ if (isset($_POST['submitButton'])) {
 				array('passwordConfirm'));
 		} else {
 			try {
-				Student::registerStudent(
+				$studentID = Student::registerStudent(
 					$form_args['email'], $form_args['password'],
 					$form_args['firstName'], $form_args['lastName'],
 					$form_args['mobilePhone'], $form_args['major'],
@@ -33,6 +34,7 @@ if (isset($_POST['submitButton'])) {
 				// TODO: go to "successful sign in" landing that sends email confirm.
 				header('Location: .');
 				exit;
+				email_signup_token($studentID, true);
 			} catch (PDOException $ex) {
 				Error::setError(Error::EXCEPTION, 'Error creating an account.',
 					$ex);

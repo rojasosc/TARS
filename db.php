@@ -446,17 +446,20 @@ final class Student extends User {
 }
 
 final class Professor extends User {
-	public static function insertProfessor($email, $password_hash, $firstName, $lastName,
+	public static function registerProfessor($email, $password, $firstName, $lastName,
 		$officeID, $officePhone, $mobilePhone) {
+
+		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, PROFESSOR);
 
-		return Database::executeInsert('INSERT INTO Professors
-			(userID, officeID, officePhone, mobilePhone) VALUES
-			(:id, :officeID, :officePhone, :mobilePhone)',
-			array(':id' => $userID, ':officeID' => $officeID,
-				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
-		}
+		$sql = 'INSERT INTO Professors
+				(userID, officeID, officePhone, mobilePhone) VALUES
+				(:id, :officeID, :officePhone, :mobilePhone)';
+		$args = array(':id' => $userID, ':officeID' => $officeID,
+				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
+		return Database::executeInsert($sql, $args);
+	}
 
 	public function __construct($user_row, $professor_row) {
 		parent::__construct($user_row);
@@ -512,16 +515,19 @@ final class Professor extends User {
 }
 
 final class Staff extends User {
-	public static function insertStaff($email, $password_hash, $firstName, $lastName,
+	public static function registerStaff($email, $password, $firstName, $lastName,
 		$officePhone, $mobilePhone) {
+
+		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STAFF);
 
-		return Database::executeInsert('INSERT INTO Staff
-			(userID, officePhone, mobilePhone) VALUES
-			(:id, :officePhone, :mobilePhone)',
-			array(':id' => $userID,
-				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone));
+		$sql = 'INSERT INTO Staff
+				(userID, officePhone, mobilePhone) VALUES
+				(:id, :officePhone, :mobilePhone)';
+		$args = array(':id' => $userID,
+				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
+		return Database::executeInsert($sql, $args);
 	}
 
 	public function __construct($user_row, $staff_row) {
@@ -947,48 +953,6 @@ function endSession(){
 * END LOGIN FUNCTIONS
 *********************/	
 
-
-/*******************
-* USER REGISTRATION
-********************/
-
-
-
-/* Function registerProfessor
-*  Purpose: Creates a new account for a professor. 
-*  Returns: nothing.
-**/
-function registerProfessor($officeID,$firstName, $lastName, $email, $password,$officePhone, $mobilePhone) {
-
-	/* Note: $password does not require database escaping; it is not being put in the database.
-	 *       Only the result of password_hash() is, and that is escaped by being a parameter
-	 *       in the prepared statement.
-	 */
-	$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-	Professor::insertProfessor($email, $password_hash, $firstName, $lastName,
-		$officeID, $officePhone, $mobilePhone);
-}	
-
-/* Function registerAdmin
-*  Purpose: Creates an account for an admin. 
-*  Returns: nothing.
-**/
-function registerStaff($firstName, $lastName,$email,$password,$officePhone,$mobilePhone) {
-
-	/* Note: $password does not require database escaping; it is not being put in the database.
-	 *       Only the result of password_hash() is, and that is escaped by being a parameter
-	 *       in the prepared statement.
-	 */
-	$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-	Staff::insertStaff($email, $password_hash, $firstName, $lastName,
-		$officePhone, $mobilePhone);
-}
-
-/***********************
-* END USER REGISTRATION
-************************/	
 
 /*******************
 * PROFESSOR FUNCTIONS

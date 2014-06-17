@@ -22,8 +22,6 @@ $(document).ready(function() {
 	$('.withdrawButton').on('click', function(){
 		curPos = $(this).closest('tr');
 		positionID = curPos.find('.positionID').text();
-		alert(withdrawModalHTML);
-		alert(withdrawModalButtons);
 	});
 
     $('#releaseForm').submit(function(event) {
@@ -49,7 +47,7 @@ $(document).ready(function() {
 			positionID: positionID,
 			studentID: studentID
 		}, function(data) {
-			withdrawModalBody.html('<p>You have been withdrawn from this position.</p>');
+			withdrawModalBody.html('<p>Your application has been withdrawn.</p>');
 			withdrawModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="withdrawOK">OK</button>');
 			curPos.hide(800);
 		});

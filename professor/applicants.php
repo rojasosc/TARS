@@ -120,12 +120,13 @@ and are color coded to emphasize priority.
 				<div class="container" id="contentWrapper">
 					<!-- Course Panels -->
 					<div class="container" id="coursesContainer">
-						 <?php											
+						 <?php
+							$term = Term::getTermByID(CURRENT_TERM);
 							foreach($courses as $course){	
 								$courseCRN = $course->getCRN();
 								$courseTitle = $course->getTitle();
 								
-								$applications = getApplicationsByCourse($email,$course);	/* All applications for this course */
+								$applications = Applicant::getApplicants($course, $professor, $term, PENDING);	/* All applications for this course */
 								
 								/*TODO: Get total positions of a particular type and course.
 								For instance, all the graders for CSC 172.*/
@@ -161,7 +162,7 @@ and are color coded to emphasize priority.
 													foreach($applications as $application){ 
 														$student = $application->getStudent();
 														$applicationID = $application->getID();
-														$universityID = $student->getID();
+														$universityID = $student->getUniversityID();
 														
 														
 												?>

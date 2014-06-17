@@ -1,6 +1,6 @@
 <?php
 	include('professorSession.php');	
-	$courses = getCourses($email);
+	$courses = $professor->getCourses();
 ?>
 <!-- A template for TARS.
 
@@ -168,10 +168,11 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 				Pack these assistants into a panel... repeat.
 				*/
 				$tableEntry = 0;
+				$term = Term::getTermByID(CURRENT_TERM);
 				foreach($courses as $course){
 				
 				/* assistants for this particular course */
-				$assistants = getFilledPositionsForCourse($email,$course);
+				$assistants = Applicant::getApplicants($course, $professor, $term, APPROVED);
 								
 				/* create a new panel */ 
 				$panelID = "coursePanel" . $course->getID();

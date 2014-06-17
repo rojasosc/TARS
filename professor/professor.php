@@ -1,14 +1,15 @@
 
 <?php
 	include('professorSession.php');
-	
+
+	$term = Term::getTermByID(CURRENT_TERM);
 	/* Obtain the number of pending applications */
-	$pendingApps = count(getApplicants($email));
+	$pendingApps = Applicant::getApplicantCount(null, $professor, $term, PENDING);
 	
 	
 	/* Obtain a CRN and a courseNumber */
 	
-	$courses = getCourses($email);
+	$courses = $professor->getCourses();
 
 ?>
 

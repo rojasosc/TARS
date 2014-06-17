@@ -645,6 +645,63 @@ final class Applicant {
 			array(':id' => $id));
 		return new Applicant($row);
 	}
+	
+
+	/**
+	 * General purpose function to get application object count.
+	 *
+	 */
+	public static function getApplicantCount($course = null, $professor = null, $status = -1) {
+		$sql_where = '';
+		$args = array();
+		if ($course != null) {
+			$sql_where .= 'Positions.courseID = :course AND ';
+			$args[':course'] = $course->getID();
+		}
+		if ($professor != null) {
+			$sql_where .= 'Positions.professorID = :professor AND ';
+			$args[':professor'] = $professor->getID();
+		}
+		if ($status >= 0) {
+			$sql_where .= 'Applications.appStatus = :status AND ';
+			$args[':status'] = $status;
+		}
+		$sql = "SELECT COUNT(*) FROM Applications
+				INNER JOIN Positions ON Applications.positionID = Positions.positionID
+				WHERE $sql_where 1";
+		return Database::executeGetScalar($sql, $args);
+	}
+
+	/**
+	 * General purpose function to get application object count.
+	 *
+	 */
+	public static function getApplicants($course = null, $professor = null, $term = null, $status = -1) {
+		$sql_where = '';
+		$args = array();
+		if ($course != null) {
+			$sql_where .= 'Positions.courseID = :course AND ';
+			$args[':course'] = $course->getID();
+		}
+		if ($professor != null) {
+			$sql_where .= 'Positions.professorID = :professor AND ';
+			$args[':professor'] = $professor->getID();
+		}
+		if ($term != null) {
+			$sql_where .= 'Courses.termID = :term AND ';
+			$args[':term'] = $term->getID();
+		}
+		if ($status >= 0) {
+			$sql_where .= 'Applications.appStatus = :status AND ';
+			$args[':status'] = $status;
+		}
+		$sql = "SELECT * FROM Applications
+				INNER JOIN Positions ON Applications.positionID = Positions.positionID
+				INNER JOIN Courses ON Positions.courseID = Courses.courseID
+				WHERE $sql_where 1";
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Applicant($row); }, $rows);
+	}
 
 	// TODO pagination?
 	public static function getApplicantsByProfessor($prof_obj, $app_status) {
@@ -952,149 +1009,6 @@ function endSession(){
 /********************
 * END LOGIN FUNCTIONS
 *********************/	
-
-
-/*******************
-* PROFESSOR FUNCTIONS
-********************/
-
-/* Function getApplicants
-*  Purpose:  Obtain a table representation of a particular professor's applicants.
-*  Returns:  A 2-D array of type 0 and type 1 applicantions
-**/
-function getApplicants($email) {
-
-	$professor_obj = User::getUserByEmail($email, PROFESSOR);
-
-	if ($professor_obj) {
-		// TODO: support both PENDING and STAFF_VERIFIED in DAL
-		return Applicant::getApplicantsByProfessor($professor_obj, PENDING);
-	} else {
-		return array();
-	}
-}	
-
-/* Function getApplicants
-*  Purpose:  Obtain a table representation of a particular professor's applicants.
-*  Returns:  A 2-D array of type 0 and type 1 applicantions
-**/
-function getAssistants($email) {
-
-	$professor_obj = User::getUserByEmail($email, PROFESSOR);
-
-	if ($professor_obj) {
-		return Applicant::getApplicantsByProfessor($professor_obj, APPROVED);
-	} else {
-		return array();
-	}
-}
-
-function pendingApplicants($email) {
-
-	$count = 0; 
-	$count += count(getApplicants($email));
-
-	return $count;
-
-}
-
-/* Function getCourseName
-*  Purpose: Retrieves all courses that contain the value 'courseName'. 
-*  Returns: An array of course entries. (A 2-D array) 
-**/
-function getCourses($email) {
-
-	$professor_obj = User::getUserByEmail($email, PROFESSOR);
-
-	if ($professor_obj) {
-		return $professor_obj->getCourses();
-	} else {
-		return array();
-	}
-}
-
-function getApplicationsByCourse($email,$course_obj){
-
-	$professor_obj = User::getUserByEmail($email, PROFESSOR);
-
-	if ($professor_obj && $course_obj) {
-		// TODO: support both PENDING and STAFF_VERIFIED in DAL
-		return Applicant::getApplicantsByProfessorAndCourse($professor_obj, $course_obj, PENDING);
-	} else {
-		return array();
-	}
-}
-
-
-function getFilledPositionsForCourse($email,$course_obj){
-
-
-	$professor_obj = User::getUserByEmail($email, PROFESSOR);
-
-	if ($professor_obj && $course_obj) {
-		return Applicant::getApplicantsByProfessorAndCourse($professor_obj, $course_obj, APPROVED);
-	} else {
-		return array();
-	}
-}
-
-function countTotalPositions($email,$course_obj){
-
-	$professor_obj = User::getUserByEmail($email, PROFESSOR);
-
-	if ($professor_obj && $course_obj) {
-		$course_obj->getTotalPositions($professor_obj);
-	} else {
-		return 0;
-	}
-}
-
-/* Function setPosition
-*  Purpose: Assigns a position to a student. 
-*  Returns: nothing.
-**/
-function setPositionStatus($studentID,$positionID,$status){
-	$student_obj = User::getUserByID($studentID, STUDENT);
-	$position_obj = Position::getPositionByID($positionID);
-	if ($student_obj && $position_obj) {
-		Applicant::setPositionStatus($student_obj, $position_obj, $status);
-	}
-}
-
-
-/* UNUSED: not mapped
-function getCourseIDS($email){
-
-	$conn = open_database();
-	
-	$professorID = getUserID($email);
-	
-	$sql = "SELECT Course.courseID\n"
-		. "FROM Course\n"
-		. "WHERE professorID = '$professorID'";
-
-	$result = mysqli_query($conn,$sql);
-	
-	
-	/* 2-D array of courseIDS *
-	$result = mysqli_fetch_all($result); 
-	
-	/*Make just one array *
-	$courseIDS = array();
-	
-	foreach($result as $course){
-		
-		$courseIDS[] = $course[0];
-	}
-	
-	close_database($conn);
-	
-	return $courseIDS;
-}*/
-
-/************************
-* END PROFESSOR FUNCTIONS
-*************************/
 
 /****************
 * STAFF FUNCTIONS

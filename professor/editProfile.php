@@ -3,7 +3,7 @@
 
 	/* Obtain a CRN and a courseNumber */
 	
-	$courses = getCourses($email);
+	$courses = $professor->getCourses();
 
 ?>
 <!-- A template for TARS.

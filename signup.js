@@ -8,15 +8,6 @@ $(document).ready(function () {
 		invalid: 'glyphicon glyphicon-remove',
 		validating: 'glyphicon glyphicon-refresh'
 		},
-		submitHandler: function(validator, form, submitButton) {
-		// Ajax post(url,data,callback function)
-		var url = $('#signupForm').attr('action');
-		var data = $('#signupForm :input').serializeArray();
-		$.post(url,data,function (info){ 
-			clearInput(); 		//Clear all fields.
-			displayConfirmation();  //Remove the form and display a confirmation message. 
-			});
-		},
 		fields: {
 		firstName: {
 			message: 'Your first name is not valid',
@@ -183,12 +174,6 @@ $(document).ready(function () {
 });
 
 
-
-	/* prevent a page redirection */
-	$("#signupForm").submit(function(event){
-				
-		return false;
-	});
 	
 }); /* End on ready function */
 

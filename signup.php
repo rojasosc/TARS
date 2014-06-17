@@ -5,7 +5,7 @@ require('formInput.php');
 require('error.php');
 require('email.php');
 
-
+$signup_success = false;
 if (isset($_POST['submitButton'])) {
 	$form_args = get_form_values(array(
 		'email','emailConfirm','password','passwordConfirm','firstName','lastName',
@@ -31,10 +31,8 @@ if (isset($_POST['submitButton'])) {
 					$form_args['mobilePhone'], $form_args['major'],
 					$form_args['gpa'], $form_args['classYear'],
 					$form_args['aboutMe'], $form_args['universityID']);
-				// TODO: go to "successful sign in" landing that sends email confirm.
-				header('Location: .');
-				exit;
 				email_signup_token($studentID, true);
+				$signup_success = true;
 			} catch (PDOException $ex) {
 				Error::setError(Error::EXCEPTION, 'Error creating an account.',
 					$ex);
@@ -81,6 +79,12 @@ if (isset($_POST['submitButton'])) {
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron" id="formBox">
+<?php
+if ($signup_success) {
+?><p>We have sent you an email confirmation (NYI).</p><p>Start seeking available positions by <a href=".">signig in</a> with your email address and password.</p>
+<?php
+} else {
+?>
 						<?php Error::putError(); ?>
 						<h2>Sign Up</h2>
 						<form action="signup.php" class="form-horizontal" id="signupForm" method="post">
@@ -190,6 +194,9 @@ if (isset($_POST['submitButton'])) {
 								</div> <!-- End column -->
 							</div> <!-- End row -->								
 						</form>
+<?php
+}
+?>
 					</div> <!-- End jumbotron -->			
 				</div> <!-- End container -->
 			</div>

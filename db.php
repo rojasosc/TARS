@@ -363,6 +363,19 @@ final class Student extends User {
 		}
 	}
 
+	public function getStudentsToReview(){
+		$sql = "SELECT userID FROM Students WHERE status = ".PENDING;
+		$args = array();
+		$rows = Database::executeGetAllRows($sql,$args);
+		return array_map(function ($row) { return User::getUserByID($row['userID']);}, $rows);
+	}
+	
+	public function setStudentStatus($userID,$status){
+		$sql = "UPDATE Students SET status = :status WHERE userID = :userID";
+		$args = array(':status' => $status,':userID' => $userID);
+		Database::execute($sql,$args);
+	}
+		
 	public function getApplications($status) {
 		$sql = 'SELECT * FROM Applications
 				INNER JOIN Positions ON Positions.positionID = Applications.positionID
@@ -373,6 +386,7 @@ final class Student extends User {
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Applicant($row); }, $rows);
 	}
+	
 
 	public function apply($position, $compensation, $qualifications) {
 		$sql = 'INSERT INTO Applications
@@ -658,7 +672,7 @@ final class Applicant {
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Applicant($row); }, $rows);
 	}
-
+	
 	public static function getApplicantsByTerm($term, $app_status, $compensation) {
 		$sql = 'SELECT Applications.appID, Applications.positionID, Applications.studentID,
 					Applications.compensation, Applications.appStatus,

@@ -9,7 +9,7 @@
 		$firstName = $user->getFirstName();
 		$lastName = $user->getLastname();
 		$email = $user->getEmail();
-		$userID = getUserID($email);
+		$userID = $user->getID();
 		$usersTable[] = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'userID' => $userID);
 	}
 	echo json_encode($usersTable);

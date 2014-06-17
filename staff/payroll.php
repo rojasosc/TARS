@@ -111,8 +111,8 @@
 									<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
 									<?php
 									
-									$term = CURRENT_TERM;
-									$assistants = getPayrollByTerm($term);
+									$term = Term::getTermByID(CURRENT_TERM);
+									$assistants = Applicant::getApplicants(null, null, $term, APPROVED, 'pay');
 									
 									foreach($assistants as $assistant){
 										$student = $assistant->getStudent();

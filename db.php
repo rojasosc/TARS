@@ -645,38 +645,8 @@ final class Applicant {
 			array(':id' => $id));
 		return new Applicant($row);
 	}
-	
 
-	/**
-	 * General purpose function to get application object count.
-	 *
-	 */
-	public static function getApplicantCount($course = null, $professor = null, $status = -1) {
-		$sql_where = '';
-		$args = array();
-		if ($course != null) {
-			$sql_where .= 'Positions.courseID = :course AND ';
-			$args[':course'] = $course->getID();
-		}
-		if ($professor != null) {
-			$sql_where .= 'Positions.professorID = :professor AND ';
-			$args[':professor'] = $professor->getID();
-		}
-		if ($status >= 0) {
-			$sql_where .= 'Applications.appStatus = :status AND ';
-			$args[':status'] = $status;
-		}
-		$sql = "SELECT COUNT(*) FROM Applications
-				INNER JOIN Positions ON Applications.positionID = Positions.positionID
-				WHERE $sql_where 1";
-		return Database::executeGetScalar($sql, $args);
-	}
-
-	/**
-	 * General purpose function to get application object count.
-	 *
-	 */
-	public static function getApplicants($course = null, $professor = null, $term = null, $status = -1) {
+	private static function generateGetApplicantsRequest($course, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
 		$args = array();
 		if ($course != null) {
@@ -695,10 +665,39 @@ final class Applicant {
 			$sql_where .= 'Applications.appStatus = :status AND ';
 			$args[':status'] = $status;
 		}
-		$sql = "SELECT * FROM Applications
+		if ($compensation != null) {
+			$sql_where .= 'Applications.compensation = :compensation AND ';
+			$args[':compensation'] = $compensation;
+		}
+		if ($is_count) {
+			$sql_sel = 'COUNT(*)';
+		} else {
+			$sql_sel = '*';
+		}
+		$sql = "SELECT $sql_sel FROM Applications
 				INNER JOIN Positions ON Applications.positionID = Positions.positionID
 				INNER JOIN Courses ON Positions.courseID = Courses.courseID
 				WHERE $sql_where 1";
+		return array($sql, $args);
+	}
+
+	/**
+	 * General purpose function to get application object count.
+	 *
+	 */
+	public static function getApplicantCount($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+		list($sql, $args) = Applicant::generateGetApplicantsRequest(
+			$course, $professor, $term, $status, $compensation, true);
+		return Database::executeGetScalar($sql, $args);
+	}
+
+	/**
+	 * General purpose function to get application object count.
+	 *
+	 */
+	public static function getApplicants($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+		list($sql, $args) = Applicant::generateGetApplicantsRequest(
+			$course, $professor, $term, $status, $compensation, false);
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Applicant($row); }, $rows);
 	}
@@ -1010,26 +1009,6 @@ function endSession(){
 * END LOGIN FUNCTIONS
 *********************/	
 
-/****************
-* STAFF FUNCTIONS
-*****************/
-
-
-/* Function 
-*  Purpose: 
-*  Returns: 
-**/
-function getPayrollByTerm($termID){
-
-	$term = Term::getTermByID($termID);
-
-	if ($term) {
-		return Applicant::getApplicantsByTerm($term, APPROVED, 'pay');
-	} else {
-		return array();
-	}
-}
-
 function getOffice($building,$room){
 
 	return new Place(array('id'=>-1,'building'=>$building,'room'=>$room,'roomType'=>'Office'));
@@ -1045,104 +1024,4 @@ function getOffice($building,$room){
 
 	return $office;
 }
-
-function getUnverifiedStudents(){
-
-	return Applicant::getApplicantsByTerm(Term::getTermByID(CURRENT_TERM), PENDING, 'pay');
-
-	$conn = open_database();
-	
-	$sql = "SELECT Students.userID, Students.firstName, Students.lastName, Users.email, Students.gpa\n"
-	. "FROM Students,Users\n"
-	. "WHERE Students.userID = Users.userID AND Students.status = 0";
-	
-	$result = mysqli_query($conn,$sql);
-	
-	$students = @mysqli_fetch_all($result,MYSQLI_BOTH);
-
-	close_database($conn);
-	
-	return $students;
-}
-
-function totalAssistantCount(){
-
-	return 0;
-
-	//return Applicant::get
-
-	$conn = open_database();
-
-	$sql = "SELECT COUNT(*) FROM Students AS numberofStudents";
-	$count = mysqli_query($conn,$sql);
-	$count = mysqli_fetch_array($count);
-	close_database($conn);
-	$count = $count[0];
-	return $count;		
-
-}
-
-
-function setStatus($studentID,$status){
-
-	return;
-
-	$conn = open_database();
-	
-	$sql = "UPDATE Students SET status = '$status' WHERE Students.userID = '$studentID'";
-	
-	mysqli_query($conn,$sql);
-	
-	close_database($conn);
-
-}
-
-function updateProfessor($firstName, $lastName, $email,$officePhone, $mobilePhone){
-
-	return;
-
-	$conn = open_database();
-	
-	/* escape variables to avoid  injection attacks. */ 
-	$firstName = mysqli_real_escape_string($conn,$firstName);
-	$lastName = mysqli_real_escape_string($conn,$lastName);
-	$email = mysqli_real_escape_string($conn,$email);
-	$password = mysqli_real_escape_string($conn,$password);
-	$officePhone = mysqli_real_escape_string($conn,$officePhone);
-	$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
-	
-	$professorID = getUserID($email);
-	$sql = "UPDATE Professors SET Professors.firstName = '$firstName', Professors.lastName = '$lastName', Professors.officePhone = '$officePhone', Professors.mobilePhone = '$mobilePhone' WHERE Professors.professorID = '$professorID'";		
-	mysqli_query($conn,$sql);
-	
-	close_database($conn);	
-}
-
-function updateStudent($firstName, $lastName,$email,$homePhone,$mobilePhone,$classYear,$major,$gpa,$aboutMe){
-
-	return;
-
-	$conn = open_database();
-			
-	/* escape variables to avoid  injection attacks. */ 
-	$firstName = mysqli_real_escape_string($conn,$firstName);
-	$lastName = mysqli_real_escape_string($conn,$lastName);
-	$email = mysqli_real_escape_string($conn,$email);
-	$homePhone = mysqli_real_escape_string($conn,$homePhone);
-	$mobilePhone = mysqli_real_escape_string($conn,$mobilePhone);
-	$classYear = mysqli_real_escape_string($conn,$classYear);
-	$major = mysqli_real_escape_string($conn,$major);
-	$gpa = mysqli_real_escape_string($conn,$gpa);
-	$aboutMe = mysqli_real_escape_string($conn,$aboutMe);
-	
-	$studentID = getUserID($email);
-	$sql = "UPDATE Students SET Students.firstName = '$firstName', Students.lastName = '$lastName', Students.homePhone = '$homePhone', Students.mobilePhone = '$mobilePhone', Students.classYear = '$classYear', Students.major = '$major', Students.gpa = '$gpa', Students.aboutMe = '$aboutMe' WHERE Students.userID = '$studentID'";		
-	mysqli_query($conn,$sql);
-	
-	close_database($conn);	
-}
-
-/********************
-* END STAFF FUNCTIONS
-*********************/
 

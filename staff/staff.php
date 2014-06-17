@@ -1,7 +1,7 @@
 <?php  
-    include('staffSession.php');
-    $students = getUnverifiedStudents();	
-    $totalUnverified = count($students);
+	include('staffSession.php');
+	$term = Term::getTermByID(CURRENT_TERM);
+    $totalUnverified = Applicant::getApplicantCount(null, null, $term, PENDING);
 
 ?>
 

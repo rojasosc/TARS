@@ -9,6 +9,6 @@
 	/* lastName: the target's last name. */
 	
 	
-	$student = getStudent($_POST['emailSearch']);
+	$student = User::getUserByEmail($_POST['emailSearch'], STUDENT);
 	echo json_encode($student,true);
 ?>

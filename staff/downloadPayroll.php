@@ -1,8 +1,8 @@
 <?php
 	include("../db.php");
-	$term = CURRENT_TERM;
-	$fileName = "payroll" . CURRENT_TERM . ".xls";
-	$assistants = getPayrollByTerm($term);
+	$term = Term::getTermByID(CURRENT_TERM);
+	$fileName = "payroll-{$term->getYear()}-{$term->getSession()}.xls";
+	$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
 	header("Content-Type: application/vnd.ms-excel");
 	
 	/* Table header */

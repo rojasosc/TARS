@@ -951,21 +951,5 @@ function endSession(){
 
 /********************
 * END LOGIN FUNCTIONS
-*********************/	
-
-function getOffice($building,$room){
-
-	return new Place(array('id'=>-1,'building'=>$building,'room'=>$room,'roomType'=>'Office'));
-
-	$conn = open_database();
-	
-	$sql = "SELECT * FROM Place WHERE building = '$building' AND room = '$room' LIMIT 1";
-	$result = mysqli_query($conn,$sql);
-	
-	$office = mysqli_fetch_array($result,MYSQLI_BOTH);
-	
-	close_database($conn);
-
-	return $office;
-}
+*********************/
 

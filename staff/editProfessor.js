@@ -84,7 +84,7 @@ function displayResults(users){
 		row[++j] = '</td><td>';
 		row[++j] = professors[key]["email"];
 		row[++j] = '</td><td>';
-		row[++j] = '<button data-toggle="modal" data-target="#editProfileModal" class="btn btn-default edit" data-id="'+professors[key]["userID"]+'"><span class="glyphicon glyphicon-wrench"></span> Profile</button>'
+		row[++j] = '<button data-toggle="modal" data-target="#editProfileModal" class="btn btn-default edit circle" data-id="'+professors[key]["userID"]+'"><span class="glyphicon glyphicon-wrench"></span></button>'
 		row[++j] = '</td></tr>';
 		
 	}

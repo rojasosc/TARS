@@ -52,7 +52,7 @@ try {
   
 	<body>
 		<!-- BEGIN Info Modal -->
-		<div class="modal fade" id="infomodal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+		<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -110,7 +110,7 @@ try {
 		</div>
 		<!-- END Info Modal -->
 		<!-- BEGIN Apply Modal -->
-		<div class="modal fade" id="applymodal" tabindex="-1" role="dialog" aria-labelledby="applyModalLabel" aria-hidden="true">
+		<div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="applyModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -241,7 +241,7 @@ try {
 										<th>Course Number</th>
 										<th>Course</th>
 										<th>Professor</th>
-										<th>Position Type <button class="btn btn-default" data-target="#infomodal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
+										<th>Position Type <button class="btn btn-default" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
 										<th>Time</th>
 										<th></th>
 									</tr>
@@ -259,7 +259,7 @@ try {
 												<td><?=$position->getPositionType()?></td>
 												<td><?=$position->getTime()?></td>
 												<td>
-													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applymodal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
+													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
 												</td>
 											</tr>
 									<?php

@@ -50,11 +50,10 @@
 										<p>
 											If you still wish to be released from this position, an E-mail will be sent to your employer notifying them of your release and your reasons detailed below:
 										</p>
-										<textarea class="form-control" rows="8" cols="64" form="releaseForm" name="releaseReasons">
-										</textarea>
+										<textarea class="form-control" rows="8" cols="64" form="releaseForm" name="releaseReasons" id="releaseReasons"></textarea>
 									</div>
 								</div>
-								<input id="studentID" type="hidden" value="<?=$student->getID()?>" />
+								<input name="studentID" id="studentID" type="hidden" value="<?=$student->getID()?>" />
 							</fieldset>
 						</form>
 					</div>

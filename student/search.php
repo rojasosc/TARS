@@ -242,7 +242,7 @@ try {
 										<th>Course Number</th>
 										<th>Course</th>
 										<th>Professor</th>
-										<th>Position Type <button class="btn btn-default" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
+										<th>Position Type <br/><button class="btn btn-default" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
 										<th>Time</th>
 										<th></th>
 									</tr>

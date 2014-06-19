@@ -561,7 +561,7 @@ final class Position {
 			array(':id' => $id));
 		return new Position($row);
 	}
-	
+	//BUGGY AF
 	public static function findPositions($search_field, $term = -1, $position_type = null, $studentID) {
 		$sql = 'SELECT * FROM Positions
 				INNER JOIN Courses ON Positions.courseID = Courses.courseID
@@ -583,14 +583,15 @@ final class Position {
 			$sql .= 'termID = :term ';
 			$args[':term'] = $term;
 		}
-		$sql .="AND studentID <> :studentID ";
+		$sql .="AND ((strcmp(studentID, :studentID) <> 0) OR studentID is null) ";
 		$args['studentID'] = $studentID;
 		// TODO: implement position_type
 		//if ($position_type != null) {
 		//	$sql .= 'posType = :posType AND ';
 		//	$args[':posType'] = $position_type;
 		//}
-		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		$sql .= 'ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		echo $sql;
 		//echo '<pre>';
 		//print_r($args);
 		//exit($sql);

@@ -1,6 +1,7 @@
 <?php  
 include('studentSession.php');
 include('../formInput.php');
+include('../error.php');
 
 $form_args = get_form_values(array('search','term','type'));
 
@@ -12,7 +13,7 @@ try {
 		$form_args['type'] = -1; // "Any"
 	}
 	$positions = Position::findPositions(
-		$form_args['search'], $form_args['term'], $form_args['type']);
+		$form_args['search'], $form_args['term'], $form_args['type'], $sID);
 } catch (PDOException $ex) {
 	Error::setError(Error::EXCEPTION, 'Error getting position list.', $ex);
 	$positions = array();

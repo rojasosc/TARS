@@ -4,6 +4,19 @@ CHANGELOG
 ****************************************************************
 ================================================================
 
+
+================================
+********************************
+Publish 4
+********************************
+================================
+Date: 18 June, 2014
+
+===Student===
+Fixed white page bug on current positions page
+Fixed white page bug on position search page
+Added withdrawing functionality for both applications and positions
+
 ================================
 ********************************
 Publish 3

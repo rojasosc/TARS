@@ -561,10 +561,11 @@ final class Position {
 			array(':id' => $id));
 		return new Position($row);
 	}
-
-	public static function findPositions($search_field, $term = -1, $position_type = null) {
+	
+	public static function findPositions($search_field, $term = -1, $position_type = null, $studentID) {
 		$sql = 'SELECT * FROM Positions
 				INNER JOIN Courses ON Positions.courseID = Courses.courseID
+				LEFT JOIN Applications ON Positions.positionID = Applications.positionID
 				WHERE ';
 		$args = array();
 		if (!empty($search_field)) {
@@ -579,9 +580,11 @@ final class Position {
 			}
 		}
 		if ($term >= 0) {
-			$sql .= 'termID = :term AND ';
+			$sql .= 'termID = :term ';
 			$args[':term'] = $term;
 		}
+		$sql .="AND studentID <> :studentID ";
+		$args['studentID'] = $studentID;
 		// TODO: implement position_type
 		//if ($position_type != null) {
 		//	$sql .= 'posType = :posType AND ';

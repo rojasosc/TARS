@@ -174,11 +174,11 @@ and are color coded to emphasize priority.
 												<td><?= $student->getEmail() ?></td>
 												<td><?= $application->getPosition()->getPositionType() ?></td>
 												<td><?= $student->getGPA()?></td>
-												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $universityID ?>" class="btn btn-default circle profile">
+												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
 												<span class="glyphicon glyphicon-user"></span></button>
 												</td>
 												<td>	<form id="course1">
-													<div class="btn-group" data-toggle="buttons" data-positionID="<?= $application->getPosition()->getID() ?>" data-universityID="<?= $universityID ?>">
+													<div class="btn-group" data-toggle="buttons" data-positionID="<?= $application->getPosition()->getID() ?>" data-universityID="<?= $student->getID() ?>">
 														<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve">
 															<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>" checked><span class="glyphicon glyphicon-ok"></span>
 														</label>

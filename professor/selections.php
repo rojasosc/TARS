@@ -6,8 +6,9 @@
 	$decision = $_POST['decision'];
 	
 	if($decision > 0){
-		$student = User::getStudentByID($studentID);
+		$student = User::getUserByID($studentID);
 		$position = Position::getPositionByID($positionID);
 		Application::setPositionStatus($student, $position, $decision);
 	}
 
+?>

@@ -828,6 +828,17 @@ final class Course {
 		$row = Database::executeGetRow($sql, $args);
 		return new Course($row);
 	}
+	
+	public static function getAllCourses() {
+		$sql = "Select * from Courses group by courseTitle";
+		$args = array();
+		$rows = Database::executeGetAllRows($sql,$args);
+		return $rows; 
+	}
+	
+	public static function getCourseProfessors($courseTitle){
+		
+	}
 
 	public function __construct($row) {
 		$this->id = $row['courseID'];

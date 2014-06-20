@@ -17,4 +17,5 @@
 		$fn = $student->getFirstName();	//Fetch the first name
 		$ln = $student->getLastName();		//Fetch the last name
 		$brand = $fn[0].". ".$ln;		//Create a single variable to hold the brand at the far left of the navbar
+		$sID = $student->getID();
 	}

@@ -1,29 +1,321 @@
 {
-	"termYear":2014,
-	"termSemester":"fall",
-	"defaultEmailDomain":"cs.rochester.edu",
-	"courses":[
-	{
-		"crn":30105,
-		"dep":"CSC",
-		"number":"171",
-		"title":"The Science of Programming",
-		"website":"http://cs.rochester.edu/courses/171/fall2014/",
-		"instructors":[
-		{"fname":"Ted","lname":"Pawlicki","email":"pawlicki@"}],
-		"sessions":[
-		{"weekdays":"WF","begin":"10:25","end":"11:40","building":"HOYT","room":"AUD"}],
-		"positions":[
-		{"type":"workshopsuper","count":1},
-		{"type":"workshop","count":9},
-		{"type":"lab","count":2,"sessions":[
-			{"weekdays":"TR","begin":"11:05","end":"12:20","building":"GAVET","room":"244"}]},
-		{"type":"lab","count":2,"sessions":[
-			{"weekdays":"TR","begin":"18:15","end":"19:30","building":"GAVET","room":"244"}]},
-		{"type":"lab","count":2,"sessions":[
-			{"weekdays":"TR","begin":"12:30","end":"13:45","building":"GAVET","room":"244"}]},
-		{"type":"lab","count":2,"sessions":[
-			{"weekdays":"TR","begin":"16:50","end":"18:05","building":"GAVET","room":"244"}]}]
-	}]
+    "termYear": 2014,
+    "termSemester": "fall",
+    "defaultEmailDomain": "cs.rochester.edu",
+    "courses": [{
+        "crn": 29944,
+        "dep": "CSC",
+        "number": "108",
+        "title": "Computer Applications",
+        "website": "http://www.cs.rochester.edu/drupal/node/9",
+        "instructors": [{
+            "fname": "Rolando",
+            "lname": "Raqueno",
+            "email": "raqueno@"
+        }],
+        "sessions": [{
+            "weekdays": "TR",
+            "begin": "16:50",
+            "end": "18:05",
+            "building": "GRGEN",
+            "room": "101"
+        }],
+        "positions": [{
+            "type": "workshopsuper",
+            "count": 1
+        }, {
+            "type": "workshop",
+            "count": 9
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "18:15",
+                "end": "19:30",
+                "building": "HARK",
+                "room": "114"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "MW",
+                "begin": "15:25",
+                "end": "16:40",
+                "building": "HARK",
+                "room": "114"
+            }]
+        }]
+    }, {
+        "crn": 29231,
+        "dep": "CSC",
+        "number": "160",
+        "title": "Engineering Computing",
+        "website": "http://www.cs.rochester.edu/courses/160/spring2012/",
+        "instructors": [{
+            "fname": "Ted",
+            "lname": "Pawlicki",
+            "email": "pawlicki@"
+        }],
+        "sessions": [{
+            "weekdays": "TR",
+            "begin": "12:30",
+            "end": "13:45",
+            "building": "STRNG",
+            "room": "LOWER"
+        }],
+        "positions": [{
+            "type": "workshopsuper",
+            "count": 1
+        }, {
+            "type": "workshop",
+            "count": 9
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "R",
+                "begin": "19:40",
+                "end": "22:20",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "T",
+                "begin": "16:50",
+                "end": "19:30",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "U",
+                "begin": "16:50",
+                "end": "19:30",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "T",
+                "begin": "19:40",
+                "end": "22:20",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "R",
+                "begin": "16:50",
+                "end": "19:30",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "11:05",
+                "end": "12:20",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }]
+    }, {
+        "crn": 30059,
+        "dep": "CSC",
+        "number": "170",
+        "title": "Web Design and Development",
+        "website": "http://www.cs.rochester.edu/~bh/csc170/",
+        "instructors": [{
+            "fname": "Robert",
+            "lname": "Kostin",
+            "email": "kostin@"
+        }],
+        "sessions": [{
+            "weekdays": "TR",
+            "begin": "11:05",
+            "end": "12:20",
+            "building": "GRGEN",
+            "room": "101"
+        }],
+        "positions": [{
+            "type": "workshopsuper",
+            "count": 1
+        }, {
+            "type": "workshop",
+            "count": 9
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "MW",
+                "begin": "14:00",
+                "end": "15:15",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "16:50",
+                "end": "18:05",
+                "building": "MEL",
+                "room": "210"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "MW",
+                "begin": "15:25",
+                "end": "16:40",
+                "building": "MEL",
+                "room": "210"
+            }]
+        }]
+    }, {
+        "crn": 30105,
+        "dep": "CSC",
+        "number": "171",
+        "title": "The Science of Programming",
+        "website": "http://cs.rochester.edu/courses/171/fall2014/",
+        "instructors": [{
+            "fname": "Ted",
+            "lname": "Pawlicki",
+            "email": "pawlicki@"
+        }],
+        "sessions": [{
+            "weekdays": "WF",
+            "begin": "10:25",
+            "end": "11:40",
+            "building": "HOYT",
+            "room": "AUD"
+        }],
+        "positions": [{
+            "type": "workshopsuper",
+            "count": 1
+        }, {
+            "type": "workshop",
+            "count": 9
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "11:05",
+                "end": "12:20",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "18:15",
+                "end": "19:30",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "12:30",
+                "end": "13:45",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "16:50",
+                "end": "18:05",
+                "building": "GAVET",
+                "room": "244"
+            }]
+        }]
+    }, {
+        "crn": 30105,
+        "dep": "CSC",
+        "number": "172",
+        "title": "The Science of Data Structures",
+        "website": "https://www.cs.rochester.edu/u/brown/172/1schedule.html",
+        "instructors": [{
+            "fname": "Hans",
+            "lname": "Koomen",
+            "email": "koomen@"
+        }],
+        "sessions": [{
+            "weekdays": "WF",
+            "begin": "10:25",
+            "end": "11:40",
+            "building": "GAVET",
+            "room": "202"
+        }],
+        "positions": [{
+            "type": "workshopsuper",
+            "count": 1
+        }, {
+            "type": "workshop",
+            "count": 9
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "MW",
+                "begin": "16:50",
+                "end": "18:05",
+                "building": "HYLAN",
+                "room": "303"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "9:40",
+                "end": "10:55",
+                "building": "GRGEN",
+                "room": "102"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "15:25",
+                "end": "16:40",
+                "building": "MEL",
+                "room": "210"
+            }]
+        }, {
+            "type": "lab",
+            "count": 2,
+            "sessions": [{
+                "weekdays": "TR",
+                "begin": "12:30",
+                "end": "13:45",
+                "building": "MEL",
+                "room": "210"
+            }]
+        }]
+    }]
 }
-

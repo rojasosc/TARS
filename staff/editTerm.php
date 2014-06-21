@@ -1,5 +1,5 @@
 <?php  
-    include('staffSession.php');
+	include('staffSession.php');
 ?>
 
 <!DOCTYPE html>
@@ -16,8 +16,84 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="editTerm.js"></script>
+		<script src="dropdowns.js"></script>
 	</head>
 	<body>
+		<!-- BEGIN Positions Modal-->
+		<div class="modal fade" id="positionsModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">New Positions</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+							<form action="#" method="post" id="newPositionsForm" class="form-horizontal">
+								<fieldset>
+									<legend>General</legend>
+									<div class="row">
+										<div class="col-xs-10">									
+										<label class="control-label" for="positionType">Position Type</label>
+											<select id="positionType" name="positionType" class="form-control">
+												<option>Grader</option>
+												<option>Workshop Leader</option>
+												<option>Lab TA</option>
+											</select> <!-- End select -->										
+										</div> <!-- End column -->
+										<div class="col-xs-2">
+											<label class="control-label" for="quantity">Number</label>
+											<input type="text" name="quantity" class="form-control" placeholder="">
+										</div> <!-- End column -->
+									</div> <!-- End row -->
+											<div class="row">
+												<div class="col-xs-4">
+													<label class="control-label" for="startTime">Start Time</label>
+													<input type="time" name="startTime" class="form-control">
+												</div> <!-- End column -->
+												<div class="col-xs-4">
+													<label class="control-label" for="endTime">End Time</label>
+													<input type="time" name="endTime" class="form-control">
+												</div> <!-- End column -->
+											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-xs-4">
+													<label class="control-label" for="days">Days</label>
+													<select name="days" class="form-control" multiple>
+														<option>Monday</option>
+														<option>Tuesday</option>
+														<option>Wednesday</option>
+														<option>Thrusday</option>
+														<option>Friday</option>
+														<option>Saturday</option>
+														<option>Sunday</option>
+													</select> <!-- End select -->											
+												</div> <!-- End column -->											
+											</div> <!-- End row -->
+											<legend>Location</legend>
+											<div class="row">
+												<div class="col-xs-4">											
+													<label class="control-label" for="building">Building</label>
+													<select name="building" class="form-control" placeholder="Building">
+													</select> <!-- End select -->										
+												</div> <!-- End column -->
+												<div class="col-xs-4">													
+													<label class="control-label" for="rooms">Room</label>
+													<select name="room" class="form-control" placeholder="Room">
+													</select> <!-- End select -->																							
+												</div> <!-- End column -->							
+											</div> <!-- End Row -->
+								</fieldset> <!-- End comment fieldset -->
+							</form> <!-- End comment form -->						
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Positions Modal-->    	
+		
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
@@ -149,11 +225,7 @@
 											<div class="row">
 												<div class="col-xs-4">						
 													<label class="control-label" for="professor">Professor</label>
-													<select name="professor" class="form-control">
-														<!--TODO: We need to use AJAX to render these options dynamically. -->
-														<option>Ted Pawlicki</option>
-														<option>Chris Brown</option>
-														<option>Michael Scott</option>
+													<select name="professor" class="form-control all-professors">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->											
 												<div class="col-xs-4">
@@ -188,21 +260,13 @@
 											<legend>Location</legend>
 											<div class="row">
 												<div class="col-xs-4">											
-													<label class="control-label" for="building">Building</label>
-													<select name="building" class="form-control" placeholder="Building">
-														<option>CSB</option>
-														<option>LATT</option>
-														<option>Meliora</option>
+													<label class="control-label" for="buildings">Building</label>
+													<select name="building" class="form-control buildings" placeholder="Building">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->
 												<div class="col-xs-4">													
 													<label class="control-label" for="room">Room</label>
-													<select name="room" class="form-control" placeholder="Room">
-														<option>306</option>
-														<option>233</option>
-														<option>255</option>
-														<option>219</option>
-														<option>393</option>
+													<select name="room" class="form-control rooms" placeholder="Room">
 													</select> <!-- End select -->																							
 												</div> <!-- End column -->							
 											</div> <!-- End Row -->
@@ -220,21 +284,14 @@
 												<div class="col-xs-4">
 													<div class="form-group">
 														<label class="control-label" for="course">Select Course</label>
-														<select name="course" class="form-control" id="selectCourse">
-															<option>The Science of Data Structures</option>
-															<option>Computation and Formal Systems</option>
-															<option>Computer Organization</option>
-															<option>Web Programming</option>
+														<select name="course" class="form-control courses" placeholder="Courses">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-xs-4" id="professorColumn">
 													<div class="form-group">
 														<label class="control-label" for="professor">Select Professor</label>
-														<select name="professor" class="form-control" id="selectProfessor">
-															<option>Ted Pawlicki</option>
-															<option>Chris Brown</option>
-															<option>Michael Scott</option>
+														<select name="professor" class="form-control professors" placeholder="Professors">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->									
@@ -253,11 +310,7 @@
 											<div class="row">
 												<div class="col-xs-4">						
 													<label class="control-label" for="professor">Professor</label>
-													<select name="professor" class="form-control">
-														<!--TODO: We need to use AJAX to render these options dynamically. -->
-														<option>Ted Pawlicki</option>
-														<option>Chris Brown</option>
-														<option>Michael Scott</option>
+													<select name="professor" class="form-control all-professors">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->											
 												<div class="col-xs-4">
@@ -292,21 +345,13 @@
 											<legend>Location</legend>
 											<div class="row">
 												<div class="col-xs-4">											
-													<label class="control-label" for="building">Building</label>
-													<select name="building" class="form-control" placeholder="Building">
-														<option>CSB</option>
-														<option>LATT</option>
-														<option>Meliora</option>
+													<label class="control-label" for="buildings">Building</label>
+													<select name="buildings" class="form-control buildings" placeholder="Building">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->
 												<div class="col-xs-4">													
-													<label class="control-label" for="room">Room</label>
-													<select name="room" class="form-control" placeholder="Room">
-														<option>306</option>
-														<option>233</option>
-														<option>255</option>
-														<option>219</option>
-														<option>393</option>
+													<label class="control-label" for="rooms">Room</label>
+													<select name="rooms" class="form-control rooms" placeholder="Room">
 													</select> <!-- End select -->																							
 												</div> <!-- End column -->							
 											</div> <!-- End Row -->
@@ -329,19 +374,12 @@
 									<div class="row">
 										<div class="col-xs-4">
 											<label class="control-label" for="course">Select Course</label>
-											<select name="course" class="form-control" id="selectCourse">
-												<option>The Science of Data Structures</option>
-												<option>Computation and Formal Systems</option>
-												<option>Computer Organization</option>
-												<option>Web Programming</option>
+											<select name="course" class="form-control courses">
 											</select> <!-- End select -->										
 										</div> <!-- End column -->
 										<div class="col-xs-4" id="professorColumn">
 											<label class="control-label" for="professor">Select Professor</label>
-											<select name="professor" class="form-control" id="selectProfessor">
-												<option>Ted Pawlicki</option>
-												<option>Chris Brown</option>
-												<option>Michael Scott</option>
+											<select name="professor" class="form-control professors">
 											</select> <!-- End select -->										
 										</div> <!-- End column -->												
 									</div> <!-- End row -->										
@@ -367,6 +405,7 @@
 											</tr>										
 										</thead>
 										<tbody>
+										<!--TODO: Render each row dynamically using the Course and Professor -->
 											<tr>
 												<td>3</td> 
 												<td>Jinze</td>
@@ -386,15 +425,12 @@
 									</div> <!-- End column -->
 								</div> <!-- End row -->
 								<div class="row">
-									<div class="col-xs-2">
-										<button id="addGrader" name="addGrader" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Grader</button>
+									<div class="col-xs-4">
+										<button id="addPositions" data-toggle="modal" data-target="#positionsModal" name="addPositions" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Positions</button>
 									</div> <!-- End column -->
-									<div class="col-xs-2 col-xs-offset-2">
-										<button id="addLabTA" type="submit"  name="addLabTA" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Lab TA</button>
-									</div> <!-- End column -->
-									<div class="col-xs-2 col-xs-offset-2">
-										<button id="addWL" type="submit"  name="addWL" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add WL</button>
-									</div> <!-- End column -->														
+									<div class="col-xs-4">
+										<button id="removePositions" data-toggle="modal" data-target="#" name="removePositions" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Remove Positions</button>
+									</div> <!-- End column -->	
 								</div> <!-- End row -->									
 							</div>
 						</div>	<!-- end tab-content -->

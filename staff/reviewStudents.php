@@ -96,7 +96,7 @@
 					<h1 class="modal-title">Student Comment</h1>
 				</div> <!-- End modal-header -->
 				<div class="modal-body">
-					<form action="newComment.php" method="post" id="commentForm" class="form-horizontal">
+					<form action="staffCommands.php" method="post" id="commentForm" class="form-horizontal">
 						<fieldset>
 							<legend>Message Content</legend>
 							<div class="row">

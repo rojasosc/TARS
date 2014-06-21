@@ -12,10 +12,12 @@ function getDecisions(){
 function submitDecisions($student){
 	var userID = $student.data('userid');
 	var decision = $('input:checked',$student).val();
-	var url = "reviewProcess.php";
+	var action = 'updateStudentStatus';
+	var url = "staffCommands.php";
 	var data = {
 		userID: userID,
-		status: decision
+		status: decision,
+		action: action
 	}
 	$.post(url,data,function () {});
 }

@@ -12,11 +12,13 @@ $(document).ready(function () {
 
 function submitComment(){
 	var url = $commentForm.attr('action');
+	var action = 'newStudentComment';
 	var data = {
 		/*TODO: Support a subject line. */
 		studentID: studentID,
 		commenterID: commenterID,
-		comment: $("[name='commentText']").val()
+		comment: $("[name='commentText']").val(),
+		action: action
 	}
 	studentID = null;
 	commenterID = null;

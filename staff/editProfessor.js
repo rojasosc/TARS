@@ -35,9 +35,16 @@ function preventRedirection(){
 }
 
 function findUsers(){
-	var email = $('#emailSearch').val();
 	var url = $searchForm.attr('action');
-	var data = $('#searchUsersForm :input').serializeArray();
+	var action = 'searchForUsers';
+	var searchType = '1';
+	var data = {
+		firstName: $("[name='firstName']",$searchForm).val(),
+		lastName: $("[name='lastName']",$searchForm).val(),
+		email: $("[name='emailSearch']",$searchForm).val(),
+		searchType: searchType,
+		action: action
+	}
 	
 	/* AJAX POST request to obtain results */	
 	$.post(url,data,function (users){ displayResults(users); });
@@ -46,6 +53,7 @@ function findUsers(){
 
 function updateUser(){
 	var url = $updateForm.attr('action');
+	var action = 'updateProfessorProfile';
 	
 	/* Select the input fields in the context of the update form. */
 	/* TODO: It would be much better if we could use serializeArray() 
@@ -57,7 +65,8 @@ function updateUser(){
 		'mobilePhone': $("[name='mobilePhone']",$updateForm).val(),
 		'officePhone': $("[name='officePhone']",$updateForm).val(),
 		'building': $("[name='building']",$updateForm).val(),
-		'room': $("[name='room']",$updateForm).val()
+		'room': $("[name='room']",$updateForm).val(),
+		'action': action
 	}
 	/* AJAX POST request to obtain results */	
 	$.post(url,data,function (){ });
@@ -97,9 +106,11 @@ function displayResults(users){
 
 function displayUpdateForm(){
 	var userID = $(this).data('id');
-	var url = "fetchProfessor.php";
+	var url = "staffCommands.php";
+	var action = 'fetchProfessor';
 	var data = {
-		'userID': userID
+		userID: userID,
+		action: action
 	}
 	/* Submit a POST request */
 	$.post(url,data,function (user){ fillUpdateForm(user); });
@@ -122,9 +133,10 @@ function fillUpdateForm(user){
 }
 
 function getBuildings(){
-	var url = 'fetchBuildings.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchBuildings';
 	var data = {
-		building: url
+		action: action
 	}
 	$.post(url,data,function (buildings) { showBuildings(buildings); } );
 }
@@ -138,9 +150,11 @@ function showBuildings(buildings){
 }
 
 function getRooms(){
-	var url = 'fetchRooms.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchTheRooms';
 	var data = {
-		building: $(this).val()
+		building: $(this).val(),
+		action: action
 	}
 	removeRooms();
 	$.post(url,data,function (rooms) { showRooms(rooms); } );

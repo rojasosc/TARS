@@ -22,16 +22,32 @@ $(document).ready(function () {
 }); /* End of onload event*/
 
 
-
+/* Makes an AJAX POST request to update a course */
 function updateCourse(){
 	
 	
 	
 }
-
+/* Makes an AJAX POST request to create a course */
 function newCourse(){
 	
 	
+	
+} 
+
+function getCourses(){
+	
+}
+
+function showCourses(){
+	
+}
+
+function getProfessors(){
+	
+}
+
+function showProfessors(){
 	
 }
 

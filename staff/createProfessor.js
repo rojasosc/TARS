@@ -77,10 +77,6 @@ $(document).ready(function() {
 						field: 'email',
 						message: 'email addresses don\'t match'
 						
-					},
-					remote: {
-						message: 'This email address is already in use',
-						url: '../emailExists.php'
 					}					
 				}
 			},

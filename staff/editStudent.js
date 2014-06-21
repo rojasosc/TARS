@@ -30,9 +30,16 @@ function preventRedirection(){
 }
 
 function findUsers(){
-	var email = $('#emailSearch').val();
+	var action = 'searchForUsers';
+	var searchType = '0';
 	var url = $searchForm.attr('action');
-	var data = $('#searchUsersForm :input').serializeArray();
+	var data = {
+		firstName: $("[name='firstName']",$searchForm).val(),
+		lastName: $("[name='lastName']",$searchForm).val(),
+		email: $("[name='emailSearch']",$searchForm).val(),
+		searchType: searchType,
+		action: action
+	}
 
 	/* AJAX POST request to obtain results */	
 	$.post(url,data,function (users){ displayResults(users); });
@@ -41,6 +48,7 @@ function findUsers(){
 
 function updateUser(){
 	var url = $updateForm.attr('action');
+	var action = "updateStudentProfile";
 	
 	/* Select the input fields in the context of the update form. */
 	/* TODO: It would be much better if we could use serializeArray() 
@@ -53,7 +61,8 @@ function updateUser(){
 		'classYear': $("[name='classYear']",$updateForm).val(),
 		'major': $("[name='major']",$updateForm).val(),
 		'gpa': $("[name='gpa']",$updateForm).val(),
-		'aboutMe': $("[name='aboutMe']",$updateForm).val()
+		'aboutMe': $("[name='aboutMe']",$updateForm).val(),
+		'action': action
 	}
 	
 	/* AJAX POST request to obtain results */	
@@ -94,9 +103,11 @@ function displayResults(users){
 
 function displayUpdateForm(){
 	var userID = $(this).data('id');
-	var url = "fetchStudent.php";
+	var url = "staffCommands.php";
+	var action = 'fetchStudent';
 	var data = {
-		'userID': userID
+		userID: userID,
+		action: action
 	}
 	/* Submit a POST request */
 	$.post(url,data,function (user){ fillUpdateForm(user); });

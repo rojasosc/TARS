@@ -15,9 +15,10 @@ $(document).ready(function () {
 });
 
 function getProfs(){
-	var url = 'fetchAllProfessors.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchProfessors';
 	var data = {
-		profsd: url
+		action: action
 	}
 	$.post(url,data, function (profs){ showProfs(profs); });
 }
@@ -30,9 +31,10 @@ function showProfs(profs){
 }
 
 function getCourses(){
-	var url = 'fetchAllCourses.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchCourses';
 	var data = {
-		courses: url
+		action: action
 	}
 	$.post(url,data, function (courses) { showCourses(courses); } );
 }
@@ -47,9 +49,11 @@ function showCourses(courses){
 }
 
 function getProfessors(){
-	var url = 'fetchCourseProfessors.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchTheProfessors';
 	var data = {
-		courseTitle: $(this).val()
+		courseTitle: $(this).val(),
+		action: action
 	}	
 	$.post(url,data,function (professors) { showProfessors(professors); } );
 	
@@ -69,9 +73,10 @@ function removeProfessors(){
 }
 
 function getBuildings(){
-	var url = 'fetchBuildings.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchBuildings';
 	var data = {
-		building: url
+		action: action
 	}
 	$.post(url,data,function (buildings) { showBuildings(buildings); } );
 }
@@ -86,9 +91,11 @@ function showBuildings(buildings){
 }
 
 function getRooms(){
-	var url = 'fetchRooms.php';
+	var url = 'staffCommands.php';
+	var action = 'fetchTheRooms';
 	var data = {
-		building: $(this).val()
+		building: $(this).val(),
+		action: action
 	}
 	removeRooms();
 	$.post(url,data,function (rooms) { showRooms(rooms); } );

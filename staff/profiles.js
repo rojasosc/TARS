@@ -4,9 +4,11 @@ $(document).ready(function () {
 
 function displayProfile(){
 	var userID = $(this).data('userid');
-	var url = "fetchStudent.php";
+	var action = "fetchStudent";
+	var url = "staffCommands.php";
 	var data = {
-		'userID': userID
+		userID: userID,
+		action: action
 	}
 	/* Submit a POST request */
 	$.post(url,data,function (user){ fillProfile(user); });

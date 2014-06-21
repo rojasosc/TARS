@@ -29,7 +29,7 @@
 						<h1 class="modal-title" id="modalHeader"></h1>
 					</div> 
 					<div class="modal-body">
-						<form action="updateStudentProcess.php" class="form-horizontal" id="updateForm" method="post">
+						<form action="staffCommands.php" class="form-horizontal" id="updateForm" method="post">
 							<div class="row">
 								<div class="col-md-4">				
 									<div class="form-group"> 				
@@ -176,7 +176,7 @@
 							<h3>Filter Constraints</h3>
 						</div> <!-- end row -->
 						<div class="row">
-							<form class="form-horizontal" id="searchUsersForm" method="post" action="searchUsers.php">
+							<form class="form-horizontal" id="searchUsersForm" method="post" action="staffCommands.php">
 								<div class="row">
 									<div class="col-md-10">
 											<label class="control-label" for="emailSearch">Email</label>

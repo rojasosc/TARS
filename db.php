@@ -474,6 +474,14 @@ final class Professor extends User {
 		}
 	}
 
+	public static function getAllProfessors(){
+		$sql = "SELECT * FROM Users 
+			INNER JOIN Professors on Professors.userID = Users.userID";
+		$args = array();
+		$rows = Database::executeGetAllRows($sql,$args);
+		return array_map(function ($row) { return new Professor($row); }, $rows );
+	}
+		
 	public function updateProfile($firstName, $lastName, $officeID, $officePhone, $mobilePhone) {
 		$sql = 'UPDATE Professors
 				INNER JOIN Users ON Users.userID = Professors.userID
@@ -837,7 +845,16 @@ final class Course {
 	}
 	
 	public static function getCourseProfessors($courseTitle){
-		
+		$sql = 'SELECT firstName,lastName 
+			FROM Users,Professors,Teaches,Courses
+			WHERE Users.userID = Professors.userID 
+			AND Professors.userID = Teaches.professorID
+			AND Courses.courseID = Teaches.courseID
+			AND Courses.courseTitle = :courseTitle ';
+		$args = array(':courseTitle' => $courseTitle);
+		$rows = Database::executeGetAllRows($sql,$args);
+		return $rows;
+
 	}
 
 	public function __construct($row) {

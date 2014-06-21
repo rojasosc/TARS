@@ -45,7 +45,39 @@
 							<h3>About Me</h3>
 							<div class="container">
 								<p id="studentAboutMe"></p>	
-							</div> <!-- End container -->							
+							</div> <!-- End container -->
+							<h3>Staff Comments</h3>
+							<div class="container">
+								<div class="row">
+									<div class="col-xs-4">
+										<p>Commenter:</p>
+									</div> <!-- End column -->
+									<div class="col-xs-4">
+										<p>Date:</p>
+									</div> <!-- End column -->
+								</div> <!-- End row -->
+								<div class="row">
+									<div class="col-xs-12">
+										<p>Message:</p>
+									</div> <!-- End column -->
+								</div> <!-- End row -->
+							</div> <!-- End container -->
+							<h3>Professor Comments</h3>
+							<div class="container">
+								<div class="row">
+									<div class="col-xs-4">
+										<p>Commenter:</p>
+									</div> <!-- End column -->
+									<div class="col-xs-4">
+										<p>Date:</p>
+									</div> <!-- End column -->
+								</div> <!-- End row -->
+								<div class="row">
+									<div class="col-xs-12">
+										<p>Message:</p>
+									</div> <!-- End column -->
+								</div> <!-- End row -->
+							</div> <!-- End container -->
 						</div> <!-- End modal body -->
 						<div class="modal-footer">
 							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -66,21 +98,12 @@
 				<div class="modal-body">
 					<form action="newComment.php" method="post" id="commentForm" class="form-horizontal">
 						<fieldset>
-							<legend>New Comment</legend>
-							<div class="row">
-								<div class="col-xs-10">
-									<div class="form-group">
-										<input type="text" name="subject" class="form-control" placeholder="Subject">
-									</div> <!-- End form-group -->
-								</div> <!-- End column -->
-							</div> <!-- End row -->
+							<legend>Message Content</legend>
 							<div class="row">
 								<div class="col-xs-12">
-									<div class="form-group">
-										<textarea name="commentText" class="form-control"></textarea>
-									</div> <!-- End form-group -->
+									<textarea name="commentText" class="form-control"></textarea>
 								</div> <!-- End column -->
-							</div> <!-- End row -->							
+							</div> <!-- End row -->													
 						</fieldset> <!-- End comment fieldset -->
 					</form> <!-- End comment form -->
 				</div> <!-- End modal-body -->

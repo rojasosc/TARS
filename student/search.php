@@ -4,6 +4,7 @@ include('../formInput.php');
 include('../error.php');
 
 $form_args = get_form_values(array('search','term','type'));
+$pages = 7;
 
 try {
 	if (!$form_args['term']) {
@@ -236,6 +237,13 @@ try {
 							</form>				
 							<hr/>
 							<div id="search-results">
+								<ul class="pagination">
+									<li><a href="#">&laquo;</a></li>
+									<?php for($i= 1; $i <= $pages; $i++){?>
+										<li><a href="#"><?=$i?></a></li>
+									<?php }?>
+									<li><a href="#">&raquo;</a></li>
+								</ul>
 								<table class="table table-striped">
 									<tr>
 										<th>Position No.</th>
@@ -274,6 +282,13 @@ try {
 										}
 									?>
 								</table>
+								<ul class="pagination">
+									<li><a href="#">&laquo;</a></li>
+									<?php for($i= 1; $i <= $pages; $i++){?>
+										<li><a href="#"><?=$i?></a></li>
+									<?php }?>
+									<li><a href="#">&raquo;</a></li>
+								</ul>
 							</div>
 						</div>
 					</div>

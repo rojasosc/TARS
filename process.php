@@ -1,11 +1,11 @@
 <?php
 
-require('db.php');
-require('formInput.php');
-require('error.php');
-require('email.php');
+require_once('db.php');
+require_once('formInput.php');
+require_once('error.php');
+require_once('email.php');
 
-$result = array('success' => false);
+$error = null;
 if (isset($_POST['submitButton'])) {
 	$form_args = get_form_values(array(
 		'email','emailConfirm','password','passwordConfirm','firstName','lastName',
@@ -13,16 +13,16 @@ if (isset($_POST['submitButton'])) {
 
 	$invalid_values = get_invalid_values($form_args);
 	if (count($invalid_values) > 0) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
-			$invalid_values);
+		$error = new TarsException(Event::ERROR_FORM_FIELD,
+			Event::USER_CREATE, $invalid_values);
 	} else {
 		// manually validate emailConfirm and passwordConfirm fields for now...
 		if ($form_args['email'] != $form_args['emailConfirm']) {
-			Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
-				array('emailConfirm'));
+			$error = new TarsException(Event::ERROR_FORM_FIELD,
+				Event::USER_CREATE, array('emailConfirm'));
 		} elseif ($form_args['password'] != $form_args['passwordConfirm']) {
-			Error::setError(Error::FORM_SUBMISSION, 'Error creating an account.',
-				array('passwordConfirm'));
+			$error = new TarsException(Event::ERROR_FORM_FIELD,
+				Event::USER_CREATE, array('passwordConfirm'));
 		} else {
 			try {
 				$studentID = Student::registerStudent(
@@ -32,17 +32,18 @@ if (isset($_POST['submitButton'])) {
 					$form_args['gpa'], $form_args['classYear'],
 					$form_args['aboutMe'], $form_args['universityID']);
 				// TODO: NYI email_signup_token($studentID, true);
-				$result['success'] = true;
 			} catch (PDOException $ex) {
-				Error::setError(Error::EXCEPTION, 'Error creating an account.',
-					$ex);
+				$error = new TarsException(Event::SERVER_PDOERR,
+					Event::USER_CREATE, $ex);
 			}
 		}
 	}
 }
 
-if (!$result['success']) {
-	$result['error'] = Error::getError()->toArray();
+$result = array('success' => $error == null);
+if ($error != null) {
+	$result['error'] = $error->toArray();
 }
+
 echo json_encode($result, true);
 

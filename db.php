@@ -1070,6 +1070,7 @@ final class Event {
 	const ERROR_FORM_FIELD = 5;
 	const SESSION_LOGIN = 6;
 	const SESSION_LOGOUT = 7;
+	const USER_CREATE = 8;
 
 	public static function getErrorTextFromEventType($event_type) {
 		switch ($event_type) {
@@ -1084,6 +1085,8 @@ final class Event {
 			return 'Error logging in';
 		case Event::SESSION_LOGOUT:
 			return 'Error logging out';
+		case Error::USER_CREATE:
+			return 'Error creating an account';
 		}
 	}
 

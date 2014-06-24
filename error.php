@@ -4,23 +4,15 @@
 /**
  * This class handles the capture and receiving of errors on the PHP-side.
  */
-class Error {
-	private static $error = null;
+final class TarsException extends Exception {
+	private static $ex = null;
 
-	const EXCEPTION = 1;
-	const FORM_SUBMISSION = 2;
-	const CUSTOM_MESSAGE = 3;
-	const PERMISSION_DENIED = 4;
-
-	/**
-	 * Call this function when an error occurs.
-	 */
-	public static function setError($type, $msg, $object = null) {
-		Error::$error = new Error($type, $msg, $object);
+	public static function setException($ex) {
+		TarsException::$ex = $ex;
 	}
 
-	public static function getError() {
-		return Error::$error;
+	public static function getException() {
+		return TarsException::$ex;
 	}
 
 	/**
@@ -35,67 +27,88 @@ class Error {
 		}
 	}
 
-	private function __construct($type, $msg, $object) {
-		$this->type = $type;
-		$this->msg = $msg;
-		$this->object = $object;
-	}
-
-	public function toHTML() {
-		$result = '<div class="error"><p><b>'.htmlentities($this->msg).'</b></p>';
-		switch ($this->type) {
-		case Error::EXCEPTION:
-			$result .= '<p>aAn exception occurred!<br/>';
-			$result .= htmlentities($this->object->getMessage()).'</p>';
+	public static function getMessageFromClass($error_class, $more_data) {
+		switch ($error_class) {
+		case Event::SERVER_EXCEPTION:
+		case Event::SERVER_PDOERR:
+			$message = 'An internal error has occurred';
 			break;
-		case Error::FORM_SUBMISSION:
-			$result .= '<p>The following fields have invalid input:<ul>';
-			foreach ($this->object as $element) {
-				$result .= '<li>'.htmlentities($element).'</li>';
-			}
-			$result .= '</ul>Please fill in these fields and try again.</p>';
+		case Event::ERROR_LOGIN:
+			$message = 'The email or password you entered is incorrect';
 			break;
-		case Error::CUSTOM_MESSAGE:
-			$result .= '<p>'.htmlentities($this->object).'</p>';
+		case Event::ERROR_PERMISSION:
+			$message = 'Permission was denied';
 			break;
-		case Error::PERMISSION_DENIED:
+		case Event::ERROR_FORM_FIELD:
+			$message = 'Fields have invalid input. Please fill in these fields and try again';
 			break;
 		}
-		$result .= '</div>';
-		return $result;
-	}
-
-	public function toArray() {
-		$result = array('type' => $this->getErrorName(), 'code' => $this->type,
-			'title' => $this->msg);
-		switch ($this->type) {
-		case Error::EXCEPTION:
-			$result['exception'] = $this->object->getMessage();
-			$result['message'] = $this->object->getMessage();
-			break;
-		case Error::FORM_SUBMISSION:
-			$result['invalid_field_values'] = $this->object;
-			$result['message'] = 'Fields have invalid input. Please fill in these fields and try again.';
-			break;
-		case Error::CUSTOM_MESSAGE:
-			$result['message'] = $this->object;
-			break;
-		case Error::PERMISSION_DENIED:
-			$result['message'] = '';
-			break;
+		if (is_subclass_of($more_data, 'Exception')) {
+			$message .= " ({$more_data->getMessage()})";
 		}
-		return $result;
+		if (is_array($more_data)) {
+			$parr = implode(', ', $more_data);
+			$message .= " ($parr)";
+		}
+		return "$message.";
 	}
 
-	public function getErrorName() {
+	public static function getTitleFromAction($error_action) {
+		return Event::getErrorTextFromEventType($error_action);
+	}
+
+	public static function getErrorClassName($class_code) {
 		$class = new ReflectionClass(__CLASS__);
 		$constants = array_flip($class->getConstants());
 
-		return $constants[$this->type];
+		return $constants[$class_code];
 	}
 
-	private $type;
-	private $msg;
-	private $object;
+	public function __construct($error_class, $error_action, $more_data = null) {
+		$this->class = $error_class;
+		$this->action = $error_action;
+		$this->more_data = $more_data;
+		$this->title = TarsException::getTitleFromAction($error_action);
+		$this->message = TarsException::getMessageFromClass($error_class, $more_data);
+		parent::__construct($this->message, $this->class,
+			is_subclass_of($more_data, 'Exception') ? $more_data : null);
+
+		// create an Event for this
+		try {
+			// log the event
+			Event::createEvent($this->class, "Exception generated:\n".$this->title."\n".
+				$this->message, $this->action);
+		} catch (PDOException $ex) {
+			// we have an error condition on writing an error to the log.
+			// this is very bad. print error to ./error.log
+
+		}
+	}
+
+	public function toHTML() {
+		return '<div class="error"><p><b>'.htmlentities($this->title).'</b></p><p>'.htmlentities($this->message).'</p></div>';
+	}
+
+	public function toArray() {
+		return array('class' => TarsException::getErrorClassName($this->class), 'class_code' => $this->class,
+			'action' => Event::getEventTypeName($this->action), 'action_code' => $this->action,
+			'title' => $this->title, 'message' => $this->message);
+	}
+
+	// error classes: the things that represent the type of thing that went wrong
+	// corresponds to Events.eventTypeID for the logged error Event object.
+	// Event::SERVER_* and Event::ERROR_* values are appropriate in this field.
+	protected $class;
+
+	// action code: the things that represent the thing that was attempted
+	// corresponds to Events.objectID for the logged error Event object.
+	// Events.objectID for all error Events is of type EventType, so this is also an EventType
+	// All event types are appropriate in this field.
+	protected $action;
+
+	// displayed parts of a TarsException.
+	protected $title;
+	protected $message;
+	protected $more_data;
 }
 

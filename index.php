@@ -1,22 +1,24 @@
 <?php
-require('db.php');
-require('formInput.php');
-require('error.php');
+require_once('db.php');
+require_once('formInput.php');
+require_once('error.php');
 
+$error = null;
 if (isset($_POST['submit'])) {
 	$form_args = get_form_values(array('email','password'));
-	
+
 	if (!$form_args['email']) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error logging in.',
-			array('email'));
+		$error = new TarsException(Event::ERROR_FORM_FIELD,
+			Event::SESSION_LOGIN, array('email'));
 	} elseif (!$form_args['password']) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error logging in.',
-			array('password'));
+		$error = new TarsException(Event::ERROR_FORM_FIELD,
+			Event::SESSION_LOGIN, array('password'));
 	} else {
 		try {
 			$login_user = login($form_args['email'], $form_args['password']);
 		} catch (Exception $ex) {
-			Error::setError(Error::EXCEPTION, 'Error logging in.', $ex);
+			$error = new TarsException(Event::SERVER_PDOERR,
+				Event::SESSION_LOGIN, $ex);
 		}
 
 		if ($login_user) {
@@ -32,13 +34,16 @@ if (isset($_POST['submit'])) {
 			} elseif ($type == STAFF) {
 				header('Location: staff/staff.php');
 				exit;
+			} elseif ($type == ADMIN) {
+				header('Location: admin/admin.php');
+				exit;
 			} else {
-				Error::setError(Error::EXCEPTION, 'Error logging in.',
-					new Exception('Admin not implemented!'));
+				$error = new TarsException(Event::SERVER_EXCEPTION,
+					Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
 			}
 		} else {
-			Error::setError(Error::CUSTOM_MESSAGE, 'Error logging in.',
-				'The email or password you entered is incorrect.');
+			$error = new TarsException(Event::ERROR_LOGIN,
+				Event::SESSION_LOGIN);
 		}
 	}
 }
@@ -191,7 +196,7 @@ if (isset($_POST['submit'])) {
 				<div id="login">
 					<form action="index.php" method="post">
 						<fieldset>
-							<?php Error::putError(); ?>
+							<?php if ($error != null) { echo $error->toHtml(); } ?>
 							<h2 class="center" id="colorWhite">Sign In</h2>
 							<div class="row">
 								<div class="col-md-10">

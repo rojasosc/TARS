@@ -157,7 +157,6 @@ final class Database {
 		/* get the inserted ID */
 		return Database::$db_conn->lastInsertId();
 	}
-
 }
 
 
@@ -1023,6 +1022,106 @@ final class Course {
 	private $website;
 	private $term;
 	private $termID;
+}
+
+final class Event {
+
+	/** EventTypes documentation:
+	 * EVENT TYPES
+	 * The following constants correspond to EventTypes.
+	 * Each Event object has an EventType, elaborating on what it should appear as,
+	 * and what type of object is referenced by objectID.
+	 *
+	 * --------------------
+	 * SUBSCRIBER TEMPLATES
+	 *
+	 * There's a bunch of EventSubscriberTemplates attached to some EventTypes
+	 * representing that Events with that EventType will create Notifications (emails)
+	 * to the specified user(s). When the notifyTarget is not "self", the target is in
+	 * reference to the objectID. If the objectID is not a User, then emails are sent to
+	 * relevent creators (i.e. "target"/creator of a Term object (a staff member), or
+	 * "professors" of a Course object)
+	 * All "staff" and "admin" targeted notifications go to all Users of those types.
+	 *
+	 * for example, a PDO exception can be represented by:
+	 * name='SERVER_PDOERR', severity=crit, objectType=EventType
+	 * with no templates (admin might add one to get notified about PDO errors by email).
+
+	 * alternatively, a successful login can be represented by:
+	 * name='SESSION_LOGIN', severity=info, objectType=User
+	 * with no templates
+	 *
+	 * alternatively, a student applying for a course by:
+	 name='STUDENT_APPLY', logSeverity=notice, objectType=Application
+	 * with templates:
+	 * - notifyTarget=self, notifyMode=both, subject="Student Application",
+	 *   template="You have applied for APPLICATION OBJECT. The professor(s) of the course will be notified and you should hear back soon."
+	 * - notifyTarget=professors, notifyMode=home, subhect="Student Application",
+	 *   template="User CREATOR has applied for your course APPLICATION OBJECT."
+	 * 
+	 * notifyMode=email - Only an email is sent; the user won't see it when they log in.
+	 * notifyMode=home - No email is sent; the user will see it when they log in.
+	 * notifyMode=both - An email is sent, and it'll appear when they log in.
+	 */
+	const SERVER_EXCEPTION = 1;
+	const SERVER_PDOERR = 2;
+	const ERROR_LOGIN = 3;
+	const ERROR_PERMISSION = 4;
+	const ERROR_FORM_FIELD = 5;
+	const SESSION_LOGIN = 6;
+	const SESSION_LOGOUT = 7;
+
+	public static function getErrorTextFromEventType($event_type) {
+		switch ($event_type) {
+		default:
+		case Event::SERVER_EXCEPTION:
+		case Event::SERVER_PDOERR:
+		case Event::ERROR_LOGIN:
+		case Event::ERROR_PERMISSION:
+		case Event::ERROR_FORM_FIELD:
+			return 'Error';
+		case Event::SESSION_LOGIN:
+			return 'Error logging in';
+		case Event::SESSION_LOGOUT:
+			return 'Error logging out';
+		}
+	}
+
+	public static function createEvent($eventType, $descr, $objectID = null,
+		$createTime = null, $creatorIP = null, $creator = null) {
+
+		// default createtime = now
+		if ($createTime == null) {
+			$createTime = time();
+		}
+		// default IP = REMOTE_ADDR
+		if ($creatorIP == null) {
+			$creatorIP = $_SERVER['REMOTE_ADDR'];
+		}
+		// default creator = currently logged in user (or leave null if session invalid)
+		if ($creator == null) {
+			if (isset($_SESSION['email'])) {
+				$creator = User::getUserByEmail($_SESSION['email']);
+			}
+		}
+
+		$args = array(':etype' => $eventType, ':descr' => $descr,
+			':objectid' => $objectID, ':createtm' => date('Y-m-d H:i:s', $createTime),
+			':createip' => inet_pton($creatorIP));
+
+		$creatorID_field = ''; $creatorID_param = '';
+		if ($creator != null) {
+			$creatorID_field = ', creatorID';
+			$creatorID_param = ', :createid';
+			$args[':createid'] = $creator->getID();
+		}
+
+		$sql = "INSERT INTO Events (eventTypeID, description,
+				objectID$creatorID_field, createTime, creatorIP) VALUES
+				(:etype, :descr, :objectid$creatorID_param, :createtm, :createip)";
+
+		return Database::executeInsert($sql, $args);
+	}
 }
 
 /** Connect to the database and create/use PDO object. */

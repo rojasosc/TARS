@@ -1,11 +1,12 @@
 <?php  
-include('studentSession.php');
-include('../formInput.php');
-include('../error.php');
+require_once('studentSession.php');
+require_once('../formInput.php');
+require_once('../error.php');
 
 $form_args = get_form_values(array('search','term','type'));
 $pages = 7;
 
+$error = null;
 try {
 	if (!$form_args['term']) {
 		$form_args['term'] = CURRENT_TERM;
@@ -16,16 +17,16 @@ try {
 	$positions = Position::findPositions(
 		$form_args['search'], $form_args['term'], $form_args['type'], $sID);
 } catch (PDOException $ex) {
-	Error::setError(Error::EXCEPTION, 'Error getting position list.', $ex);
-	$positions = array();
+	$error = new TarsException(Event::SERVER_PDOERR, Event::STUDENT_SEARCH, $ex);
 }
 
 try {
 	$terms = Term::getAllTerms();
 } catch (PDOException $ex) {
-	Error::setError(Error::EXCEPTION, 'Error getting term list.', $ex);
+	$error = new TarsException(Event::SERVER_PDOERR, Event::STUDENT_SEARCH, $ex);
 	$terms = array();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -191,6 +192,7 @@ try {
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<?php if ($error != null) { echo $error->toHTML(); } ?>
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h1 class="panel-title">Position Search</h1>

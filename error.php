@@ -76,7 +76,7 @@ final class TarsException extends Exception {
 		// create an Event for this
 		try {
 			// log the event
-			Event::createEvent($this->class, "Exception generated:\n".$this->title."\n".
+			Event::createEvent($this->class, $this->title.' / '.
 				$this->message, $this->action);
 		} catch (PDOException $ex) {
 			// we have an error condition on writing an error to the log.

@@ -786,7 +786,9 @@ final class Term {
 	}
 
 	public static function getAllTerms() {
-		$sql = 'SELECT * FROM Terms ORDER BY year, session';
+		$sql = 'SELECT * FROM Terms
+				INNER JOIN TermSemesters ON Terms.sessionID = TermSemesters.termSessionID
+				ORDER BY year, sessionID';
 		$rows = Database::executeGetAllRows($sql, array());
 		return array_map(function ($row) { return new Term($row); }, $rows);
 	}
@@ -856,13 +858,23 @@ final class Term {
 
 	public function __construct($row) {
 		$this->id = $row['termID'];
-		$this->year = $row['year'];
-		$this->session = $row['session'];
+		$this->year = $row['year']; // Term.year
+		$this->session = $row['name']; // TermSemesters.name
+		$this->creatorID = $row['creatorID'];
+		$this->creator = null;
+		$this->createTime = strftime($row['createTime']);
 	}
 
 	public function getID() { return $this->id; }
 	public function getYear() { return $this->year; }
 	public function getSession() { return $this->session; }
+	public function getCreator() {
+		if ($this->creator == null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $this->createTime; }
 	public function toString() {
 		return ucfirst($this->session).' '.$this->year;
 	}
@@ -870,6 +882,9 @@ final class Term {
 	private $id;
 	private $year;
 	private $session;
+	private $creatorID;
+	private $creator;
+	private $createTime;
 }
 
 final class Feedback {
@@ -1073,6 +1088,10 @@ final class Event {
 	const SESSION_LOGIN = 6;
 	const SESSION_LOGOUT = 7;
 	const USER_CREATE = 8;
+	const STUDENT_APPLY = 12;
+	const STUDENT_CANCEL = 13;
+	const STUDENT_WITHDRAW = 14;
+	const STUDENT_SEARCH = 15;
 
 	public static function getErrorTextFromEventType($event_type) {
 		switch ($event_type) {
@@ -1087,8 +1106,16 @@ final class Event {
 			return 'Error logging in';
 		case Event::SESSION_LOGOUT:
 			return 'Error logging out';
-		case Error::USER_CREATE:
+		case Event::USER_CREATE:
 			return 'Error creating an account';
+		case Event::STUDENT_APPLY:
+			return 'Error applying to position';
+		case Event::STUDENT_CANCEL:
+			return 'Error canceling application';
+		case Event::STUDENT_WITHDRAW:
+			return 'Error withdrawing application';
+		case Event::STUDENT_SEARCH:
+			return 'Error searching for positions';
 		}
 	}
 

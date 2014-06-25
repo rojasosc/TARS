@@ -50,14 +50,15 @@ INSERT INTO `EventTypes` (`name`, `severity`, `objectType`) VALUES
 ('STUDENT_APPLY', 'info', 'Application'), -- 12
 ('STUDENT_CANCEL', 'info', 'Application'), -- 13
 ('STUDENT_WITHDRAW', 'info', 'Application'), -- 14
-('PROFESSOR_ACCEPT', 'info', 'Application'), -- 15
-('PROFESSOR_REJECT', 'info', 'Application'), -- 16
-('PROFESSOR_COMMENT', 'info', 'Comment'), -- 17
-('STAFF_CREATE_PROF', 'info', 'User'), -- 18
-('STAFF_RESET_PROF', 'info', 'User'), -- 19
-('STAFF_COMMENT', 'info', 'Comment'), -- 20
-('STAFF_TERM_IMPORT', 'info', 'Term'), -- 21
-('ADMIN_CONFIGURE', 'info', NULL); -- 22
+('STUDENT_SEARCH', 'debug', NULL), -- 15
+('PROFESSOR_ACCEPT', 'info', 'Application'), -- 16
+('PROFESSOR_REJECT', 'info', 'Application'), -- 17
+('PROFESSOR_COMMENT', 'info', 'Comment'), -- 18
+('STAFF_CREATE_PROF', 'info', 'User'), -- 19
+('STAFF_RESET_PROF', 'info', 'User'), -- 20
+('STAFF_COMMENT', 'info', 'Comment'), -- 21
+('STAFF_TERM_IMPORT', 'info', 'Term'), -- 22
+('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 23
 
 INSERT INTO `EventSubscriberTemplates`
 (`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES

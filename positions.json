@@ -21,13 +21,13 @@
             "room": "101"
         }],
         "positions": [{
-            "type": "workshopsuper",
+            "type": "Super Leader",
             "count": 1
         }, {
-            "type": "workshop",
+            "type": "Workshop Leader",
             "count": 9
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -37,7 +37,7 @@
                 "room": "114"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "MW",
@@ -66,13 +66,13 @@
             "room": "LOWER"
         }],
         "positions": [{
-            "type": "workshopsuper",
+            "type": "Super Leader",
             "count": 1
         }, {
-            "type": "workshop",
+            "type": "Workshop Leader",
             "count": 9
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "R",
@@ -82,7 +82,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "T",
@@ -92,7 +92,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "U",
@@ -102,7 +102,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "T",
@@ -112,7 +112,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "R",
@@ -122,7 +122,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -151,13 +151,13 @@
             "room": "101"
         }],
         "positions": [{
-            "type": "workshopsuper",
+            "type": "Super Leader",
             "count": 1
         }, {
-            "type": "workshop",
+            "type": "Workshop Leader",
             "count": 9
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "MW",
@@ -167,7 +167,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -177,7 +177,7 @@
                 "room": "210"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "MW",
@@ -206,13 +206,13 @@
             "room": "AUD"
         }],
         "positions": [{
-            "type": "workshopsuper",
+            "type": "Super Leader",
             "count": 1
         }, {
-            "type": "workshop",
+            "type": "Workshop Leader",
             "count": 9
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -222,7 +222,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -232,7 +232,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -242,7 +242,7 @@
                 "room": "244"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -271,13 +271,13 @@
             "room": "202"
         }],
         "positions": [{
-            "type": "workshopsuper",
+            "type": "Super Leader",
             "count": 1
         }, {
-            "type": "workshop",
+            "type": "Workshop Leader",
             "count": 9
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "MW",
@@ -287,7 +287,7 @@
                 "room": "303"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -297,7 +297,7 @@
                 "room": "102"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",
@@ -307,7 +307,7 @@
                 "room": "210"
             }]
         }, {
-            "type": "lab",
+            "type": "Lab",
             "count": 2,
             "sessions": [{
                 "weekdays": "TR",

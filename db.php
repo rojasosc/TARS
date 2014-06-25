@@ -16,11 +16,13 @@ const DATABASE_PASSWORD = '1234';
 const DATABASE_NAME = 'TARS';
 const DATABASE_TYPE = 'mysql';
 
+/*Account Types*/
 const STUDENT = 0;
 const PROFESSOR = 1;
 const STAFF = 2;
 const ADMIN = 3;
 
+/*Application Statuses*/
 const PENDING = 0;
 const STAFF_VERIFIED = 1;
 const REJECTED = 2;
@@ -160,20 +162,33 @@ final class Database {
 
 
 final class Place {
+	/*
+	 * Place::getPlaceByID($id)
+	 * Purpose: Fetch a place object using its unique object ID via executeGetRow()
+	 * Returns: A place object corresponding to the ID provided
+	 * Throws: exceptions from executeGetRow()
+	 */
 	public static function getPlaceByID($id) {
 		$sql = 'SELECT * FROM Places WHERE placeID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
 		return new Place($row);
 	}
-	
+	/*
+	 * Place::getPlaceByBuildingAndroom($building, $room)
+	 * Purpose: Fetch a place object using its building name and room number
+	 * Returns: A place object corresponding to the building and room number provided
+	 * Throws: exceptions from executeGetRow()
+	 */
 	public static function getPlaceByBuildingAndRoom($building, $room){
 		$sql = 'SELECT * FROM Places WHERE building = :building AND room = :room';
 		$args = array(':building' => $building, ':room' => $room);
 		$row = Database::executeGetRow($sql, $args);
 		return new Place($row);
 	}
-
+	/*
+	 * 
+	 */
 	public static function getPlacesByBuilding($building){
 		$sql = 'SELECT * FROM Places WHERE building = :building';
 		$args = array(':building' => $building);
@@ -569,6 +584,13 @@ final class Position {
 			array(':id' => $id));
 		return new Position($row);
 	}
+	public static function insertPosition($courseID, $professorID, $time, $posType) {
+		$sql = 'INSERT INTO Positions ($courseID, $professorID, $time, $posType)
+				VALUES (:courseID, :professorID, :time, :posType)';
+		$args = array(':courseID' => $courseID, ':professorID' => $professorID, ':time' => $time, ':posType' => $posType);
+		$posID = Database::executeInsert($sql, $args);
+		return $posID;
+	}
 	//BUGGY AF
 	public static function findPositions($search_field, $term = -1, $position_type = null, $studentID) {
 		$sql = 'SELECT * FROM Positions
@@ -599,7 +621,6 @@ final class Position {
 		//	$args[':posType'] = $position_type;
 		//}
 		$sql .= 'ORDER BY Courses.department DESC, Courses.courseNumber ASC';
-		echo $sql;
 		//echo '<pre>';
 		//print_r($args);
 		//exit($sql);
@@ -768,6 +789,68 @@ final class Term {
 		$rows = Database::executeGetAllRows($sql, array());
 		return array_map(function ($row) { return new Term($row); }, $rows);
 	}
+	
+	public static function insertTerm($year, $session) {
+		$sql = 'INSERT INTO Terms (year, session) VALUES (:year, :session)';
+		$args = array(':year' => $year, ':session' => $session);
+		$termID = Database::executeInsert($sql, $args);
+		return $termID;
+	}
+	/*
+	 * Not totally sure if this should be here, but it's here for now.
+	 * Inserts a line into teaches to link the professor and the course
+	 */
+	public static function insertTeaches($courseID, $instructionID) {
+		$sql = 'INSERT INTO Teaches (courseID, professorID) VALUES (:courseID, :professorID)';
+		$args = array(':courseID' => $courseID, ':professorID' => $instructorID);
+		$teachID = Database::executeInsert($sql, $args);
+		return $teachID;
+	}
+	/*
+	 * Takes a file path and processes the JSON content and inserts entries into the DB
+	 */
+	public static function getTermFromFile($path){
+		$data = file_get_contents($path);
+		$data = json_decode($file);
+		//Insert Term into DB
+		if(isset($data['termYear']) && isset($data['termSemester'])) {
+			$termID = insertTerm($data['termYear'], $data['termSemester']);
+			$emailDomain = $data['defaultEmailDomain'];
+		}
+		if(isset($data['courses'])) {
+			foreach($data['courses'] as $course) {
+				//Insert Course into DB
+				$crn = $course['crn'];
+				$department = $course['dep'];
+				$courseNumber = $course['number'];
+				$courseTitle = $course['title'];
+				$website = $course['website'];
+				$courseID = Course::insertCourse($crn, $department, $courseNumber, $courseTitle, $website, $termID);
+				//Assign instructors to the course
+				if(isset($course['instructors'])) {
+					foreach($course['instructors'] as $instructor) {
+						$email = $instructor['email'].$emailDomain;
+						$instructorID = getUserByEmail($email, PROFESSOR)->getID();
+						Term::insertTeaches($instructorID, $courseID);
+					}
+				}
+				//Insert Positions into DB
+				if(isset($course['positions'])) {
+					foreach($course['positions'] as $position) {
+						$posType = $position['type'];
+						if(isset($position['sessions'])) {
+							$time = $position['sessions']['begin'].' - '.$position['sessions']['end'];
+						} elseif($posType === "Super Leader" || $posType === "Workshop Leader") {
+							$time = 'TBD';
+						} else {
+							$time = 'FLEXIBLE';
+						}
+						insertPosition($courseID, $instructorID, $time, $posType);
+					}
+				}
+			}
+		}
+	}
 
 	public function __construct($row) {
 		$this->id = $row['termID'];
@@ -842,6 +925,14 @@ final class Course {
 		$args = array();
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows; 
+	}
+	
+	public static function insertCourse($crn, $department, $courseNumber, $courseTitle, $website, $termID) {
+		$sql = 'INSERT INTO Courses (crn, department, courseNumber, courseTitle, website, termID)
+				VALUES (:crn, :department, :courseNumber, :courseTitle, :website, :termID)';
+		$args = array(':crn' => $crn, ':department' => $department, ':courseNumber' => $courseNumber, ':website' => $website, ':termID' => $termID);
+		$courseID = Database::executeInsert($sql, $args);
+		return $courseID;
 	}
 	
 	public static function getCourseProfessors($courseTitle){

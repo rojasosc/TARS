@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `resetTokenTime` datetime NULL,
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
-  `creatorID` bigint(20) NOT NULL,
+  `creatorID` bigint(20) NULL,
   `createTime` datetime NOT NULL,
   `type` int(11) NOT NULL, -- TODO: enumify
 

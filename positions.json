@@ -262,6 +262,10 @@
             "fname": "Hans",
             "lname": "Koomen",
             "email": "koomen@"
+        }, {
+            "fname": "Chris",
+            "lname": "Brown",
+            "email": "brown@"
         }],
         "sessions": [{
             "weekdays": "WF",

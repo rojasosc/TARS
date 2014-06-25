@@ -308,13 +308,15 @@ abstract class User {
 		return array_map(function ($row) { return User::getUserSubclassObject($row); }, $rows);
 	}
 
-
-	public static function insertUser($email, $password, $firstName, $lastName, $type) {
-		return Database::executeInsert('INSERT INTO Users
-			(email, password, firstName, lastName, type) VALUES
-			(:email, :password, :firstName, :lastName, :type)',
-			array(':email' => $email, ':password' => $password,
-				':firstName' => $firstName, ':lastName' => $lastName, ':type' => $type));
+	public static function insertUserSelfCreated($email, $password, $firstName, $lastName, $type) {
+		$sql = 'INSERT INTO Users
+				(email, emailVerified, password, passwordReset,
+				firstName, lastName, createTime, type) VALUES
+				(:email, :eVer, :password, :pRes, :firstName, :lastName, :ctime, :type)';
+		array(':email' => $email, ':eVer' => 0, ':password' => $password,
+				':pRes' => 0, ':firstName' => $firstName, ':lastName' => $lastName,
+				':ctime' => date('Y-m-d H:i:s'), ':type' => $type);
+		return Database::executeInsert($sql, $args);
 	}
 
 	public static function checkEmailAvailable($email) {
@@ -358,7 +360,7 @@ final class Student extends User {
 
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
+		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, STUDENT);
 
 		$sql = 'INSERT INTO Students
 				(userID, mobilePhone, major, gpa, classYear, aboutMe, universityID) VALUES
@@ -466,7 +468,7 @@ final class Professor extends User {
 
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, PROFESSOR);
+		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, PROFESSOR);
 
 		$sql = 'INSERT INTO Professors
 				(userID, officeID, officePhone, mobilePhone) VALUES
@@ -544,7 +546,7 @@ final class Staff extends User {
 
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STAFF);
+		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, STAFF);
 
 		$sql = 'INSERT INTO Staff
 				(userID, officePhone, mobilePhone) VALUES

@@ -73,6 +73,11 @@ th,td {
 	
 	border-radius: 100%;
 }
+
+h1 {
+	text-align: center;
+}
+
 /*
  * Everything below is NavBar coloring
  */

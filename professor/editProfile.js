@@ -1,165 +1,110 @@
-$(document).ready(function () {
-	
-	$('#first').bind('click',enableRow);
-	$('#second').bind('click',enableRow);
-	$('#third').bind('click',enableRow);
-	$('#fourth').bind('click',enableRow);
-    $('#editProfileForm').bootstrapValidator({
-        message: 'This value is not valid',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-            firstName: {
-                message: 'Your first name is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your first name is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 4,
-                        max: 30,
-                        message: 'Your first name must be between 4 and 30 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z]+$/,
-                        message: 'Your first name can only consist of alphabetical characters'
-                    }
-                }
-            },
-            lastName: {
-                message: 'Your last name is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your last name is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 4,
-                        max: 30,
-                        message: 'Your last name must be between 4 and 30 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z]+$/,
-                        message: 'Your last name can only consist of alphabetical characters'
-                    }
-                }
-            },	    
-            email: {
-                validators: {
-                    notEmpty: {
-                        message: 'Your email is required and cannot be empty'
-                    },
-                    emailAddress: {
-                        message: 'Your input is not a valid email address'
-                    }
-                }
-            },
-            emailConfirm: {
-                validators: {
-                    notEmpty: {
-                        message: 'An email confirmation is required and cannot be empty'
-                    },
-                    emailAddress: {
-                        message: 'Your input is not a valid email address'
-                    }
-                }
-            },
-            password: {
-                message: 'Your password is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your password is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 6,
-                        max: 20,
-                        message: 'Your password must be between 6 and 20 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z0-9]+$/,
-                        message: 'Your password can only consist of alphabetical and numerical characters'
-                    }
-                }
-            },	 
-            passwordConfirm: {
-                message: 'Your password is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your password is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 6,
-                        max: 20,
-                        message: 'Your password must be between 6 and 20 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z0-9]+$/,
-                        message: 'Your password can only consist of alphabetical and numerical characters'
-                    },
-		    identical: {
-			field: 'password',
-			message: 'Passwords dont match'
-			 
-		    }
+$(document).ready( function () {
+      $editModal = $('#editProfileModal');
+      $updateForm = $('#updateForm');
+      $buildingSelect = $('.buildings');
+      $roomSelect = $('.rooms');
+      $('#editProfileButton').bind('click',displayEditForm);
+      $updateForm.submit(function () { return false; });
+      $buildingSelect.bind('change',getRooms);
+      $('#updateButton').bind('click',updateProile);
+      getBuildings();
 
-                }
-            },
-            homePhone: {
-                message: 'Your home phone is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your home phone is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 10,
-                        max: 15,
-                        message: 'Your home phone must be between 10 and 15 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[0-9]+$/,
-                        message: 'Your home phone can only consist of numerical digits'
-                    }
-                }
-            },	 
-            mobilePhone: {
-                message: 'Your mobile phone is not valid',
-                validators: {
-                    notEmpty: {
-                        message: 'Your mobile phone is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 10,
-                        max: 15,
-                        message: 'Your mobile phone must be between 10 and 15 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[0-9]+$/,
-                        message: 'Your mobile phone can only consist of numerical digits'
-                    }
-                }
-            }	  
- 
-        } /* close fields */
-	
-	
-    });	
-	
-	
 });
+    
+/* Functions */
 
+function displayEditForm(){
+  /* Get the current values */
+ 	var userID = $(this).data('userid');
+	var url = "professorCommands.php";
+	var action = 'fetchProfessor';
+	var data = {
+		userID: userID,
+		action: action
+	}
+	/* Submit a POST request */
+	$.post(url,data,function (user){ fillUpdateForm(user); });
+	$editModal.modal('show');
+}
 
+function fillUpdateForm(user){
+	/* Associative array of a user */
+	var professor = eval('(' + user + ')');
+	$('#modalHeader').html(professor['firstName']+" "+professor['lastName']);
+	
+	/* Select the input fields in the context of the update form. */
+	$("[name='firstName']",$updateForm).val(professor['firstName']);
+	$("[name='lastName']",$updateForm).val(professor['lastName']);
+	$("[name='email']",$updateForm).val(professor['email']);
+	$("[name='mobilePhone']",$updateForm).val(professor['mobilePhone']);
+	$("[name='officePhone']",$updateForm).val(professor['officePhone']);
+	$("building",$updateForm).val(professor['building']);
+	$("room",$updateForm).val(professor['room']);
+}
 
-function enableRow(){
+function updateProile(){
+	var url = $updateForm.attr('action');
+	var action = 'updateProfessorProfile';
 	
-	var row = $(this).attr('id');
+	/* Select the input fields in the context of the update form. */
+	/* TODO: It would be much better if we could use serializeArray() 
+	 * to create this associative array, but the fields come back undefined */
+	var data = {
+		'firstName': $("[name='firstName']",$updateForm).val(),
+		'lastName': $("[name='lastName']",$updateForm).val(),
+		'email': $("[name='email']",$updateForm).val(),
+		'mobilePhone': $("[name='mobilePhone']",$updateForm).val(),
+		'officePhone': $("[name='officePhone']",$updateForm).val(),
+		'building': $("[name='building']",$updateForm).val(),
+		'room': $("[name='room']",$updateForm).val(),
+		'action': action
+	}
+	/* AJAX POST request to obtain results */	
+	$.post(url,data,function (){ });
 	
-	row = '.'+row;
+	/*TODO: Obtain a confirmation from the PHP script on success/failure and 
+	 * notify the user */  
+	$editModal.modal('hide');
+}
+
+/* Dropdown list handlers */
+function getBuildings(){
+	var url = 'professorCommands.php';
+	var action = 'fetchBuildings';
+	var data = {
+		action: action
+	}
+	$.post(url,data,function (buildings) { showBuildings(buildings); } );
+}
+
+function showBuildings(buildings){
+	var buildings = eval('(' + buildings + ')');
+	for(var i = 0; i < buildings.length; i++){
+		$buildingSelect.append("<option>" + buildings[i]['building'] + "</option>");;
+	}
+	$buildingSelect.trigger('change');
 	
-	$(row).find('input').removeAttr('disabled');
+}
+
+function getRooms(){
+	var url = 'professorCommands.php';
+	var action = 'fetchTheRooms';
+	var data = {
+		building: $(this).val(),
+		action: action
+	}
+	removeRooms();
+	$.post(url,data,function (rooms) { showRooms(rooms); } );
+}
+
+function showRooms(rooms){
+	var rooms = eval('(' + rooms + ')');
+	for(var i = 0; i < rooms.length; i++){
+		$roomSelect.append("<option>" + rooms[i] + "</option>");
+	}
 	
-	//target all input fields in this row 
-	
-	
+}
+
+function removeRooms(){
+	$roomSelect.find('option').remove();
 }

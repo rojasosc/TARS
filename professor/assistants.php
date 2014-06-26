@@ -2,23 +2,6 @@
 	include('professorSession.php');	
 	$courses = $professor->getCourses();
 ?>
-<!-- A template for TARS.
-
-This template consists of a wrapper div tag that encloses
-a set of header, content, and footer div tags.
-
-There are three ids inside the css file that provide the 
-necessary styling for the three components. 
-
-Using this structure we can fix the footer at the bottom and 
-maintain a solid structure through scrolling.
-
-The images are background images and not img tags. 
-
-The navbar is collapsable and seems to work pretty well. However,
-the navbar-brand does seem to run out of space if the window is shrunk enough. 
-
--->
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -31,80 +14,111 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="applicants.js"></script>
+		<script src="comments.js"></script>
 	</head> 
 	<body>
-			<!-- Profile Modal -->
-			<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title" id="studentModalTitle"></h4>
-						</div>
-						<div class="modal-body">			
-							<h3>Personal Information</h3>
-							<div class="container">
-								<p id="studentMajor"></p>
-								<p id="studentGPA"></p>
-								<p id="studentClassYear"></p>
-							</div> <!-- End container -->
-							
-							<h3>Contact Information</h3>
-							<div class="container">
-								<p id="studentEmail"></p>
-								<p id="studentMobilePhone"></p>
-							</div> <!-- End container -->
-							
-							<h3>About Me</h3>
-							<div class="container">
-								<p id="studentAboutMe"></p>	
-							</div> <!-- End container -->							
-						</div> <!-- End modal body -->
-						<div class="modal-footer">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						</div> <!-- End modal-footer -->
-					</div> <!-- End modal-content -->
-				</div> <!-- End modal-dialog -->
-			</div> <!-- End modal fade -->
-			<!-- End Profile Modal -->
+		<!-- Profile Modal -->
+		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="studentModalTitle"></h4>
+					</div>
+					<div class="modal-body">			
+						<h3>Personal Information</h3>
+						<div class="container">
+							<p id="studentMajor"></p>
+							<p id="studentGPA"></p>
+							<p id="studentClassYear"></p>
+						</div> <!-- End container -->
+						
+						<h3>Contact Information</h3>
+						<div class="container">
+							<p id="studentEmail"></p>
+							<p id="studentMobilePhone"></p>
+						</div> <!-- End container -->
+						
+						<h3>About Me</h3>
+						<div class="container">
+							<p id="studentAboutMe"></p>	
+						</div> <!-- End container -->							
+					</div> <!-- End modal body -->
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div> <!-- End modal-footer -->
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->
+		<!-- End Profile Modal -->
 			
-	<!-- Begin Email Modal -->
-<div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myProfileLabel">TARS</h4>
-			</div> <!-- End modal-header -->
-			<div class="modal-body">	
-				<h3>Email Form</h3>
-				<div class="container">			
-					<form action="#" method="post">			
-						<fieldset>				
-							<div class="row">					
-								<div class="col-md-6">
-									<label>Subject</label>
-									<input type="text" name="subjectLine" class="form-control" placeholder="Enter A Subject Line.">
-								</div> <!-- End column -->
-							</div><!-- End row -->					
-							<div class="row">					
-								<div class="col-md-6">
-									<label>Message</label>
-									<textarea class="form-control" rows="3" placeholder="Enter Your Message.">
-									</textarea> <!-- End text area -->
-								</div> <!-- End column -->
-							</div> <!-- End row -->					
-						</fieldset>				
-					</form> <!-- End form -->
-				</div> <!-- End container -->
-			<div class="modal-footer">
-				<button type="button" data-dismiss="modal" class="btn btn-danger">Close</button> <!-- close modal -->
-			</div>	<!-- End modal footer -->
-			</div> <!-- End modal body -->
-		</div> <!-- End modal-content -->
-	</div> <!--End modal-dialog-->
-</div> <!-- End modal fade -->  
- <!-- End Email Modal -->
+			<!-- Begin Email Modal -->
+		<div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myProfileLabel">TARS</h4>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">	
+						<h3>Email Form</h3>
+						<div class="container">			
+							<form action="#" method="post">			
+								<fieldset>				
+									<div class="row">					
+										<div class="col-md-6">
+											<label>Subject</label>
+											<input type="text" name="subjectLine" class="form-control" placeholder="Enter A Subject Line.">
+										</div> <!-- End column -->
+									</div><!-- End row -->					
+									<div class="row">					
+										<div class="col-md-6">
+											<label>Message</label>
+											<textarea class="form-control" rows="3" placeholder="Enter Your Message.">
+											</textarea> <!-- End text area -->
+										</div> <!-- End column -->
+									</div> <!-- End row -->					
+								</fieldset>				
+							</form> <!-- End form -->
+						</div> <!-- End container -->
+					<div class="modal-footer">
+						<button type="button" data-dismiss="modal" class="btn btn-danger">Close</button> <!-- close modal -->
+					</div>	<!-- End modal footer -->
+					</div> <!-- End modal body -->
+				</div> <!-- End modal-content -->
+			</div> <!--End modal-dialog-->
+		</div> <!-- End modal fade -->  
+		 <!-- End Email Modal -->
+
+		 <!-- BEGIN Comment Modal-->
+		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Student Comment</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
+							<fieldset>
+								<legend>Message Content</legend>
+								<div class="row">
+									<div class="col-xs-12">
+										<textarea name="commentText" class="form-control"></textarea>
+									</div> <!-- End column -->
+								</div> <!-- End row -->													
+							</fieldset> <!-- End comment fieldset -->
+						</form> <!-- End comment form -->
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Comment Modal-->
+
 		<!-- BEGIN page-wrapper -->
 		<div id="page-wrapper">
 			
@@ -188,9 +202,18 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 							</div> <!-- End panel-heading -->
 								<div class="collapse panel-collapse" id="<?= $panelID ?>">
 									<div class="panel-body">
-
 											<table class="table table-striped">
-												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Type</th><th>View Profile</th></tr>
+												<thead>
+													<tr>
+															<th>ID</th>
+															<th>First Name</th>
+															<th>Last Name</th>
+															<th>Email</th>
+															<th>Type</th>
+															<th>View Profile</th>
+															<th>Comment</th>
+													</tr>
+												</thead>
 											<?php
 											
 											/* Insert each application */
@@ -204,6 +227,10 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
 												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
 												<span class="glyphicon glyphicon-user"></span></button>
+												</td>
+												<td>
+													<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
+													<span class="glyphicon glyphicon-comment"></span></button>
 												</td>
 											</tr> 											
 											

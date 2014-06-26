@@ -1,28 +1,7 @@
 <?php
 	include('professorSession.php');
-
-	/* Obtain a CRN and a courseNumber */
-	
-	$courses = $professor->getCourses();
-
+	$office = $professor->getOffice();
 ?>
-<!-- A template for TARS.
-
-This template consists of a wrapper div tag that encloses
-a set of header, content, and footer div tags.
-
-There are three ids inside the css file that provide the 
-necessary styling for the three components. 
-
-Using this structure we can fix the footer at the bottom and 
-maintain a solid structure through scrolling.
-
-The images are background images and not img tags. 
-
-The navbar is collapsable and seems to work pretty well. However,
-the navbar-brand does seem to run out of space if the window is shrunk enough. 
-
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,12 +16,85 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 		<link href="professor.css" rel="stylesheet">
 		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 		<script src="editProfile.js"></script>
-		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
 	</head>
   
 	<body>
-
+		<!-- BEGIN Edit Profile Modal-->
+		<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title" id="modalHeader"></h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+						<form action="professorCommands.php" class="form-horizontal" id="updateForm" method="post">
+							<div class="row">
+								<div class="col-md-4">				
+									<div class="form-group"> 				
+										<label class="control-label" for="firstName">First Name</label>
+											<input id="firstName" type="text" class="form-control" name="firstName">																					
+									</div> <!-- End form-group -->											
+								</div> <!-- End column -->
+									<div class="col-md-4">
+										<div class="form-group">
+											<label class="control-label" for="firstName">Last Name</label>
+												<input id="lastName" type="text" class="form-control" name="lastName">													
+										</div> <!-- End form-group -->							
+									</div>	<!-- End column -->						
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="email">Email</label>
+										<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
+									</div> <!-- End form-group -->							
+								</div>	<!-- End column -->						
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="mobilePhone">Mobile Phone</label>
+										<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone">
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->								
+							</div> <!-- End row -->
+							<legend>Office</legend>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="building">Building</label>
+										<select id="building" name="building" class="form-control buildings">
+										</select> <!-- End select -->										
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="room">Room</label>
+										<select id="room" name="room" class="form-control rooms">
+										</select> <!-- End select -->										
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->							
+							</div> <!-- End Row -->	
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="homePhone">Office Phone</label>
+										<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->						
+							</div> <!-- End row -->							
+						</form> <!-- End form -->					
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button id="updateButton" type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+					</div> <!-- End modal-footer -->			
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal dialog -->
+		</div> <!-- End modal fade -->
+		<!-- END Edit Profile Modal-->  
+		
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
@@ -96,99 +148,59 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 			<!--END Page Header -->	   
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">			    
-				<div class="row">
-						<div class="container">
-							<div class="jumbotron">
-								<form action="editProfile.php" method="post" id="editProfileForm">
-									<fieldset>
-										<legend>Edit Profile</legend>
-										
-										<div class="row">
-											<div class="col-md-4">
-												<label>Current Password</label>
-												<input type="password" class="form-control" name="currentPassword" place-holder="Enter Current Password">
-											</div>
-										</div>				
-										<div class="row first">
-											<div class="col-md-4">
-												<div class="form-group">
-													<label class="control-label" for="firstName">First Name</label>
-													<input type="text" class="form-control" disabled="disabled" name="firstName" value="<?= $firstName ?>" />													
-												</div> <!-- End form-group -->
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>Last Name</label>
-													<input type="text" class="form-control" disabled="disabled" name="lastName" value="<?= $lastName ?>">											
-												</div> <!-- End form-group -->
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<span id="first" class="glyphicon glyphicon-edit"></span> 
-											</div> <!-- End column -->
-										</div> <!-- End row -->
-										<div class="row second">
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>Email</label>
-													<input type="email" class="form-control" disabled="disabled" name="email" value="<?= $email ?>">												
-												</div> <!-- End form-group -->																						
-											</div> <!-- End column -->
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>Re-Enter Email</label>
-													<input type="email" class="form-control" disabled="disabled" name="emailConfirm" >													
-												</div> <!-- End form-group -->																				
-											</div> <!-- End column -->									
-											<div class="col-md-4">
-												<span id="second" class="glyphicon glyphicon-edit"></span> 
-											</div>									
-										</div> <!-- End row -->
-										<div class="row third">
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>New Password</label>
-													<input type="password" class="form-control" disabled="disabled" name="password" place-holder="Enter your new password.">												
-												</div> <!-- End form-group -->											
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>Re-Enter New Password</label>
-													<input type="password" class="form-control" disabled="disabled" name="passwordConfirm" place-holder="Re-enter your new password">
-											</div> <!--End column-->
-												</div> <!-- End form-group -->											
-											<div class="col-md-4">
-												<span id="third" class="glyphicon glyphicon-edit"></span> 
-											</div>									
-										</div> <!-- End row -->
-										<div class="row fourth">
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>Office Phone</label>
-													<input type="tel" class="form-control" disabled="disabled" name="officePhone" value="<?= $professor->getOfficePhone()?>">												
-												</div> <!-- End form-group -->											
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<div class="form-group">
-													<label>Mobile Phone</label>
-													<input type="tel" class="form-control" disabled="disabled" name="mobilePhone" value="<?= $professor->getMobilePhone()?>">												
-												</div> <!-- End form-group -->											
-											</div> <!--End column-->
-											<div class="col-md-4">
-												<span id="fourth" class="glyphicon glyphicon-edit"></span> 
-											</div>									
-										</div> <!-- End row -->
-										<br>
-										<div class="row">
-											<div class="col-md-3">
-												<button type="submit" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-refresh"></span> Update</button>
-											</div> <!-- End column -->
-										</div> <!-- End row --> 
-									</fieldset> <!-- End fieldset -->
-								</form> <!-- End form -->
-							</div> <!-- End jumbotron -->
-						</div> <!-- End container -->				
-				</div> <!-- End row -->	
+			<div id="content">		
+				<div class="container">				
+					<div class="row">
+						<h1 class="panelHeader">My Profile</h1>
+					</div> <!-- End row -->
+					<div class="row">				
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+							
+							</div> <!-- End panel-body -->
+							<div class="panel-body">
+								<legend>Personal Details</legend>
+								<div class="row">
+									<div class="col-xs-4">
+									First Name: <?= $professor->getFirstName() ?>
+									</div> <!-- End column -->
+									<div class="col-xs-4">
+									Last Name: <?= $professor->getLastName() ?>
+									</div> <!-- End column -->						
+								</div> <!-- End row -->
+								<br>
+								<div class="row">
+									<div class="col-xs-4">
+									Email: 	<?= $professor->getEmail() ?>
+									</div> <!-- End column -->
+									<div class="col-xs-4">
+									Mobile Phone: 	<?= $professor->getMobilePhone() ?>
+									</div> <!-- End column -->									
+								</div> <!-- End row -->
+								<br>
+								<legend>Office</legend>
+								<div class="row">
+									<div class="col-xs-4">
+									Building: <?= $office->getBuilding() ?>	
+									</div> <!-- End column -->
+									<div class="col-xs-4">
+									Room: <?= $office->getRoom() ?>	
+									</div> <!-- End column -->	
+								</div> <!-- End row -->
+								<div class="row">
+									<div class="col-xs-4">
+									Office Phone: <?= $professor->getOfficePhone() ?>
+									</div> 
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-xs-3">
+										<button type="submit" data-target="#editProfileModal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="editProfileButton" name="editProfileButton" class="btn btn-success"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+									</div> <!-- End column -->
+								</div> <!-- End row --> 								
+							</div> <!-- End panel-body -->
+					</div>	<!-- End row -->					
+				</div> <!-- End container -->	  
 			</div>
 			<!-- END Page Content --> 
 	    
@@ -218,10 +230,5 @@ the navbar-brand does seem to run out of space if the window is shrunk enough.
 	
 		</div> 
 		<!-- End page-wrapper -->
-		
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<!-- END Scripts -->
 	</body>
 </html>

@@ -3,15 +3,6 @@
 	/* Obtain courses */
 	$courses = $professor->getCourses();	
 ?>
-<!-- 
-
-This page displays a professors prospective applicants.
-Each course is given its own panel and each panel is given its own form. 
-
-The progress bars indicate the number of positions that still need to be filled
-and are color coded to emphasize priority.
-
--->
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -223,7 +214,7 @@ and are color coded to emphasize priority.
 											</div> <!-- End row -->
 											<div class="row">
 												<div class="col-xs-4">
-													<button name="applyDecision" data-courseID="<?= $courseCRN ?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Confirm Decisions</button>												
+													<button name="applyDecision" data-courseID="<?= $courseCRN ?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
 												</div> <!-- End column -->
 											</div> <!-- End row -->
 										</div> <!-- End panel-footer -->									

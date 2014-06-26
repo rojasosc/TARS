@@ -12,24 +12,6 @@
 	$courses = $professor->getCourses();
 
 ?>
-
-<!-- A template for TARS.
-
-This template consists of a wrapper div tag that encloses
-a set of header, content, and footer div tags.
-
-There are three ids inside the css file that provide the 
-necessary styling for the three components. 
-
-Using this structure we can fix the footer at the bottom and 
-maintain a solid structure through scrolling.
-
-The images are background images and not img tags. 
-
-The navbar is collapsable and seems to work pretty well. However,
-the navbar-brand does seem to run out of space if the window is shrunk enough. 
-
--->
 <!DOCTYPE html>
 <html lang="en">
 	<head>

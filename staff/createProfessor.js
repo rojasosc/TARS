@@ -1,14 +1,13 @@
 $(document).ready(function() {
-	$('#createAccountBody').toggle('show');
-	$buildingSelect = $('#buildings');
-	$roomSelect = $('#rooms');
-	getBuildings();
-	$buildingSelect.bind('change',getRooms);
-	/*Attach a bootstrapValidator to the form*/	
-	$('#createAccountForm').bootstrapValidator({
-		message: 'This value is not valid',
+	$professorForm = $("#professorForm");
+	$professorPanel = $("#createAccountPanel");
+	$professorPanelFooter = $("#professorPanelFooter");
+	$("#createAccountBody").toggle("show");
+
+	$professorForm.bootstrapValidator({
+		message: "This value is not valid",
 		feedbackIcons: {
-			valid: 'glyphicon glyphicon-ok',
+			valid: "glyphicon glyphicon-ok",
 			invalid: 'glyphicon glyphicon-remove',
 			validating: 'glyphicon glyphicon-refresh'
 			
@@ -155,69 +154,36 @@ $(document).ready(function() {
 			}  
 		} /* END Fields */				
     }); /* END bootstrapValidator */
-    
-	$('#submitButton').click(function(){ createProfessor(); });
-	$("#createAccountForm").submit(function(event){ return false; });
+
+	$professorForm.submit(function(event){ return false; });
+
 });
 
 function createProfessor(){
-	    var url = $('#createAccountForm').attr('action');
-	    var data = $('#createAccountForm :input').serializeArray();
-	    $.post(url,data,function () { refreshForm(); });		
+    var url = $professorForm.attr('action');
+    var action = 'createProfessor';
+	var data = {
+		firstName: $("[name='firstName']",$professorForm).val(),
+		lastName: $("[name='lastName']",$professorForm).val(),
+		email: $("[name='email']",$professorForm).val(),
+		password: $("[name='password']",$professorForm).val(),
+		mobilePhone: $("[name='mobilePhone']",$professorForm).val(),
+		officePhone: $("[name='officePhone']",$professorForm).val(),
+		building: $("[name='building']",$professorForm).val(),
+		room: $("[name='room']",$professorForm).val(),
+		action: action
+	}
+    $.post(url,data,function () { refreshForm(); });		
 }
 
 function refreshForm(){
 	clearInput();
-	$('#createAccountPanel').collapse('hide');
-	$('#createAccountForm').data('bootstrapValidator').resetForm();
-	$('#createAccountPanel').collapse('show');
-	
+	$professorPanel.collapse('hide');
+	$professorForm.data('bootstrapValidator').resetForm();
+	$professorPanel.collapse('show');
+	$professorPanelFooter.html("The account was successfully created.");
 }
 
 function clearInput() {
-	$("#createAccountForm :input").each(function() { $(this).val(''); });
+	$("input",$professorForm).each(function() { $(this).val(''); });
 }
-
-
-function getBuildings(){
-	var url = 'fetchBuildings.php';
-	var data = {
-		building: url
-	}
-	$.post(url,data,function (buildings) { showBuildings(buildings); } );
-}
-
-function showBuildings(buildings){
-	var buildings = eval('(' + buildings + ')');
-	for(var i = 0; i < buildings.length; i++){
-		$buildingSelect.append("<option>" + buildings[i]['building'] + "</option>");;
-	}
-	$buildingSelect.trigger('change');
-}
-
-function getRooms(){
-	var url = 'fetchRooms.php';
-	var data = {
-		building: $(this).val()
-	}
-	removeRooms();
-	$.post(url,data,function (rooms) { showRooms(rooms); } );
-}
-
-function showRooms(rooms){
-	var rooms = eval('(' + rooms + ')');
-	for(var i = 0; i < rooms.length; i++){
-		addRoom(rooms[i]);
-	}
-	
-}
-
-function removeRooms(){
-	$roomSelect.find('option').remove();
-}
-
-function addRoom(room){
-	$roomSelect.append("<option>" + room + "</option>");
-}
-
-

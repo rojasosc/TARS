@@ -19,6 +19,7 @@
 		<script src="../js/bootstrap.min.js"></script>
 		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
 		<script src="createProfessor.js"></script>
+		<script src="dropdowns.js"></script>
 
 	</head>
 	<body>
@@ -86,7 +87,7 @@
 							</div> <!-- End panel-heading -->
 							<div class="collapse panel-collapse" id="createAccountBody">
 								<div class="panel-body">
-									<form class="form-horizontal" id="createAccountForm" method="post" action="createProfessorProcess.php">
+									<form class="form-horizontal" id="professorForm" method="post" action="staffCommands.php">
 										<fieldset>
 											<legend>New Account</legend>
 											<div class="row">
@@ -151,14 +152,14 @@
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="building">Building</label>
-														<select name="building" class="form-control" id="buildings">
+														<select name="building" class="form-control buildings" id="buildings">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="room">Room</label>
-														<select name="room" class="form-control" id="rooms">
+														<select name="room" class="form-control rooms" id="rooms">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
@@ -174,7 +175,7 @@
 									</form> <!-- End form-horizontal -->
 								</div> <!-- End panel-body -->
 							</div> <!-- End panel panel-collapse -->
-								<div class="panel-footer" id="createdProfessors">
+								<div class="panel-footer" id="professorPanelFooter">
 									
 								</div> <!-- End panel-footer -->	
 						</div> <!-- End panel panel-success -->						

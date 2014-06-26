@@ -15,6 +15,9 @@
 			case 'fetchTheRooms':
 				fetchTheRooms();
 				break;
+			case 'newStudentComment':
+				newStudentComment();
+				break;
 		}
 	}else{
 		echo "Error: action not specified.";
@@ -45,6 +48,7 @@
 			echo json_encode(false);
 		}		
 	}
+	
 	function updateProfessorProfile(){
 		$professor = User::getUserByEmail($_POST['email'],PROFESSOR);
 		$building = $_POST['building'];
@@ -53,8 +57,6 @@
 		$officeID = $office->getPlaceID();
 		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone'],$_POST['mobilePhone']);	
 	}
-	
-	function submitSelections(){}
 	
 	function fetchBuildings(){
 		$buildings = Place::getBuildings();
@@ -68,5 +70,9 @@
 			$rooms[] = $room->getRoom();
 		}
 		echo json_encode($rooms);	
+	}
+
+	function newStudentComment(){
+		Feedback::newComment($_POST['studentID'],$_POST['commenterID'],$_POST['comment']);
 	}
 ?>

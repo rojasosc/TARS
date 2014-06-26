@@ -20,40 +20,67 @@
 		
 	</head>
 	<body>
-			<!-- Profile Modal -->
-			<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title" id="studentModalTitle"></h4>
-						</div>
-						<div class="modal-body">			
-							<h3>Personal Information</h3>
-							<div class="container">
-								<p id="studentMajor"></p>
-								<p id="studentGPA"></p>
-								<p id="studentClassYear"></p>
-							</div> <!-- End container -->
-							
-							<h3>Contact Information</h3>
-							<div class="container">
-								<p id="studentEmail"></p>
-								<p id="studentMobilePhone"></p>
-							</div> <!-- End container -->
-							
-							<h3>About Me</h3>
-							<div class="container">
-								<p id="studentAboutMe"></p>	
-							</div> <!-- End container -->							
-						</div> <!-- End modal body -->
-						<div class="modal-footer">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						</div> <!-- End modal-footer -->
-					</div> <!-- End modal-content -->
-				</div> <!-- End modal-dialog -->
-			</div> <!-- End modal fade -->
-			<!-- End Profile Modal -->	
+		<!-- Profile Modal -->
+		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="studentModalTitle"></h4>
+					</div>
+					<div class="modal-body">			
+						<h3>Personal Information</h3>
+						<div class="container">
+							<p id="studentMajor"></p>
+							<p id="studentGPA"></p>
+							<p id="studentClassYear"></p>
+						</div> <!-- End container -->			
+						<h3>Contact Information</h3>
+						<div class="container">
+							<p id="studentEmail"></p>
+							<p id="studentMobilePhone"></p>
+						</div> <!-- End container -->
+						<h3>Staff Comments</h3>
+						<div class="container">
+							<div class="row">
+								<div class="col-xs-4">
+									<p>Commenter:</p>
+								</div> <!-- End column -->
+								<div class="col-xs-4">
+									<p>Date:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-xs-12">
+									<p>Message:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+						</div> <!-- End container -->
+						<h3>Professor Comments</h3>
+						<div class="container">
+							<div class="row">
+								<div class="col-xs-4">
+									<p>Commenter:</p>
+								</div> <!-- End column -->
+								<div class="col-xs-4">
+									<p>Date:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-xs-12">
+									<p>Message:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+						</div> <!-- End container -->
+					</div> <!-- End modal body -->
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div> <!-- End modal-footer -->
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->
+		<!-- End Profile Modal -->
+		
 		<div id="page-wrapper">
 			<!-- BEGIN Page Header -->
 			<div id="header">

@@ -1,9 +1,8 @@
 $(document).ready(function () {
-	$commentModal = $('#commentModal');
-	$commentForm = $('#commentForm');
 	var studentID = null;
 	var commenterID = null;
-	
+	$commentModal = $('#commentModal');
+	$commentForm = $('#commentForm');
 	$commentForm.submit(function () { return false; });
 	$('.comment').click(prepareCommentModal);
 	$('#submitCommentButton').click(submitComment);
@@ -29,7 +28,7 @@ function submitComment(){
 
 function prepareCommentModal(){
 	studentID = $(this).data('studentid');
-	commenterID = $(this).data('staffid');
+	commenterID = $(this).data('commenterid');
 	$commentModal.modal('show');
 }
 

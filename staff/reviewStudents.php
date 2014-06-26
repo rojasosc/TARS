@@ -20,101 +20,97 @@
 		<script src="reviewStudents.js"></script>
 	</head>
 	<body>
-			<!-- Profile Modal -->
-			<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title" id="studentModalTitle"></h4>
-						</div>
-						<div class="modal-body">			
-							<h3>Personal Information</h3>
-							<div class="container">
-								<p id="studentMajor"></p>
-								<p id="studentGPA"></p>
-								<p id="studentClassYear"></p>
-							</div> <!-- End container -->
-							
-							<h3>Contact Information</h3>
-							<div class="container">
-								<p id="studentEmail"></p>
-								<p id="studentMobilePhone"></p>
-							</div> <!-- End container -->
-							
-							<h3>About Me</h3>
-							<div class="container">
-								<p id="studentAboutMe"></p>	
-							</div> <!-- End container -->
-							<h3>Staff Comments</h3>
-							<div class="container">
-								<div class="row">
-									<div class="col-xs-4">
-										<p>Commenter:</p>
-									</div> <!-- End column -->
-									<div class="col-xs-4">
-										<p>Date:</p>
-									</div> <!-- End column -->
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-xs-12">
-										<p>Message:</p>
-									</div> <!-- End column -->
-								</div> <!-- End row -->
-							</div> <!-- End container -->
-							<h3>Professor Comments</h3>
-							<div class="container">
-								<div class="row">
-									<div class="col-xs-4">
-										<p>Commenter:</p>
-									</div> <!-- End column -->
-									<div class="col-xs-4">
-										<p>Date:</p>
-									</div> <!-- End column -->
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-xs-12">
-										<p>Message:</p>
-									</div> <!-- End column -->
-								</div> <!-- End row -->
-							</div> <!-- End container -->
-						</div> <!-- End modal body -->
-						<div class="modal-footer">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						</div> <!-- End modal-footer -->
-					</div> <!-- End modal-content -->
-				</div> <!-- End modal-dialog -->
-			</div> <!-- End modal fade -->
-			<!-- End Profile Modal -->
 			
-	<!-- BEGIN Comment Modal-->
-	<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h1 class="modal-title">Student Comment</h1>
-				</div> <!-- End modal-header -->
-				<div class="modal-body">
-					<form action="staffCommands.php" method="post" id="commentForm" class="form-horizontal">
-						<fieldset>
-							<legend>Message Content</legend>
+		<!-- Profile Modal -->
+		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="studentModalTitle"></h4>
+					</div>
+					<div class="modal-body">			
+						<h3>Personal Information</h3>
+						<div class="container">
+							<p id="studentMajor"></p>
+							<p id="studentGPA"></p>
+							<p id="studentClassYear"></p>
+						</div> <!-- End container -->			
+						<h3>Contact Information</h3>
+						<div class="container">
+							<p id="studentEmail"></p>
+							<p id="studentMobilePhone"></p>
+						</div> <!-- End container -->
+						<h3>Staff Comments</h3>
+						<div class="container">
+							<div class="row">
+								<div class="col-xs-4">
+									<p>Commenter:</p>
+								</div> <!-- End column -->
+								<div class="col-xs-4">
+									<p>Date:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-xs-12">
-									<textarea name="commentText" class="form-control"></textarea>
+									<p>Message:</p>
 								</div> <!-- End column -->
-							</div> <!-- End row -->													
-						</fieldset> <!-- End comment fieldset -->
-					</form> <!-- End comment form -->
-				</div> <!-- End modal-body -->
-				<div class="modal-footer">
-					<button class="btn btn-danger" data-dismiss="modal">Close</button>
-					<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
-				</div> <!-- End modal-footer -->				
-			</div> <!-- End modal-content -->
-		</div> <!-- End modal-dialog -->
-	</div> <!-- End modal fade -->	
-	<!-- END Comment Modal-->    
+							</div> <!-- End row -->
+						</div> <!-- End container -->
+						<h3>Professor Comments</h3>
+						<div class="container">
+							<div class="row">
+								<div class="col-xs-4">
+									<p>Commenter:</p>
+								</div> <!-- End column -->
+								<div class="col-xs-4">
+									<p>Date:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-xs-12">
+									<p>Message:</p>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+						</div> <!-- End container -->
+					</div> <!-- End modal body -->
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div> <!-- End modal-footer -->
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->
+		<!-- End Profile Modal -->
+			
+		<!-- BEGIN Comment Modal-->
+		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Student Comment</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+						<form action="staffCommands.php" method="post" id="commentForm" class="form-horizontal">
+							<fieldset>
+								<legend>Message Content</legend>
+								<div class="row">
+									<div class="col-xs-12">
+										<textarea name="commentText" class="form-control"></textarea>
+									</div> <!-- End column -->
+								</div> <!-- End row -->													
+							</fieldset> <!-- End comment fieldset -->
+						</form> <!-- End comment form -->
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Comment Modal-->
+		    
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
@@ -216,7 +212,7 @@
 													</form>
 												</td>
 												<td>
-												<button data-toggle="modal" data-target="#commentModal" data-staffID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
+												<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
 												<span class="glyphicon glyphicon-comment"></span></button>
 												</td>
 												</tr>							
@@ -231,7 +227,7 @@
 										<div class="panel-footer">
 											<div class="row">
 												<div class="col-xs-4">
-													<button name="applyDecision" id="applyDecisions" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Confirm Decisions</button>												
+													<button name="applyDecision" id="applyDecisions" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
 												</div> <!-- End column -->
 											</div> <!-- End row -->
 										</div> <!-- End panel-footer -->									

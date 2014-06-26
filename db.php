@@ -523,7 +523,7 @@ final class Professor extends User {
 
 
 	public function getOffice() {
-		if ($this->office = null) {
+		if ($this->office == null) {
 			$this->office = Place::getPlaceByID($this->officeID);
 		}
 		return $this->office;

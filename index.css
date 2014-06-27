@@ -1,14 +1,14 @@
-html,body{
+html,
+body {
     margin: 0;
     padding: 0;
-    height: 100%; 
-    overflow-x: hidden;		
+    height: 100%;
+    overflow-x: hidden;
 }
 #page-wrapper {
     min-height: 100%;
     width: 100%;
     position: relative;
-
 }
 #header {
     background-image: url('images/header-logo.png');
@@ -41,7 +41,6 @@ html,body{
     height: 250px;
     bottom: 0;
     left: 0;
-	
 }
 #contact-us {
     list-style-type: none;
@@ -61,37 +60,33 @@ html,body{
     height: 52px;
     margin-top: 90px;
 }
-
-#login{
-	background-color: #000000;
-	margin: auto;
-	margin-bottom: 25px;
-	width: 500px;
-	padding: 50px;
-	border-radius: 25px;
-	opacity: .8;
-	z-index: 0;
+#login {
+    background-color: #000000;
+    margin: auto;
+    margin-bottom: 25px;
+    width: 500px;
+    padding: 50px;
+    border-radius: 25px;
+    opacity: .8;
+    z-index: 0;
 }
-
-.center{
-	text-align: center;	
+.center {
+    text-align: center;
 }
-
 .error {
-	color: white;
-	background-color: #880000;
-	padding: 15px;
-	border: 3px solid red;
-	border-radius: 15px;
+    color: white;
+    background-color: #880000;
+    padding: 15px;
+    border: 3px solid red;
+    border-radius: 15px;
 }
-
-#colorWhite{
-	
-	color: white;
+#colorWhite {
+    color: white;
 }
 /*
  * Everything below is NavBar coloring
  */
+
 .navbar-default {
     background-color: #334d6c;
     border-color: #334d6c;

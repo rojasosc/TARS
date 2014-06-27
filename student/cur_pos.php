@@ -141,13 +141,13 @@
 						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
-								<th>Position ID</th>
+								<th class="hidden-xs">Position ID</th>
 								<th>Course Number</th>
-								<th>Course Name</th>
+								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
 								<th>Location</th>
 								<th>Time</th>
-								<th>Compensation</th>
+								<th class="hidden-xs">Compensation</th>
 								<th>Withdraw</th>
 							</tr>
 							<?php
@@ -156,13 +156,13 @@
 		$position = $row->getPosition();
 							?>
 							<tr>
-								<td class="positionID"><?= $position->getID()?></td>
+								<td class="positionID hidden-xs"><?= $position->getID()?></td>
 								<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
-								<td><?= $course->getTitle()?></td>
+								<td class="hidden-xs"><?= $course->getTitle()?></td>
 								<td><?= $position->getPositionType()?></td>
 								<td><?= "TBD"?></td>
 								<td><?= $position->getTime()?></td>
-								<td><?= $row->getCompensation()?></td>
+								<td class="hidden-xs"><?= $row->getCompensation()?></td>
 								<td><a class="btn btn-default releaseButton" href="#releaseModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>
 							<?php
@@ -180,13 +180,13 @@
 						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
-								<th>Position ID</th>
+								<th class="hidden-xs">Position ID</th>
 								<th>Course Number</th>
-								<th>Course Name</th>
+								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
 								<th>Location</th>
 								<th>Time</th>
-								<th>Compensation</th>
+								<th class="hidden-xs">Compensation</th>
 								<th>Withdraw</th>
 							</tr>
 							<?php
@@ -195,13 +195,13 @@
 		$appPosition = $app->getPosition();
 							?>
 							<tr>
-								<td class="positionID"><?= $appPosition->getID()?></td>
+								<td class="positionID hidden-xs"><?= $appPosition->getID()?></td>
 								<td><?= $appCourse->getDepartment()." ".$appCourse->getNumber()?></td>
-								<td><?= $appCourse->getTitle()?></td>
+								<td class="hidden-xs"><?= $appCourse->getTitle()?></td>
 								<td><?= $appPosition->getPositionType()?></td>
 								<td><?= "TBD"?></td>
 								<td><?= $appPosition->getTime()?></td>
-								<td><?= $app->getCompensation()?></td>
+								<td class="hidden-xs"><?= $app->getCompensation()?></td>
 								<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>
 							<?php
@@ -216,26 +216,7 @@
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
-			</div>
+w			</div>
 			<!--END Page Footer -->
 	
 		</div> 

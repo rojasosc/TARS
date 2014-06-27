@@ -95,14 +95,14 @@ if (isset($_POST['submitButton'])) {
 						<div class="container-fluid display-area">
 							<form role="form" action="profile.php" method="post" id="profile">
 								<div class="row">
-									<div class="col-xs-6">
+									<div class="col-sm-6">
 										<div class="form-group">
 											<label>First Name:
 												<input class="form-control" type="text" name="firstName" size="30" value="<?=$fn?>" />
 											</label>
 										</div>
 									</div>
-									<div class="col-xs-6">
+									<div class="col-sm-6">
 										<div class="form-group">
 											<label>Last Name:
 												<input class="form-control" type="text" name="lastName" size="30" value="<?=$ln?>" />	
@@ -111,14 +111,14 @@ if (isset($_POST['submitButton'])) {
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-xs-6">
+									<div class="col-sm-6">
 										<div class="form-group">
 											<label>E-mail:
 												<input class="form-control" readonly="readonly" type="email" name="email" size="30" value="<?=$email?>" />
 											</label>
 										</div>
 									</div>
-									<div class="col-xs-6">
+									<div class="col-sm-6">
 										<div class="form-group">
 											<label>Phone Number:
 												<input class="form-control" type="text" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" />
@@ -127,21 +127,21 @@ if (isset($_POST['submitButton'])) {
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-xs-4">
+									<div class="col-sm-4">
 										<div class="form-group">
 											<label>Major:
 												<input class="form-control" type="text" name="major" size="30" value="<?=$student->getMajor()?>" />
 											</label>		
 										</div>
 									</div>
-									<div class="col-xs-4">
+									<div class="col-sm-4">
 										<div class="form-group">
 											<label>Class Year:
 												<input class="form-control" type="text" name="classYear" size="30" value="<?=$student->getClassYear()?>" />
 											</label>
 										</div>
 									</div>
-									<div class="col-xs-4">
+									<div class="col-sm-4">
 										<div class="form-group">
 											<label>Cumulative GPA:
 												<input class="form-control" type="text" name="gpa" size="30" value="<?=$student->getGPA()?>" />
@@ -149,7 +149,7 @@ if (isset($_POST['submitButton'])) {
 										</div>
 									</div>
 								</div>
-								<div class="row col-xs-12">
+								<div class="row col-sm-12">
 									<div class="form-group">
 										<label>Qualifications and TA-ing history: <br />
 											<textarea class="form-control" rows="10" cols="100" name="aboutMe" form="profile"><?=$student->getAboutMe()?></textarea>
@@ -168,25 +168,6 @@ if (isset($_POST['submitButton'])) {
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
 			</div>
 			<!--END Page Footer -->
 	

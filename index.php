@@ -134,6 +134,47 @@ if (isset($_POST['submit'])) {
 			</div>
 		</div>
 		<!-- END Report a Bug -->
+		<!-- BEGIN Contact Us -->
+		<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Bug Report</h1>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							<div class="row">
+								<div class="col-xs-4">      
+									<ul id="contact-us">
+										<lh>Contact Us</lh>
+										<li> <br />
+											Oscar Rojas <br />
+											Email: orojas@u.rochester.edu <br />
+											Phone Number: 404-996-7988<br />
+										</li>
+										<li> <br />
+											Jinze An <br />
+											Email: jan2@u.rochester.edu <br />
+											Phone Number: 585-749-5590 <br />
+										</li>
+										<li> <br />
+											Nate Book <br />
+											Email: nbook@u.rochester.edu <br />
+											Phone Number: I have no clue <br />
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END Contact Us -->
 
 		<!-- BEGIN page-wrapper -->
             
@@ -172,10 +213,10 @@ if (isset($_POST['submit'])) {
 							</div> <!-- End row -->
 							<br>
 							<div class="row">
-								<div class="col-md-4">
+								<div class="col-xs-6">
 									<a href="signup.php">Sign Up</a>
 								</div> <!-- End column -->
-								<div class="col-md-6">
+								<div class="col-xs-6">
 									<div class="form-group">
 										<a href="#passmodal" data-toggle="modal">
 											Forgot Password?
@@ -185,11 +226,12 @@ if (isset($_POST['submit'])) {
 							</div> <!-- End row -->
 							<br>
 							<div class="row">
-								<div class="col-md-4">
-									<a href="#bugmodal" data-toggle="modal">
-										Report A Bug
-									</a>
-								</div> <!-- End column -->							
+								<div class="col-xs-6">
+									<a href="#bugmodal" data-toggle="modal">Report A Bug</a>
+								</div> <!-- End column -->
+								<div class="col-xs-6">
+									<a href="#contactModal" data-toggle="modal">Contact Us</a>
+								</div>
 							</div> <!-- End row -->							
 						</fieldset> <!-- End fieldset -->
 					</form> <!-- End form -->
@@ -199,25 +241,7 @@ if (isset($_POST['submit'])) {
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
+				
 			</div>
 			<!--END Page Footer -->
 	

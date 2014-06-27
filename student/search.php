@@ -199,11 +199,11 @@ try {
 						<div class="container-fluid display-area">
 							<form role="form" action="search.php" method="post" id="searchForm">
 								<div class="row" id="inputrow">
-									<div class="col-xs-6">
+									<div class="col-xs-12 col-sm-6">
 										Search:
 										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=get_form_value('search')?>"/>
 									</div>
-									<div class="col-xs-3">
+									<div class="col-xs-6 col-sm-3">
 										Term:
 										<select class="form-control" name="term">
 										<?php
@@ -215,7 +215,7 @@ try {
 										?>
 										</select>
 									</div>
-									<div class="col-xs-3">
+									<div class="col-xs-6 col-sm-3">
 										Type:
 										<select name="type" class="form-control">
 										<?php
@@ -246,9 +246,9 @@ try {
 								</ul>
 								<table class="table table-striped">
 									<tr>
-										<th>Position No.</th>
+										<th class="hidden-xs hidden-sm">Position No.</th>
 										<th>Course Number</th>
-										<th>Course</th>
+										<th class="hidden-xs">Course</th>
 										<th>Professor</th>
 										<th>Position Type <br/><button class="btn btn-default" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
 										<th>Time</th>
@@ -261,9 +261,9 @@ try {
 												$professor = $position->getProfessor();
 									?>
 											<tr>
-												<td class="positionID"><?=$position->getID()?></td>
+												<td class="positionID hidden-xs hidden-sm"><?=$position->getID()?></td>
 												<td><?=$course->getDepartment()?><?=$course->getNumber()?></td>
-												<td><?=$course->getTitle()?></td>
+												<td class="hidden-xs"><?=$course->getTitle()?></td>
 												<td><?=$professor->getFILName()?></td>
 												<td><?=$position->getPositionType()?></td>
 												<td><?=$position->getTime()?></td>
@@ -298,25 +298,6 @@ try {
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
 			</div>
 			<!--END Page Footer -->
 		</div> 

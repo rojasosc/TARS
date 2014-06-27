@@ -137,10 +137,10 @@ require('db.php');
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
 							<div class="row">
-								<div class="col-md-4">
+								<div class="col-md-8">
 									<div class="form-group">
-										<label class="control-label" for="aboutMe">About Me</label>
-										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."></textarea>
+										<label class="control-label" for="aboutMe">Qualifications and TA-ing History</label>
+										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications." rows="8" cols="64"></textarea>
 									</div> <!-- End form-group -->
 								</div> <!-- End row -->
 							</div> <!-- End row -->
@@ -149,6 +149,9 @@ require('db.php');
 								<div class="col-md-3">
 									<button type="submit"  id="submitButton" name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Sign Up</button>
 								</div> <!-- End column -->
+								<div class="col-md-3">
+									<a type="button" class="btn btn-danger btn-block" href="index.php">Cancel</a>
+								</div>
 							</div> <!-- End row -->								
 						</form>
 					</div> <!-- End jumbotron -->			

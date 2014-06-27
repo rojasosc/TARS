@@ -1,6 +1,7 @@
 <?php
 	include('professorSession.php');
 	$office = $professor->getOffice();
+	$courses = $professor->getCourses();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -148,59 +149,82 @@
 			<!--END Page Header -->	   
 	  
 			<!-- BEGIN Page Content -->
-			<div id="content">		
+			<div id="content">
 				<div class="container">				
 					<div class="row">
 						<h1 class="panelHeader">My Profile</h1>
-					</div> <!-- End row -->
-					<div class="row">				
-						<div class="panel panel-primary">
-							<div class="panel-heading">
-							
-							</div> <!-- End panel-body -->
-							<div class="panel-body">
-								<legend>Personal Details</legend>
-								<div class="row">
-									<div class="col-xs-4">
-									First Name: <?= $professor->getFirstName() ?>
-									</div> <!-- End column -->
-									<div class="col-xs-4">
-									Last Name: <?= $professor->getLastName() ?>
-									</div> <!-- End column -->						
-								</div> <!-- End row -->
-								<br>
-								<div class="row">
-									<div class="col-xs-4">
-									Email: 	<?= $professor->getEmail() ?>
-									</div> <!-- End column -->
-									<div class="col-xs-4">
-									Mobile Phone: 	<?= $professor->getMobilePhone() ?>
-									</div> <!-- End column -->									
-								</div> <!-- End row -->
-								<br>
-								<legend>Office</legend>
-								<div class="row">
-									<div class="col-xs-4">
-									Building: <?= $office->getBuilding() ?>	
-									</div> <!-- End column -->
-									<div class="col-xs-4">
-									Room: <?= $office->getRoom() ?>	
-									</div> <!-- End column -->	
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-xs-4">
-									Office Phone: <?= $professor->getOfficePhone() ?>
-									</div> 
-								</div>
-								<br>
-								<div class="row">
-									<div class="col-xs-3">
-										<button type="submit" data-target="#editProfileModal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="editProfileButton" name="editProfileButton" class="btn btn-success"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
-									</div> <!-- End column -->
-								</div> <!-- End row --> 								
-							</div> <!-- End panel-body -->
-					</div>	<!-- End row -->					
-				</div> <!-- End container -->	  
+					</div> <!-- End row -->				
+				</div> <!-- End container -->
+				<div class="container">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+						</div> <!-- End panel-body -->
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-xs-4">
+									<legend> Courses </legend>
+									<?php 
+										foreach($courses as $course){
+									?>
+										<div class="row">
+											<div class="col-xs-12">
+												<?= $course->getTitle() ?>
+											</div> <!-- End column -->
+										</div> <!-- End row -->
+									<?php
+										}
+									?>
+								</div> <!-- End column -->
+								<div class="col-xs-8">
+									<legend>Personal Details</legend>
+									<div class="row">
+										<div class="col-xs-4">
+										First Name: <?= $professor->getFirstName() ?>
+										</div> <!-- End column -->
+										<div class="col-xs-4">
+										Last Name: <?= $professor->getLastName() ?>
+										</div> <!-- End column -->						
+									</div> <!-- End row -->
+									<br>
+									<div class="row">
+										<div class="col-xs-4">
+										Email: 	<?= $professor->getEmail() ?>
+										</div> <!-- End column -->
+										<div class="col-xs-4">
+										Mobile Phone: 	<?= $professor->getMobilePhone() ?>
+										</div> <!-- End column -->									
+									</div> <!-- End row -->
+									<br>
+									<legend>Office</legend>
+									<div class="row">
+										<div class="col-xs-4">
+										Building: <?= $office->getBuilding() ?>	
+										</div> <!-- End column -->
+										<div class="col-xs-4">
+										Room: <?= $office->getRoom() ?>	
+										</div> <!-- End column -->	
+									</div> <!-- End row -->
+									<div class="row">
+										<div class="col-xs-4">
+										Office Phone: <?= $professor->getOfficePhone() ?>
+										</div> 
+									</div>
+									<br>
+									<div class="row">
+										<div class="col-xs-3">
+											<button data-target="#editProfileModal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="editProfileButton" name="editProfileButton" class="btn btn-success"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+										</div> <!-- End column -->										
+										<div class="col-xs-3">
+											<button data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
+										</div> <!-- End column -->
+									</div> <!-- End row --> 
+								</div> <!-- End column -->
+							</div>	<!-- End Row -->
+						</div> <!-- End panel-body -->
+						<div class="panel-footer">
+						</div> <!-- End panel-footer -->
+					</div> <!-- End panel panel-primary -->
+				</div> <!-- End container -->						  
 			</div>
 			<!-- END Page Content --> 
 	    

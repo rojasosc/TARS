@@ -66,16 +66,15 @@
 							<form action="#" method="post">			
 								<fieldset>				
 									<div class="row">					
-										<div class="col-md-6">
+										<div class="col-sm-8 col-md-6">
 											<label>Subject</label>
 											<input type="text" name="subjectLine" class="form-control" placeholder="Enter A Subject Line.">
 										</div> <!-- End column -->
 									</div><!-- End row -->					
 									<div class="row">					
-										<div class="col-md-6">
+										<div class="col-sm-8 col-md-6">
 											<label>Message</label>
-											<textarea class="form-control" rows="3" placeholder="Enter Your Message.">
-											</textarea> <!-- End text area -->
+											<textarea class="form-control" rows="3" placeholder="Enter Your Message."></textarea> <!-- End text area -->
 										</div> <!-- End column -->
 									</div> <!-- End row -->					
 								</fieldset>				

@@ -175,7 +175,7 @@
 										to use AJAX.
 										 -->
 											<table class="table table-striped" id="<?= $courseCRN ?>">
-												<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Type</th><th>GPA</th><th>Profile</th><th>Action</th></tr>
+												<tr><th class="hidden-xs hidden-sm">University ID</th><th>First Name</th><th>Last Name</th><th class="hidden-xs">Email</th><th>Type</th><th>GPA</th><th>Profile</th><th>Action</th></tr>
 												<?php
 													foreach($applications as $application){ 
 														$student = $application->getStudent();
@@ -186,10 +186,10 @@
 												?>
 												
 												<tr>
-												<td><?= $universityID ?></td> 
+												<td class="hidden-xs hidden-sm"><?= $universityID ?></td> 
 												<td><?= $student->getFirstName() ?></td>
 												<td><?= $student->getlastName() ?></td>
-												<td><?= $student->getEmail() ?></td>
+												<td class="hidden-xs"><?= $student->getEmail() ?></td>
 												<td><?= $application->getPosition()->getPositionType() ?></td>
 												<td><?= $student->getGPA()?></td>
 												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">

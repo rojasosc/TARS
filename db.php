@@ -800,10 +800,10 @@ final class Term {
 	 * Not totally sure if this should be here, but it's here for now.
 	 * Inserts a line into teaches to link the professor and the course
 	 */
-	public static function insertTeaches($courseID, $instructionID) {
+	public static function insertTeaches($courseID, $professorID) {
 		$sql = 'INSERT INTO Teaches (courseID, professorID) VALUES (:courseID, :professorID)';
-		$args = array(':courseID' => $courseID, ':professorID' => $instructorID);
-		$teachID = Database::executeInsert($sql, $args);
+		$args = array(':courseID' => $courseID, ':professorID' => $professorID);
+		$teachID = Database::executeStatement($sql, $args);
 		return $teachID;
 	}
 	/*
@@ -811,10 +811,11 @@ final class Term {
 	 */
 	public static function getTermFromFile($path){
 		$data = file_get_contents($path);
-		$data = json_decode($file);
+		$data = json_decode($data,true);
 		//Insert Term into DB
+		//var_dump($data);
 		if(isset($data['termYear']) && isset($data['termSemester'])) {
-			$termID = insertTerm($data['termYear'], $data['termSemester']);
+			//$termID = insertTerm($data['termYear'], $data['termSemester']);
 			$emailDomain = $data['defaultEmailDomain'];
 		}
 		if(isset($data['courses'])) {
@@ -825,13 +826,15 @@ final class Term {
 				$courseNumber = $course['number'];
 				$courseTitle = $course['title'];
 				$website = $course['website'];
-				$courseID = Course::insertCourse($crn, $department, $courseNumber, $courseTitle, $website, $termID);
+				$courseID = Course::insertCourse($crn, $department, $courseNumber, $courseTitle, $website, 1);
 				//Assign instructors to the course
 				if(isset($course['instructors'])) {
 					foreach($course['instructors'] as $instructor) {
 						$email = $instructor['email'].$emailDomain;
-						$instructorID = getUserByEmail($email, PROFESSOR)->getID();
-						Term::insertTeaches($instructorID, $courseID);
+						$professorID = User::getUserByEmail($email, PROFESSOR)->getID();
+						echo "THIS IS THE PROFESSOR ID ".$professorID." AND COURSE ID: ".$courseID;
+
+						Term::insertTeaches($professorID, $courseID);
 					}
 				}
 				//Insert Positions into DB
@@ -930,7 +933,7 @@ final class Course {
 	public static function insertCourse($crn, $department, $courseNumber, $courseTitle, $website, $termID) {
 		$sql = 'INSERT INTO Courses (crn, department, courseNumber, courseTitle, website, termID)
 				VALUES (:crn, :department, :courseNumber, :courseTitle, :website, :termID)';
-		$args = array(':crn' => $crn, ':department' => $department, ':courseNumber' => $courseNumber, ':website' => $website, ':termID' => $termID);
+		$args = array(':crn' => $crn, ':department' => $department, ':courseNumber' => $courseNumber, ':courseTitle' => $courseTitle, ':website' => $website, ':termID' => $termID);
 		$courseID = Database::executeInsert($sql, $args);
 		return $courseID;
 	}

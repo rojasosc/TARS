@@ -31,7 +31,7 @@ const WITHDRAWN = 4;
 
 // TODO: use a configurable option or something
 // 2 is internal ID of current Term row/object (fall 2014) in TARS-testdata.sql
-const CURRENT_TERM = 2;
+const CURRENT_TERM = 1;
 
 /******************
 *DATABASE UTILITIES
@@ -826,13 +826,12 @@ final class Term {
 				$courseNumber = $course['number'];
 				$courseTitle = $course['title'];
 				$website = $course['website'];
-				$courseID = Course::insertCourse($crn, $department, $courseNumber, $courseTitle, $website, 1);
+				$courseID = Course::insertCourse($crn, $department, $courseNumber, $courseTitle, $website, CURRENT_TERM);
 				//Assign instructors to the course
 				if(isset($course['instructors'])) {
 					foreach($course['instructors'] as $instructor) {
 						$email = $instructor['email'].$emailDomain;
 						$professorID = User::getUserByEmail($email, PROFESSOR)->getID();
-						/*TODO: Fix the foreign key contrainst exception thrown by insertTeaches*/
 						Term::insertTeaches($courseID, $professorID);
 					}
 				}

@@ -3,7 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 06, 2014 at 06:39 PM
+-- Last Modified Time: Jun 28, 2014 at 10:08 PM
+-- Last Modified By: Nate Book
 -- Server version: 5.6.17
 -- PHP Version: 5.4.28
 
@@ -17,25 +18,26 @@ SET time_zone = "+00:00";
 
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS Teaches;
-DROP TABLE IF EXISTS Feedback;
+DROP TABLE IF EXISTS Feedback; -- old name
 DROP TABLE IF EXISTS Applications;
-DROP TABLE IF EXISTS Assistantship;
+DROP TABLE IF EXISTS Assistantship; -- old name
 DROP TABLE IF EXISTS PositionTypes;
-DROP TABLE IF EXISTS PositionSessions;
+DROP TABLE IF EXISTS PositionSessions; -- old table
 DROP TABLE IF EXISTS Positions;
-DROP TABLE IF EXISTS CourseSessions;
+DROP TABLE IF EXISTS CourseSessions; -- old table
 DROP TABLE IF EXISTS Sessions;
 DROP TABLE IF EXISTS Courses;
+DROP TABLE IF EXISTS Sections;
 DROP TABLE IF EXISTS Terms;
 DROP TABLE IF EXISTS TermSemesters;
 DROP TABLE IF EXISTS Staff;
 DROP TABLE IF EXISTS Professors;
 DROP TABLE IF EXISTS Students;
 DROP TABLE IF EXISTS Users;
-DROP TABLE IF EXISTS Place;
+DROP TABLE IF EXISTS Place; -- old name
 DROP TABLE IF EXISTS Places;
 DROP TABLE IF EXISTS Events;
-DROP TABLE IF EXISTS EventSubscriberTemplates;
+DROP TABLE IF EXISTS NotificationTemplates;
 DROP TABLE IF EXISTS EventTypes;
 DROP TABLE IF EXISTS Configurations;
 SET FOREIGN_KEY_CHECKS=1;
@@ -70,11 +72,11 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `password` varchar(255) NULL,
   `passwordReset` boolean NOT NULL,
   `resetToken` bigint(20) NULL,
-  `resetTokenTime` datetime NULL,
+  `resetTime` timestamp NULL,
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
   `creatorID` bigint(20) NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
   `type` int(11) NOT NULL, -- TODO: enumify
 
   PRIMARY KEY (`userID`),
@@ -96,11 +98,11 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `userID` bigint(20) NOT NULL,
   `mobilePhone` bigint(20) NOT NULL,
   `major` varchar(75) NOT NULL,
-  `gpa` decimal(10,2) NOT NULL,
+  `gpa` decimal(4,3) NOT NULL,
   `classYear` int(10) NOT NULL,
   `aboutMe` longtext NOT NULL,
-  `status` int(11) NOT NULL,
-  `reputation` int(11) NOT NULL,
+  `status` int(11) NOT NULL, -- XXX: deprecated
+  `reputation` int(11) NOT NULL, -- XXX: deprecated
   `universityID` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
@@ -168,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `Terms` (
   `year` year NOT NULL,
   `sessionID` bigint(20) NOT NULL,
   `creatorID` bigint(20) NOT NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
 
   PRIMARY KEY (`termID`),
   FOREIGN KEY (`sessionID`) REFERENCES `TermSemesters` (`termSessionID`),
@@ -176,29 +178,44 @@ CREATE TABLE IF NOT EXISTS `Terms` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
--- Table structure for table `Course`
+-- Table structure for table `Courses`
 --
 -- Represents a Course in the database.
 --
--- Primary, created by Staff (import or new course)
+-- Secondary, created with Sections
 --
 CREATE TABLE IF NOT EXISTS `Courses` (
   `courseID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `crn` bigint(20) NOT NULL,
-  `department` varchar(10) NOT NULL,
-  `courseNumber` varchar(10) NOT NULL,
-  `courseTitle` varchar(80) NOT NULL,
-  `website` varchar(40) NOT NULL,
   `termID` bigint(20) NOT NULL,
-  `creatorID` bigint(20) NOT NULL,
-  `createTime` datetime NOT NULL,
+  `department` char(3) NOT NULL,
+  `courseNumber` char(4) NOT NULL,
+  `courseTitle` varchar(80) NOT NULL,
 
   PRIMARY KEY (`courseID`),
-  UNIQUE KEY (`crn`, `termID`),
+  UNIQUE KEY (`termID`, `department`, `courseNumber`),
   KEY (`department`),
   KEY (`courseNumber`),
   KEY (`courseTitle`),
-  FOREIGN KEY (`termID`) REFERENCES `Terms` (`termID`),
+  FOREIGN KEY (`termID`) REFERENCES `Terms` (`termID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `Section`
+--
+-- Represents a Section in the database.
+--
+-- Primary, created by Staff (import or new course)
+--
+CREATE TABLE IF NOT EXISTS `Sections` (
+  `sectionID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `courseID` bigint(20) NOT NULL,
+  `crn` bigint(20) NOT NULL,
+  `type` enum('course','lab') NOT NULL,
+  `creatorID` bigint(20) NOT NULL,
+  `createTime` timestamp NOT NULL,
+
+  PRIMARY KEY (`sectionID`),
+  UNIQUE KEY (`courseID`, `crn`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -216,26 +233,11 @@ CREATE TABLE IF NOT EXISTS `Sessions` (
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
   `placeID` bigint(20) NOT NULL,
+  `sectionID` bigint(20) NOT NULL,
 
   PRIMARY KEY (`sessionID`),
-  FOREIGN KEY (`placeID`) REFERENCES `Places` (`placeID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `CourseSessions`
---
--- Represents the list of Sessions for a Course
---
--- Secondary, created with a Session & Course
---
-CREATE TABLE IF NOT EXISTS `CourseSessions` (
-  `courseSessionID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `courseID` bigint(20) NOT NULL,
-  `sessionID` bigint(20) NOT NULL,
-
-  PRIMARY KEY (`courseSessionID`),
-  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
-  FOREIGN KEY (`sessionID`) REFERENCES `Sessions` (`sessionID`)
+  FOREIGN KEY (`placeID`) REFERENCES `Places` (`placeID`),
+  FOREIGN KEY (`sectionID`) REFERENCES `Sections` (`sectionID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -248,9 +250,9 @@ CREATE TABLE IF NOT EXISTS `CourseSessions` (
 CREATE TABLE IF NOT EXISTS `PositionTypes` (
   `positionTypeID` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  `responsibilities` varchar(511) NOT NULL,
-  `times` varchar(511) NOT NULL,
-  `compensation` varchar(511) NOT NULL,
+  `responsibilities` text NOT NULL,
+  `times` text NOT NULL,
+  `compensation` text NOT NULL,
   
   PRIMARY KEY (`positionTypeID`),
   KEY (`name`)
@@ -265,35 +267,18 @@ CREATE TABLE IF NOT EXISTS `PositionTypes` (
 --
 CREATE TABLE IF NOT EXISTS `Positions` (
   `positionID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `courseID` bigint(20) NOT NULL,
+  `sectionID` bigint(20) NOT NULL,
   `description` varchar(40) NULL,
   `maximumAccepted` int(11) NOT NULL,
   `positionTypeID` bigint(20) NOT NULL,
   `creatorID` bigint(20) NOT NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
 
   PRIMARY KEY (`positionID`),
-  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
+  FOREIGN KEY (`sectionID`) REFERENCES `Sections` (`sectionID`),
   FOREIGN KEY (`positionTypeID`) REFERENCES `PositionTypes` (`positionTypeID`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
-
---
--- Table structure for table `PositionSessions`
---
--- Represents the list of Sessions for a Position
---
--- Secondary, created with a Session & Position
---
-CREATE TABLE IF NOT EXISTS `PositionSessions` (
-  `positionSessionID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `positionID` bigint(20) NOT NULL,
-  `sessionID` bigint(20) NOT NULL,
-
-  PRIMARY KEY (`positionSessionID`),
-  FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`),
-  FOREIGN KEY (`sessionID`) REFERENCES `Sessions` (`sessionID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `Applications`
@@ -308,9 +293,9 @@ CREATE TABLE IF NOT EXISTS `Applications` (
   `studentID` bigint(20) NOT NULL,
   `compensation` enum('pay','credit') NOT NULL,
   `appStatus` int(11) NOT NULL, -- TODO: enumify
-  `qualifications` varchar(511) NOT NULL,
+  `qualifications` text NOT NULL,
   `creatorID` bigint(20) NOT NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
 
   PRIMARY KEY (`appID`),
   UNIQUE KEY (`positionID`, `studentID`),
@@ -328,10 +313,10 @@ CREATE TABLE IF NOT EXISTS `Applications` (
 --
 CREATE TABLE IF NOT EXISTS `Comments` (
   `commentID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `comment` varchar(511) NOT NULL,
+  `commentText` text NOT NULL,
   `studentID` bigint(20) NOT NULL,
   `creatorID` bigint(20) NOT NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
 
   PRIMARY KEY (`commentID`),
   FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`),
@@ -341,17 +326,17 @@ CREATE TABLE IF NOT EXISTS `Comments` (
 --
 -- Table structure for table `Teaches`
 --
--- Represents the relationship between Courses and Professors.
+-- Represents the relationship between Sections and Professors.
 --
 -- Secondary, created with Course & Professor
 --
 CREATE TABLE IF NOT EXISTS `Teaches` (
   `teachID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `courseID` bigint(20) NOT NULL,
+  `sectionID` bigint(20) NOT NULL,
   `professorID` bigint(20) NOT NULL,
 
   PRIMARY KEY (`teachID`),
-  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
+  FOREIGN KEY (`sectionID`) REFERENCES `Sections` (`sectionID`),
   FOREIGN KEY (`professorID`) REFERENCES `Professors` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -368,7 +353,7 @@ CREATE TABLE IF NOT EXISTS `EventTypes` (
   `eventTypeID` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `severity` enum('debug','info','notice','warning','error','crit') NOT NULL,
-  `objectType` enum('Term','Course','Position','Application','Comment','User','EventType') NULL,
+  `objectType` enum('Term','Course','Position','Application','Comment','User','Configuration','EventType') NULL,
 
   PRIMARY KEY (`eventTypeID`),
   KEY (`name`)
@@ -379,13 +364,13 @@ CREATE TABLE IF NOT EXISTS `EventTypes` (
 --
 -- Secondary, enumeration additional data (should not change often)
 --
-CREATE TABLE IF NOT EXISTS `EventSubscriberTemplates` (
+CREATE TABLE IF NOT EXISTS `NotificationTemplates` (
   `eventSTID` bigint(20) NOT NULL AUTO_INCREMENT,
   `eventTypeID` bigint(20) NOT NULL,
   `notifyTarget` enum('self','target','professors','staff','admins') NOT NULL,
   `notifyMode` enum('email','home','both') NOT NULL,
   `subject` varchar(64) NOT NULL,
-  `template` varchar(511) NOT NULL,
+  `template` text NOT NULL,
 
   PRIMARY KEY (`eventSTID`),
   FOREIGN KEY (`eventTypeID`) REFERENCES `EventTypes` (`eventTypeID`)
@@ -402,10 +387,10 @@ CREATE TABLE IF NOT EXISTS `EventSubscriberTemplates` (
 CREATE TABLE IF NOT EXISTS `Events` (
   `eventID` bigint(20) NOT NULL AUTO_INCREMENT,
   `eventTypeID` bigint(20) NOT NULL,
-  `description` varchar(511) NOT NULL,
+  `description` text NOT NULL,
   `objectID` bigint(20) NULL,
   `creatorID` bigint(20) NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
   `creatorIP` binary(16) NOT NULL, -- support ipv6, just in case
 
   PRIMARY KEY (`eventID`),
@@ -426,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `Events` (
 CREATE TABLE IF NOT EXISTS `Configurations` (
   `configID` bigint(20) NOT NULL AUTO_INCREMENT,
   `creatorID` bigint(20) NULL,
-  `createTime` datetime NOT NULL,
+  `createTime` timestamp NOT NULL,
 
   `logDebug` boolean NOT NULL,
   `adminCreated` boolean NOT NULL,

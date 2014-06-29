@@ -4,11 +4,10 @@ TRUNCATE TABLE Teaches;
 TRUNCATE TABLE Comments;
 TRUNCATE TABLE Applications;
 TRUNCATE TABLE PositionTypes;
-TRUNCATE TABLE PositionSessions;
 TRUNCATE TABLE Positions;
-TRUNCATE TABLE CourseSessions;
 TRUNCATE TABLE Sessions;
 TRUNCATE TABLE Courses;
+TRUNCATE TABLE Sections;
 TRUNCATE TABLE Terms;
 TRUNCATE TABLE TermSemesters;
 TRUNCATE TABLE Staff;
@@ -17,7 +16,7 @@ TRUNCATE TABLE Students;
 TRUNCATE TABLE Users;
 TRUNCATE TABLE Places;
 TRUNCATE TABLE Events;
-TRUNCATE TABLE EventSubscriberTemplates;
+TRUNCATE TABLE NotificationTemplates;
 TRUNCATE TABLE EventTypes;
 TRUNCATE TABLE Configurations;
 SET FOREIGN_KEY_CHECKS=1;
@@ -60,7 +59,7 @@ INSERT INTO `EventTypes` (`name`, `severity`, `objectType`) VALUES
 ('STAFF_TERM_IMPORT', 'info', 'Term'), -- 22
 ('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 23
 
-INSERT INTO `EventSubscriberTemplates`
+INSERT INTO `NotificationTemplates`
 (`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES
 -- USER_CREATE:
 -- email confirm token

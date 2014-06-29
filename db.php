@@ -585,7 +585,7 @@ final class Position {
 		return new Position($row);
 	}
 	public static function insertPosition($courseID, $professorID, $time, $posType) {
-		$sql = 'INSERT INTO Positions ($courseID, $professorID, $time, $posType)
+		$sql = 'INSERT INTO Positions (courseID, professorID, time, posType)
 				VALUES (:courseID, :professorID, :time, :posType)';
 		$args = array(':courseID' => $courseID, ':professorID' => $professorID, ':time' => $time, ':posType' => $posType);
 		$posID = Database::executeInsert($sql, $args);
@@ -803,7 +803,7 @@ final class Term {
 	public static function insertTeaches($courseID, $professorID) {
 		$sql = 'INSERT INTO Teaches (courseID, professorID) VALUES (:courseID, :professorID)';
 		$args = array(':courseID' => $courseID, ':professorID' => $professorID);
-		$teachID = Database::executeStatement($sql, $args);
+		$teachID = Database::executeInsert($sql, $args);
 		return $teachID;
 	}
 	/*
@@ -832,9 +832,8 @@ final class Term {
 					foreach($course['instructors'] as $instructor) {
 						$email = $instructor['email'].$emailDomain;
 						$professorID = User::getUserByEmail($email, PROFESSOR)->getID();
-						echo "THIS IS THE PROFESSOR ID ".$professorID." AND COURSE ID: ".$courseID;
-
-						Term::insertTeaches($professorID, $courseID);
+						/*TODO: Fix the foreign key contrainst exception thrown by insertTeaches*/
+						Term::insertTeaches($courseID, $professorID);
 					}
 				}
 				//Insert Positions into DB
@@ -848,7 +847,7 @@ final class Term {
 						} else {
 							$time = 'FLEXIBLE';
 						}
-						insertPosition($courseID, $instructorID, $time, $posType);
+						Position::insertPosition($courseID, $professorID, $time, $posType);
 					}
 				}
 			}

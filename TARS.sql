@@ -151,11 +151,11 @@ CREATE TABLE IF NOT EXISTS `Staff` (
 -- Secondary, created with a Term object
 --
 CREATE TABLE IF NOT EXISTS `TermSemesters` (
-  `termSessionID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
+  `semesterID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `semesterName` varchar(20) NOT NULL,
   
-  PRIMARY KEY (`termSessionID`),
-  KEY (`name`)
+  PRIMARY KEY (`semesterID`),
+  UNIQUE KEY (`semesterName`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -168,12 +168,12 @@ CREATE TABLE IF NOT EXISTS `TermSemesters` (
 CREATE TABLE IF NOT EXISTS `Terms` (
   `termID` bigint(20) NOT NULL AUTO_INCREMENT,
   `year` year NOT NULL,
-  `sessionID` bigint(20) NOT NULL,
+  `semesterID` bigint(20) NOT NULL,
   `creatorID` bigint(20) NOT NULL,
   `createTime` timestamp NOT NULL,
 
   PRIMARY KEY (`termID`),
-  FOREIGN KEY (`sessionID`) REFERENCES `TermSemesters` (`termSessionID`),
+  FOREIGN KEY (`semesterID`) REFERENCES `TermSemesters` (`semesterID`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

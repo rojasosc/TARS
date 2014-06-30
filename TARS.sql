@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS `Staff` (
 CREATE TABLE IF NOT EXISTS `TermSemesters` (
   `semesterID` bigint(20) NOT NULL AUTO_INCREMENT,
   `semesterName` varchar(20) NOT NULL,
+  `semesterIndex` int(11) NOT NULL,
   
   PRIMARY KEY (`semesterID`),
   UNIQUE KEY (`semesterName`)

@@ -603,36 +603,37 @@ final class Position {
 		$posID = Database::executeInsert($sql, $args);
 		return $posID;
 	}
-	//BUGGY AF
-	public static function findPositions($search_field, $term = -1, $position_type = null, $studentID) {
+
+	public static function findPositions($search_field, $term = null, $position_type = null, $studentID) {
 		$sql = 'SELECT * FROM Positions
-				INNER JOIN Courses ON Positions.courseID = Courses.courseID
+				INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
+				INNER JOIN Courses ON Sections.courseID = Courses.courseID
 				LEFT JOIN Applications ON Positions.positionID = Applications.positionID
 				WHERE ';
 		$args = array();
 		if (!empty($search_field)) {
 			$i = 1;
 			foreach (explode(' ', $search_field) as $word) {
-				$sql .= "(Courses.department = :word$i OR
-					Courses.courseNumber = :word$i OR
-					INSTR(Courses.courseTitle, :word$i) OR
-					CONCAT(Courses.department, Courses.courseNumber) = :word$i) AND ";
+				$sql .= "(department = :word$i OR
+					courseNumber = :word$i OR
+					INSTR(courseTitle, :word$i) OR
+					CONCAT(department, courseNumber) = :word$i) AND ";
 				$args[":word$i"] = $word;
 				$i++;
 			}
 		}
-		if ($term >= 0) {
-			$sql .= 'termID = :term ';
+		if ($term != null) {
+			$sql .= 'termID = :term AND ';
 			$args[':term'] = $term;
 		}
-		$sql .="AND ((strcmp(studentID, :studentID) <> 0) OR studentID is null) ";
+		$sql .="((strcmp(studentID, :studentID) <> 0) OR studentID is null) AND ";
 		$args['studentID'] = $studentID;
 		// TODO: implement position_type
 		//if ($position_type != null) {
 		//	$sql .= 'posType = :posType AND ';
 		//	$args[':posType'] = $position_type;
 		//}
-		$sql .= 'ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC';
 		//echo '<pre>';
 		//print_r($args);
 		//exit($sql);
@@ -693,19 +694,27 @@ final class Application {
 		return new Application($row);
 	}
 
-	private static function generateGetApplicationsRequest($course, $professor, $term, $status, $compensation, $is_count) {
+	private static function generateGetApplicationsRequest($section, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
+		$sql_ij_pos = '';
+		$sql_ij_sec = '';
+		$sql_ij_crs = '';
 		$args = array();
-		if ($course != null) {
-			$sql_where .= 'Positions.courseID = :course AND ';
-			$args[':course'] = $course->getID();
+		if ($section != null) {
+			$sql_where .= 'Positions.sectionID = :section AND ';
+			$sql_ij_pos = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
+			$args[':section'] = $section->getID();
 		}
 		if ($professor != null) {
 			$sql_where .= 'Positions.professorID = :professor AND ';
+			$sql_ij_pos = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
 			$args[':professor'] = $professor->getID();
 		}
 		if ($term != null) {
 			$sql_where .= 'Courses.termID = :term AND ';
+			$sql_ij_pos = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
+			$sql_ij_sec = 'INNER JOIN Sections ON Positions.sectionID = Sections.sectionID';
+			$sql_ij_crs = 'INNER JOIN Courses ON Sections.courseID = Courses.courseID';
 			$args[':term'] = $term->getID();
 		}
 		if ($status >= 0) {
@@ -722,8 +731,9 @@ final class Application {
 			$sql_sel = '*';
 		}
 		$sql = "SELECT $sql_sel FROM Applications
-				INNER JOIN Positions ON Applications.positionID = Positions.positionID
-				INNER JOIN Courses ON Positions.courseID = Courses.courseID
+				$sql_ij_pos
+				$sql_ij_sec
+				$sql_ij_crs
 				WHERE $sql_where 1
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC";
 		return array($sql, $args);
@@ -799,7 +809,7 @@ final class Term {
 	public static function getAllTerms() {
 		$sql = 'SELECT * FROM Terms
 				INNER JOIN TermSemesters ON Terms.semesterID = TermSemesters.semesterID
-				ORDER BY year, semesterID';
+				ORDER BY year, semesterIndex';
 		$rows = Database::executeGetAllRows($sql, array());
 		return array_map(function ($row) { return new Term($row); }, $rows);
 	}
@@ -1233,6 +1243,32 @@ final class Event {
 		}
 	}
 }
+
+final class Configuration {
+	const LOG_DEBUG = 'logDebug';
+	const ADMIN_CREATED = 'adminCreated';
+	const DOMAIN = 'domain';
+	const ENABLE_LOGIN = 'enableLogin';
+	const CURRENT_TERM = 'currentTerm';
+
+	private static $cachedConfig = null;
+
+	public static function get($key) {
+		if (Configuration::$cachedConfig == null) {
+			$sql = 'SELECT * FROM Configurations
+					ORDER BY createTime DESC
+					LIMIT 1';
+			Configuration::$cachedConfig = Database::executeGetRow($sql, array());
+		}
+
+		if (isset(Configuration::$cachedConfig[$key])) {
+			return Configuration::$cachedConfig[$key];
+		} else {
+			return false;
+		}
+	}
+}
+
 
 /** Connect to the database and create/use PDO object. */
 Database::connect();

@@ -23,9 +23,9 @@ SET FOREIGN_KEY_CHECKS=1;
 
 -- DATA TO PUT IN FINAL INIT SCRIPT:
 -- default term session types
-INSERT INTO `TermSemesters` (`name`) VALUES
-('spring'),
-('fall');
+INSERT INTO `TermSemesters` (`semesterName`, `semesterIndex`) VALUES
+('spring', 10),
+('fall', 20);
 
 -- default position types
 INSERT INTO `PositionTypes` (`name`, `responsibilities`, `times`, `compensation`) VALUES

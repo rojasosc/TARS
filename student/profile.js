@@ -91,11 +91,11 @@ $(document).ready(function() {
                     stringLength: {
                         min: 4,
                         max: 4,
-                        message: 'Your GPA must have the following format: \'A.BC\''
+                        message: 'Your GPA must have the following format: \'A.BCD\'
                     },
                     regexp: {
-                        regexp: /^[0-4][.][0-9]{2}$/,
-                        message: 'Your GPA must be a valid 3 digit decimal number'
+                        regexp: /^[0-4][.][0-9]{3}$/,
+                        message: 'Your GPA must be a valid decimal number with 3 digits of precision'
                     }
                 }
             }

@@ -46,18 +46,19 @@ INSERT INTO `EventTypes` (`name`, `severity`, `objectType`) VALUES
 ('USER_RESET', 'info', 'User'), -- 9
 ('USER_CONFIRM', 'info', 'User'), -- 10
 ('USER_SETPROFILE', 'info', 'User'), -- 11
-('STUDENT_APPLY', 'info', 'Application'), -- 12
-('STUDENT_CANCEL', 'info', 'Application'), -- 13
-('STUDENT_WITHDRAW', 'info', 'Application'), -- 14
-('STUDENT_SEARCH', 'debug', NULL), -- 15
-('PROFESSOR_ACCEPT', 'info', 'Application'), -- 16
-('PROFESSOR_REJECT', 'info', 'Application'), -- 17
-('PROFESSOR_COMMENT', 'info', 'Comment'), -- 18
-('STAFF_CREATE_PROF', 'info', 'User'), -- 19
-('STAFF_RESET_PROF', 'info', 'User'), -- 20
-('STAFF_COMMENT', 'info', 'Comment'), -- 21
-('STAFF_TERM_IMPORT', 'info', 'Term'), -- 22
-('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 23
+('USER_CHECKEMAIL', 'debug', NULL), -- 12
+('STUDENT_APPLY', 'info', 'Application'), -- 13
+('STUDENT_CANCEL', 'info', 'Application'), -- 14
+('STUDENT_WITHDRAW', 'info', 'Application'), -- 15
+('STUDENT_SEARCH', 'debug', NULL), -- 16
+('PROFESSOR_ACCEPT', 'info', 'Application'), -- 17
+('PROFESSOR_REJECT', 'info', 'Application'), -- 18
+('PROFESSOR_COMMENT', 'info', 'Comment'), -- 19
+('STAFF_CREATE_PROF', 'info', 'User'), -- 20
+('STAFF_RESET_PROF', 'info', 'User'), -- 21
+('STAFF_COMMENT', 'info', 'Comment'), -- 22
+('STAFF_TERM_IMPORT', 'info', 'Term'), -- 23
+('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 24
 
 INSERT INTO `NotificationTemplates`
 (`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES

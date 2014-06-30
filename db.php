@@ -327,9 +327,14 @@ abstract class User {
 	}
 
 	public static function checkEmailAvailable($email) {
-		$count = Database::executeGetScalar('SELECT COUNT(*) FROM Users WHERE email = :email',
-			array(':email' => $email));
-		return $count == 0;		
+		if (empty($email)) {
+			// empty email unavailable
+			return false;
+		} else {
+			$count = Database::executeGetScalar('SELECT COUNT(*) FROM Users WHERE email = :email',
+				array(':email' => $email));
+			return $count == 0;
+		}
 	}
 
 	protected function __construct($user_row) {
@@ -1114,10 +1119,12 @@ final class Event {
 	const SESSION_LOGIN = 6;
 	const SESSION_LOGOUT = 7;
 	const USER_CREATE = 8;
-	const STUDENT_APPLY = 12;
-	const STUDENT_CANCEL = 13;
-	const STUDENT_WITHDRAW = 14;
-	const STUDENT_SEARCH = 15;
+	const USER_SETPROFILE = 11;
+	const USER_CHECKEMAIL = 12;
+	const STUDENT_APPLY = 13;
+	const STUDENT_CANCEL = 14;
+	const STUDENT_WITHDRAW = 15;
+	const STUDENT_SEARCH = 16;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
@@ -1141,6 +1148,10 @@ final class Event {
 			return 'Error logging out';
 		case Event::USER_CREATE:
 			return 'Error creating an account';
+		case Event::USER_SETPROFILE:
+			return 'Error setting profile data';
+		case Event::USER_CHECKEMAIL:
+			return 'Error checking email availability';
 		case Event::STUDENT_APPLY:
 			return 'Error applying to position';
 		case Event::STUDENT_CANCEL:

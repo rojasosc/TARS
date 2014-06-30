@@ -1,32 +1,27 @@
 <?php
 
-
 /**
- * This class handles the capture and receiving of errors on the PHP-side.
+ * This class handles the capture, logging, and output of errors/exceptions.
+ * Create a new one whenever a problem occurs and an Event row will be added.
+ *
+ * A TarsException is sort of an informal subclass of Event that handles the following Events:
+ * - SERVER_EXCEPTION (fatal internal error)
+ * - SERVER_PDOERR (SQL/database error)
+ * - ERROR_LOGIN ("The email or password you entered is incorrect")
+ * - ERROR_PERMISSION ("Permission was denied")
+ * - ERROR_FORM_FIELD ("Fields have invalid input")
+ *
+ * Constructor syntax: new TarsException($class, $action, $more_data)
+ *
+ * The first parameter ($class) is one of the above that describes what went wrong, and
+ * The second parameter ($action) is the Event:: constant that describes what was attempted.
+ * - The "object" of these events is the EventType that failed when this error occured.
+ * The third parameter ($more_data) depends on the Error type and elaborates what went wrong.
+ *
+ * With this exception object, you can convert it to an array (->toArray()) for JSON, or to
+ * an error <div> (->toHTML()).
  */
 final class TarsException extends Exception {
-	private static $ex = null;
-
-	public static function setException($ex) {
-		TarsException::$ex = $ex;
-	}
-
-	public static function getException() {
-		return TarsException::$ex;
-	}
-
-	/**
-	 * Call this function to print a <div class="error"> to the page where
-	 * it is appropriate. If no error is saved, nothing will be printed, so
-	 * you may leave a call to this above any form.
-	 */
-	public static function putError() {
-		$e = Error::getError();
-		if ($e !== null) {
-			echo $e->toHTML();
-		}
-	}
-
 	public static function getMessageFromClass($error_class, $more_data) {
 		switch ($error_class) {
 		case Event::SERVER_EXCEPTION:

@@ -21,11 +21,5 @@
 			header('Location: ../index.php');
 			exit;
 		}
-		
-		$firstName = $professor->getFirstName();
-		$lastName = $professor->getLastName();
-		
-		/* Used in the navbar brand */
-		$nameBrand = $firstName[0].".".$lastName;
     }
 

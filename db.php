@@ -1,5 +1,8 @@
 <?php
-	include('plugins/password_compat/password.php');
+
+require_once('plugins/password_compat/password.php');
+require_once('error.php');
+
 /*******************************************
 *TARS- Teacher Assistant Registration System
 ********************************************/
@@ -54,7 +57,6 @@ final class Database {
 	 * can be cached by PDO.
 	 */
 	public static function connect() {
-
 		$db_dsn = DATABASE_TYPE.':host='.DATABASE_PATH.';dbname='.DATABASE_NAME;
 
 		try {
@@ -62,10 +64,15 @@ final class Database {
 			Database::$db_conn = new PDO($db_dsn, DATABASE_USERNAME, DATABASE_PASSWORD);
 			Database::$db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $ex) {
-			echo "PDO connection error: " . $ex->getMessage() . "<br/>\n";
+			$error = new TarsException(Event::SERVER_PDOERR, Event::SERVER_PDOERR, $ex);
+			header('Content-Type: application/json');
+			echo json_encode($error->toArray());
 			exit;
 		}
+	}
 
+	public static function isConnected() {
+		return Database::$db_conn != null;
 	}
 
 	/**
@@ -313,7 +320,7 @@ abstract class User {
 				(email, emailVerified, password, passwordReset,
 				firstName, lastName, createTime, type) VALUES
 				(:email, :eVer, :password, :pRes, :firstName, :lastName, :ctime, :type)';
-		array(':email' => $email, ':eVer' => 0, ':password' => $password,
+		$args = array(':email' => $email, ':eVer' => 0, ':password' => $password,
 				':pRes' => 0, ':firstName' => $firstName, ':lastName' => $lastName,
 				':ctime' => date('Y-m-d H:i:s'), ':type' => $type);
 		return Database::executeInsert($sql, $args);
@@ -787,18 +794,37 @@ final class Term {
 
 	public static function getAllTerms() {
 		$sql = 'SELECT * FROM Terms
-				INNER JOIN TermSemesters ON Terms.sessionID = TermSemesters.termSessionID
-				ORDER BY year, sessionID';
+				INNER JOIN TermSemesters ON Terms.semesterID = TermSemesters.semesterID
+				ORDER BY year, semesterID';
 		$rows = Database::executeGetAllRows($sql, array());
 		return array_map(function ($row) { return new Term($row); }, $rows);
 	}
+
+	public static function getOrCreateTermSemester($semesterName) {
+		$args = array(':semesterName' => $semesterName);
+		$sql = "SELECT semesterID FROM TermSemesters
+				WHERE semesterName = :semesterName";
+		$rowID = Database::executeGetScalar($sql, $args);
+		if ($rowID === false) {
+			$sql = 'INSERT INTO TermSemesters
+					(semesterName) VALUES
+					(:semesterName)';
+			return Database::executeInsert($sql, $args);
+		} else {
+			return $rowID;
+		}
+	}
 	
-	public static function insertTerm($year, $session) {
-		$sql = 'INSERT INTO Terms (year, session) VALUES (:year, :session)';
-		$args = array(':year' => $year, ':session' => $session);
+	public static function insertTerm($year, $semesterName) {
+		$sql = 'INSERT INTO Terms
+				(year, semesterID) VALUES
+				(:year, :semester)';
+		$args = array(':year' => $year,
+			':semester' => Term::getOrCreateTermSemester($semesterName));
 		$termID = Database::executeInsert($sql, $args);
 		return $termID;
 	}
+
 	/*
 	 * Not totally sure if this should be here, but it's here for now.
 	 * Inserts a line into teaches to link the professor and the course
@@ -859,7 +885,7 @@ final class Term {
 	public function __construct($row) {
 		$this->id = $row['termID'];
 		$this->year = $row['year']; // Term.year
-		$this->session = $row['name']; // TermSemesters.name
+		$this->semester = $row['semesterName']; // TermSemesters.name
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
 		$this->createTime = strftime($row['createTime']);
@@ -867,7 +893,7 @@ final class Term {
 
 	public function getID() { return $this->id; }
 	public function getYear() { return $this->year; }
-	public function getSession() { return $this->session; }
+	public function getSemester() { return $this->semester; }
 	public function getCreator() {
 		if ($this->creator == null) {
 			$this->creator = User::getUserByID($this->creatorID);
@@ -875,13 +901,13 @@ final class Term {
 		return $this->creator;
 	}
 	public function getCreateTime() { return $this->createTime; }
-	public function toString() {
-		return ucfirst($this->session).' '.$this->year;
+	public function getSemesterYear() {
+		return ucfirst($this->semester).' '.$this->year;
 	}
 
 	private $id;
 	private $year;
-	private $session;
+	private $semester;
 	private $creatorID;
 	private $creator;
 	private $createTime;
@@ -1050,9 +1076,9 @@ final class Event {
 	 * and what type of object is referenced by objectID.
 	 *
 	 * --------------------
-	 * SUBSCRIBER TEMPLATES
+	 * NOTIFICAITON TEMPLATES
 	 *
-	 * There's a bunch of EventSubscriberTemplates attached to some EventTypes
+	 * There's a bunch of NotificationTemplates attached to some EventTypes
 	 * representing that Events with that EventType will create Notifications (emails)
 	 * to the specified user(s). When the notifyTarget is not "self", the target is in
 	 * reference to the objectID. If the objectID is not a User, then emails are sent to
@@ -1093,6 +1119,13 @@ final class Event {
 	const STUDENT_WITHDRAW = 14;
 	const STUDENT_SEARCH = 15;
 
+	public static function getEventTypeName($event_type) {
+		$class = new ReflectionClass(__CLASS__);
+		$constants = array_flip($class->getConstants());
+
+		return $constants[$event_type];
+	}
+
 	public static function getErrorTextFromEventType($event_type) {
 		switch ($event_type) {
 		default:
@@ -1119,40 +1152,75 @@ final class Event {
 		}
 	}
 
+	public static function createEventInFile($eventType, $descr, $objectID = null,
+		$createTime = null, $creatorIP = null, $creator = null) {
+		return Event::createEventGeneral($eventType, $descr, $objectID, $createTime,
+			$creatorIP, $creator, false);
+	}
+
 	public static function createEvent($eventType, $descr, $objectID = null,
 		$createTime = null, $creatorIP = null, $creator = null) {
+		return Event::createEventGeneral($eventType, $descr, $objectID, $createTime,
+			$creatorIP, $creator, true);
+	}
 
+	public static function createEventGeneral($eventType, $descr, $objectID,
+		$createTime, $creatorIP, $creator, $useDB) {
 		// default createtime = now
 		if ($createTime == null) {
 			$createTime = time();
 		}
 		// default IP = REMOTE_ADDR
 		if ($creatorIP == null) {
-			$creatorIP = $_SERVER['REMOTE_ADDR'];
+			$creatorIP = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
 		}
 		// default creator = currently logged in user (or leave null if session invalid)
 		if ($creator == null) {
-			if (isset($_SESSION['email'])) {
-				$creator = User::getUserByEmail($_SESSION['email']);
+			if (isset($_SESSION['email']) && Database::isConnected()) {
+				try {
+					$creator = User::getUserByEmail($_SESSION['email']);
+				} catch (PDOException $ex) {
+					// throw away and leave $creator = null on database error
+				}
 			}
 		}
 
-		$args = array(':etype' => $eventType, ':descr' => $descr,
-			':objectid' => $objectID, ':createtm' => date('Y-m-d H:i:s', $createTime),
-			':createip' => inet_pton($creatorIP));
+		if ($useDB) {
+			$args = array(':etype' => $eventType, ':descr' => $descr,
+				':objectid' => $objectID, ':createtm' => date('Y-m-d H:i:s', $createTime),
+				':createip' => inet_pton($creatorIP));
 
-		$creatorID_field = ''; $creatorID_param = '';
-		if ($creator != null) {
-			$creatorID_field = ', creatorID';
-			$creatorID_param = ', :createid';
-			$args[':createid'] = $creator->getID();
+			$creatorID_field = ''; $creatorID_param = '';
+			if ($creator != null) {
+				$creatorID_field = ', creatorID';
+				$creatorID_param = ', :createid';
+				$args[':createid'] = $creator->getID();
+			}
+
+			$sql = "INSERT INTO Events (eventTypeID, description,
+					objectID$creatorID_field, createTime, creatorIP) VALUES
+					(:etype, :descr, :objectid$creatorID_param, :createtm, :createip)";
+
+			return Database::executeInsert($sql, $args);
+		} else {
+			if ($creator == null) {
+				$userID = null;
+			} else {
+				$userID = $creator->getID();
+			}
+			$data = array('class' => Event::getEventTypeName($eventType),
+				'objectID' => $objectID, 'description' => $descr,
+				'ip' => $creatorIP, 'userID' => $userID);
+			$line = 'TARS EVENT (database access error): '.json_encode($data)."\n";
+			$chars_put = error_log($line, 0);
+			if ($chars_put === false) {
+				return false;
+			} else {
+				// callers expect the database `eventID` column returned, since this
+				// was a fallback, return a valid row value on "success"
+				return 1;
+			}
 		}
-
-		$sql = "INSERT INTO Events (eventTypeID, description,
-				objectID$creatorID_field, createTime, creatorIP) VALUES
-				(:etype, :descr, :objectid$creatorID_param, :createtm, :createip)";
-
-		return Database::executeInsert($sql, $args);
 	}
 }
 

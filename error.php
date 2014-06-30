@@ -58,10 +58,7 @@ final class TarsException extends Exception {
 	}
 
 	public static function getErrorClassName($class_code) {
-		$class = new ReflectionClass(__CLASS__);
-		$constants = array_flip($class->getConstants());
-
-		return $constants[$class_code];
+		return Event::getEventTypeName($class_code);
 	}
 
 	public function __construct($error_class, $error_action, $more_data = null) {
@@ -75,13 +72,16 @@ final class TarsException extends Exception {
 
 		// create an Event for this
 		try {
+			$useDB = Database::isConnected();
 			// log the event
-			Event::createEvent($this->class, $this->title.' / '.
-				$this->message, $this->action);
+			Event::createEventGeneral($this->class, $this->title.': '.
+				$this->message, $this->action, null, null, null, $useDB);
 		} catch (PDOException $ex) {
-			// we have an error condition on writing an error to the log.
-			// this is very bad. print error to ./error.log
-
+			// we have an error condition on writing an error to the database.
+			// this means our database connection probably failed...
+			// send the error to php's error_log().
+			Event::createEventInFile($this->class, $this->title.': '.$this->message,
+				$this->action);
 		}
 	}
 

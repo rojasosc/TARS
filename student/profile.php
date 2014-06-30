@@ -1,7 +1,7 @@
 <?php  
-include('studentSession.php');
-include('../formInput.php');
-include('../error.php');
+require_once('studentSession.php');
+require_once('../formInput.php');
+require_once('../error.php');
 
 if (isset($_POST['submitButton'])) {
 	$form_args = get_form_values(array(

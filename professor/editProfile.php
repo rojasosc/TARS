@@ -1,7 +1,7 @@
 <?php
 	include('professorSession.php');
 	$office = $professor->getOffice();
-	$courses = $professor->getCourses();
+	$courses = $professor->getSections();
 ?>
 <!DOCTYPE html>
 <html lang="en">

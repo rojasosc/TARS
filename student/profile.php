@@ -80,13 +80,13 @@ require_once('../error.php');
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="firstName">First Name</label>
-											<input class="form-control" type="text" id="firstName" name="firstName" size="30" value="<?=$fn?>" />
+											<input class="form-control" type="text" id="firstName" name="firstName" size="30" value="<?=$student->getFirstName()?>" />
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="lastName">Last Name</label>
-											<input class="form-control" type="text" id="lastName" name="lastName" size="30" value="<?=$ln?>" />
+											<input class="form-control" type="text" id="lastName" name="lastName" size="30" value="<?=$student->getLastName()?>" />
 										</div>
 									</div>
 								</div>
@@ -94,7 +94,7 @@ require_once('../error.php');
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="email">Email</label>
-											<input class="form-control" readonly="readonly" type="email" id="email" name="email" size="30" value="<?=$email?>" />
+											<input class="form-control" readonly="readonly" type="email" id="email" name="email" size="30" value="<?=$student->getEmail()?>" />
 										</div>
 									</div>
 									<div class="col-sm-6">

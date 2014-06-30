@@ -416,7 +416,7 @@ final class Student extends User {
 				INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
 				INNER JOIN Courses ON Courses.courseID = Sections.courseID
 				WHERE studentID = :student_id AND appStatus = :status
-				ORDER BY department DESC, courseNumber ASC';
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
 		$args = array(':student_id' => $this->id, ':status' => $status);
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Application($row); }, $rows);
@@ -528,7 +528,7 @@ final class Professor extends User {
 				INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
 				INNER JOIN Courses ON Courses.courseID = Sections.courseID
 				WHERE Teaches.professorID = :prof_id
-				ORDER BY Sections.department DESC, Sections.sectionNumber ASC';
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
 		$args = array(':prof_id' => $this->id);
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Section($row); }, $rows);
@@ -634,7 +634,7 @@ final class Position {
 		//	$sql .= 'posType = :posType AND ';
 		//	$args[':posType'] = $position_type;
 		//}
-		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
 		//echo '<pre>';
 		//print_r($args);
 		//exit($sql);
@@ -697,25 +697,20 @@ final class Application {
 
 	private static function generateGetApplicationsRequest($section, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
-		$sql_ij_p = $sql_ij_s = $sql_ij_t = $sql_ij_c = false;
-		$sql_ij_positions = '';
-		$sql_ij_sections = '';
+		$sql_ij_t = false;
 		$sql_ij_teaches = '';
-		$sql_ij_courses = '';
 		$args = array();
 		if ($section != null) {
 			$sql_where .= 'Positions.sectionID = :section AND ';
-			$sql_ij_p = true;
 			$args[':section'] = $section->getID();
 		}
 		if ($professor != null) {
 			$sql_where .= 'Teaches.professorID = :professor AND ';
-			$sql_ij_p = $sql_ij_s = $sql_ij_t = true;
+			$sql_ij_t = true;
 			$args[':professor'] = $professor->getID();
 		}
 		if ($term != null) {
 			$sql_where .= 'Courses.termID = :term AND ';
-			$sql_ij_p = $sql_ij_s = $sql_ij_c = true;
 			$args[':term'] = $term->getID();
 		}
 		if ($status >= 0) {
@@ -731,22 +726,16 @@ final class Application {
 		} else {
 			$sql_sel = '*';
 		}
-		if ($sql_ij_p) {
-			$sql_ij_positions = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
-		}
-		if ($sql_ij_s) {
-			$sql_ij_sections = 'INNER JOIN Sections ON Positions.sectionID = Sections.sectionID';
-		}
 		if ($sql_ij_t) {
 			$sql_ij_teaches = 'INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID';
 		}
-		if ($sql_ij_c) {
-			$sql_ij_courses = 'INNER JOIN Courses ON Sections.courseID = Courses.courseID';
-		}
 		$sql = "SELECT $sql_sel FROM Applications
-				$sql_ij_positions $sql_ij_sections $sql_ij_teaches $sql_ij_courses
+				INNER JOIN Positions ON Applications.positionID = Positions.positionID
+				INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
+				INNER JOIN Courses ON Sections.courseID = Courses.courseID
+				$sql_ij_teaches
 				WHERE $sql_where 1
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC";
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC";
 		//echo "<pre>";
 		//print_r($args);
 		//exit($sql);
@@ -826,6 +815,12 @@ final class Term {
 				ORDER BY year ASC, semesterIndex ASC';
 		$rows = Database::executeGetAllRows($sql, array());
 		return array_map(function ($row) { return new Term($row); }, $rows);
+	}
+
+	public static function getAllTermSemesters() {
+		$sql = 'SELECT semesterName FROM TermSemesters ORDER BY semesterIndex';
+		$rows = Database::executeGetAllRows($sql, array());
+		return array_map(function ($row) { return $row['semesterName']; }, $rows);
 	}
 
 	public static function getOrCreateTermSemester($semesterName) {

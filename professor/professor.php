@@ -9,7 +9,7 @@
 	
 	/* Obtain a CRN and a courseNumber */
 	
-	$courses = $professor->getCourses();
+	$courses = $professor->getSections();
 
 ?>
 <!DOCTYPE html>
@@ -78,7 +78,7 @@
 			    <div class="row">
 					<div class="container">
 						<div class="jumbotron">
-							<h2>Welcome Professor <?= $lastName ?>!</h2>
+							<h2>Welcome Professor <?= $professor->getLastName() ?>!</h2>
 							
 							<h3>Notifications</h3> 
 							<p> You have <?= $pendingApps ?> <a href="applicants.php" >applications</a> pending!</p> 

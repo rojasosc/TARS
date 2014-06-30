@@ -74,7 +74,7 @@
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron">
-						<h2 class="welcome">Welcome <?= $fn ?>!</h2>					
+						<h2 class="welcome">Welcome <?= $staff->getFirstName() ?>!</h2>					
 						<h3><span class="glyphicon glyphicon-warning-sign"></span> Notifications</h3> 
 							<p>You have <?= $totalUnverified ?> <a href="reviewStudents.php">students</a> that need to be verified.</p>
 							<p>(name) has dropped out of his assistantship.</p>

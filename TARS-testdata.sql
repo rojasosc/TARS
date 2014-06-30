@@ -28,13 +28,13 @@ INSERT INTO `TermSemesters` (`semesterName`, `semesterIndex`) VALUES
 ('fall', 20);
 
 -- default position types
-INSERT INTO `PositionTypes` (`name`, `responsibilities`, `times`, `compensation`) VALUES
-('Lab TA', 'lab ta respons.', 'lab ta times', 'lab ta comp.'),
-('Workshop Leader', 'ws respons.', 'ws times', 'ws comp.'),
-('Workshop Super Leader', 'wss respons.', 'wss times', 'wss comp.'),
-('Grader', 'g respons.', 'g times', 'g comp.');
+INSERT INTO `PositionTypes` (`positionName`, `positionType`, `responsibilities`, `times`, `compensation`) VALUES
+('lab', 'Lab TA', 'lab ta respons.', 'lab ta times', 'lab ta comp.'),
+('wsl', 'Workshop Leader', 'ws respons.', 'ws times', 'ws comp.'),
+('wssl', 'Workshop Superleader', 'wss respons.', 'wss times', 'wss comp.'),
+('grader', 'Grader', 'g respons.', 'g times', 'g comp.');
 
-INSERT INTO `EventTypes` (`name`, `severity`, `objectType`) VALUES
+INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SERVER_EXCEPTION', 'crit', 'EventType'), -- 1
 ('SERVER_PDOERR', 'crit', 'EventType'), -- 2
 ('ERROR_LOGIN', 'error', 'EventType'), -- 3

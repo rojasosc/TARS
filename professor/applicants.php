@@ -1,7 +1,7 @@
 <?php
 	include('professorSession.php');
 	/* Obtain courses */
-	$courses = $professor->getCourses();	
+	$courses = $professor->getSections();	
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -250,13 +250,14 @@ CREATE TABLE IF NOT EXISTS `Sessions` (
 --
 CREATE TABLE IF NOT EXISTS `PositionTypes` (
   `positionTypeID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
+  `positionName` varchar(10) NOT NULL,
+  `positionTitle` varchar(20) NOT NULL,
   `responsibilities` text NOT NULL,
   `times` text NOT NULL,
   `compensation` text NOT NULL,
   
   PRIMARY KEY (`positionTypeID`),
-  KEY (`name`)
+  UNIQUE KEY (`positionName`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
@@ -352,12 +353,12 @@ CREATE TABLE IF NOT EXISTS `Teaches` (
 --
 CREATE TABLE IF NOT EXISTS `EventTypes` (
   `eventTypeID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
+  `eventName` varchar(20) NOT NULL,
   `severity` enum('debug','info','notice','warning','error','crit') NOT NULL,
   `objectType` enum('Term','Course','Position','Application','Comment','User','Configuration','EventType') NULL,
 
   PRIMARY KEY (`eventTypeID`),
-  KEY (`name`)
+  UNIQUE KEY (`eventName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

@@ -81,33 +81,40 @@
 							<div class="container">
 								<div id="formBox">
 									<form action="#" class="form-horizontal" id="newTermForm" method="post">
-										<p class="optionHeader">1) Upload Term</p>
+										<p class="optionHeader">Upload Term</p>
 										<div class="row">
 													<div class="col-md-12">
-														<p>Use this form to upload a new term using an XML file.
+														<p>Use this form to upload a new term using a CSV file.
 														Once you have uploaded the file, you can make <a href="editTerm.php">modifications</a> to the new term</p>			
 													</div> <!-- End column -->						
 										</div> <!-- End row -->								
 										<div class="row">
-											<div class="col-md-4">
+											<div class="col-md-2">
 												<div class="form-group">
-													<label class="control-label" for="termName">Specify Term</label>
-													<select id="classYear" name="termName" class="form-control">
-														<option>Summer-2014</option>
-														<option>Fall-2014</option>
-														<option>Spring-2015</option>
-														<option>Summer-2015</option>
-														<option>Fall-2015</option>
+													<label class="control-label" for="termYear">Term Year</label>
+													<input type="text" id="termYear" name="termYear" class="form-control" />
+												</div> <!-- End form-group -->
+											</div> <!-- End column -->
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="termSemester">Term Semester</label>
+													<select id="termSemester" name="termSemester" class="form-control">
+<?php
+$termSemesters = Term::getAllTermSemesters();
+foreach ($termSemesters as $termSemester) {
+	echo "<option value=\"$termSemester\">".ucfirst($termSemester).'</option>';
+}
+?>
 													</select> <!-- End select -->										
 												</div> <!-- End form-group -->
 											</div> <!-- End column -->
 											<div class="col-md-2">
 												<div class="form-group"> 
 													<label class="control-label" for="termFile">Choose File</label><br>
-													<input type="file" title="Browse" name="termFile" data-filename-placement="inside">													
+													<input type="file" title="Browse" id="termFile" name="termFile" data-filename-placement="inside">													
 												</div> <!-- End form-group -->							
 											</div>	<!-- End column -->
-											<div class="col-md-3">
+											<div class="col-md-2">
 												<div class="form-group">
 													<button id="newTermButton" type="submit"  name="newTermButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Upload Term</button>													
 												</div> <!-- End form-group -->							
@@ -115,37 +122,6 @@
 										</div> <!-- End row -->																					
 									</form> <!-- End form -->
 								</div> <!-- end formbox -->
-								<br>
-								<div id="formBox">
-									<form action="#" class="form-horizontal" id="newTermForm" method="post">
-										<p class="optionHeader">2) Copy Previous Term</p>
-										<div class="row">
-											<div class="col-md-12">
-												<p>Use this form to create a new term by copying a previous term.
-												Once you have copied the term, you can make <a href="editTerm.php">modifications</a> to the new term</p>			
-											</div> <!-- End column -->									
-										</div> <!-- End row -->
-										<div class="row">
-											<div class="col-md-4">
-												<div class="form-group">
-													<label class="control-label" for="termName">Specify Term</label>
-													<select id="classYear" name="termName" class="form-control">
-														<option>Summer-2014</option>
-														<option>Fall-2014</option>
-														<option>Spring-2015</option>
-														<option>Summer-2015</option>
-														<option>Fall-2015</option>
-													</select> <!-- End select -->										
-												</div> <!-- End form-group -->
-											</div> <!-- End column -->
-											<div class="col-md-3">
-												<div class="form-group">
-													<button id="copyTermButton" type="submit"  name="copyTermButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-upload"></span> Make Copy</button>													
-												</div> <!-- End form-group -->							
-											</div>	<!-- End column -->																							
-										</div> <!-- End row -->
-									</form> <!-- End form -->
-								</div> <!-- end formbox -->								
 							</div> <!-- End container -->						
 						</div> <!-- End panel-body -->
 					</div> <!-- End panel panel-success -->						

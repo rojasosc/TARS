@@ -1,6 +1,6 @@
 <?php
 	include('professorSession.php');	
-	$courses = $professor->getCourses();
+	$courses = $professor->getSections();
 ?>
 <!DOCTYPE html>
 <html lang="en">

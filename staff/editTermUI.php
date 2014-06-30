@@ -138,6 +138,11 @@
 												<div class="col-xs-2">
 													Grader: <input type="text" class="form-control graderCount" value="5"/>
 												</div>
+											</div> <br/>
+											<div class="row">
+												<div class="col-xs-4">
+													<button type="submit" value="Submit" class="form-control btn btn-success">Save</button>
+												</div>
 											</div>
 										</form>
 									</div>

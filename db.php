@@ -413,7 +413,8 @@ final class Student extends User {
 	public function getApplications($status) {
 		$sql = 'SELECT * FROM Applications
 				INNER JOIN Positions ON Positions.positionID = Applications.positionID
-				INNER JOIN Courses ON Courses.courseID = Positions.courseID
+				INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID
 				WHERE studentID = :student_id AND appStatus = :status
 				ORDER BY department DESC, courseNumber ASC';
 		$args = array(':student_id' => $this->id, ':status' => $status);
@@ -522,15 +523,15 @@ final class Professor extends User {
 		Database::execute($sql, $args);
 	}
 
-	public function getCourses() {
-		$sql = 'SELECT Courses.courseID, Courses.crn, Courses.department, Courses.courseNumber,
-					Courses.courseTitle, Courses.website, Courses.termID
-				FROM Courses, Teaches
-				WHERE Courses.courseID = Teaches.courseID AND Teaches.professorID = :prof_id
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC';
+	public function getSections() {
+		$sql = 'SELECT * FROM Sections
+				INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID
+				WHERE Teaches.professorID = :prof_id
+				ORDER BY Sections.department DESC, Sections.sectionNumber ASC';
 		$args = array(':prof_id' => $this->id);
 		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Course($row); }, $rows);
+		return array_map(function ($row) { return new Section($row); }, $rows);
 	}
 
 
@@ -596,10 +597,10 @@ final class Position {
 			array(':id' => $id));
 		return new Position($row);
 	}
-	public static function insertPosition($courseID, $professorID, $time, $posType) {
-		$sql = 'INSERT INTO Positions (courseID, professorID, time, posType)
-				VALUES (:courseID, :professorID, :time, :posType)';
-		$args = array(':courseID' => $courseID, ':professorID' => $professorID, ':time' => $time, ':posType' => $posType);
+	public static function insertPosition($section, $professor, $time, $posType) {
+		$sql = 'INSERT INTO Positions (sectionID, professorID, time, posType)
+				VALUES (:sectionID, :professorID, :time, :posType)';
+		$args = array(':sectionID' => $section->getID(), ':professorID' => $professor->getID(), ':time' => $time, ':posType' => $posType);
 		$posID = Database::executeInsert($sql, $args);
 		return $posID;
 	}
@@ -644,8 +645,8 @@ final class Position {
 
 	private function __construct($row) {
 		$this->id = $row['positionID'];
-		$this->courseID = $row['courseID'];
-		$this->course = null;
+		$this->sectionID = $row['sectionID'];
+		$this->section = null;
 		$this->professorID = $row['professorID'];
 		$this->professor = null;
 		$this->time = $row['time'];
@@ -653,11 +654,11 @@ final class Position {
 	}
 
 	public function getID() { return $this->id; }
-	public function getCourse() {
-		if ($this->course == null) {
-			$this->course = Course::getCourseByID($this->courseID);
+	public function getSection() {
+		if ($this->section == null) {
+			$this->section = Section::getSectionByID($this->sectionID);
 		}
-		return $this->course;
+		return $this->section;
 	}
 	public function getProfessor() {
 		if ($this->professor == null) {
@@ -669,8 +670,8 @@ final class Position {
 	public function getPositionType() { return $this->posType; }
 
 	private $id;
-	private $courseID;
-	private $course;
+	private $sectionID;
+	private $section;
 	private $professorID;
 	private $professor;
 	private $time;
@@ -696,25 +697,25 @@ final class Application {
 
 	private static function generateGetApplicationsRequest($section, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
-		$sql_ij_pos = '';
-		$sql_ij_sec = '';
-		$sql_ij_crs = '';
+		$sql_ij_p = $sql_ij_s = $sql_ij_t = $sql_ij_c = false;
+		$sql_ij_positions = '';
+		$sql_ij_sections = '';
+		$sql_ij_teaches = '';
+		$sql_ij_courses = '';
 		$args = array();
 		if ($section != null) {
 			$sql_where .= 'Positions.sectionID = :section AND ';
-			$sql_ij_pos = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
+			$sql_ij_p = true;
 			$args[':section'] = $section->getID();
 		}
 		if ($professor != null) {
-			$sql_where .= 'Positions.professorID = :professor AND ';
-			$sql_ij_pos = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
+			$sql_where .= 'Teaches.professorID = :professor AND ';
+			$sql_ij_p = $sql_ij_s = $sql_ij_t = true;
 			$args[':professor'] = $professor->getID();
 		}
 		if ($term != null) {
 			$sql_where .= 'Courses.termID = :term AND ';
-			$sql_ij_pos = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
-			$sql_ij_sec = 'INNER JOIN Sections ON Positions.sectionID = Sections.sectionID';
-			$sql_ij_crs = 'INNER JOIN Courses ON Sections.courseID = Courses.courseID';
+			$sql_ij_p = $sql_ij_s = $sql_ij_c = true;
 			$args[':term'] = $term->getID();
 		}
 		if ($status >= 0) {
@@ -730,12 +731,25 @@ final class Application {
 		} else {
 			$sql_sel = '*';
 		}
+		if ($sql_ij_p) {
+			$sql_ij_positions = 'INNER JOIN Positions ON Applications.positionID = Positions.positionID';
+		}
+		if ($sql_ij_s) {
+			$sql_ij_sections = 'INNER JOIN Sections ON Positions.sectionID = Sections.sectionID';
+		}
+		if ($sql_ij_t) {
+			$sql_ij_teaches = 'INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID';
+		}
+		if ($sql_ij_c) {
+			$sql_ij_courses = 'INNER JOIN Courses ON Sections.courseID = Courses.courseID';
+		}
 		$sql = "SELECT $sql_sel FROM Applications
-				$sql_ij_pos
-				$sql_ij_sec
-				$sql_ij_crs
+				$sql_ij_positions $sql_ij_sections $sql_ij_teaches $sql_ij_courses
 				WHERE $sql_where 1
 				ORDER BY Courses.department DESC, Courses.courseNumber ASC";
+		//echo "<pre>";
+		//print_r($args);
+		//exit($sql);
 		return array($sql, $args);
 	}
 
@@ -809,7 +823,7 @@ final class Term {
 	public static function getAllTerms() {
 		$sql = 'SELECT * FROM Terms
 				INNER JOIN TermSemesters ON Terms.semesterID = TermSemesters.semesterID
-				ORDER BY year, semesterIndex';
+				ORDER BY year ASC, semesterIndex ASC';
 		$rows = Database::executeGetAllRows($sql, array());
 		return array_map(function ($row) { return new Term($row); }, $rows);
 	}
@@ -820,9 +834,10 @@ final class Term {
 				WHERE semesterName = :semesterName";
 		$rowID = Database::executeGetScalar($sql, $args);
 		if ($rowID === false) {
+			$args[':semesterIndex'] = 15; // TODO figure out what to default this to
 			$sql = 'INSERT INTO TermSemesters
-					(semesterName) VALUES
-					(:semesterName)';
+					(semesterName, semesterIndex) VALUES
+					(:semesterName, :semesterIndex)';
 			return Database::executeInsert($sql, $args);
 		} else {
 			return $rowID;
@@ -899,7 +914,9 @@ final class Term {
 	public function __construct($row) {
 		$this->id = $row['termID'];
 		$this->year = $row['year']; // Term.year
-		$this->semester = $row['semesterName']; // TermSemesters.name
+		$this->semester = $row['semesterName'];
+		$this->semesterID = $row['semesterID'];
+		$this->semesterIndex = $row['semesterIndex'];
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
 		$this->createTime = strftime($row['createTime']);
@@ -908,6 +925,8 @@ final class Term {
 	public function getID() { return $this->id; }
 	public function getYear() { return $this->year; }
 	public function getSemester() { return $this->semester; }
+	public function getTermSemesterID() { return $this->semesterID; }
+	public function getTermSemesterIndex() { return $this->semesterIndex; }
 	public function getCreator() {
 		if ($this->creator == null) {
 			$this->creator = User::getUserByID($this->creatorID);
@@ -915,13 +934,15 @@ final class Term {
 		return $this->creator;
 	}
 	public function getCreateTime() { return $this->createTime; }
-	public function getSemesterYear() {
-		return ucfirst($this->semester).' '.$this->year;
+	public function getName() {
+		return ucfirst($this->semesterName).' '.$this->year;
 	}
 
 	private $id;
 	private $year;
 	private $semester;
+	private $semesterID;
+	private $semesterIndex;
 	private $creatorID;
 	private $creator;
 	private $createTime;
@@ -980,70 +1001,102 @@ final class Feedback {
 	private $comment;
 }
 
-final class Course {
-	public static function getCourseByID($id) {
-		$sql = 'SELECT * FROM Courses WHERE courseID = :id';
+final class Section {
+	public static function getSectionByID($id) {
+		$sql = 'SELECT * FROM Sections
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID
+				WHERE sectionID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
-		return new Course($row);
+		return new Section($row);
 	}
-	
-	public static function getAllCourses() {
-		$sql = "Select * from Courses group by courseTitle";
+
+	// TODO: outdated
+	public static function getAllSections() {
+		$sql = "Select * from Sections group by sectionTitle";
 		$args = array();
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows; 
 	}
-	
-	public static function insertCourse($crn, $department, $courseNumber, $courseTitle, $website, $termID) {
-		$sql = 'INSERT INTO Courses (crn, department, courseNumber, courseTitle, website, termID)
-				VALUES (:crn, :department, :courseNumber, :courseTitle, :website, :termID)';
-		$args = array(':crn' => $crn, ':department' => $department, ':courseNumber' => $courseNumber, ':courseTitle' => $courseTitle, ':website' => $website, ':termID' => $termID);
-		$courseID = Database::executeInsert($sql, $args);
-		return $courseID;
+
+	public static function getOrCreateCourse($term, $department, $courseNumber, $courseTitle) {
+		$department = strtoupper($department);
+		$courseNumber = strtoupper($courseNumber);
+
+		$args = array(':term'=>$term->getID(),
+			':department'=>$department, ':number'=>$courseNumber);
+		$sql = 'SELECT courseID FROM Courses WHERE termID = :term AND
+				department = :department AND courseNumber = :number';
+		$rowID = Database::executeGetScalar($sql, $args);
+		if ($rowID === false) {
+			$args[':title'] = $courseTitle;
+			$sql = 'INSERT INTO Courses
+					(termID, department, courseNumber, courseTitle) VALUES
+					(:term, :department, :number, :title)';
+			return Database::executeInsert($sql, $args);
+		} else {
+			return $rowID;
+		}
 	}
 	
-	public static function getCourseProfessors($courseTitle){
+	public static function insertSection($crn, $term, $department, $courseNumber, $courseTitle,
+			$type, $creator, $createTime) {
+		$args = array(':course' =>
+				Section::getOrCreateCourse($term, $department, $courseNumber, $courseTitle),
+				':crn' => $crn, ':type' => $type, ':creator' => $creator->getID(),
+				':createTime' => date('Y-m-d H:i:s', $createTime));
+		$sql = 'INSERT INTO Sections (courseID, crn, type, creatorID, createTime) VALUES
+				(:course, :crn, :type, :creator, :createTime)';
+		$sectionID = Database::executeInsert($sql, $args);
+		return $sectionID;
+	}
+
+	// TODO: outdated
+	public static function getSectionProfessors($sectionTitle){
 		$sql = 'SELECT firstName,lastName 
-			FROM Users,Professors,Teaches,Courses
+			FROM Users,Professors,Teaches,Sections
 			WHERE Users.userID = Professors.userID 
 			AND Professors.userID = Teaches.professorID
-			AND Courses.courseID = Teaches.courseID
-			AND Courses.courseTitle = :courseTitle ';
-		$args = array(':courseTitle' => $courseTitle);
+			AND Sections.sectionID = Teaches.sectionID
+			AND Sections.sectionTitle = :sectionTitle ';
+		$args = array(':sectionTitle' => $sectionTitle);
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows;
 
 	}
 
 	public function __construct($row) {
-		$this->id = $row['courseID'];
+		$this->id = $row['sectionID'];
 		$this->crn = $row['crn'];
-		$this->department = $row['department'];
+		$this->sectionType = $row['type'];
+		$this->courseID = $row['courseID'];
+		$this->courseDepartment = $row['department'];
 		$this->courseNumber = $row['courseNumber'];
 		$this->courseTitle = $row['courseTitle'];
-		$this->website = $row['website'];
-		$this->termID = $row['termID'];
-		$this->term = null;
+		$this->courseTermID = $row['termID'];
+		$this->courseTerm = null;
+		$this->creatorID = $row['creatorID'];
+		$this->creator = null;
+		$this->createTime = strftime($row['createTime']);
 	}
 
 	public function getTotalPositions($prof = null) {
 		if ($prof == null) {
 			$sql = 'SELECT COUNT(*) FROM Positions
-				WHERE courseID = :course_id';
-			$args = array(':course_id' => $this->id);
+				WHERE sectionID = :section_id';
+			$args = array(':section_id' => $this->id);
 		} else {
 			$sql = 'SELECT COUNT(*) FROM Positions
-				WHERE professorID = :prof_id AND courseID = :course_id';
-			$args = array(':prof_id' => $prof->getID(), ':course_id' => $this->id);
+				WHERE professorID = :prof_id AND sectionID = :section_id';
+			$args = array(':prof_id' => $prof->getID(), ':section_id' => $this->id);
 		}
 		return Database::executeGetScalar($sql, $args);
 	}
 	
 	public function getTotalPositionsByType($professor, $type){
 		$sql = 'SELECT COUNT(*) FROM Positions
-			WHERE courseID = :course_id AND professorID = :prof_id AND posType = :pos_type';
-		$args = array(':course_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
+			WHERE sectionID = :section_id AND professorID = :prof_id AND posType = :pos_type';
+		$args = array(':section_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
 		return Database::executeGetScalar($sql, $args);
 		
 	}
@@ -1051,34 +1104,54 @@ final class Course {
 	public function getCurrentPositionsByType($professor, $type){
 		$sql = 'SELECT COUNT(*) FROM Positions
 			INNER JOIN Applications ON Positions.positionID = Applications.positionID
-			WHERE Positions.courseID = :course_id AND Positions.professorID = :prof_id 
+			WHERE Positions.sectionID = :section_id AND Positions.professorID = :prof_id 
 			AND Positions.posType = :pos_type AND Applications.appStatus = 3';
-		$args = array(':course_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
+		$args = array(':section_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
 		return Database::executeGetScalar($sql, $args);	
 	}
 
 
 	public function getID() { return $this->id; }
 	public function getCRN() { return $this->crn; }
-	public function getDepartment() { return $this->department; }
-	public function getNumber() { return $this->courseNumber; }
-	public function getTitle() { return $this->courseTitle; }
-	public function getWebsite() { return $this->website; }
-	public function getTerm() {
-		if ($this->term == null) {
-			$this->term = Term::getTermByID($this->termID);
+	public function getSectionType() { return $this->sectionType; }
+	public function getCourseID() { return $this->courseID; }
+	public function getCourseDepartment() { return $this->courseDepartment; }
+	public function getCourseNumber() { return $this->courseNumber; }
+	public function getCourseTitle() { return $this->CourseTitle; }
+	public function getCourseTerm() {
+		if ($this->courseTerm == null) {
+			$this->courseTerm = Term::getTermByID($this->courseTermID);
 		}
-		return $this->term;
+		return $this->courseTerm;
 	}
+	public function getCourseName() {
+		return strtoupper($this->department . $this->courseNumber);
+	}
+	public function getCourseFullName() {
+		return strtoupper($this->department . $this->courseNumber) . ' ' .
+			$this->getCourseTerm()->getName();
+	}
+
+	public function getCreator() {
+		if ($this->creator == null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $ths->createTime; }
 
 	private $id;
 	private $crn;
-	private $department;
+	private $sectionType;
+	private $courseID;
+	private $courseDepartment;
 	private $courseNumber;
-	private $title;
-	private $website;
-	private $term;
-	private $termID;
+	private $courseTitle;
+	private $courseTermID;
+	private $courseTerm;
+	private $creatorID;
+	private $creator;
+	private $createTime;
 }
 
 final class Event {

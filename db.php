@@ -355,7 +355,7 @@ abstract class User {
 
 	/* "first-initial last" name */
 	public function getFILName() {
-		return "{$this->firstName[0]}. {$this->lastName}";
+		return strtoupper($this->firstName[0]).'. '.ucfirst($this->lastName);
 	}
 
 	protected $id;
@@ -368,18 +368,18 @@ abstract class User {
 
 final class Student extends User {
 	public static function registerStudent($email, $password, $firstName, $lastName,
-		$mobilePhone, $major, $gpa, $classYear, $aboutMe, $universityID) {
+		$mobilePhone, $classYear, $major, $gpa, $universityID, $aboutMe) {
 
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, STUDENT);
 
 		$sql = 'INSERT INTO Students
-				(userID, mobilePhone, major, gpa, classYear, aboutMe, universityID) VALUES
-				(:id, :mobilePhone, :major, :gpa, :classYear, :aboutMe, :universityID)';
+				(userID, mobilePhone, classYear, major, gpa, universityID, aboutMe) VALUES
+				(:id, :mobilePhone, :classYear, :major, :gpa, :universityID, :aboutMe)';
 		$args = array(':id' => $userID, ':mobilePhone' => $mobilePhone, 
-				  ':major' => $major, ':gpa' => $gpa, ':universityID' => $universityID,
-				  ':classYear' => $classYear, ':aboutMe' => $aboutMe);
+				':classYear' => $classYear, ':major' => $major, ':gpa' => $gpa,
+				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::executeInsert($sql, $args);
 		return $userID;
 	}
@@ -389,13 +389,11 @@ final class Student extends User {
 
 		if ($student_row) {
 			$this->mobilePhone = $student_row['mobilePhone'];
+			$this->classYear = $student_row['classYear'];
 			$this->major = $student_row['major'];
 			$this->gpa = $student_row['gpa'];
-			$this->classYear = $student_row['classYear'];
-			$this->aboutMe = $student_row['aboutMe'];
-			$this->status = $student_row['status'];
-			$this->reputation = $student_row['reputation'];
 			$this->universityID = $student_row['universityID'];
+			$this->aboutMe = $student_row['aboutMe'];
 		}
 	}
 
@@ -434,16 +432,17 @@ final class Student extends User {
 	}
 
 	public function updateProfile($firstName, $lastName, $mobilePhone,
-		$major, $classYear, $gpa, $aboutMe) {
+		$classYear, $major, $gpa, $universityID, $aboutMe) {
 		$sql = 'UPDATE Students
 				INNER JOIN Users ON Users.userID = Students.userID
 				SET firstName = :firstName, lastName = :lastName,
-					mobilePhone = :mobilePhone, major = :major, classYear = :classYear,
-					gpa = :gpa, aboutMe = :aboutMe
+					mobilePhone = :mobilePhone, classYear = :classYear, major = :major,
+					gpa = :gpa, universityID = :universityID, aboutMe = :aboutMe
 				WHERE Users.userID = :id';
-		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':mobilePhone'=>$mobilePhone, ':major'=>$major,
-			':classYear'=>$classYear, ':gpa'=>$gpa, ':aboutMe'=>$aboutMe);
+		$args = array(':id' => $this->id, ':firstName' => $firstName,
+				':lastName' => $lastName, ':mobilePhone' => $mobilePhone, 
+				':classYear' => $classYear, ':major' => $major, ':gpa' => $gpa,
+				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::execute($sql, $args);
 	}
 	
@@ -451,7 +450,7 @@ final class Student extends User {
 		$sql = 'UPDATE Applications
 				SET appStatus = :status
 				WHERE positionID = :positionID AND studentID = :studentID';
-		$args = array(':status' => WITHDRAWN, ':positionID' => $positionID, ':studentID' => $this->getID());
+		$args = array(':status' => WITHDRAWN, ':positionID' => $positionID, ':studentID' => $this->id);
 		Database::execute($sql, $args);
 	}
 

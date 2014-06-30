@@ -89,9 +89,9 @@ $(document).ready(function() {
                         message: 'Your GPA is required and cannot be empty'
                     },
                     stringLength: {
-                        min: 4,
-                        max: 4,
-                        message: 'Your GPA must have the following format: \'A.BCD\'
+                        min: 5,
+                        max: 5,
+                        message: 'Your GPA must have the following format: \'A.BCD\''
                     },
                     regexp: {
                         regexp: /^[0-4][.][0-9]{3}$/,

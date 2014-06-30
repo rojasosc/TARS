@@ -8,8 +8,8 @@ require_once('../error.php');
 $error = null;
 if (isset($_POST['submitButton'])) {
 	$form_args = get_form_values(array(
-		'firstName', 'lastName', 'mobilePhone', 'major', 'classYear', 'gpa', 'aboutMe',
-		'universityID'));
+		'firstName', 'lastName', 'mobilePhone', 'classYear', 'major', 'gpa', 'universityID',
+		'aboutMe'));
 
 	$invalid_values = get_invalid_values($form_args);
 	if (count($invalid_values) > 0) {
@@ -20,8 +20,9 @@ if (isset($_POST['submitButton'])) {
 			$student = User::getUserByEmail($email, STUDENT);
 			if ($student) {
 				$student->updateProfile($form_args['firstName'], $form_args['lastName'],
-					$form_args['mobilePhone'], $form_args['major'], $form_args['gpa'],
-					$form_args['classYear'], $form_args['aboutMe'], $form_args['universityID']);
+					$form_args['mobilePhone'], $form_args['classYear'],
+					$form_args['major'], $form_args['gpa'],
+					$form_args['universityID'], $form_args['aboutMe']);
 			} else {
 				$error = new TarsException(Event::ERROR_PERMISSION,
 					Event::USER_SETPROFILE);

@@ -9,7 +9,7 @@ $error = null;
 if (isset($_POST['submitButton'])) {
 	$form_args = get_form_values(array(
 		'email','emailConfirm','password','passwordConfirm','firstName','lastName',
-		'mobilePhone','major','gpa','classYear','aboutMe','universityID'));
+		'mobilePhone','classYear','major','gpa','universityID','aboutMe'));
 
 	$invalid_values = get_invalid_values($form_args);
 	if (count($invalid_values) > 0) {
@@ -28,9 +28,9 @@ if (isset($_POST['submitButton'])) {
 				$studentID = Student::registerStudent(
 					$form_args['email'], $form_args['password'],
 					$form_args['firstName'], $form_args['lastName'],
-					$form_args['mobilePhone'], $form_args['major'],
-					$form_args['gpa'], $form_args['classYear'],
-					$form_args['aboutMe'], $form_args['universityID']);
+					$form_args['mobilePhone'], $form_args['classYear'],
+					$form_args['major'], $form_args['gpa'],
+					$form_args['universityID'], $form_args['aboutMe']);
 				// TODO: NYI email_signup_token($studentID, true);
 			} catch (PDOException $ex) {
 				$error = new TarsException(Event::SERVER_PDOERR,

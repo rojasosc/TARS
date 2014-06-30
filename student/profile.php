@@ -3,24 +3,6 @@ require_once('studentSession.php');
 require_once('../formInput.php');
 require_once('../error.php');
 
-if (isset($_POST['submitButton'])) {
-	$form_args = get_form_values(array(
-		'firstName','lastName','mobilePhone','major','classYear','gpa','aboutMe'));
-	$invalid_values = get_invalid_values($form_args);
-	if (count($invalid_values) > 0) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error modifying your profile.',
-			$invalid_values);
-	} else {
-		try {
-			// use session $student
-			$student->updateProfile($form_args['firstName'],$form_args['lastName'],
-				$form_args['mobilePhone'], $form_args['major'], $form_args['classYear'],
-				$form_args['gpa'], $form_args['aboutMe']);
-		} catch (PDOException $ex) {
-			Error::setError(Error::EXCEPTION, $ex);
-		}
-	}
-}
 ?>
 
 <!DOCTYPE html>
@@ -97,63 +79,63 @@ if (isset($_POST['submitButton'])) {
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">
-											<label>First Name:
-												<input class="form-control" type="text" name="firstName" size="30" value="<?=$fn?>" />
-											</label>
+											<label for="firstName">First Name</label>
+											<input class="form-control" type="text" id="firstName" name="firstName" size="30" value="<?=$fn?>" />
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
-											<label>Last Name:
-												<input class="form-control" type="text" name="lastName" size="30" value="<?=$ln?>" />	
-											</label>
+											<label for="lastName">Last Name</label>
+											<input class="form-control" type="text" id="lastName" name="lastName" size="30" value="<?=$ln?>" />
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">
-											<label>E-mail:
-												<input class="form-control" readonly="readonly" type="email" name="email" size="30" value="<?=$email?>" />
-											</label>
+											<label for="email">Email</label>
+											<input class="form-control" readonly="readonly" type="email" id="email" name="email" size="30" value="<?=$email?>" />
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
-											<label>Phone Number:
-												<input class="form-control" type="text" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" />
-											</label>
+											<label for="mobilePhone">Mobile Phone</label>
+											<input class="form-control" type="text" id="mobilePhone" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" />
 										</div>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-sm-4">
+									<div class="col-sm-6">
 										<div class="form-group">
-											<label>Major:
-												<input class="form-control" type="text" name="major" size="30" value="<?=$student->getMajor()?>" />
-											</label>		
+											<label for="classYear">Class Year</label>
+											<input class="form-control" type="text" id="classYear" name="classYear" size="30" value="<?=$student->getClassYear()?>" />
 										</div>
 									</div>
-									<div class="col-sm-4">
+									<div class="col-sm-6">
 										<div class="form-group">
-											<label>Class Year:
-												<input class="form-control" type="text" name="classYear" size="30" value="<?=$student->getClassYear()?>" />
-											</label>
+											<label for="major">Major</label>
+											<input class="form-control" type="text" id="major" name="major" size="30" value="<?=$student->getMajor()?>" />
 										</div>
 									</div>
-									<div class="col-sm-4">
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
 										<div class="form-group">
-											<label>Cumulative GPA:
-												<input class="form-control" type="text" name="gpa" size="30" value="<?=$student->getGPA()?>" />
-											</label>
+											<label for="gpa">Cumulative GPA</label>
+											<input class="form-control" type="text" id="gpa" name="gpa" size="30" value="<?=$student->getGPA()?>" />
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label for="universityID">University Student ID</label>
+											<input class="form-control" type="text" id="universityID" name="universityID" size="30" value="<?=$student->getUniversityID()?>" />
 										</div>
 									</div>
 								</div>
 								<div class="row col-sm-12">
 									<div class="form-group">
-										<label>Qualifications and TA-ing history: <br />
-											<textarea class="form-control" rows="10" cols="100" name="aboutMe" form="profile"><?=$student->getAboutMe()?></textarea>
-										</label>
+										<label for="aboutMe">Qualifications and TA-ing History</label>
+										<textarea class="form-control" rows="10" cols="100" id="aboutMe" name="aboutMe" form="profile"><?=$student->getAboutMe()?></textarea>
 									</div>
 								</div>
 								<div class="row">

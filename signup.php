@@ -49,13 +49,13 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">First Name</label>
-										<input type="text" class="form-control" name="firstName" placeholder="First Name" />
+										<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="firstName">Last Name</label>
-										<input type="text" class="form-control" name="lastName" placeholder="Last Name" />
+										<label class="control-label" for="lastName">Last Name</label>
+										<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -63,13 +63,13 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email" />
+										<input type="email" class="form-control" id="email" name="email" data-bv-remote-name="email" placeholder="Email" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="emailConfirm">Re-type Email</label>
-										<input type="email" class="form-control" name="emailConfirm" autocomplete="off" placeholder="Confirm Email" />
+										<input type="email" class="form-control" id="emailConfirm" name="emailConfirm" autocomplete="off" placeholder="Confirm Email" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -77,13 +77,13 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="password">Password</label>
-										<input type="password" class="form-control" name="password" placeholder="Create Password" />
+										<input type="password" class="form-control" id="password" name="password" placeholder="Create Password" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="passwordConfirm">Re-type Password</label>
-										<input type="password" class="form-control" name="passwordConfirm" autocomplete="off" placeholder="Confirm Password" />
+										<input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" autocomplete="off" placeholder="Confirm Password" />
 									</div> <!-- End form-group -->						
 								</div>							
 							</div> <!-- End row -->	
@@ -91,7 +91,7 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
-										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone" />
+										<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="Mobile Phone" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
@@ -100,7 +100,7 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="classYear">Class Year</label>
-										<select name="classYear" class="form-control" placeholder="Class Year">
+										<select id="classYear" name="classYear" class="form-control" placeholder="Class Year">
 											<option>2014</option>
 											<option>2015</option>
 											<option>2016</option>
@@ -112,7 +112,7 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="major">Major</label>
-										<select name="major" class="form-control" placeholder="Major">
+										<select id="major" name="major" class="form-control" placeholder="Major">
 											<option>Accounting</option>
 											<option>Computer Science</option>
 											<option>Physics</option>
@@ -125,14 +125,14 @@ require('db.php');
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="GPA">GPA</label>
-										<input type="text" class="form-control" name="gpa" placeholder="GPA" />
+										<label class="control-label" for="gpa">Cumulative GPA</label>
+										<input type="text" class="form-control" id="gpa" name="gpa" placeholder="GPA" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="universityID">University Student ID</label>
-										<input type="text" class="form-control" name="universityID" placeholder="University ID" />
+										<input type="text" class="form-control" id="universityID" name="universityID" placeholder="University ID" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
@@ -140,7 +140,7 @@ require('db.php');
 								<div class="col-md-8">
 									<div class="form-group">
 										<label class="control-label" for="aboutMe">Qualifications and TA-ing History</label>
-										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications." rows="8" cols="64"></textarea>
+										<textarea class="form-control" id="aboutMe" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications." rows="8" cols="64"></textarea>
 									</div> <!-- End form-group -->
 								</div> <!-- End row -->
 							</div> <!-- End row -->

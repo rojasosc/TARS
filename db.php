@@ -880,10 +880,21 @@ final class Feedback {
 	}
 	
 	public static function getCommentsFromStaff($studentID){
-	
+		$sql = "SELECT Users.firstName, Users.lastName, Feedback.comment, Feedback.dateTime
+    			FROM Users,Feedback
+   				WHERE Users.type = :staff AND  Feedback.studentID = :studentID";
+   		$args = array(':studentID' => $studentID, ':staff' => STAFF);
+   		$rows = Database:: executeGetAllRows($sql,$args);
+   		return $rows;
 	}
 	
 	public static function getCommentsFromProfessors($studentID){
+		$sql = "SELECT Users.firstName, Users.lastName, Feedback.comment, Feedback.dateTime
+    			FROM Users,Feedback
+   				WHERE Users.type = :professor AND Users.userID = Feedback.commenterID AND Feedback.studentID = :studentID";
+   		$args = array(':studentID' => $studentID, ':professor' => PROFESSOR);
+   		$rows = Database:: executeGetAllRows($sql,$args);
+   		return $rows;		
 	}
 	
 	public static function newComment($studentID,$commenterID,$comment){

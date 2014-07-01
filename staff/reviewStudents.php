@@ -42,36 +42,10 @@
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
 						<h3>Staff Comments</h3>
-						<div class="container">
-							<div class="row">
-								<div class="col-xs-4">
-									<p>Commenter:</p>
-								</div> <!-- End column -->
-								<div class="col-xs-4">
-									<p>Date:</p>
-								</div> <!-- End column -->
-							</div> <!-- End row -->
-							<div class="row">
-								<div class="col-xs-12">
-									<p>Message:</p>
-								</div> <!-- End column -->
-							</div> <!-- End row -->
+						<div class="container staffComments">
 						</div> <!-- End container -->
 						<h3>Professor Comments</h3>
-						<div class="container">
-							<div class="row">
-								<div class="col-xs-4">
-									<p>Commenter:</p>
-								</div> <!-- End column -->
-								<div class="col-xs-4">
-									<p>Date:</p>
-								</div> <!-- End column -->
-							</div> <!-- End row -->
-							<div class="row">
-								<div class="col-xs-12">
-									<p>Message:</p>
-								</div> <!-- End column -->
-							</div> <!-- End row -->
+						<div class="container professorComments">
 						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">

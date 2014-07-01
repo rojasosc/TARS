@@ -7,7 +7,7 @@ CHANGELOG
 
 ================================
 ********************************
-Publish 4
+Publish v0.4.0
 ********************************
 ================================
 Date: 18 June, 2014
@@ -19,7 +19,7 @@ Added withdrawing functionality for both applications and positions
 
 ================================
 ********************************
-Publish 3
+Publish v0.3.0
 ********************************
 ================================
 Date: 11 June, 2014
@@ -33,7 +33,7 @@ New UI implementations on the manage pagess (functionality not fully supported)
 
 ================================
 ********************************
-Publish 2
+Publish v0.2.0
 ********************************
 ================================
 Date: 6 June, 2014
@@ -48,7 +48,7 @@ Added an interface to withdraw from currently held TAing positions
 
 ================================
 ********************************
-Publish 1
+Publish v0.1.0
 ********************************
 ================================
 Date: 2 June, 2014

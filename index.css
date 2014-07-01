@@ -80,8 +80,13 @@ body {
     border: 3px solid red;
     border-radius: 15px;
 }
-#colorWhite {
+.colorWhite {
     color: white;
+}
+.versionData {
+	color: #ddd;
+	font-style: italic;
+	font-size: 0.8em;
 }
 /*
  * Everything below is NavBar coloring

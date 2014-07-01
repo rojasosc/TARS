@@ -165,8 +165,8 @@ if (isset($_POST['submit'])) {
 										</li>
 										<li> <br />
 											Nate Book <br />
-											Email: nbook@u.rochester.edu <br />
-											Phone Number: I have no clue <br />
+											Email: me@natembook.com <br />
+											Phone Number: 860-324-4055 <br />
 										</li>
 									</ul>
 								</div>

@@ -47,6 +47,9 @@
 			case 'preparePayrollDownload':
 				preparePayrollDownload();
 				break;
+			case 'uploadTerm':
+				uploadTerm();
+				break;
 		}
 	}else{
 		/*TODO: Add error handling */
@@ -133,9 +136,11 @@
 			$gpa = $user->getGPA();
 			$aboutMe = $user->getAboutMe();
 			
+			$staffComments = Feedback::getCommentsFromStaff($_POST['userID']);
+			$professorComments = Feedback::getCommentsFromProfessors($_POST['userID']);
 			/* Prepare to encode JSON object */
 			$student = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
-			'classYear' => $classYear,'major' => $major,'gpa' => $gpa,'aboutMe' => $aboutMe);
+			'classYear' => $classYear,'major' => $major,'gpa' => $gpa,'aboutMe' => $aboutMe, 'staffComments' => $staffComments, 'professorComments' => $professorComments);
 			echo json_encode($student,true);
 		}else{
 			echo json_encode(false);
@@ -218,6 +223,11 @@
 		}
 		header("Content-disposition: attachment; filename=".$fileName);	
 		
+	}
+
+	function uploadTerm(){
+		$fileName = $_POST['fileName'];
+		Term::getTermFromFile($fileName);
 	}
 	
 ?>

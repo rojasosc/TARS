@@ -13,8 +13,8 @@
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="applicants.js"></script>
 		<script src="comments.js"></script>
+		<script src="profiles.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
@@ -31,18 +31,18 @@
 							<p id="studentMajor"></p>
 							<p id="studentGPA"></p>
 							<p id="studentClassYear"></p>
-						</div> <!-- End container -->
-						
+						</div> <!-- End container -->			
 						<h3>Contact Information</h3>
 						<div class="container">
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
-						
-						<h3>About Me</h3>
-						<div class="container">
-							<p id="studentAboutMe"></p>	
-						</div> <!-- End container -->							
+						<h3>Staff Comments</h3>
+						<div class="container staffComments">
+						</div> <!-- End container -->
+						<h3>Professor Comments</h3>
+						<div class="container professorComments">
+						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -209,7 +209,7 @@
 															<th>Last Name</th>
 															<th>Email</th>
 															<th>Type</th>
-															<th>View Profile</th>
+															<th>Profile</th>
 															<th>Comment</th>
 													</tr>
 												</thead>

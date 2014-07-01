@@ -894,6 +894,96 @@ final class Term {
 		}
 	}
 
+	// expected structure:
+	// {"courses":
+	// [
+	//	   {"department":"CSC",
+	//	   "number":"172H",
+	//	   "title":"The Science of Programming Honors",
+	//     "sections":
+	//     [
+	//         {"crn":"30303",
+	//         "instructors":["koomen@cs.rochester.edu","brown@cs.rochester.edu"],
+	//         "sessions":
+	//         [
+	//             {"days":"MW","startTime":"16:50","endTime":"18:05",
+	//             "building":"Gavett","room":"224"},
+	//             ...
+	//         ],
+	//         "positions":
+	//         [
+	//             {"positionType":"lab","comment":"lab 1","maxPositions":3}
+	//         ]
+	//         },
+	//         {"crn":"30301",
+	//         "instructors":["brown@cs.rochester.edu"],
+	//         "sessions":
+	//         [
+	//             {"days":"TR","startTime":"16:50","endTime":"18:05",
+	//             "building":"CSB","room":"601"},
+	//             ...
+	//         ],
+	//         "positions":
+	//         [
+	//             {"positionType":"wsl","comment":"workshop ldrs","maxPositions":9},
+	//             {"positionType":"wssl","comment":"workshop sl","maxPositions":1},
+	//             {"positionType":"lect","comment":"lecture ta ex","maxPositions":2},
+	//             {"positionType":"grader","comment":"grader ex","maxPositions":2}
+	//         ]
+	//         },
+	//         ...
+	//     ]
+	//     },
+	//     ...
+	// ]
+	// }
+	public static function importTerm($json_object) {
+	}
+
+	public static function importTermFromCSV($lines, $uploadData) {
+		$positionTypes = Positions::getAllPositionTypes();
+		$headerLine = true;
+		$headers = array(); // the first line of CSV, used as column names
+		$courses = array(); // output JSON-like array
+		foreach ($lines as $line) {
+			$csv_line = str_getcsv($line);
+			if ($headerLine) {
+				$headers = $csv_line;
+				$headerLine = false;
+			} else {
+				$i = 0;
+				foreach ($csv_line as $cell) {
+					if (isset($header[$i])) {
+						$header = $headers[$i];
+
+						switch ($header) {
+						case 'CourseDepartment':
+						case 'CourseNumber':
+						case 'CourseTitle':
+						case 'SectionCRN':
+						case 'SectionType':
+						case 'Instructor':
+						case 'Instructor2':
+						case 'SessionDays':
+						case 'SessionTimeStart':
+						case 'SessionTimeEnd':
+						case 'SessionBuilding':
+						case 'SessionRoom':
+						default:
+							if ($header[0] == '#') {
+								if (in_array(substr($header, 1), $positionTypes)) {
+								}
+							}
+						}
+					}
+
+					$i++;
+				}
+			}
+		}
+		Term::importTerm($courses);
+	}
+
 	public function __construct($row) {
 		$this->id = $row['termID'];
 		$this->year = $row['year']; // Term.year
@@ -1182,32 +1272,35 @@ final class Event {
 	const ERROR_PERMISSION = 4;
 	const ERROR_NOT_FOUND = 5;
 	const ERROR_FORM_FIELD = 6;
-	const SESSION_LOGIN = 7;
-	const SESSION_LOGOUT = 8;
-	const USER_CREATE = 9;
-	const USER_RESET = 10;
-	const USER_CONFIRM = 11;
-	const USER_CHECK_EMAIL = 12;
-	const USER_GET_APPLICATIONS = 13;
-	const USER_GET_POSITIONS = 14;
-	const USER_GET_SECTIONS = 15;
-	const USER_GET_STUDENTS = 16;
-	const USER_GET_PROFESSORS = 17;
-	const USER_GET_USERS = 18;
-	const USER_GET_PROFILE = 19;
-	const USER_SET_PROFILE = 20;
-	const STUDENT_APPLY = 21;
-	const STUDENT_CANCEL = 22;
-	const STUDENT_WITHDRAW = 23;
-	const STUDENT_SEARCH = 24;
-	const PROFESSOR_ACCEPT = 25;
-	const PROFESSOR_REJECT = 26;
-	const PROFESSOR_COMMENT = 27;
-	const STAFF_CREATE_PROF = 28;
-	const STAFF_RESET_PROF = 29;
-	const STAFF_TERM_IMPORT = 30;
-	const STAFF_GET_PAYROLL = 31;
-	const ADMIN_CONFIGURE = 32;
+	const ERROR_FORM_UPLOAD = 7;
+	const ERROR_CSV_PARSE = 8;
+	const ERROR_JSON_PARSE = 9;
+	const SESSION_LOGIN = 10;
+	const SESSION_LOGOUT = 11;
+	const USER_CREATE = 12;
+	const USER_RESET = 13;
+	const USER_CONFIRM = 14;
+	const USER_CHECK_EMAIL = 15;
+	const USER_GET_APPLICATIONS = 16;
+	const USER_GET_POSITIONS = 17;
+	const USER_GET_SECTIONS = 18;
+	const USER_GET_STUDENTS = 19;
+	const USER_GET_PROFESSORS = 20;
+	const USER_GET_USERS = 21;
+	const USER_GET_PROFILE = 22;
+	const USER_SET_PROFILE = 23;
+	const STUDENT_APPLY = 24;
+	const STUDENT_CANCEL = 25;
+	const STUDENT_WITHDRAW = 26;
+	const STUDENT_SEARCH = 27;
+	const PROFESSOR_ACCEPT = 28;
+	const PROFESSOR_REJECT = 29;
+	const PROFESSOR_COMMENT = 30;
+	const STAFF_CREATE_PROF = 31;
+	const STAFF_RESET_PROF = 32;
+	const STAFF_TERM_IMPORT = 33;
+	const STAFF_GET_PAYROLL = 34;
+	const ADMIN_CONFIGURE = 35;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
@@ -1224,7 +1317,10 @@ final class Event {
 		case Event::ERROR_LOGIN:
 		case Event::ERROR_PERMISSION:
 		case Event::ERROR_NOT_FOUND:
-		case Event::ERROR_FORM_FIELD: return 'Error';
+		case Event::ERROR_FORM_FIELD:
+		case Event::ERROR_FORM_UPLOAD:
+		case Event::ERROR_CSV_PARSE:
+		case Event::ERROR_JSON_PARSE: return 'Error';
 		case Event::SESSION_LOGIN: return 'Error logging in';
 		case Event::SESSION_LOGOUT: return 'Error logging out';
 		case Event::USER_CREATE: return 'Error creating an account';

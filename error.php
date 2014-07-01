@@ -40,6 +40,15 @@ final class TarsException extends Exception {
 		case Event::ERROR_FORM_FIELD:
 			$message = 'Fields have invalid input. Please fill in these fields and try again';
 			break;
+		case Event::ERROR_FORM_UPLOAD:
+			$message = 'Upload of file failed';
+			break;
+		case Event::ERROR_CSV_PARSE:
+			$message = 'Parsing of CSV failed';
+			break;
+		case Event::ERROR_JSON_PARSE:
+			$message = 'Parsing of JSON failed';
+			break;
 		}
 		if (is_subclass_of($more_data, 'Exception')) {
 			$message .= " ({$more_data->getMessage()})";

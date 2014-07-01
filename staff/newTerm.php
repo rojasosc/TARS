@@ -80,7 +80,8 @@
 						<div class="panel-body">
 							<div class="container">
 								<div id="formBox">
-									<form action="#" class="form-horizontal" id="newTermForm" method="post">
+									<form enctype="multipart/form-data" action="importTerm.php" class="form-horizontal" id="newTermForm" method="post">
+										<input type="hidden" name="MAX_FILE_SIZE" value="4000000" />
 										<p class="optionHeader">Upload Term</p>
 										<div class="row">
 													<div class="col-md-12">

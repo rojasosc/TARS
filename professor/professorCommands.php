@@ -15,6 +15,9 @@
 			case 'fetchTheRooms':
 				fetchTheRooms();
 				break;
+			case 'fetchStudent':
+				fetchStudent();
+				break;
 			case 'newStudentComment':
 				newStudentComment();
 				break;
@@ -75,4 +78,29 @@
 	function newStudentComment(){
 		Feedback::newComment($_POST['studentID'],$_POST['commenterID'],$_POST['comment']);
 	}
+
+	function fetchStudent(){
+
+		$user = User::getUserByID($_POST['userID']);
+		$student = array();
+		if($user){
+			$firstName = $user->getFirstName();
+			$lastName = $user->getLastName();
+			$email = $user->getEmail();
+			$mobilePhone = $user->getMobilePhone();
+			$classYear = $user->getClassYear();
+			$major = $user->getMajor();
+			$gpa = $user->getGPA();
+			$aboutMe = $user->getAboutMe();
+			
+			$staffComments = Feedback::getCommentsFromStaff($_POST['userID']);
+			$professorComments = Feedback::getCommentsFromProfessors($_POST['userID']);
+			/* Prepare to encode JSON object */
+			$student = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
+			'classYear' => $classYear,'major' => $major,'gpa' => $gpa,'aboutMe' => $aboutMe, 'staffComments' => $staffComments, 'professorComments' => $professorComments);
+			echo json_encode($student,true);
+		}else{
+			echo json_encode(false);
+		}	
+	}	
 ?>

@@ -1,5 +1,5 @@
 <?php
-	include('../db.php');
+	require_once('../db.php');
 	
 	$studentID = $_POST['universityID'];
 	$positionID = $_POST['positionID'];
@@ -11,4 +11,3 @@
 		Application::setPositionStatus($student, $position, $decision);
 	}
 
-?>

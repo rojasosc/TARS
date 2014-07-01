@@ -1,6 +1,5 @@
 <?php
-	include('professorSession.php');	
-	$courses = $professor->getSections();
+require_once('professorSession.php');	
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -141,22 +140,6 @@
 									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li class="active"><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
 									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-										<?php
-											/* Create links for each course */
-											foreach($courses as $course){
-											
-											?>
-											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
-	
-										<?php	
-											}
-										?>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
 								</ul> <!-- End navbar unordered list -->								
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -179,18 +162,39 @@
 				/*Obtain positionIDS that are in the Assistantship table
 				and that match a particular CRN	
 				Pack these assistants into a panel... repeat.
-				*/
+				 */
 				$tableEntry = 0;
-				$term = Term::getTermByID(CURRENT_TERM);
-				foreach($courses as $course){
-				
-				/* assistants for this particular course */
-				$assistants = Application::getApplications($course, $professor, $term, APPROVED);
-								
-				/* create a new panel */ 
-				$panelID = "coursePanel" . $course->getID();
+				$error = null;
+				$term = null;
+				$sections = array();
+				try {
+					$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+					if ($currentTermID != null) {
+						$term = Term::getTermByID($currentTermID);
+						$sections = $professor->getSections();
+					}
+				} catch (PDOException $ex) {
+					$error = new TarsException(Event::SERVER_DBERROR,
+						Event::USER_GET_SECTIONS, $ex);
+				}
+				foreach($sections as $section){
+					if ($error != null) {
+						echo $error->toHTML();
+						$error = null;
+					}
+					$assistants = array();
+					try {
+						/* assistants for this particular section */
+						$assistants = Application::getApplications($section, $professor, $term, APPROVED);
+					} catch (PDOException $ex) {
+						$error = new TarsException(Event::SERVER_DBERROR,
+							Event::USER_GET_APPLICATIONS, $ex);
+					}
+									
+					/* create a new panel */ 
+					$panelID = "coursePanel" . $section->getID();
 
-				$coursePanelName = $course->getTitle();
+					$coursePanelName = $section->getCourseTitle();
 				?>
 				
 				<div class="row">
@@ -204,7 +208,7 @@
 											<table class="table table-striped">
 												<thead>
 													<tr>
-															<th>ID</th>
+															<th>University ID</th>
 															<th>First Name</th>
 															<th>Last Name</th>
 															<th>Email</th>
@@ -223,7 +227,7 @@
 												
 											?>
 											
-											<tr><td><?= $student->getID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
+											<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
 												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
 												<span class="glyphicon glyphicon-user"></span></button>
 												</td>
@@ -254,8 +258,15 @@
 				
 				/* Course panels closing brace */
 				}
+				if ($error != null) {
+					echo $error->toHTML();
+					$error = null;
+				}
+				if (count($sections) == 0) {
+					echo '<p>There are no sections assigned to you this term.</p>';
+				}
 				
-				?>		
+				?>
 
 				<!-- END Course Panels -->
 			

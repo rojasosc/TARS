@@ -1,5 +1,5 @@
 <?php  
-    include('studentSession.php');
+require_once('studentSession.php');
 ?>
 
 <!DOCTYPE html>

@@ -1,15 +1,18 @@
-
 <?php
-	include('professorSession.php');
+require_once('professorSession.php');
 
-	$term = Term::getTermByID(CURRENT_TERM);
-	/* Obtain the number of pending applications */
-	$pendingApps = Application::getApplicationCount(null, $professor, $term, PENDING);
-	
-	
-	/* Obtain a CRN and a courseNumber */
-	
-	$courses = $professor->getSections();
+$pendingApps = 0;
+$error = null;
+try {
+	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+	if ($currentTermID != null) {
+		$term = Term::getTermByID($currentTermID);
+		/* Obtain the number of pending applications */
+		$pendingApps = Application::getApplicationCount(null, $professor, $term, PENDING);
+	}
+} catch (PDOException $ex) {
+	$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_APPLICATIONS, $ex);
+}
 
 ?>
 <!DOCTYPE html>
@@ -46,22 +49,6 @@
 									<li class="active"><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
 									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-										<?php
-											/* Create links for each course */
-											foreach($courses as $course){
-											
-											?>
-											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
-	
-										<?php	
-											}
-										?>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
 								</ul> <!-- End navbar unordered list -->								
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -78,6 +65,7 @@
 			    <div class="row">
 					<div class="container">
 						<div class="jumbotron">
+							<?php if ($error != null) {	echo $error->getHTML(); } ?>
 							<h2>Welcome Professor <?= $professor->getLastName() ?>!</h2>
 							
 							<h3>Notifications</h3> 

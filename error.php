@@ -6,7 +6,7 @@
  *
  * A TarsException is sort of an informal subclass of Event that handles the following Events:
  * - SERVER_EXCEPTION (fatal internal error)
- * - SERVER_PDOERR (SQL/database error)
+ * - SERVER_DBERROR (SQL/database error)
  * - ERROR_LOGIN ("The email or password you entered is incorrect")
  * - ERROR_PERMISSION ("Permission was denied")
  * - ERROR_FORM_FIELD ("Fields have invalid input")
@@ -25,7 +25,7 @@ final class TarsException extends Exception {
 	public static function getMessageFromClass($error_class, $more_data) {
 		switch ($error_class) {
 		case Event::SERVER_EXCEPTION:
-		case Event::SERVER_PDOERR:
+		case Event::SERVER_DBERROR:
 			$message = 'An internal error has occurred';
 			break;
 		case Event::ERROR_LOGIN:
@@ -33,6 +33,9 @@ final class TarsException extends Exception {
 			break;
 		case Event::ERROR_PERMISSION:
 			$message = 'Permission was denied';
+			break;
+		case Event::ERROR_NOT_FOUND:
+			$message = 'Object was not found';
 			break;
 		case Event::ERROR_FORM_FIELD:
 			$message = 'Fields have invalid input. Please fill in these fields and try again';

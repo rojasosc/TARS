@@ -28,7 +28,7 @@ INSERT INTO `TermSemesters` (`semesterName`, `semesterIndex`) VALUES
 ('fall', 20);
 
 -- default position types
-INSERT INTO `PositionTypes` (`positionName`, `positionType`, `responsibilities`, `times`, `compensation`) VALUES
+INSERT INTO `PositionTypes` (`positionName`, `positionTitle`, `responsibilities`, `times`, `compensation`) VALUES
 ('lab', 'Lab TA', 'lab ta respons.', 'lab ta times', 'lab ta comp.'),
 ('wsl', 'Workshop Leader', 'ws respons.', 'ws times', 'ws comp.'),
 ('wssl', 'Workshop Superleader', 'wss respons.', 'wss times', 'wss comp.'),
@@ -36,29 +36,37 @@ INSERT INTO `PositionTypes` (`positionName`, `positionType`, `responsibilities`,
 
 INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SERVER_EXCEPTION', 'crit', 'EventType'), -- 1
-('SERVER_PDOERR', 'crit', 'EventType'), -- 2
+('SERVER_DBERROR', 'crit', 'EventType'), -- 2
 ('ERROR_LOGIN', 'error', 'EventType'), -- 3
 ('ERROR_PERMISSION', 'error', 'EventType'), -- 4
-('ERROR_FORM_FIELD', 'error', 'EventType'), -- 5
-('SESSION_LOGIN', 'info', 'User'), -- 6
-('SESSION_LOGOUT', 'info', 'User'), -- 7
-('USER_CREATE', 'info', 'User'), -- 8
-('USER_RESET', 'info', 'User'), -- 9
-('USER_CONFIRM', 'info', 'User'), -- 10
-('USER_SETPROFILE', 'info', 'User'), -- 11
-('USER_CHECKEMAIL', 'debug', NULL), -- 12
-('STUDENT_APPLY', 'info', 'Application'), -- 13
-('STUDENT_CANCEL', 'info', 'Application'), -- 14
-('STUDENT_WITHDRAW', 'info', 'Application'), -- 15
-('STUDENT_SEARCH', 'debug', NULL), -- 16
-('PROFESSOR_ACCEPT', 'info', 'Application'), -- 17
-('PROFESSOR_REJECT', 'info', 'Application'), -- 18
-('PROFESSOR_COMMENT', 'info', 'Comment'), -- 19
-('STAFF_CREATE_PROF', 'info', 'User'), -- 20
-('STAFF_RESET_PROF', 'info', 'User'), -- 21
-('STAFF_COMMENT', 'info', 'Comment'), -- 22
-('STAFF_TERM_IMPORT', 'info', 'Term'), -- 23
-('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 24
+('ERROR_NOT_FOUND', 'error', 'EventType'), -- 5
+('ERROR_FORM_FIELD', 'error', 'EventType'), -- 6
+('SESSION_LOGIN', 'info', 'User'), -- 7
+('SESSION_LOGOUT', 'info', 'User'), -- 8
+('USER_CREATE', 'info', 'User'), -- 9
+('USER_RESET', 'info', 'User'), -- 10
+('USER_CONFIRM', 'info', 'User'), -- 11
+('USER_CHECK_EMAIL', 'debug', NULL), -- 12
+('USER_GET_APPS', 'debug', NULL), -- 13
+('USER_GET_POSITIONS', 'debug', NULL), -- 14
+('USER_GET_SECTIONS', 'debug', NULL), -- 15
+('USER_GET_STUDENTS', 'debug', NULL), -- 16
+('USER_GET_PROFESSORS', 'debug', NULL), -- 17
+('USER_GET_USERS', 'debug', NULL), -- 18
+('USER_GET_PROFILE', 'debug', NULL), -- 19
+('USER_SET_PROFILE', 'info', 'User'), -- 20
+('STUDENT_APPLY', 'info', 'Application'), -- 21
+('STUDENT_CANCEL', 'info', 'Application'), -- 22
+('STUDENT_WITHDRAW', 'info', 'Application'), -- 23
+('STUDENT_SEARCH', 'debug', NULL), -- 24
+('PROFESSOR_ACCEPT', 'info', 'Application'), -- 25
+('PROFESSOR_REJECT', 'info', 'Application'), -- 26
+('PROFESSOR_COMMENT', 'info', 'Comment'), -- 27
+('STAFF_CREATE_PROF', 'info', 'User'), -- 28
+('STAFF_RESET_PROF', 'info', 'User'), -- 29
+('STAFF_TERM_IMPORT', 'info', 'Term'), -- 30
+('STAFF_GET_PAYROLL', 'debug', NULL), -- 31
+('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 32
 
 INSERT INTO `NotificationTemplates`
 (`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES

@@ -1,7 +1,22 @@
 <?php  
-    include('studentSession.php');
-	$positions = $student->getApplications(APPROVED);
-	$currentApps = $student->getApplications(PENDING);
+require_once('studentSession.php');
+
+$error = null;
+$term = null;
+$positions = array();
+$currentApps = array();
+try {
+	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+	if ($currentTermID != null) {
+		$term = Term::getTermByID($currentTermID);
+	}
+
+	$positions = $student->getApplications($term, APPROVED);
+	$currentApps = $student->getApplications($term, PENDING);
+} catch (PDOException $ex) {
+	$error = new TarsException(Event::SERVER_DBERROR,
+		Event::SEARCH_APPLICATIONS, $ex);
+}
 ?>
 
 <!DOCTYPE html>
@@ -152,13 +167,13 @@
 							</tr>
 							<?php
 		foreach($positions as $row) {
-		$course = $row->getPosition()->getCourse();
-		$position = $row->getPosition();
+			$position = $row->getPosition();
+			$section = $position->getSection();
 							?>
 							<tr>
 								<td class="positionID hidden-xs"><?= $position->getID()?></td>
-								<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
-								<td class="hidden-xs"><?= $course->getTitle()?></td>
+								<td><?= $section->getCourseName()?></td>
+								<td class="hidden-xs"><?= $section->getCourseTitle()?></td>
 								<td><?= $position->getPositionType()?></td>
 								<td><?= "TBD"?></td>
 								<td><?= $position->getTime()?></td>
@@ -191,13 +206,13 @@
 							</tr>
 							<?php
 		foreach($currentApps as $app) {
-		$appCourse = $app->getPosition()->getCourse();
-		$appPosition = $app->getPosition();
+			$appPosition = $app->getPosition();
+			$appSection = $appPosition->getSection();
 							?>
 							<tr>
 								<td class="positionID hidden-xs"><?= $appPosition->getID()?></td>
-								<td><?= $appCourse->getDepartment()." ".$appCourse->getNumber()?></td>
-								<td class="hidden-xs"><?= $appCourse->getTitle()?></td>
+								<td><?= $appSection->getCourseName()?></td>
+								<td class="hidden-xs"><?= $appSection->getCourseTitle()?></td>
 								<td><?= $appPosition->getPositionType()?></td>
 								<td><?= "TBD"?></td>
 								<td><?= $appPosition->getTime()?></td>

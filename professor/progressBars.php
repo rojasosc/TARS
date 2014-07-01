@@ -40,4 +40,4 @@
 		$workshopLeaderBar = 'danger';
 		}
 	}
-?>
+

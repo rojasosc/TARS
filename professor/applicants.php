@@ -1,7 +1,5 @@
 <?php
-	include('professorSession.php');
-	/* Obtain courses */
-	$courses = $professor->getSections();	
+require_once('professorSession.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,22 +76,6 @@
 									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
 									<li class="active"><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-										<?php
-											/* Create links for each course */
-											foreach($courses as $course){
-											
-											?>
-											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
-	
-										<?php	
-											}
-										?>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
 								</ul> <!-- End navbar unordered list -->								
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -114,29 +96,49 @@
 				<div class="container" id="contentWrapper">
 					<!-- Course Panels -->
 					<div class="container" id="coursesContainer">
-						 <?php
-							$term = Term::getTermByID(CURRENT_TERM);
-							foreach($courses as $course){	
-								$courseCRN = $course->getCRN();
-								$courseTitle = $course->getTitle();
-								
-								$applications = Application::getApplications($course, $professor, $term, PENDING);	/* All applications for this course */
-								
-								/*TODO: Get total positions of a particular type and course.
-								For instance, all the graders for CSC 172.*/
-								
-								$totalGraders = $course->getTotalPositionsByType($professor, "Grader");
-								$currentGraders = $course->getCurrentPositionsByType($professor, "Grader");
-								$totalLabTAs = $course->getTotalPositionsByType($professor, "Lab TA");
-								$currentLabTAs = $course->getCurrentPositionsByType($professor, "Lab TA");
-								$totalWorkshopLeaders = $course->getTotalPositionsByType($professor, "Workshop Leader");
-								$currentWorkshopLeaders = $course->getCurrentPositionsByType($professor, "Workshop Leader");
-								
-								/*TODO: Mark workshop super leader positions in the db so that we 
-								 can highlight them on professor pages. */
-								 
-								 /* Determine the color of the progress bars based on current/total ratio */
-								include('progressBars.php');
+						<?php
+						$error = null;
+						$term = null;
+						$sections = array();
+						try {
+							$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+							if ($currentTermID != null) {
+								$term = Term::getTermByID($currentTermID);
+								$sections = $professor->getSections();
+							}
+						} catch (PDOException $ex) {
+							$error = new TarsException(Event::SERVER_DBERROR,
+								Event::USER_GET_SECTIONS, $ex);
+						}
+						foreach($sections as $section){
+							if ($error != null) {
+								echo $error->toHTML();
+								$error = null;
+							}
+							$applications = array();
+							try {
+								/* assistants for this particular section */
+								$applications = Applicants::getApplications($section, $professor, $term, PENDING);
+							} catch (PDOException $ex) {
+								$error = new TarsException(Event::SERVER_DBERROR,
+									Event::USER_GET_APPLICATIONS, $ex);
+							}
+
+							/*TODO: Get total positions of a particular type and course.
+							For instance, all the graders for CSC 172.*/
+							
+							$totalGraders = $section->getTotalPositionsByType($professor, "Grader");
+							$currentGraders = $section->getCurrentPositionsByType($professor, "Grader");
+							$totalLabTAs = $section->getTotalPositionsByType($professor, "Lab TA");
+							$currentLabTAs = $section->getCurrentPositionsByType($professor, "Lab TA");
+							$totalWorkshopLeaders = $section->getTotalPositionsByType($professor, "Workshop Leader");
+							$currentWorkshopLeaders = $section->getCurrentPositionsByType($professor, "Workshop Leader");
+							
+							/*TODO: Mark workshop super leader positions in the db so that we 
+							 can highlight them on professor pages. */
+							 
+							 /* Determine the color of the progress bars based on current/total ratio */
+							include('progressBars.php');
 						?>				
 							<div class="panel panel-primary">
 								<div class="panel-heading">
@@ -222,7 +224,16 @@
 											</div> <!-- End row -->
 										</div> <!-- End panel-footer -->									
 							</div> <!-- End panel panel-primary -->
-						<?php } ?> <!-- Finished looping through every course -->	
+						<?php
+						}
+						if ($error != null) {
+							echo $error->toHTML();
+							$error = null;
+						}
+						if (count($sections) == 0) {
+							echo '<p>There are no sections assigned to you this term.</p>';
+						}
+						?> <!-- Finished looping through every course -->	
 						</div> <!-- End container -->
 					<!-- End Course Panels -->			
 				</div> <!-- End container content-wrapper-->

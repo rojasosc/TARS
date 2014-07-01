@@ -32,10 +32,6 @@ const REJECTED = 2;
 const APPROVED = 3;
 const WITHDRAWN = 4;
 
-// TODO: use a configurable option or something
-// 2 is internal ID of current Term row/object (fall 2014) in TARS-testdata.sql
-const CURRENT_TERM = 1;
-
 /******************
 *DATABASE UTILITIES
 *******************/	
@@ -64,7 +60,7 @@ final class Database {
 			Database::$db_conn = new PDO($db_dsn, DATABASE_USERNAME, DATABASE_PASSWORD);
 			Database::$db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $ex) {
-			$error = new TarsException(Event::SERVER_PDOERR, Event::SERVER_PDOERR, $ex);
+			$error = new TarsException(Event::SERVER_DBERROR, Event::SERVER_DBERROR, $ex);
 			header('Content-Type: application/json');
 			echo json_encode($error->toArray());
 			exit;
@@ -410,16 +406,8 @@ final class Student extends User {
 		Database::execute($sql,$args);
 	}
 		
-	public function getApplications($status) {
-		$sql = 'SELECT * FROM Applications
-				INNER JOIN Positions ON Positions.positionID = Applications.positionID
-				INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
-				INNER JOIN Courses ON Courses.courseID = Sections.courseID
-				WHERE studentID = :student_id AND appStatus = :status
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
-		$args = array(':student_id' => $this->id, ':status' => $status);
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Application($row); }, $rows);
+	public function getApplications($term, $status) {
+		return Application::getApplications(null, null, $term, $status);
 	}
 	
 
@@ -753,7 +741,7 @@ final class Application {
 	}
 
 	/**
-	 * General purpose function to get application object count.
+	 * General purpose function to get application objects.
 	 *
 	 */
 	public static function getApplications($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
@@ -1169,7 +1157,7 @@ final class Event {
 	 * All "staff" and "admin" targeted notifications go to all Users of those types.
 	 *
 	 * for example, a PDO exception can be represented by:
-	 * name='SERVER_PDOERR', severity=crit, objectType=EventType
+	 * name='SERVER_DBERROR', severity=crit, objectType=EventType
 	 * with no templates (admin might add one to get notified about PDO errors by email).
 
 	 * alternatively, a successful login can be represented by:
@@ -1189,19 +1177,37 @@ final class Event {
 	 * notifyMode=both - An email is sent, and it'll appear when they log in.
 	 */
 	const SERVER_EXCEPTION = 1;
-	const SERVER_PDOERR = 2;
+	const SERVER_DBERROR = 2;
 	const ERROR_LOGIN = 3;
 	const ERROR_PERMISSION = 4;
-	const ERROR_FORM_FIELD = 5;
-	const SESSION_LOGIN = 6;
-	const SESSION_LOGOUT = 7;
-	const USER_CREATE = 8;
-	const USER_SETPROFILE = 11;
-	const USER_CHECKEMAIL = 12;
-	const STUDENT_APPLY = 13;
-	const STUDENT_CANCEL = 14;
-	const STUDENT_WITHDRAW = 15;
-	const STUDENT_SEARCH = 16;
+	const ERROR_NOT_FOUND = 5;
+	const ERROR_FORM_FIELD = 6;
+	const SESSION_LOGIN = 7;
+	const SESSION_LOGOUT = 8;
+	const USER_CREATE = 9;
+	const USER_RESET = 10;
+	const USER_CONFIRM = 11;
+	const USER_CHECK_EMAIL = 12;
+	const USER_GET_APPLICATIONS = 13;
+	const USER_GET_POSITIONS = 14;
+	const USER_GET_SECTIONS = 15;
+	const USER_GET_STUDENTS = 16;
+	const USER_GET_PROFESSORS = 17;
+	const USER_GET_USERS = 18;
+	const USER_GET_PROFILE = 19;
+	const USER_SET_PROFILE = 20;
+	const STUDENT_APPLY = 21;
+	const STUDENT_CANCEL = 22;
+	const STUDENT_WITHDRAW = 23;
+	const STUDENT_SEARCH = 24;
+	const PROFESSOR_ACCEPT = 25;
+	const PROFESSOR_REJECT = 26;
+	const PROFESSOR_COMMENT = 27;
+	const STAFF_CREATE_PROF = 28;
+	const STAFF_RESET_PROF = 29;
+	const STAFF_TERM_IMPORT = 30;
+	const STAFF_GET_PAYROLL = 31;
+	const ADMIN_CONFIGURE = 32;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
@@ -1214,29 +1220,37 @@ final class Event {
 		switch ($event_type) {
 		default:
 		case Event::SERVER_EXCEPTION:
-		case Event::SERVER_PDOERR:
+		case Event::SERVER_DBERROR:
 		case Event::ERROR_LOGIN:
 		case Event::ERROR_PERMISSION:
-		case Event::ERROR_FORM_FIELD:
-			return 'Error';
-		case Event::SESSION_LOGIN:
-			return 'Error logging in';
-		case Event::SESSION_LOGOUT:
-			return 'Error logging out';
-		case Event::USER_CREATE:
-			return 'Error creating an account';
-		case Event::USER_SETPROFILE:
-			return 'Error setting profile data';
-		case Event::USER_CHECKEMAIL:
-			return 'Error checking email availability';
-		case Event::STUDENT_APPLY:
-			return 'Error applying to position';
-		case Event::STUDENT_CANCEL:
-			return 'Error canceling application';
-		case Event::STUDENT_WITHDRAW:
-			return 'Error withdrawing application';
-		case Event::STUDENT_SEARCH:
-			return 'Error searching for positions';
+		case Event::ERROR_NOT_FOUND:
+		case Event::ERROR_FORM_FIELD: return 'Error';
+		case Event::SESSION_LOGIN: return 'Error logging in';
+		case Event::SESSION_LOGOUT: return 'Error logging out';
+		case Event::USER_CREATE: return 'Error creating an account';
+		case Event::USER_RESET: return 'Error resetting password';
+		case Event::USER_CONFIRM: return 'Error confirming email';
+		case Event::USER_CHECK_EMAIL: return 'Error checking email availability';
+		case Event::USER_GET_APPLICATIONS: return 'Error retrieving applications';
+		case Event::USER_GET_POSITIONS: return 'Error retrieving positions';
+		case Event::USER_GET_SECTIONS: return 'Error retrieving sections';
+		case Event::USER_GET_STUDENTS: return 'Error retrieving students';
+		case Event::USER_GET_PROFESSORS: return 'Error retrieving professors';
+		case Event::USER_GET_USERS: return 'Error retrieving users';
+		case Event::USER_GET_PROFILE: return 'Error retrieving profile data';
+		case Event::USER_SET_PROFILE: return 'Error setting profile data';
+		case Event::STUDENT_APPLY: return 'Error applying to position';
+		case Event::STUDENT_CANCEL: return 'Error canceling application';
+		case Event::STUDENT_WITHDRAW: return 'Error withdrawing application';
+		case Event::STUDENT_SEARCH: return 'Error searching for positions';
+		case Event::PROFESSOR_ACCEPT: return 'Error accepting the application';
+		case Event::PROFESSOR_REJECT: return 'Error rejecting the application';
+		case Event::PROFESSOR_COMMENT: return 'Error creating comment';
+		case Event::STAFF_CREATE_PROF: return 'Error creating professor';
+		case Event::STAFF_RESET_PROF: return 'Error resetting professor password';
+		case Event::STAFF_TERM_IMPORT: return 'Error importing term';
+		case Event::STAFF_GET_PAYROLL: return 'Error retrieving payroll data';
+		case Event::ADMIN_CONFIGURE: return 'Error setting configuration';
 		}
 	}
 

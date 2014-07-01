@@ -17,7 +17,7 @@ if (isset($_POST['submit'])) {
 		try {
 			$login_user = login($form_args['email'], $form_args['password']);
 		} catch (Exception $ex) {
-			$error = new TarsException(Event::SERVER_PDOERR,
+			$error = new TarsException(Event::SERVER_DBERROR,
 				Event::SESSION_LOGIN, $ex);
 		}
 

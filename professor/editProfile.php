@@ -1,7 +1,6 @@
 <?php
-	include('professorSession.php');
+	require_once('professorSession.php');
 	$office = $professor->getOffice();
-	$courses = $professor->getSections();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -120,22 +119,6 @@
 									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
 									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-										<?php
-											/* Create links for each course */
-											foreach($courses as $course){
-											
-											?>
-											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
-	
-										<?php	
-											}
-										?>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
 								</ul> <!-- End navbar unordered list -->								
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -164,11 +147,12 @@
 								<div class="col-xs-4">
 									<legend> Courses </legend>
 									<?php 
-										foreach($courses as $course){
+										$sections = $professor->getSections();
+										foreach($sections as $section){
 									?>
 										<div class="row">
 											<div class="col-xs-12">
-												<?= $course->getTitle() ?>
+												<?= $section->getCourseTitle() ?>
 											</div> <!-- End column -->
 										</div> <!-- End row -->
 									<?php

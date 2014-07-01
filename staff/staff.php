@@ -1,7 +1,17 @@
 <?php  
-	include('staffSession.php');
-	$term = Term::getTermByID(CURRENT_TERM);
-    $totalUnverified = Application::getApplicationCount(null, null, $term, PENDING);
+require_once('staffSession.php');
+
+$totalUnverified = 0;
+$error = null;
+try {
+	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+	if ($currentTermID != null) {
+		$term = Term::getTermByID($currentTermID);
+		$totalUnverified = Application::getApplicationCount(null, null, $term, PENDING);
+	}
+} catch (PDOException $ex) {
+	$error = new TarsException(Event::SERVER_DBERROR, Event::PROFESSOR_GETAPPS, $ex);
+}
 
 ?>
 
@@ -74,6 +84,7 @@
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron">
+						<?php if ($error != null) { echo $error->getHTML(); } ?>
 						<h2 class="welcome">Welcome <?= $staff->getFirstName() ?>!</h2>					
 						<h3><span class="glyphicon glyphicon-warning-sign"></span> Notifications</h3> 
 							<p>You have <?= $totalUnverified ?> <a href="reviewStudents.php">students</a> that need to be verified.</p>

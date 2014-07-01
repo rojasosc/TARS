@@ -6,6 +6,8 @@ require_once('../error.php');
 $form_args = get_form_values(array('search','term','type'));
 $pages = 7;
 
+$positions = array();
+$terms = array();
 $error = null;
 try {
 	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
@@ -17,15 +19,9 @@ try {
 	}
 	$positions = Position::findPositions(
 		$form_args['search'], $form_args['term'], $form_args['type'], $student->getID());
-} catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_PDOERR, Event::STUDENT_SEARCH, $ex);
-}
-
-try {
 	$terms = Term::getAllTerms();
 } catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_PDOERR, Event::STUDENT_SEARCH, $ex);
-	$terms = array();
+	$error = new TarsException(Event::SERVER_DBERROR, Event::SEARCH_POSITIONS, $ex);
 }
 
 ?>

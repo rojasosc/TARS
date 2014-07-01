@@ -1,5 +1,28 @@
 <?php  
-    include('staffSession.php');
+require_once('staffSession.php');
+
+$error = null;
+$termID = isset($_GET['term']) ? $_GET['term'] : null;
+$terms = array();
+$thisTerm = null;
+$assistants = array();
+try {
+	$terms = Term::getAllTerms();
+	foreach ($terms as $term) {
+		if ($termID != null && $term->getID() == $termID) {
+			$thisTerm = $term;
+		}
+	}
+	if ($thisTerm == null) {
+		$thisTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($thisTermID != null) {
+			$thisTerm = Term::getTermByID($thisTermID);
+		}
+	}
+	$assistants = Application::getApplications(null, null, $thisTerm, APPROVED, 'pay');
+} catch (PDOException $ex) {
+	$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_GETPAYROLL, $ex);
+}
 ?>
 
 <!DOCTYPE html>
@@ -71,28 +94,35 @@
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div class="row">
+					<?php if ($error != null) { echo $error->toHTML(); } ?>
 					<div class="panel panel-success">
 						<div class="panel-heading">
 							<p class="panelHeader">Payroll</p>
 						</div> <!-- End panel-heading -->
 						<div class="panel-body">
 							<div class="container" id="payrollContainer">
-								<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
-								<legend>Select Term</legend>
+								<form class="form-horizontal" method="get" action="payroll.php" id="payrollForm">
+									<legend>Select Term</legend>
 									<div class="row">
-											<div class="col-md-10">										
-												<label class="control-label" for="term">Term</label>
-												<select name="term" class="form-control" placeholder="Term">
-													<!-- Still need to use PHP to render these dynamically -->
-													<option>Fall 2014</option>
-													<option>Spring 2015</option>
-													<option>Summer 2015</option>
-													<option>Fall 2015</option>
-													<option>Spring 2016</option>
-												</select> <!-- End select -->										
-											</div> <!-- End column -->										
-										</div> <!-- End row --->
-									<br>	
+										<div class="col-md-5">										
+											<!--<label class="control-label" for="term">Term</label>-->
+											<select id="term" name="term" class="form-control" placeholder="Term">
+<?php
+foreach ($terms as $term) {
+	$sel = $term->getID() == $thisTerm->getID() ? ' selected="selected"' : '';
+	echo '<option value="'.$term->getID().'"'.$sel.'>'.$term->getName().'</option';
+}
+?>
+											</select> <!-- End select -->										
+										</div> <!-- End column -->										
+										<div class="col-md-5">
+											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="termSelectButton">View</a>
+										</div> <!-- End col-md-5 -->
+									</div> <!-- End row --->
+									<br>
+								</form> <!-- End term select form -->
+								<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
+									<legend>Download Term</legend>
 									<div class="row">
 										<div class="col-md-10">
 											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
@@ -105,9 +135,6 @@
 									<table class="table table-striped table-hover">
 									<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
 									<?php
-									
-									$term = Term::getTermByID(CURRENT_TERM);
-									$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
 									
 									foreach($assistants as $assistant){
 										$student = $assistant->getStudent();

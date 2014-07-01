@@ -115,27 +115,22 @@
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
 									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="dropdown">
-										<a href="manageTerms.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Terms<b class="caret"></b></a>
-										<ul class="dropdown-menu">
-											<li><a href="newTerm.php">New Term</a></li>
-											<li><a href="editTerm.php">Edit Term</a></li>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
 									<li class="dropdown active">
-										<a href="manageProfessors.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Professors<b class="caret"></b></a>
-										<ul class="dropdown-menu">
-											<li><a href="createProfessor.php">New Account</a></li>
-											<li class="active"><a href="editProfessor.php">Edit Account</a></li>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
-									<li class="dropdown">
-										<a href="manageStudents.php" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage Students<b class="caret"></b></a>
-										<ul class="dropdown-menu">
-											<li class="active"><a href="editStudent.php">Edit Account</a></li>
-											<li><a href="reviewStudents.php">Review Students</a></li>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
+										<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage<b class="caret"></b></a>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+											<li role="presentation" class="dropdown-header">Terms</li>
+												<li><a href="newTerm.php">New Term</a></li>
+												<li><a href="editTerm.php">Edit Term</a></li>
+											<li role="presentation" class="divider"></li>
+											<li role="presentation" class="dropdown-header">Professors</li>
+												<li><a href="createProfessor.php">New Account</a></li>
+												<li><a href="editProfessor.php">Edit Account</a></li>											
+											<li role="presentation" class="divider"></li>
+											<li role="presentation" class="dropdown-header">Students</li>
+												<li><a href="reviewStudents.php">Review Students</a></li>	
+												<li><a href="editStudent.php">Edit Account</a></li>																				  
+										</ul>
+									</li> <!-- End dropdown list item -->
 									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
 								</ul> <!-- End navbar unordered list -->
 								<ul class="nav navbar-nav navbar-right">
@@ -146,7 +141,7 @@
 					</nav>
 				</div> <!-- End navbar-theme -->
 			</div>		
-			<!--END Page Header -->	  
+			<!--END Page Header --> 
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">

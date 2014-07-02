@@ -2,6 +2,7 @@
 require_once('db.php');
 require_once('formInput.php');
 require_once('error.php');
+require_once('session.php');
 
 function show_version() {
 	$version_code = trim(@file_get_contents('version.txt'));
@@ -26,8 +27,10 @@ if (isset($_POST['submit'])) {
 			Event::SESSION_LOGIN, array('password'));
 	} else {
 		try {
-			$login_user = login($form_args['email'], $form_args['password']);
-		} catch (Exception $ex) {
+			$login_user = Session::login($form_args['email'], $form_args['password']);
+		} catch (TarsException $ex) {
+			$error = $ex;
+		} catch (PDOException $ex) {
 			$error = new TarsException(Event::SERVER_DBERROR,
 				Event::SESSION_LOGIN, $ex);
 		}

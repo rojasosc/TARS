@@ -351,7 +351,12 @@ abstract class User {
 
 	/* "first-initial last" name */
 	public function getFILName() {
-		return strtoupper($this->firstName[0]).'. '.ucfirst($this->lastName);
+		return $this->firstName[0].'. '.$this->lastName;
+	}
+
+	/* first name space last name */
+	public function getName() {
+		return $this->firstName.' '.$this->lastName;
 	}
 
 	protected $id;
@@ -1374,9 +1379,9 @@ final class Event {
 		}
 		// default creator = currently logged in user (or leave null if session invalid)
 		if ($creator == null) {
-			if (isset($_SESSION['email']) && Database::isConnected()) {
+			if (Database::isConnected()) {
 				try {
-					$creator = User::getUserByEmail($_SESSION['email']);
+					$creator = Session::getLoggedInUser();
 				} catch (PDOException $ex) {
 					// throw away and leave $creator = null on database error
 				}
@@ -1450,64 +1455,4 @@ final class Configuration {
 
 /** Connect to the database and create/use PDO object. */
 Database::connect();
-
-/********************
-* SESSION FUNCTIONS *
-********************/
-
-/* Function login
-*  Purpose: Logs a user in.  Verifies that user's input password field against
-*           a hashed password stored in the database.
-*  Returns: nothing.
-**/
-function login($email, $input_password) {
-	if ($user_obj = User::getUserByEmail($email)) {
-		if (password_verify($input_password, $user_obj->getPassword())) {
-			beginSession($email);
-			return $user_obj;
-		}
-	}
-	return false;
-}
-
-
-/* Function beginSession
-*  Purpose:  Initializes a new session.
-*  Returns: nothing.
-**/
-function beginSession($email){
-
-	session_start(); // begin the session
-	session_regenerate_id(true);  // regenerate a new session id on each log in
-	$_SESSION['auth'] =  "Authorized";
-	$_SESSION['email'] = $email;
-	
-}
-
-/* Function endSession
-*  Purpose: Terminates an existing session.  
-*  Returns: nothing. 
-**/
-function endSession(){
-
-	// Unset all of the session variables.
-	$_SESSION = array();
-
-	// If it's desired to kill the session, also delete the session cookie.
-	// Note: This will destroy the session, and not just the session data!
-	if (ini_get("session.use_cookies")) {
-		$params = session_get_cookie_params();
-		setcookie(session_name(), '', time() - 42000,
-			$params["path"], $params["domain"],
-			$params["secure"], $params["httponly"]);
-	}
-
-	// Finally, destroy the session.
-	session_destroy(); 
-}
-
-
-/********************
-* END LOGIN FUNCTIONS
-*********************/
 

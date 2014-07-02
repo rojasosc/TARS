@@ -1,18 +1,13 @@
 <?php
+require_once('../db.php');
+require_once('../session.php');
 
-	include('../db.php');
-	
-	session_start();
-	
-	if(!isset($_SESSION['auth'])){
-		header('Location: ../index.php');
-		exit;
-	} else {
-		$email = $_SESSION['email'];	//Extract the email from the session to fetch a staff object
-		$staff = User::getUserByEmail($email, STAFF);		//Fetch said staff object
-		if (!$staff) {
-			header('Location: ../index.php');
-			exit;
-		}
-	}
+session_start();
+
+$staff = Session::getLoggedInUser(STAFF);
+if (!$staff) {
+	// TODO: save errors for index
+	header('Location: ../.');
+	exit;
+}
 

@@ -1,6 +1,6 @@
 <?php
 	if(isset($_POST['action'])){
-		require('../db.php');
+		require_once '../db.php';
 		$action = $_POST['action'];
 		switch($action){
 			case 'fetchProfessor': 

@@ -1,5 +1,19 @@
 <?php
-require_once('professorSession.php');	
+require_once 'professorSession.php';	
+
+$term = null;
+$sections = array();
+if ($error != null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+			$sections = $professor->getSections();
+		}
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
+	}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -119,40 +133,20 @@ require_once('professorSession.php');
 
 		<!-- BEGIN page-wrapper -->
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $professor->getFILName() ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="active"><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-								</ul> <!-- End navbar unordered list -->								
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-								
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	  	  
+
+<?php
+// Display header for Assistants
+$header_active = 'asst';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="row">
 					<h1 class="panelHeader">My Assistants</h1>
 				</div> <!-- End row -->			
@@ -164,33 +158,17 @@ require_once('professorSession.php');
 				Pack these assistants into a panel... repeat.
 				 */
 				$tableEntry = 0;
-				$error = null;
-				$term = null;
-				$sections = array();
-				try {
-					$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
-					if ($currentTermID != null) {
-						$term = Term::getTermByID($currentTermID);
-						$sections = $professor->getSections();
-					}
-				} catch (PDOException $ex) {
-					$error = new TarsException(Event::SERVER_DBERROR,
-						Event::USER_GET_SECTIONS, $ex);
-				}
 				foreach($sections as $section){
-					if ($error != null) {
-						echo $error->toHTML();
-						$error = null;
-					}
 					$assistants = array();
 					try {
 						/* assistants for this particular section */
 						$assistants = Application::getApplications($section, $professor, $term, APPROVED);
 					} catch (PDOException $ex) {
 						$error = new TarsException(Event::SERVER_DBERROR,
-							Event::USER_GET_APPLICATIONS, $ex);
+							Event::USER_GET_POSITIONS, $ex);
+						echo $error->toHTML();
 					}
-									
+
 					/* create a new panel */ 
 					$panelID = "coursePanel" . $section->getID();
 
@@ -258,18 +236,16 @@ require_once('professorSession.php');
 				
 				/* Course panels closing brace */
 				}
-				if ($error != null) {
-					echo $error->toHTML();
-					$error = null;
-				}
 				if (count($sections) == 0) {
-					echo '<p>There are no sections assigned to you this term.</p>';
+					echo '<div class="alert alert-info">There are no sections assigned to you this term.</div>';
 				}
 				
 				?>
 
 				<!-- END Course Panels -->
-			
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    

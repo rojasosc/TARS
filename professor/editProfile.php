@@ -1,6 +1,8 @@
 <?php
-	require_once('professorSession.php');
+require_once 'professorSession.php';
+if ($professor) {
 	$office = $professor->getOffice();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,40 +101,20 @@
             
 		<div id="page-wrapper">
 			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $professor->getFILName() ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-								</ul> <!-- End navbar unordered list -->								
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-								
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	   
-	  
+<?php
+// Display header for Profile
+$header_active = 'profile';
+require 'header.php';
+?>
+
 			<!-- BEGIN Page Content -->
 			<div id="content">
+<?php
+// only possible error is SESSION_CONTINUE
+if ($error != null) {
+	echo $error->toHTML();
+} else {
+?>
 				<div class="container">				
 					<div class="row">
 						<h1 class="panelHeader">My Profile</h1>
@@ -208,7 +190,10 @@
 						<div class="panel-footer">
 						</div> <!-- End panel-footer -->
 					</div> <!-- End panel panel-primary -->
-				</div> <!-- End container -->						  
+				</div> <!-- End container -->	
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    

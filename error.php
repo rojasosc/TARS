@@ -68,6 +68,13 @@ final class TarsException extends Exception {
 		return Event::getEventTypeName($class_code);
 	}
 
+	/*
+	 * Creates a new exception.
+	 *
+	 * WARNING: calls to this WILL create an Event and log it, so watch what calls it is
+	 * - actually an error
+	 * - not already logged previously
+	 */
 	public function __construct($error_class, $error_action, $more_data = null) {
 		$this->class = $error_class;
 		$this->action = $error_action;
@@ -92,15 +99,24 @@ final class TarsException extends Exception {
 		}
 	}
 
+	/*
+	 * Returns the error as a Bootstrap component to be dropped into the page.
+	 */
 	public function toHTML() {
-		return '<div class="error"><p><b>'.htmlentities($this->title).'</b></p><p>'.htmlentities($this->message).'</p></div>';
+
+		return '<div class="alert alert-danger" role="alert"><strong>'.htmlentities($this->title).'!</strong> '.htmlentities($this->message).'</div';
 	}
 
+	/*
+	 * Returns the error as an array to be dropped into JSON data.
+	 */
 	public function toArray() {
 		return array('class' => TarsException::getErrorClassName($this->class), 'class_code' => $this->class,
 			'action' => Event::getEventTypeName($this->action), 'action_code' => $this->action,
 			'title' => $this->title, 'message' => $this->message);
 	}
+
+	public function getAction() { return $this->action; }
 
 	// error classes: the things that represent the type of thing that went wrong
 	// corresponds to Events.eventTypeID for the logged error Event object.

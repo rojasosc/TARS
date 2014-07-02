@@ -1,5 +1,5 @@
 <?php  
-require_once('studentSession.php');
+require_once 'studentSession.php';
 
 $error = null;
 $term = null;
@@ -113,41 +113,19 @@ try {
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $student->getFILName() ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="student.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li  class="active"><a href="cur_pos.php"><span class="glyphicon glyphicon-th-list"></span> Current Positions</a></li>
-									<li><a href="search.php"><span class="glyphicon glyphicon-inbox"></span> Position Search</a></li>
-								</ul> <!-- End navbar unordered list -->
-
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	  
-	  
+<?php
+// Display header for Home
+$header_active = 'curp';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
-			<div id="content">	    
+			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="panel panel-primary"> 
 					<div class="panel-heading">
 						<h1 class="panel-title">My Current Positions</h1>
@@ -226,6 +204,9 @@ try {
 						<!-- END Current Positions Table -->
 					</div>
 				</div>
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    

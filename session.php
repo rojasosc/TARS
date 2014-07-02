@@ -1,6 +1,6 @@
 <?php
 
-require_once('db.php');
+require_once 'db.php';
 
 /********************
 * SESSION FUNCTIONS *
@@ -72,12 +72,13 @@ final class Session {
 		// If the getLoggedInUser code throws a database error,
 		// continue destroying session and throw the exception later
 		$delay_throw = null;
-		try {
-			$user_obj = Session::getLoggedInUser();
-			echo $user_obj;
-			exit;
-		} catch (PDOException $ex) {
-			$delay_throw = $ex;
+		$user_obj = false;
+		if (session_start()) {
+			try {
+				$user_obj = Session::getLoggedInUser();
+			} catch (PDOException $ex) {
+				$delay_throw = $ex;
+			}
 		}
 
 		 /**************************************

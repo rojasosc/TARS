@@ -1,5 +1,5 @@
 <?php
-	require_once('../db.php');
+	require_once '../db.php';
 	
 	$studentID = $_POST['universityID'];
 	$positionID = $_POST['positionID'];

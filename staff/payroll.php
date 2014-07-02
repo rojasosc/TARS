@@ -1,27 +1,28 @@
 <?php  
-require_once('staffSession.php');
+require_once 'staffSession.php';
 
-$error = null;
 $termID = isset($_GET['term']) ? $_GET['term'] : null;
 $terms = array();
 $thisTerm = null;
 $assistants = array();
-try {
-	$terms = Term::getAllTerms();
-	foreach ($terms as $term) {
-		if ($termID != null && $term->getID() == $termID) {
-			$thisTerm = $term;
+if ($error == null) {
+	try {
+		$terms = Term::getAllTerms();
+		foreach ($terms as $term) {
+			if ($termID != null && $term->getID() == $termID) {
+				$thisTerm = $term;
+			}
 		}
-	}
-	if ($thisTerm == null) {
-		$thisTermID = Configuration::get(Configuration::CURRENT_TERM);
-		if ($thisTermID != null) {
-			$thisTerm = Term::getTermByID($thisTermID);
+		if ($thisTerm == null) {
+			$thisTermID = Configuration::get(Configuration::CURRENT_TERM);
+			if ($thisTermID != null) {
+				$thisTerm = Term::getTermByID($thisTermID);
+			}
 		}
+		$assistants = Application::getApplications(null, null, $thisTerm, APPROVED, 'pay');
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_GETPAYROLL, $ex);
 	}
-	$assistants = Application::getApplications(null, null, $thisTerm, APPROVED, 'pay');
-} catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_GETPAYROLL, $ex);
 }
 ?>
 
@@ -44,57 +45,20 @@ try {
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $staff->getFILName() ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="dropdown">
-										<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage<b class="caret"></b></a>
-										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-											<li role="presentation" class="dropdown-header">Terms</li>
-												<li><a href="newTerm.php">New Term</a></li>
-												<li><a href="editTerm.php">Edit Term</a></li>
-											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Professors</li>
-												<li><a href="createProfessor.php">New Account</a></li>
-												<li><a href="editProfessor.php">Edit Account</a></li>											
-											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Students</li>
-												<li><a href="reviewStudents.php">Review Students</a></li>	
-												<li><a href="editStudent.php">Edit Account</a></li>																				  
-										</ul>
-									</li> <!-- End dropdown list item -->
-									<li class="active"><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
-								</ul> <!-- End navbar unordered list -->
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->								
-							</div> <!-- End navbar-collapse collapse -->	
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->
-	  
+<?php
+// Display header for Manage
+$header_active = 'payroll';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="row">
-					<?php if ($error != null) { echo $error->toHTML(); } ?>
 					<div class="panel panel-success">
 						<div class="panel-heading">
 							<p class="panelHeader">Payroll</p>
@@ -157,6 +121,10 @@ foreach ($terms as $term) {
 							</div>	<!-- End results container -->						
 						</div> <!-- End panel-body -->
 					</div> <!-- End panel panel-success -->
+				</div>
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    

@@ -2,11 +2,11 @@
  
  /*This file can be called from any page to securely end a session */
 
-require_once('session.php');
+require_once 'session.php';
 
 Session::destroy();
 
 // TODO: save errors for index
-header("Location: .");
+header("Location: ./");
 exit;
 

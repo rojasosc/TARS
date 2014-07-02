@@ -1,7 +1,7 @@
 <?php
 
-require_once('plugins/password_compat/password.php');
-require_once('error.php');
+require_once 'plugins/password_compat/password.php';
+require_once 'error.php';
 
 /*******************************************
 *TARS- Teacher Assistant Registration System
@@ -1282,30 +1282,31 @@ final class Event {
 	const ERROR_JSON_PARSE = 9;
 	const SESSION_LOGIN = 10;
 	const SESSION_LOGOUT = 11;
-	const USER_CREATE = 12;
-	const USER_RESET = 13;
-	const USER_CONFIRM = 14;
-	const USER_CHECK_EMAIL = 15;
-	const USER_GET_APPLICATIONS = 16;
-	const USER_GET_POSITIONS = 17;
-	const USER_GET_SECTIONS = 18;
-	const USER_GET_STUDENTS = 19;
-	const USER_GET_PROFESSORS = 20;
-	const USER_GET_USERS = 21;
-	const USER_GET_PROFILE = 22;
-	const USER_SET_PROFILE = 23;
-	const STUDENT_APPLY = 24;
-	const STUDENT_CANCEL = 25;
-	const STUDENT_WITHDRAW = 26;
-	const STUDENT_SEARCH = 27;
-	const PROFESSOR_ACCEPT = 28;
-	const PROFESSOR_REJECT = 29;
-	const PROFESSOR_COMMENT = 30;
-	const STAFF_CREATE_PROF = 31;
-	const STAFF_RESET_PROF = 32;
-	const STAFF_TERM_IMPORT = 33;
-	const STAFF_GET_PAYROLL = 34;
-	const ADMIN_CONFIGURE = 35;
+	const SESSION_CONTINUE = 12;
+	const USER_CREATE = 13;
+	const USER_RESET = 14;
+	const USER_CONFIRM = 15;
+	const USER_CHECK_EMAIL = 16;
+	const USER_GET_APPLICATIONS = 17;
+	const USER_GET_POSITIONS = 18;
+	const USER_GET_SECTIONS = 19;
+	const USER_GET_STUDENTS = 20;
+	const USER_GET_PROFESSORS = 21;
+	const USER_GET_USERS = 22;
+	const USER_GET_PROFILE = 23;
+	const USER_SET_PROFILE = 24;
+	const STUDENT_APPLY = 25;
+	const STUDENT_CANCEL = 26;
+	const STUDENT_WITHDRAW = 27;
+	const STUDENT_SEARCH = 28;
+	const PROFESSOR_ACCEPT = 29;
+	const PROFESSOR_REJECT = 30;
+	const PROFESSOR_COMMENT = 31;
+	const STAFF_CREATE_PROF = 32;
+	const STAFF_RESET_PROF = 33;
+	const STAFF_TERM_IMPORT = 34;
+	const STAFF_GET_PAYROLL = 35;
+	const ADMIN_CONFIGURE = 36;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
@@ -1328,6 +1329,7 @@ final class Event {
 		case Event::ERROR_JSON_PARSE: return 'Error';
 		case Event::SESSION_LOGIN: return 'Error logging in';
 		case Event::SESSION_LOGOUT: return 'Error logging out';
+		case Event::SESSION_CONTINUE: return 'Error accessing page';
 		case Event::USER_CREATE: return 'Error creating an account';
 		case Event::USER_RESET: return 'Error resetting password';
 		case Event::USER_CONFIRM: return 'Error confirming email';

@@ -46,6 +46,7 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('ERROR_JSON_PARSE', 'error', 'EventType'), -- 9
 ('SESSION_LOGIN', 'info', 'User'), -- 10
 ('SESSION_LOGOUT', 'info', 'User'), -- 11
+('SESSION_CONTINUE', 'debug', NULL), -- 12
 ('USER_CREATE', 'info', 'User'), -- 12
 ('USER_RESET', 'info', 'User'), -- 13
 ('USER_CONFIRM', 'info', 'User'), -- 14

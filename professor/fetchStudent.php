@@ -1,8 +1,8 @@
 <?php
-require_once('professorSession.php');
-require_once('../db.php');
-require_once('../formInput.php');
-require_once('../error.php');
+require_once 'professorSession.php';
+require_once '../db.php';
+require_once '../formInput.php';
+require_once '../error.php';
 
 $error = null;
 if (!isset($_POST['userID']))

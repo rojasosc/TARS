@@ -1,7 +1,7 @@
 <?php
-require_once('studentSession.php');
-require_once('../formInput.php');
-require_once('../error.php');
+require_once 'studentSession.php';
+require_once '../formInput.php';
+require_once '../error.php';
 
 $error = null;
 $form_args = get_form_values(array(

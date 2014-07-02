@@ -1,8 +1,8 @@
 <?php
-require_once('db.php');
-require_once('formInput.php');
-require_once('error.php');
-require_once('session.php');
+require_once 'db.php';
+require_once 'formInput.php';
+require_once 'error.php';
+require_once 'session.php';
 
 function show_version() {
 	$version_code = trim(@file_get_contents('version.txt'));

@@ -1,5 +1,5 @@
 <?php  
-    include('staffSession.php');
+require_once 'staffSession.php';
 ?>
 
 <!DOCTYPE HTML>
@@ -88,55 +88,19 @@
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $staff->getFILName() ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="dropdown active">
-										<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage<b class="caret"></b></a>
-										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-											<li role="presentation" class="dropdown-header">Terms</li>
-												<li><a href="newTerm.php">New Term</a></li>
-												<li><a href="editTerm.php">Edit Term</a></li>
-											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Professors</li>
-												<li><a href="createProfessor.php">New Account</a></li>
-												<li><a href="editProfessor.php">Edit Account</a></li>											
-											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Students</li>
-												<li><a href="reviewStudents.php">Review Students</a></li>	
-												<li><a href="editStudent.php">Edit Account</a></li>																				  
-										</ul>
-									</li> <!-- End dropdown list item -->
-									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
-								</ul> <!-- End navbar unordered list -->
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->								
-							</div> <!-- End navbar-collapse collapse -->	
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header --> 
-	  
+<?php
+// Display header for Manage
+$header_active = 'payroll';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<!-- Course Panels -->	
 				<div class="row">
 					<div class="container">					
@@ -144,66 +108,68 @@
 							<div class="panel-heading">
 								<p class="panelHeader">Students</p>
 							</div> <!-- End panel-heading -->
-									<div class="panel-body">
-											<table class="table table-striped table-hover">
-												<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Status</th><th>Comment</th></tr>
-												<?php
-												
-												$studentsToReview = Student::getStudentsToReview();
-												$tableEntry = 0;
-												if($studentsToReview != NULL) {
-												foreach($studentsToReview as $student){
+							<div class="panel-body">
+								<table class="table table-striped table-hover">
+									<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Status</th><th>Comment</th></tr>
+									<?php
+									
+									$studentsToReview = Student::getStudentsToReview();
+									$tableEntry = 0;
+									if($studentsToReview != NULL) {
+										foreach($studentsToReview as $student){
 
-												?>
-												
-												<tr>
-												<td><?= $student->getUniversityID() ?></td>
-												<td><?= $student->getFirstName()?></td>
-												<td><?= $student->getLastName() ?></td>
-												<td><?= $student->getEmail() ?></td>
-												<td><?= $student->getGPA()?></td>
-												<td>
-												<button data-toggle="modal" data-target="#studentProfileModal" data-userID="<?= $student->getID() ?>" class="btn btn-default circle profile">
-												<span class="glyphicon glyphicon-user"></span></button>			
-												</td>
-												<td>	<form>
-													<div class="btn-group" data-toggle="buttons" data-userID="<?= $student->getID() ?>">
-														<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Verify">
-															<input type="radio" name="<?= $student->getID() ?>" id="approve" value="<?= STAFF_VERIFIED ?>" checked><span class="glyphicon glyphicon-ok"></span>
-														</label>
-														<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
-															<input type="radio" name="<?= $student->getID() ?>" id="deny" value="<?= PENDING ?>" checked><span class="glyphicon glyphicon-remove"></span>
-														</label>
-														<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
-															<input type="radio" name="<?= $student->getID() ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
-														</label>
-													</div> <!-- End btn-group -->
-													</form>
-												</td>
-												<td>
-												<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
-												<span class="glyphicon glyphicon-comment"></span></button>
-												</td>
-												</tr>							
-												<?php
-												$tableEntry++;
-												}
-											}
-												?>
-												
-											</table> <!-- End table -->
-									</div> <!-- End panel-body -->
-										<div class="panel-footer">
-											<div class="row">
-												<div class="col-xs-4">
-													<button name="applyDecision" id="applyDecisions" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
-												</div> <!-- End column -->
-											</div> <!-- End row -->
-										</div> <!-- End panel-footer -->									
+										?>
+										
+										<tr>
+										<td><?= $student->getUniversityID() ?></td>
+										<td><?= $student->getFirstName()?></td>
+										<td><?= $student->getLastName() ?></td>
+										<td><?= $student->getEmail() ?></td>
+										<td><?= $student->getGPA()?></td>
+										<td>
+										<button data-toggle="modal" data-target="#studentProfileModal" data-userID="<?= $student->getID() ?>" class="btn btn-default circle profile">
+										<span class="glyphicon glyphicon-user"></span></button>			
+										</td>
+										<td>	<form>
+											<div class="btn-group" data-toggle="buttons" data-userID="<?= $student->getID() ?>">
+												<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Verify">
+													<input type="radio" name="<?= $student->getID() ?>" id="approve" value="<?= STAFF_VERIFIED ?>" checked><span class="glyphicon glyphicon-ok"></span>
+												</label>
+												<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
+													<input type="radio" name="<?= $student->getID() ?>" id="deny" value="<?= PENDING ?>" checked><span class="glyphicon glyphicon-remove"></span>
+												</label>
+												<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
+													<input type="radio" name="<?= $student->getID() ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
+												</label>
+											</div> <!-- End btn-group -->
+											</form>
+										</td>
+										<td>
+										<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
+										<span class="glyphicon glyphicon-comment"></span></button>
+										</td>
+									</tr>							
+									<?php
+									$tableEntry++;
+									}
+								}
+								?>
+									
+								</table> <!-- End table -->
+							</div> <!-- End panel-body -->
+							<div class="panel-footer">
+								<div class="row">
+									<div class="col-xs-4">
+										<button name="applyDecision" id="applyDecisions" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
+									</div> <!-- End column -->
+								</div> <!-- End row -->
+							</div> <!-- End panel-footer -->									
 						</div> <!-- End panel panel-primary -->
 					</div> <!-- End container -->	
 				</div> <!-- End row -->	
-
+<?php
+}
+?>
 				<!-- END Course Panels -->
 			</div>
 			

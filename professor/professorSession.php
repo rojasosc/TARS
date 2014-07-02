@@ -1,6 +1,6 @@
 <?php
-require_once('../db.php');
-require_once('../session.php');
+require_once '../db.php';
+require_once '../session.php';
 
 $error = null;
 $success = session_start();
@@ -17,7 +17,7 @@ if (!$success) {
 }
 if (!$professor) {
 	if ($error == null) {
-		$error = new TarsException(Event::PERMISSION_DENIED, Event::SESSION_CONTINUE,
+		$error = new TarsException(Event::ERROR_PERMISSION, Event::SESSION_CONTINUE,
 			array('not professor'));
 	}
 }

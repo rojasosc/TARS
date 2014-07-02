@@ -1,16 +1,18 @@
 <?php  
-require_once('staffSession.php');
+require_once 'staffSession.php';
 
+$term = null;
 $totalUnverified = 0;
-$error = null;
-try {
-	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
-	if ($currentTermID != null) {
-		$term = Term::getTermByID($currentTermID);
-		$totalUnverified = Application::getApplicationCount(null, null, $term, PENDING);
+if ($error == null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+			$totalUnverified = Application::getApplicationCount(null, null, $term, PENDING);
+		}
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_APPLICATIONS, $ex);
 	}
-} catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_DBERROR, Event::PROFESSOR_GETAPPS, $ex);
 }
 
 ?>
@@ -33,58 +35,21 @@ try {
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $staff->getFILName() ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li class="active"><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="dropdown">
-										<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage<b class="caret"></b></a>
-										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-											<li role="presentation" class="dropdown-header">Terms</li>
-												<li><a href="newTerm.php">New Term</a></li>
-												<li><a href="editTerm.php">Edit Term</a></li>
-											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Professors</li>
-												<li><a href="createProfessor.php">New Account</a></li>
-												<li><a href="editProfessor.php">Edit Account</a></li>											
-											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Students</li>
-												<li><a href="reviewStudents.php">Review Students</a></li>	
-												<li><a href="editStudent.php">Edit Account</a></li>																				  
-										</ul>
-									</li> <!-- End dropdown list item -->
-									<li><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
-								</ul> <!-- End navbar unordered list -->
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->								
-							</div> <!-- End navbar-collapse collapse -->	
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	  
-	  
+<?php
+// Display header for Home
+$header_active = 'home';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="container">
 					<div class="jumbotron">
-						<?php if ($error != null) { echo $error->getHTML(); } ?>
 						<h2 class="welcome">Welcome <?= $staff->getFirstName() ?>!</h2>					
 						<h3><span class="glyphicon glyphicon-warning-sign"></span> Notifications</h3> 
 							<p>You have <?= $totalUnverified ?> <a href="reviewStudents.php">students</a> that need to be verified.</p>
@@ -92,6 +57,9 @@ try {
 							<p>(name) has replaced (name) in (course) as a (type).</p>
 					</div> <!-- End jumbotron -->
 				</div> <!-- End container -->
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    

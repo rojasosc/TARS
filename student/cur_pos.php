@@ -15,7 +15,7 @@ try {
 	$currentApps = $student->getApplications($term, PENDING);
 } catch (PDOException $ex) {
 	$error = new TarsException(Event::SERVER_DBERROR,
-		Event::SEARCH_APPLICATIONS, $ex);
+		Event::USER_GET_POSITIONS, $ex);
 }
 ?>
 
@@ -152,9 +152,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<td class="positionID hidden-xs"><?= $position->getID()?></td>
 								<td><?= $section->getCourseName()?></td>
 								<td class="hidden-xs"><?= $section->getCourseTitle()?></td>
-								<td><?= $position->getPositionType()?></td>
+								<td><?= $position->getTypeTitle()?></td>
 								<td><?= "TBD"?></td>
-								<td><?= $position->getTime()?></td>
+								<td><?= "TBD"?></td>
 								<td class="hidden-xs"><?= $row->getCompensation()?></td>
 								<td><a class="btn btn-default releaseButton" href="#releaseModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>
@@ -191,9 +191,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<td class="positionID hidden-xs"><?= $appPosition->getID()?></td>
 								<td><?= $appSection->getCourseName()?></td>
 								<td class="hidden-xs"><?= $appSection->getCourseTitle()?></td>
-								<td><?= $appPosition->getPositionType()?></td>
+								<td><?= $appPosition->getTypeTitle()?></td>
 								<td><?= "TBD"?></td>
-								<td><?= $appPosition->getTime()?></td>
+								<td><?= "TBD"?></td>
 								<td class="hidden-xs"><?= $app->getCompensation()?></td>
 								<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>

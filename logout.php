@@ -6,7 +6,7 @@ require_once 'session.php';
 
 Session::destroy();
 
-// TODO: save errors for index
+// TODO: save errors for index somehow?
 header("Location: ./");
 exit;
 

@@ -47,30 +47,28 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SESSION_LOGIN', 'info', 'User'), -- 10
 ('SESSION_LOGOUT', 'info', 'User'), -- 11
 ('SESSION_CONTINUE', 'debug', NULL), -- 12
-('USER_CREATE', 'info', 'User'), -- 12
-('USER_RESET', 'info', 'User'), -- 13
-('USER_CONFIRM', 'info', 'User'), -- 14
-('USER_CHECK_EMAIL', 'debug', NULL), -- 15
-('USER_GET_APPS', 'debug', NULL), -- 16
-('USER_GET_POSITIONS', 'debug', NULL), -- 17
-('USER_GET_SECTIONS', 'debug', NULL), -- 18
-('USER_GET_STUDENTS', 'debug', NULL), -- 19
-('USER_GET_PROFESSORS', 'debug', NULL), -- 20
-('USER_GET_USERS', 'debug', NULL), -- 21
-('USER_GET_PROFILE', 'debug', NULL), -- 22
-('USER_SET_PROFILE', 'info', 'User'), -- 23
-('STUDENT_APPLY', 'info', 'Application'), -- 24
-('STUDENT_CANCEL', 'info', 'Application'), -- 25
+('USER_CREATE', 'info', 'User'), -- 13
+('USER_RESET', 'info', 'User'), -- 14
+('USER_CONFIRM', 'info', 'User'), -- 15
+('USER_CHECK_EMAIL', 'debug', NULL), -- 16
+('USER_GET_APPS', 'debug', NULL), -- 17
+('USER_GET_POSITIONS', 'debug', NULL), -- 18
+('USER_GET_SECTIONS', 'debug', NULL), -- 19
+('USER_GET_STUDENTS', 'debug', NULL), -- 20
+('USER_GET_PROFESSORS', 'debug', NULL), -- 21
+('USER_GET_USERS', 'debug', NULL), -- 22
+('USER_GET_PROFILE', 'debug', NULL), -- 23
+('USER_SET_PROFILE', 'info', 'User'), -- 24
+('STUDENT_APPLY', 'info', 'Application'), -- 25
 ('STUDENT_WITHDRAW', 'info', 'Application'), -- 26
 ('STUDENT_SEARCH', 'debug', NULL), -- 27
-('PROFESSOR_ACCEPT', 'info', 'Application'), -- 28
-('PROFESSOR_REJECT', 'info', 'Application'), -- 29
-('PROFESSOR_COMMENT', 'info', 'Comment'), -- 30
-('STAFF_CREATE_PROF', 'info', 'User'), -- 31
-('STAFF_RESET_PROF', 'info', 'User'), -- 32
-('STAFF_TERM_IMPORT', 'info', 'Term'), -- 33
-('STAFF_GET_PAYROLL', 'debug', NULL), -- 34
-('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 35
+('NONSTUDENT_SET_APP', 'info', 'Application'), -- 28
+('NONSTUDENT_COMMENT', 'info', 'Comment'), -- 29
+('SU_CREATE_USER', 'info', 'User'), -- 30
+('SU_RESET_USER', 'info', 'User'), -- 31
+('STAFF_TERM_IMPORT', 'info', 'Term'), -- 32
+('STAFF_GET_PAYROLL', 'debug', NULL), -- 33
+('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 34
 
 INSERT INTO `NotificationTemplates`
 (`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES
@@ -138,18 +136,18 @@ INSERT INTO `Users` (`email`, `emailVerified`, `password`, `passwordReset`, `fir
 ('cding@cs.rochester.edu', 0, NULL, 1, 'Chen', 'Ding', 2, '2014-01-01 00:00:00', 1),
 ('stefanko@cs.rochester.edu', 0, NULL, 1, 'Daniel', 'Stefankovic', 2, '2014-01-01 00:00:00', 1);
 
-INSERT INTO `Places` (`building`, `room`, `roomType`) VALUES
-('CSB', '722', 'office'),
-('CSB', '700', 'office'),
-('CSB', '650', 'office'),
-('CSB', '618', 'office'),
-('CSB', '715', 'office'),
-('CSB', '703', 'office'),
-('CSB', '701', 'office'),
-('CSB', '720', 'office'),
-('CSB', '702', 'office'),
-('CSB', '710', 'office'),
-('CSB', '620', 'office');
+INSERT INTO `Places` (`building`, `room`) VALUES
+('CSB', '722'),
+('CSB', '700'),
+('CSB', '650'),
+('CSB', '618'),
+('CSB', '715'),
+('CSB', '703'),
+('CSB', '701'),
+('CSB', '720'),
+('CSB', '702'),
+('CSB', '710'),
+('CSB', '620');
 
 INSERT INTO `Professors` (`userID`, `officeID`, `officePhone`, `mobilePhone`) VALUES
 (3, 1, 5852711111, 2147483644),

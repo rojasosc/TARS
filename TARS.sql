@@ -53,9 +53,9 @@ CREATE TABLE IF NOT EXISTS `Places` (
   `placeID` bigint(20) NOT NULL AUTO_INCREMENT,
   `building` varchar(30) NOT NULL,
   `room` varchar(30) NOT NULL,
-  `roomType` varchar(30) NOT NULL,
 
-  PRIMARY KEY (`placeID`)
+  PRIMARY KEY (`placeID`),
+  UNIQUE KEY (`building`, `room`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `Sections` (
   `sectionID` bigint(20) NOT NULL AUTO_INCREMENT,
   `courseID` bigint(20) NOT NULL,
   `crn` bigint(20) NOT NULL,
-  `type` enum('course','lab') NOT NULL,
+  `type` enum('lecture','lab') NOT NULL,
   `creatorID` bigint(20) NOT NULL,
   `createTime` timestamp NOT NULL,
 

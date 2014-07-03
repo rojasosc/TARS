@@ -36,7 +36,7 @@ final class Session {
 		$success = session_start(); // begin the session
 		$success = $success && session_regenerate_id(true);  // regenerate a new session id on each log in
 		if ($success) {
-			Event::createEvent(Event::SESSION_LOGIN,
+			Event::insertEvent(Event::SESSION_LOGIN,
 				$user_obj->getName().' logged in', $user_obj->getID());
 			$_SESSION['userID'] = $user_obj->getID();
 		} else {
@@ -104,7 +104,7 @@ final class Session {
 		/**************************************/
 
 		if ($user_obj) {
-			Event::createEvent(Event::SESSION_LOGOUT,
+			Event::insertEvent(Event::SESSION_LOGOUT,
 				$user_obj->getName().' logged out', $user_obj->getID());
 		}
 

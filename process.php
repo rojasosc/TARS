@@ -38,9 +38,10 @@ if (count($invalid_values) > 0) {
 	}
 }
 
-$result = array('success' => $error == null);
-if ($error != null) {
-	$result['error'] = $error->toArray();
+if ($error == null) {
+	$result = array('success' => true);
+} else {
+	$result = array('success' => false, 'error' => $error->toArray());
 }
 
 echo json_encode($result);

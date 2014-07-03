@@ -21,7 +21,13 @@ if (count($invalid_values) > 0) {
 		try {
 			$lines = @file($upload['tmp_name'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 			if ($lines) {
-				Term::importTermFromCSV($lines, $upload);
+				try {
+					Term::importTermFromCSV($form_args['termYear'], $form_args['termSemester'],
+						$lines, $upload);
+				} catch (PDOException $ex) {
+					$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_TERM_IMPORT,
+						$ex);
+				}
 			} else {
 				$error = new TarsException(Event::ERROR_FORM_UPLOAD, Event::STAFF_TERM_IMPORT,
 					$upload);

@@ -1,4 +1,8 @@
 <?php
+
+// TODO: error handle x6
+// TODO: session check x6
+
 	if(isset($_POST['action'])){
 		require_once '../db.php';
 		$action = $_POST['action'];
@@ -62,7 +66,7 @@
 	}
 	
 	function fetchBuildings(){
-		$buildings = Place::getBuildings();
+		$buildings = Place::getAllBuildings();
 		echo json_encode($buildings);	
 	}
 	
@@ -76,7 +80,9 @@
 	}
 
 	function newStudentComment(){
-		Feedback::newComment($_POST['studentID'],$_POST['commenterID'],$_POST['comment']);
+		$student = User::getUserByID($_POST['studentID'], STUDENT);
+		$student->saveComment($_POST['comment'], User::getUserByID($_POST['commenterID'],
+			PROFESSOR), time());
 	}
 
 	function fetchStudent(){

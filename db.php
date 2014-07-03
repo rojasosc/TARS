@@ -78,6 +78,8 @@ final class Database {
 	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function execute($sql, $args) {
+		//echo "<pre>EXECUTE: $sql\n";var_dump($args);echo '</pre>';
+
 		/* prepare statement: throws PDOException on error */
 		$stmt = Database::$db_conn->prepare($sql);
 
@@ -91,7 +93,7 @@ final class Database {
 	 * Database::executeGetRow($sql, $args)
 	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
 	 *          Gets a row of the database.
-	 * Returns: The row requested, or FALSE if no rows returned
+	 * Returns: The row requested, or NULL if no rows returned
 	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function executeGetRow($sql, $args) {
@@ -102,7 +104,7 @@ final class Database {
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		if ($result === null) {
 			/* empty result set */
-			return false;
+			return null;
 		}
 
 		return $result;
@@ -127,7 +129,7 @@ final class Database {
 	 * Database::executeGetScalar($sql, $args)
 	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
 	 *          Gets a single cell/value (scalar) from the database.
-	 * Returns: The scalar requested, or FALSE if no rows returned
+	 * Returns: The scalar requested, or NULL if no rows returned
 	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function executeGetScalar($sql, $args) {
@@ -138,7 +140,7 @@ final class Database {
 		$result = $stmt->fetch(PDO::FETCH_NUM);
 		if ($result === null) {
 			/* empty result set */
-			return false;
+			return null;
 		}
 
 		return $result[0];
@@ -159,6 +161,18 @@ final class Database {
 
 		/* get the inserted ID */
 		return Database::$db_conn->lastInsertId();
+	}
+
+	public static function beginTransaction() {
+		return Database::$db_conn->beginTransaction();
+	}
+
+	public static function rollbackTransaction() {
+		return Database::$db_conn->rollback();
+	}
+
+	public static function commitTransaction() {
+		return Database::$db_conn->commit();
 	}
 }
 
@@ -198,27 +212,37 @@ final class Place {
 		return array_map(function ($row) { return new Place($row); }, $rows);
 	}
 	
-	public static function getBuildings(){
+	public static function getAllBuildings(){
 		$sql = 'SELECT DISTINCT building FROM Places';
 		$args = array();
 		$rows = Database::executeGetAllRows($sql, $args);
 		return $rows;
 	}
+
+	public static function getOrCreatePlace($building, $room) {
+		$args = array(':building' => $building, ':room' => $room);
+		$sql = 'SELECT placeID FROM Places WHERE building = :building AND room = :room';
+		$rowID = Database::executeGetScalar($sql, $args);
+		if ($rowID === null) {
+			$sql = 'INSERT INTO Places (building, room) VALUES (:building, :room)';
+			return Database::executeInsert($sql, $args);
+		} else {
+			return $rowID;
+		}
+	}
+
 	private function __construct($row) {
 		$this->placeID = $row['placeID'];
 		$this->building = $row['building'];
 		$this->room = $row['room'];
-		$this->roomType = $row['roomType'];
 	}
 
 	public function getBuilding() { return $this->building; }
 	public function getRoom() { return $this->room; }
-	public function getRoomType() { return $this->roomType; }
 	public function getPlaceID() { return $this->placeID; }
 
 	private $building;
 	private $room;
-	private $roomType;
 	private $placeID;
 }
 
@@ -382,6 +406,10 @@ final class Student extends User {
 				':classYear' => $classYear, ':major' => $major, ':gpa' => $gpa,
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::executeInsert($sql, $args);
+
+		Event::insertEvent(Event::USER_CREATE, "$firstName $lastName created a STUDENT acocunt.",
+			$userID);
+
 		return $userID;
 	}
 
@@ -416,13 +444,34 @@ final class Student extends User {
 	}
 	
 
-	public function apply($position, $compensation, $qualifications) {
-		$sql = 'INSERT INTO Applications
-				(positionID, studentID, compensation, appStatus, qualifications) VALUES
-				(:position, :student, :comp, :status, :qual)';
-		$args = array(':position' => $position, ':student' => $this->id,
-			':comp' => $compensation, ':status' => PENDING, ':qual' => $qualifications);
-		return Database::executeInsert($sql, $args);
+	public function apply($positionID, $compensation, $qualifications) {
+		$applicationID = Application::insertApplication($this->id, $positionID, $compensation,
+			$qualifications, PENDING, $this->id, time());
+		Event::insertEvent(Event::STUDENT_APPLY, $this->getName().' applied to a position. '.
+			'Application object created.', $applicaitonID);
+	}
+	
+	public function withdraw($positionID){
+		Applicaiton::setApplicationStatus($this->id, $positionID, WITHDRAW);
+		Event::insertEvent(Event::STUDENT_WITHDRAW, $this->getName().' withdrew an application. '.
+			'Application object updated.', $applicaitonID);
+	}
+	
+	public function getAllComments(){
+		return Comment::getAllComments($this->id);
+	}
+
+	public function saveComment($comment, $creator, $createTime = null) {
+		if ($createTime == null) {
+			$createTime = date();
+		}
+
+		$commentID = Comment::insertComment($comment, $this->id, $creator->getID(), $createTime);
+
+		Event::insertEvent(Event::NONSTUDENT_COMMENT, $creator->getName().' commented on '.
+			'student '.$this->getName().'. Comment object created.', $commentID);
+
+		return $commentID;
 	}
 
 	public function updateProfile($firstName, $lastName, $mobilePhone,
@@ -438,14 +487,9 @@ final class Student extends User {
 				':classYear' => $classYear, ':major' => $major, ':gpa' => $gpa,
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::execute($sql, $args);
-	}
-	
-	public function withdraw($positionID){
-		$sql = 'UPDATE Applications
-				SET appStatus = :status
-				WHERE positionID = :positionID AND studentID = :studentID';
-		$args = array(':status' => WITHDRAWN, ':positionID' => $positionID, ':studentID' => $this->id);
-		Database::execute($sql, $args);
+
+		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their '.
+			'profile data.", $this->id);
 	}
 
 	public function getMobilePhone() { return $this->mobilePhone; }
@@ -481,6 +525,7 @@ final class Professor extends User {
 		$args = array(':id' => $userID, ':officeID' => $officeID,
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
 		Database::executeInsert($sql, $args);
+
 		return $userID;
 	}
 
@@ -514,6 +559,9 @@ final class Professor extends User {
 			':officeID' => $officeID, ':officePhone' => $officePhone,
 			':mobilePhone'=>$mobilePhone);
 		Database::execute($sql, $args);
+
+		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their '.
+			'profile data.", $this->id);
 	}
 
 	public function getSections() {
@@ -586,23 +634,42 @@ final class Admin extends User {
 
 final class Position {
 	public static function getPositionByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Positions WHERE positionID = :id',
-			array(':id' => $id));
+		$args = array(':id' => $id);
+		$sql = 'SELECT * FROM Positions
+				INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
+				WHERE positionID = :id';
+		$row = Database::executeGetRow($sql, $args);
 		return new Position($row);
 	}
-	public static function insertPosition($section, $professor, $time, $posType) {
-		$sql = 'INSERT INTO Positions (sectionID, professorID, time, posType)
-				VALUES (:sectionID, :professorID, :time, :posType)';
-		$args = array(':sectionID' => $section->getID(), ':professorID' => $professor->getID(), ':time' => $time, ':posType' => $posType);
-		$posID = Database::executeInsert($sql, $args);
-		return $posID;
+
+	public static function getAllPositionTypes() {
+		$sql = 'SELECT positionName FROM PositionTypes';
+		$rows = Database::executeGetAllRows($sql, array());
+		return array_map(function ($row) { return $row['positionName']; }, $rows);
+	}
+
+	public static function getPositionTypeID($typeName) {
+		$sql = 'SELECT positionTypeID FROM PositionTypes WHERE positionName = :type';
+		$args = array(':type' => $typeName);
+		return Database::executeGetScalar($sql, $args);
+	}
+
+	public static function insertPosition($sectionID, $type, $max, $creator, $createTime) {
+		$sql = 'INSERT INTO Positions
+				(sectionID, maximumAccepted, positionTypeID, creatorID, createTime) VALUES
+				(:section, :max, :type, :creator, :createTime)';
+		$args = array(':section' => $sectionID, ':max' => $max,
+			':type' => Position::getPositionTypeID($type), ':creator' => $creator->getID(),
+			':createTime' => date('Y-m-d H:i:s', $createTime));
+		$positionID = Database::executeInsert($sql, $args);
+		return $positionID;
 	}
 
 	public static function findPositions($search_field, $term = null, $position_type = null, $studentID) {
 		$sql = 'SELECT * FROM Positions
+				INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
 				INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
 				INNER JOIN Courses ON Sections.courseID = Courses.courseID
-				LEFT JOIN Applications ON Positions.positionID = Applications.positionID
 				WHERE ';
 		$args = array();
 		if (!empty($search_field)) {
@@ -620,8 +687,6 @@ final class Position {
 			$sql .= 'termID = :term AND ';
 			$args[':term'] = $term;
 		}
-		$sql .="((strcmp(studentID, :studentID) <> 0) OR studentID is null) AND ";
-		$args['studentID'] = $studentID;
 		// TODO: implement position_type
 		//if ($position_type != null) {
 		//	$sql .= 'posType = :posType AND ';
@@ -640,10 +705,13 @@ final class Position {
 		$this->id = $row['positionID'];
 		$this->sectionID = $row['sectionID'];
 		$this->section = null;
-		$this->professorID = $row['professorID'];
-		$this->professor = null;
-		$this->time = $row['time'];
-		$this->posType = $row['posType'];
+		$this->type = $row['positionTypeID'];
+		$this->typeName = $row['positionName'];
+		$this->typeTitle = $row['positionTitle'];
+		$this->typeResp = $row['responsibilities'];
+		$this->typeTimes = $row['times'];
+		$this->typeComp = $row['compensation'];
+		$this->maximumAccepted = $row['maximumAccepted'];
 	}
 
 	public function getID() { return $this->id; }
@@ -653,34 +721,26 @@ final class Position {
 		}
 		return $this->section;
 	}
-	public function getProfessor() {
-		if ($this->professor == null) {
-			$this->professor = User::getUserByID($this->professorID, PROFESSOR);
-		}
-		return $this->professor;
-	}
-	public function getTime() { return $this->time; }
-	public function getPositionType() { return $this->posType; }
+	public function getType() { return $this->type; }
+	public function getTypeName() { return $this->typeName; }
+	public function getTypeTitle() { return $this->typeTitle; }
+	public function getTypeResponsibilities() { return $this->typeResp; }
+	public function getTypeTimes() { return $this->typeTimes; }
+	public function getTypeCompensation() { return $this->typeComp; }
 
 	private $id;
 	private $sectionID;
 	private $section;
-	private $professorID;
-	private $professor;
-	private $time;
-	private $posType;
+	private $type;
+	private $typeName;
+	private $typeTitle;
+	private $typeResp;
+	private $typeTimes;
+	private $typeComp;
+	private $maximumAccepted;
 }
 
 final class Application {
-	// TODO: this should be in relation to the Application database object instead of Position
-	public static function setPositionStatus($student, $position, $status) {
-		$sql = 'UPDATE Applications
-				SET appStatus = :status
-				WHERE studentID = :student_id AND positionID = :position_id';
-		$args = array(':status' => $status,	':student_id' => $student->getID(),
-			':position_id' => $position->getID());
-		Database::execute($sql, $args);
-	}
 
 	public static function getApplicationByID($id) {
 		$row = Database::executeGetRow('SELECT * FROM Applications WHERE appID = :id',
@@ -756,6 +816,25 @@ final class Application {
 		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
 
+	public static function insertApplication($studentID, $positionID, $comp, $qual, $status, $creatorID, $createTime) {
+		$sql = 'INSERT INTO Applications
+				(positionID, studentID, compensation, appStatus, qualifications, creatorID, createTime) VALUES
+				(:position, :student, :comp, :status, :qual, :creator, :createTime)';
+		$args = array(':position' => $positionID, ':student' => $studentID,
+			':comp' => $comp, ':status' => $status, ':qual' => $qual,
+			':creator' => $creatorID, ':createTime' => date('Y-m-d H:i:s', $createTime));
+		return Database::executeInsert($sql, $args);
+	}
+
+	public static function setPositionStatus($student, $position, $status) {
+		$sql = 'UPDATE Applications
+				SET appStatus = :status
+				WHERE studentID = :student_id AND positionID = :position_id';
+		$args = array(':status' => $status,	':student_id' => $student->getID(),
+			':position_id' => $position->getID());
+		Database::execute($sql, $args);
+	}
+
 	public function __construct($row) {
 		$this->id = $row['appID'];
 		$this->positionID = $row['positionID'];
@@ -821,7 +900,7 @@ final class Term {
 		$sql = "SELECT semesterID FROM TermSemesters
 				WHERE semesterName = :semesterName";
 		$rowID = Database::executeGetScalar($sql, $args);
-		if ($rowID === false) {
+		if ($rowID === null) {
 			$args[':semesterIndex'] = 15; // TODO figure out what to default this to
 			$sql = 'INSERT INTO TermSemesters
 					(semesterName, semesterIndex) VALUES
@@ -832,16 +911,18 @@ final class Term {
 		}
 	}
 	
-	public static function insertTerm($year, $semesterName) {
+	public static function insertTerm($year, $semesterName, $creator, $createTime) {
 		$sql = 'INSERT INTO Terms
-				(year, semesterID) VALUES
-				(:year, :semester)';
+				(year, semesterID, creatorID, createTime) VALUES
+				(:year, :semester, :creator, :createTime)';
 		$args = array(':year' => $year,
-			':semester' => Term::getOrCreateTermSemester($semesterName));
+			':semester' => Term::getOrCreateTermSemester($semesterName),
+			':creator' => $creator->getID(), ':createTime' => date('Y-m-d H:i:s', $createTime));
 		$termID = Database::executeInsert($sql, $args);
 		return $termID;
 	}
 
+	// TODO outdated
 	/*
 	 * Not totally sure if this should be here, but it's here for now.
 	 * Inserts a line into teaches to link the professor and the course
@@ -852,6 +933,8 @@ final class Term {
 		$teachID = Database::executeInsert($sql, $args);
 		return $teachID;
 	}
+
+	// TODO outdated
 	/*
 	 * Takes a file path and processes the JSON content and inserts entries into the DB
 	 */
@@ -909,6 +992,7 @@ final class Term {
 	//     [
 	//         {"crn":"30303",
 	//         "instructors":["koomen@cs.rochester.edu","brown@cs.rochester.edu"],
+	//         "type":"lab",
 	//         "sessions":
 	//         [
 	//             {"days":"MW","startTime":"16:50","endTime":"18:05",
@@ -922,6 +1006,7 @@ final class Term {
 	//         },
 	//         {"crn":"30301",
 	//         "instructors":["brown@cs.rochester.edu"],
+	//         "type":"lecture",
 	//         "sessions":
 	//         [
 	//             {"days":"TR","startTime":"16:50","endTime":"18:05",
@@ -942,51 +1027,168 @@ final class Term {
 	//     ...
 	// ]
 	// }
-	public static function importTerm($json_object) {
+	public static function importTerm($termYear, $termSemester, $json_object) {
+		try {
+			$creator = Session::getLoggedInUser();
+			$createTime = time();
+
+			Database::beginTransaction();
+
+			$termID = Term::insertTerm($termYear, strtolower($termSemester), $creator, $createTime);
+			foreach ($json_object as $course) {
+				foreach ($course['sections'] as $section) {
+					$sectionID = Section::insertSection($termID,
+						strtoupper($course['department']), strtoupper($course['number']),
+						$course['title'], $section['crn'], $section['type'], $creator, $createTime);
+					foreach ($section['sessions'] as $session) {
+						if (isset($session['day']) && isset($session['startTime']) &&
+							isset($session['endTime']) && isset($sesion['building']) &&
+							isset($session['room'])) {
+							foreach (str_split($session['day']) as $day) {
+								$sessionID = Section::insertSession($sectionID, $day,
+									$session['startTime'], $session['endTime'],
+									strtoupper($session['building']), strtoupper($session['room']));
+							}
+						}
+					}
+					foreach ($section['positions'] as $position) {
+						$positionID = Position::insertPosition($sectionID,
+							$position['positionType'], $position['maxPositions'],
+							$creator, $createTime);
+					}
+					foreach ($section['instructors'] as $instructor) {
+						$professor = User::getUserByEmail($instructor, PROFESSOR);
+						if ($professor) {
+							$teachesID = Section::insertTeachesRelation($sectionID, $professor->getID());
+						} else {
+							// right now it ignores missing professor accounts
+							// throw error or add?
+						}
+					}
+				}
+			}
+		} catch (PDOException $ex) {
+			Database::rollbackTransaction();
+			throw $ex;
+		}
+		Database::commitTransaction();
 	}
 
-	public static function importTermFromCSV($lines, $uploadData) {
-		$positionTypes = Positions::getAllPositionTypes();
+	public static function importTermFromCSV($termYear, $termSemester, $lines, $uploadData) {
+		$positionTypes = Position::getAllPositionTypes();
 		$headerLine = true;
 		$headers = array(); // the first line of CSV, used as column names
 		$courses = array(); // output JSON-like array
+		$courseObj = null; // element in $courses being updated
 		foreach ($lines as $line) {
 			$csv_line = str_getcsv($line);
 			if ($headerLine) {
 				$headers = $csv_line;
 				$headerLine = false;
 			} else {
+				$courseLiveObj = array('department' => null, 'number' => null, 'title' => null);
+				$sectionLiveObj = array('crn' => null, 'type' => null,
+					'instructors' => array(), 'sessions' => array(), 'positions' => array());
 				$i = 0;
 				foreach ($csv_line as $cell) {
-					if (isset($header[$i])) {
+					if (isset($headers[$i]) && !empty($cell)) {
 						$header = $headers[$i];
+						$headerMult = 0;
+
+						// support 0-9
+						if (is_numeric(substr($header, -1))) {
+							$headerMult = intval(substr($header, -1)) - 1;
+							if ($headerMult == 0) $headerMult = 9;
+							$header = substr($header, 0, -1);
+						}
+						
+						if (substr($header, 7) == 'Session') {
+							if (!isset($sectionLiveObj['sessions'][$headerMult])) {
+								$sectionLiveObj['sessions'][$headerMult] = array(
+									'days' => null, 'startTime' => null, 'endTime' => null,
+									'building' => null, 'room' => null);
+							}
+						}
 
 						switch ($header) {
 						case 'CourseDepartment':
+							$courseLiveObj['department'] = $cell;
+							break;
 						case 'CourseNumber':
+							$courseLiveObj['number'] = $cell;
+							break;
 						case 'CourseTitle':
+								$courseLiveObj['title'] = $cell;
+							break;
 						case 'SectionCRN':
+							$sectionLiveObj['crn'] = $cell;
+							break;
 						case 'SectionType':
+								$sectionLiveObj['type'] = ($cell == 'lab') ? 'lab' : 'lecture';
+							break;
 						case 'Instructor':
-						case 'Instructor2':
+								$sectionLiveObj['instructors'][] = $cell;
+							break;
 						case 'SessionDays':
+								$sectionLiveObj['sessions'][$headerMult]['days'] = $cell;
+							break;
 						case 'SessionTimeStart':
+								$sectionLiveObj['sessions'][$headerMult]['startTime'] = $cell;
+							break;
 						case 'SessionTimeEnd':
+								$sectionLiveObj['sessions'][$headerMult]['endTime'] = $cell;
+							break;
 						case 'SessionBuilding':
+								$sectionLiveObj['sessions'][$headerMult]['building'] = $cell;
+							break;
 						case 'SessionRoom':
+								$sectionLiveObj['sessions'][$headerMult]['room'] = $cell;
+							break;
 						default:
 							if ($header[0] == '#') {
-								if (in_array(substr($header, 1), $positionTypes)) {
+								if (is_numeric($cell) && intval($cell) > 0 &&
+									in_array(substr($header, 1), $positionTypes)) {
+									$sectionLiveObj['positions'][] = array(
+										'positionType' => strtolower(substr($header, 1)),
+										'maxPositions' => intval($cell));
 								}
 							}
 						}
 					}
 
+
 					$i++;
+				}
+
+				// re-index section.sessions so it produces an array instead of an object
+				$sectionLiveObj['sessions'] = array_values($sectionLiveObj['sessions']);
+
+				if ($courseLiveObj['department'] == null || $courseLiveObj['number'] == null ||
+					$sectionLiveObj['crn'] == null) {
+					// column required for CourseDepartment, CourseNumber or SectionCRN
+					// ignore row
+					// throw error?
+				} else {
+					$courseIndex = -1;
+					for ($x = 0; $x < count($courses); $x++) {
+						if ($courses[$x]['department'] == $courseLiveObj['department'] &&
+							$courses[$x]['number'] == $courseLiveObj['number']) {
+							$courseIndex = $x;
+						}
+					}
+					if ($courseIndex < 0) {
+						$courseIndex = count($courses);
+						$courses[] = array('department' => $courseLiveObj['department'],
+							'number' => $courseLiveObj['number'],
+							'title' => $courseLiveObj['title'],
+							'sections' => array($sectionLiveObj));
+					} else {
+						$courses[$courseIndex]['sections'][] = $sectionLiveObj;
+					}
 				}
 			}
 		}
-		Term::importTerm($courses);
+		Term::importTerm($termYear, $termSemester, $courses);
 	}
 
 	public function __construct($row) {
@@ -1013,7 +1215,7 @@ final class Term {
 	}
 	public function getCreateTime() { return $this->createTime; }
 	public function getName() {
-		return ucfirst($this->semesterName).' '.$this->year;
+		return ucfirst($this->semester).' '.$this->year;
 	}
 
 	private $id;
@@ -1026,57 +1228,50 @@ final class Term {
 	private $createTime;
 }
 
-final class Feedback {
-	public static function getCommentByID($feedbackID){
-		$sql = "SELECT * FROM Feedback WHERE feedbackID = :feedbackID";
-		$args = array('feedbackID' => $feedbackID);
-		$row = Database::executeGetRow($sql,$args);
-		return new Feedback($row);
+final class Comment {
+	public static function getCommentByID($commentID){
+		$sql = "SELECT * FROM Comments WHERE commentID = :commentID";
+		$args = array('commentID' => $commentID);
+		$row = Database::executeGetRow($sql, $args);
+		return new Comment($row);
 	}
 	
-	public static function getCommentsFromStaff($studentID){
-		$sql = "SELECT Users.firstName, Users.lastName, Feedback.comment, Feedback.dateTime
-    			FROM Users,Feedback
-   				WHERE Users.type = :staff AND  Feedback.studentID = :studentID";
-   		$args = array(':studentID' => $studentID, ':staff' => STAFF);
-   		$rows = Database:: executeGetAllRows($sql,$args);
-   		return $rows;
+	public static function getAllComments($studentID){
+		$sql = 'SELECT * FROM Comments
+   				WHERE studentID = :studentID';
+		$args = array(':studentID' => $studentID);
+   		$rows = Database::executeGetAllRows($sql, $args);
+   		return array_map(function($row) { return new Comment($row); }, $rows);
 	}
 	
-	public static function getCommentsFromProfessors($studentID){
-		$sql = "SELECT Users.firstName, Users.lastName, Feedback.comment, Feedback.dateTime
-    			FROM Users,Feedback
-   				WHERE Users.type = :professor AND Users.userID = Feedback.commenterID AND Feedback.studentID = :studentID";
-   		$args = array(':studentID' => $studentID, ':professor' => PROFESSOR);
-   		$rows = Database:: executeGetAllRows($sql,$args);
-   		return $rows;		
-	}
-	
-	public static function newComment($studentID,$commenterID,$comment){
-		$sql = "INSERT INTO Feedback (studentID,commenterID,comment) VALUES (:studentID,:commenterID,:comment)";
-		$args = array(':studentID' => $studentID, ':commenterID' => $commenterID,':comment' => $comment);
-		Database::executeInsert($sql,$args);
+	public static function insertComment($comment, $studentID, $creatorID, $createTime) {
+		$sql = "INSERT INTO Comments (commentText, studentID, creatorID, createTime) VALUES
+				(:comment, :student, :creator, :createTime)";
+		$args = array(':comment' => $comment, ':student' => $studentID,
+				':creator' => $creatorID, ':createTime' => date('Y-m-d H:i:s', $createTime));
+		return Database::executeInsert($sql, $args);
 	}
 	
 	public function __construct($row){
-		$this->feedbackID = $row['feedbackID'];
+		$this->id = $row['commentID'];
+		$this->commentText = $row['commentText'];
 		$this->studentID = $row['studentID'];
-		$this->commenterID = $row['commenterID'];
-		$this->date_Time = $row['dateTime'];
+		$this->creatorID = $row['creatorID'];
+		$this->createTime = strftime($row['createTime']);
 		$this->comment = $row['comment'];
 	}
 	
-	public function getCommentID(){ return $this->feedbackID; }
+	public function getID(){ return $this->id; }
+	public function getComment(){ return $this->commentText; }
 	public function getStudentID(){ return $this->studentID; }
-	public function getCommentorID(){ return $this->commenterID; }
-	public function getDateTime(){ return $this->date_Time; }
-	public function getComment(){ return $this->comment; }
+	public function getCreatorID(){ return $this->creatorID; }
+	public function getCreateTime(){ return $this->createTime; }
 	
-	private $feedbackID;
-	private $studentID;
-	private $commenterID;
-	private $date_Time;
+	private $id;
 	private $comment;
+	private $studentID;
+	private $creatorID;
+	private $createTime;
 }
 
 final class Section {
@@ -1097,16 +1292,12 @@ final class Section {
 		return $rows; 
 	}
 
-	public static function getOrCreateCourse($term, $department, $courseNumber, $courseTitle) {
-		$department = strtoupper($department);
-		$courseNumber = strtoupper($courseNumber);
-
-		$args = array(':term'=>$term->getID(),
-			':department'=>$department, ':number'=>$courseNumber);
+	public static function getOrCreateCourse($termID, $department, $courseNumber, $courseTitle) {
+		$args = array(':term'=>$termID, ':department'=>$department, ':number'=>$courseNumber);
 		$sql = 'SELECT courseID FROM Courses WHERE termID = :term AND
 				department = :department AND courseNumber = :number';
 		$rowID = Database::executeGetScalar($sql, $args);
-		if ($rowID === false) {
+		if ($rowID === null) {
 			$args[':title'] = $courseTitle;
 			$sql = 'INSERT INTO Courses
 					(termID, department, courseNumber, courseTitle) VALUES
@@ -1117,16 +1308,34 @@ final class Section {
 		}
 	}
 	
-	public static function insertSection($crn, $term, $department, $courseNumber, $courseTitle,
-			$type, $creator, $createTime) {
+	public static function insertSection($termID, $department, $courseNumber, $courseTitle,
+			$crn, $type, $creator, $createTime) {
 		$args = array(':course' =>
-				Section::getOrCreateCourse($term, $department, $courseNumber, $courseTitle),
+				Section::getOrCreateCourse($termID, $department, $courseNumber, $courseTitle),
 				':crn' => $crn, ':type' => $type, ':creator' => $creator->getID(),
 				':createTime' => date('Y-m-d H:i:s', $createTime));
 		$sql = 'INSERT INTO Sections (courseID, crn, type, creatorID, createTime) VALUES
 				(:course, :crn, :type, :creator, :createTime)';
 		$sectionID = Database::executeInsert($sql, $args);
 		return $sectionID;
+	}
+	
+	public static function insertSession($sectionID, $day, $startTime, $endTime,
+		$building, $room) {
+			$args = array(':section' => $sectionID, ':day' => $day, ':startTime' => $startTime,
+				':endTime' => $endTime, ':place' => Place::getOrCreatePlace($building, $room));
+		$sql = 'INSERT INTO Sessions (sectionID, weekday, startTime, endTime, placeID) VALUES
+				(:section, :day, :startTime, :endTime, :place)';
+		$sessionID = Database::executeInsert($sql, $args);
+		return $sessionID;
+	}
+	
+	public static function insertTeachesRelation($sectionID, $professorID) {
+		$args = array(':section' => $sectionID, ':professor' => $professorID);
+		$sql = 'INSERT INTO Teaches (sectionID, professorID) VALUES
+				(:section, :professor)';
+		$teachesID = Database::executeInsert($sql, $args);
+		return $teachesID;
 	}
 
 	// TODO: outdated
@@ -1156,6 +1365,27 @@ final class Section {
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
 		$this->createTime = strftime($row['createTime']);
+	}
+
+	// queries all professors for this section
+	public function getAllProfessors() {
+		$sql = 'SELECT * FROM Teaches
+				INNER JOIN Users ON Users.userID = Teaches.professorID
+				INNER JOIN Professors ON Professors.userID = Users.userID
+				WHERE sectionID = :id';
+		$args = array(':id' => $this->id);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Professor($row, $row); }, $rows);
+	}
+
+	// queries all sessions for this section
+	// TODO: make dedicated Section-session object!!
+	public function getAllSessions() {
+		$sql = 'SELECT * FROM Sessions
+				WHERE sectionID = :id';
+		$args = array(':id' => $this->id);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return $row['weekday'].' '.$row['startTime'].'-'.$row['endTime']; }, $rows);
 	}
 
 	public function getTotalPositions($prof = null) {
@@ -1195,7 +1425,7 @@ final class Section {
 	public function getCourseID() { return $this->courseID; }
 	public function getCourseDepartment() { return $this->courseDepartment; }
 	public function getCourseNumber() { return $this->courseNumber; }
-	public function getCourseTitle() { return $this->CourseTitle; }
+	public function getCourseTitle() { return $this->courseTitle; }
 	public function getCourseTerm() {
 		if ($this->courseTerm == null) {
 			$this->courseTerm = Term::getTermByID($this->courseTermID);
@@ -1203,11 +1433,10 @@ final class Section {
 		return $this->courseTerm;
 	}
 	public function getCourseName() {
-		return strtoupper($this->department . $this->courseNumber);
+		return $this->courseDepartment . $this->courseNumber;
 	}
 	public function getCourseFullName() {
-		return strtoupper($this->department . $this->courseNumber) . ' ' .
-			$this->getCourseTerm()->getName();
+		return $this->courseDepartment . $this->courseNumber . ' ' . $this->getCourseTerm()->getName();
 	}
 
 	public function getCreator() {
@@ -1296,17 +1525,15 @@ final class Event {
 	const USER_GET_PROFILE = 23;
 	const USER_SET_PROFILE = 24;
 	const STUDENT_APPLY = 25;
-	const STUDENT_CANCEL = 26;
-	const STUDENT_WITHDRAW = 27;
-	const STUDENT_SEARCH = 28;
-	const PROFESSOR_ACCEPT = 29;
-	const PROFESSOR_REJECT = 30;
-	const PROFESSOR_COMMENT = 31;
-	const STAFF_CREATE_PROF = 32;
-	const STAFF_RESET_PROF = 33;
-	const STAFF_TERM_IMPORT = 34;
-	const STAFF_GET_PAYROLL = 35;
-	const ADMIN_CONFIGURE = 36;
+	const STUDENT_WITHDRAW = 26;
+	const STUDENT_SEARCH = 27;
+	const NONSTUDENT_SET_APP = 28;
+	const NONSTUDENT_COMMENT = 29;
+	const SU_CREATE_USER = 30;
+	const SU_RESET_USER = 31;
+	const STAFF_TERM_IMPORT = 32;
+	const STAFF_GET_PAYROLL = 33;
+	const ADMIN_CONFIGURE = 34;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
@@ -1343,33 +1570,31 @@ final class Event {
 		case Event::USER_GET_PROFILE: return 'Error retrieving profile data';
 		case Event::USER_SET_PROFILE: return 'Error setting profile data';
 		case Event::STUDENT_APPLY: return 'Error applying to position';
-		case Event::STUDENT_CANCEL: return 'Error canceling application';
 		case Event::STUDENT_WITHDRAW: return 'Error withdrawing application';
 		case Event::STUDENT_SEARCH: return 'Error searching for positions';
-		case Event::PROFESSOR_ACCEPT: return 'Error accepting the application';
-		case Event::PROFESSOR_REJECT: return 'Error rejecting the application';
-		case Event::PROFESSOR_COMMENT: return 'Error creating comment';
-		case Event::STAFF_CREATE_PROF: return 'Error creating professor';
-		case Event::STAFF_RESET_PROF: return 'Error resetting professor password';
+		case Event::NONSTUDENT_SET_APP: return 'Error setting application status';
+		case Event::NONSTUDENT_COMMENT: return 'Error creating comment';
+		case Event::SU_CREATE_USER: return 'Error creating user';
+		case Event::SU_RESET_USER: return 'Error resetting user\'s password';
 		case Event::STAFF_TERM_IMPORT: return 'Error importing term';
 		case Event::STAFF_GET_PAYROLL: return 'Error retrieving payroll data';
 		case Event::ADMIN_CONFIGURE: return 'Error setting configuration';
 		}
 	}
 
-	public static function createEventInFile($eventType, $descr, $objectID = null,
+	public static function insertEventInFile($eventType, $descr, $objectID = null,
 		$createTime = null, $creatorIP = null, $creator = null) {
-		return Event::createEventGeneral($eventType, $descr, $objectID, $createTime,
+		return Event::insertEventGeneral($eventType, $descr, $objectID, $createTime,
 			$creatorIP, $creator, false);
 	}
 
-	public static function createEvent($eventType, $descr, $objectID = null,
+	public static function insertEvent($eventType, $descr, $objectID = null,
 		$createTime = null, $creatorIP = null, $creator = null) {
-		return Event::createEventGeneral($eventType, $descr, $objectID, $createTime,
+		return Event::insertEventGeneral($eventType, $descr, $objectID, $createTime,
 			$creatorIP, $creator, true);
 	}
 
-	public static function createEventGeneral($eventType, $descr, $objectID,
+	public static function insertEventGeneral($eventType, $descr, $objectID,
 		$createTime, $creatorIP, $creator, $useDB) {
 		// default createtime = now
 		if ($createTime == null) {

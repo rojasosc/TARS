@@ -21,7 +21,7 @@ if ($error == null) {
 		}
 		$assistants = Application::getApplications(null, null, $thisTerm, APPROVED, 'pay');
 	} catch (PDOException $ex) {
-		$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_GETPAYROLL, $ex);
+		$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_GET_PAYROLL, $ex);
 	}
 }
 ?>
@@ -73,14 +73,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<select id="term" name="term" class="form-control" placeholder="Term">
 <?php
 foreach ($terms as $term) {
-	$sel = $term->getID() == $thisTerm->getID() ? ' selected="selected"' : '';
-	echo '<option value="'.$term->getID().'"'.$sel.'>'.$term->getName().'</option';
+	$sel = ($thisTerm != null && $term->getID() == $thisTerm->getID()) ? ' selected="selected"' : '';
+	echo '<option value="'.$term->getID().'"'.$sel.'>'.$term->getName().'</option>';
 }
 ?>
 											</select> <!-- End select -->										
 										</div> <!-- End column -->										
 										<div class="col-md-5">
-											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="termSelectButton">View</a>
+											<a class="btn btn-success btn-block" name="termSelectButton">View</a>
 										</div> <!-- End col-md-5 -->
 									</div> <!-- End row --->
 									<br>

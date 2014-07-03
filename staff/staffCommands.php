@@ -1,4 +1,8 @@
 <?php
+
+// TODO: error handle x15
+// TODO: session check x15
+
 	/* Check if an action has been specified, otherwise
 	exit. */
 	if(isset($_POST['action'])){
@@ -99,7 +103,7 @@
 			
 			$officeID = $user->getOfficeID();
 			$office = Place::getPlaceByID($officeID);
-			$building = $office->getBuilding();
+			$building = $offie->getBuildings();
 			$room = $office->getRoom();
 
 			/* Prepare to encode JSON object */
@@ -148,7 +152,8 @@
 	}
 
 	function newStudentComment(){
-		Feedback::newComment($_POST['studentID'],$_POST['commenterID'],$_POST['comment']);
+		$student = User::getUserByID($_POST['studentID'], STUDENT);
+		$student->saveComment($_POST['comment'], User::getUserByID($_POST['commenterID'], STAFF), time());
 	}
 	
 	function fetchCourses(){
@@ -158,7 +163,7 @@
 	}
 	
 	function fetchBuildings(){
-		$buildings = Place::getBuildings();
+		$buildings = Place::getAllBuildings();
 		echo json_encode($buildings);	
 	}
 	

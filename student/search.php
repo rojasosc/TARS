@@ -9,6 +9,7 @@ $pages = 7;
 $positions = array();
 $terms = array();
 $error = null;
+$currentTermID = null;
 try {
 	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 	if (!$form_args['term']) {
@@ -21,7 +22,7 @@ try {
 		$form_args['search'], $form_args['term'], $form_args['type'], $student->getID());
 	$terms = Term::getAllTerms();
 } catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_DBERROR, Event::SEARCH_POSITIONS, $ex);
+	$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 }
 
 ?>
@@ -185,7 +186,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', CURRENT_TERM) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->toString()?></option>
+											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', $currentTermID) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
 										<?php
 										}
 										?>
@@ -233,16 +234,25 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<?php
 										if($positions != false) {
 											foreach($positions as $position) {
-												$course = $position->getCourse();
-												$professor = $position->getProfessor();
+												$section = $position->getSection();
+												$professors = $section->getAllProfessors();
+												$professor = count($professors) > 0 ? implode(', ',
+												array_map(function ($prof) {
+													return $prof->getFILName();
+												}, $professors)) : 'TBA';
+												$sessions = $section->getAllSessions();
+												$session = count($sessions) > 0 ? implode(', ',
+												array_map(function ($sess) {
+													return $sess;
+												}, $sessions)) : 'TBD';
 									?>
 											<tr>
 												<td class="positionID hidden-xs hidden-sm"><?=$position->getID()?></td>
-												<td><?=$course->getDepartment()?><?=$course->getNumber()?></td>
-												<td class="hidden-xs"><?=$course->getTitle()?></td>
-												<td><?=$professor->getFILName()?></td>
-												<td><?=$position->getPositionType()?></td>
-												<td><?=$position->getTime()?></td>
+												<td><?=$section->getCourseName()?></td>
+												<td class="hidden-xs"><?=$section->getCourseTitle()?></td>
+												<td><?=$professor?></td>
+												<td><?=$position->getTypeTitle()?></td>
+												<td><?=$session?></td>
 												<td>
 													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
 												</td>

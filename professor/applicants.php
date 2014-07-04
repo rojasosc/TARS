@@ -29,7 +29,7 @@ if ($error != null) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="applicants.js"></script>
-		<script src="profiles.js"></script>
+		<script src="../tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
@@ -158,14 +158,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											
 										?>
 										<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
-											<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
+											<td><button data-toggle="modal" data-target="#studentProfileModal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
 											<span class="glyphicon glyphicon-user"></span></button>
 											</td>
 											<td>
-												<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $professor->getID() ?>" data-st:udentID="<?= $student->getID() ?>" class="btn btn-default comment">
+												<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
 												<span class="glyphicon glyphicon-comment"></span></button>
 											</td>
-											<td>	<form id="course1">
+											<td>	<form>
 												<div class="btn-group" data-toggle="buttons" data-positionID="<?= $application->getPosition()->getID() ?>" data-universityID="<?= $student->getID() ?>">
 													<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve">
 														<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>" checked><span class="glyphicon glyphicon-ok"></span>

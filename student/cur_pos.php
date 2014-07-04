@@ -212,7 +212,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-w			</div>
+			</div>
 			<!--END Page Footer -->
 	
 		</div> 

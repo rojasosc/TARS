@@ -7,7 +7,7 @@ require_once '../error.php';
 
 $error = null;
 $form_args = get_form_values(array(
-	'firstName', 'lastName', 'mobilePhone', 'classYear', 'major', 'gpa', 'universityID',
+	'firstName', 'lastName', 'email', 'mobilePhone', 'classYear', 'major', 'gpa', 'universityID',
 	'aboutMe'));
 
 $invalid_values = get_invalid_values($form_args);
@@ -16,6 +16,7 @@ if (count($invalid_values) > 0) {
 		Event::USER_SET_PROFILE, $invalid_values);
 } else {
 	try {
+		$email = $form_args['email'];
 		$student = User::getUserByEmail($email, STUDENT);
 		if ($student) {
 			$student->updateProfile($form_args['firstName'], $form_args['lastName'],

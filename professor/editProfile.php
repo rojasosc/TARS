@@ -19,12 +19,12 @@ if ($professor) {
 		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="editProfile.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 	</head>
   
 	<body>
 		<!-- BEGIN Edit Profile Modal-->
-		<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
+		<div class="modal fade" id="profile-form-modal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -32,7 +32,7 @@ if ($professor) {
 						<h1 class="modal-title" id="modalHeader"></h1>
 					</div> <!-- End modal-header -->
 					<div class="modal-body">
-						<form action="professorCommands.php" class="form-horizontal" id="updateForm" method="post">
+						<form action="staffCommands.php" class="form-horizontal" id="professor-profile-form" method="post">
 							<div class="row">
 								<div class="col-md-4">				
 									<div class="form-group"> 				
@@ -66,14 +66,14 @@ if ($professor) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="building">Building</label>
-										<select id="building" name="building" class="form-control buildings">
+										<select name="building" class="form-control buildings" id="buildings">
 										</select> <!-- End select -->										
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="room">Room</label>
-										<select id="room" name="room" class="form-control rooms">
+										<select name="room" class="form-control rooms" id="rooms">
 										</select> <!-- End select -->										
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->							
@@ -90,12 +90,12 @@ if ($professor) {
 					</div> <!-- End modal-body -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button id="updateButton" type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+						<button id="update-professor-button" type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
 					</div> <!-- End modal-footer -->			
 				</div> <!-- End modal-content -->
 			</div> <!-- End modal dialog -->
 		</div> <!-- End modal fade -->
-		<!-- END Edit Profile Modal-->  
+		<!-- END Edit Profile Modal-->     
 		
 		<!-- BEGIN page-wrapper -->
             
@@ -178,7 +178,7 @@ if ($error != null) {
 									<br>
 									<div class="row">
 										<div class="col-xs-3">
-											<button data-target="#editProfileModal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="editProfileButton" name="editProfileButton" class="btn btn-success"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+											<button data-target="#profile-form-modal" data-toggle="modal" data-usertype="<?= PROFESSOR ?>" data-userid="<?= $professor->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
 										</div> <!-- End column -->										
 										<div class="col-xs-3">
 											<button data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>

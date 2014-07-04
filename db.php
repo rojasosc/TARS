@@ -1228,7 +1228,7 @@ final class Term {
 	private $createTime;
 }
 
-final class Comment {
+final  class Comment {
 	public static function getCommentByID($commentID){
 		$sql = "SELECT * FROM Comments WHERE commentID = :commentID";
 		$args = array('commentID' => $commentID);
@@ -1258,7 +1258,6 @@ final class Comment {
 		$this->studentID = $row['studentID'];
 		$this->creatorID = $row['creatorID'];
 		$this->createTime = strftime($row['createTime']);
-		$this->comment = $row['comment'];
 	}
 	
 	public function getID(){ return $this->id; }
@@ -1268,7 +1267,7 @@ final class Comment {
 	public function getCreateTime(){ return $this->createTime; }
 	
 	private $id;
-	private $comment;
+	private $commentText;
 	private $studentID;
 	private $creatorID;
 	private $createTime;

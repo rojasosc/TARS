@@ -16,7 +16,7 @@ require_once 'staffSession.php';
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="editTerm.js"></script>
-		<script src="dropdowns.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN Positions Modal-->

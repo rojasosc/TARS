@@ -15,12 +15,13 @@ require_once 'staffSession.php';
 		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>		
+		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>		
 		<script rel="text/javascript" src="editStudent.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN Edit Profile Modal-->
-		<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
+		<div class="modal fade" id="profile-form-modal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -28,7 +29,7 @@ require_once 'staffSession.php';
 						<h1 class="modal-title" id="modalHeader"></h1>
 					</div> 
 					<div class="modal-body">
-						<form action="staffCommands.php" class="form-horizontal" id="updateForm" method="post">
+						<form action="staffCommands.php" class="form-horizontal" id="student-profile-form" method="post">
 							<div class="row">
 								<div class="col-md-4">				
 									<div class="form-group"> 				
@@ -90,7 +91,13 @@ require_once 'staffSession.php';
 										<label class="control-label" for="GPA">GPA</label>
 										<input id="gpa" type="text" class="form-control" name="gpa" placeholder="GPA">
 									</div> <!-- End form-group -->
-								</div> <!-- End column -->								
+								</div> <!-- End column -->
+								<div class="col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="GPA">University Student ID</label>
+										<input id="universityID" type="text" class="form-control" name="universityID" placeholder="University Student ID">
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->																	
 							</div> <!-- End row -->	
 							<div class="row">
 								<div class="col-md-8">
@@ -102,7 +109,7 @@ require_once 'staffSession.php';
 				</div> <!-- End modal-content -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button id="updateButton" type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+						<button id="update-student-button" type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
 					</div>
 				</div>
 			</div>
@@ -134,7 +141,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<h3>Filter Constraints</h3>
 						</div> <!-- end row -->
 						<div class="row">
-							<form class="form-horizontal" id="searchUsersForm" method="post" action="staffCommands.php">
+							<form class="form-horizontal" id="search-users-form" method="post" action="staffCommands.php">
 								<div class="row">
 									<div class="col-md-10">
 											<label class="control-label" for="emailSearch">Email</label>
@@ -161,7 +168,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<br>
 								<div class="row">
 									<div class="col-md-6">
-										<button id="searchButton"  type="submit" name="searchButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Search</button>
+										<button id="student-search-button"  type="submit" name="searchButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Search</button>
 									</div> <!-- End column -->
 								</div> <!-- End row -->	
 							</form> <!-- End form-horizontal -->

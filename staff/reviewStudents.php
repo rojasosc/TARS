@@ -15,8 +15,7 @@ require_once 'staffSession.php';
 		<link href="staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="comments.js"></script>
-		<script src="profiles.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 		<script src="reviewStudents.js"></script>
 	</head>
 	<body>
@@ -41,11 +40,8 @@ require_once 'staffSession.php';
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
-						<h3>Staff Comments</h3>
-						<div class="container staffComments">
-						</div> <!-- End container -->
-						<h3>Professor Comments</h3>
-						<div class="container professorComments">
+						<h3>Comments</h3>
+						<div class="container" id="comments">
 						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
@@ -127,7 +123,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<td><?= $student->getEmail() ?></td>
 										<td><?= $student->getGPA()?></td>
 										<td>
-										<button data-toggle="modal" data-target="#studentProfileModal" data-userID="<?= $student->getID() ?>" class="btn btn-default circle profile">
+										<button data-toggle="modal" data-target="#studentProfileModal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
 										<span class="glyphicon glyphicon-user"></span></button>			
 										</td>
 										<td>	<form>

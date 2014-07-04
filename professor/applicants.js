@@ -16,7 +16,6 @@ function displayProfile(){
 
 function fillProfile(user){
 	/* Associative array of a user */
-	alert('alsdkfjs');
 	var student = eval('(' + user + ')');
 	$('#studentModalTitle').html(student['firstName']+" "+student['lastName']);
 	$('#studentMajor').html("Major: " + student['major']);

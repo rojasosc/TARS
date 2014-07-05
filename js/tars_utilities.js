@@ -5,18 +5,37 @@ $(document).ready(function() {
 	window.ADMIN = 3;
 	window.actions_url = "../actions.php"; 
 
-	$(".profile").click(view_profile);
-	if($("#profile-form-modal").length){
-		$(".edit-profile").click(view_user_form);
-		$profile_form_modal = $("#profile-form-modal");
+	if($(".search-users-form").length){
+		$user_search_form = $(".search-users-form");
+		$user_search_form.submit(function() { return false; });	
+		$user_search_button = $("[type='submit']", $user_search_form);
+		$user_search_button.click(function() { 
+			search_users($user_search_form.data("usertype"));
+		});
 	}
-	/* Form References */
-	$student_profile_form = $("#student-profile-form");
-	$professor_profile_form = $("#professor-profile-form");
-	$staff_profile_form = $("#staff-profile-form");
-	$admin_profile_form = $("#admin-profile-form");
-	$search_form = $("#search-users-form");
-	prevent_redirection();
+
+	if($(".user-search-table").length){
+		$results = $(".user-search-table");
+
+	}
+
+	if($(".profile-modal").length){
+		$user_modal = $(".profile-modal");
+		if($(".edit-profile-form").length){
+			$edit_profile_form = $(".edit-profile-form");
+			$edit_profile_form.submit(function() { return false; });
+			//In case the button is not in a table
+			$(".edit-profile").click(function() { 
+				view_user_form($(this).data("userid"),$edit_profile_form.data("usertype"));
+
+			})
+		}
+		if($(".profile").length){
+			$user_modal = $(".profile-modal");
+			$(".profile").click(view_profile);
+
+		}
+	}
 
 	if($(".buildings").length){
 		$buildings_dropdown = $(".buildings");
@@ -32,51 +51,26 @@ $(document).ready(function() {
 		$courses_dropdown.change(prepare_professors_dropdown);
 	}
 
-	$student_profile_modal = $("#student_profile_modal");
-	$results = $("#results");
-
-	/* Button References */
-	$student_search_button = $("#student-search-button");
-	$professor_search_button = $("#professor-search-button");
-	$new_professor_button = $("#new-professor-button");
-
-	$student_search_button.click(search_students);
-	$professor_search_button.click(search_professors);
-
 });
 
-function search_students() {
+
+function search_users(user_type) {
 	var action = "searchForUsers";
 	var data = {
-		firstName: $("[name='firstName']",$search_form).val(),
-		lastName: $("[name='lastName']",$search_form).val(),
-		email: $("[name='emailSearch']",$search_form).val(),
-		searchType: STUDENT,
+		firstName: $("[name='firstName']",$user_search_form).val(),
+		lastName: $("[name='lastName']",$user_search_form).val(),
+		email: $("[name='emailSearch']",$user_search_form).val(),
+		searchType: user_type,
 		action: action
 	}
-	
-	/* AJAX POST request to obtain results */	
-	$.post(actions_url,data,function(users) { view_results(users, STUDENT); });
+	$.post(actions_url,data,function(users) { view_results(users); });
+
 }
 
-function search_professors() {
-	var action = 'searchForUsers';
-	var data = {
-		firstName: $("[name='firstName']",$search_form).val(),
-		lastName: $("[name='lastName']",$search_form).val(),
-		email: $("[name='emailSearch']",$search_form).val(),
-		searchType: PROFESSOR,
-		action: action
-	}
-	
-	/* AJAX POST request to obtain results */	
-	$.post(actions_url,data,function(users) { view_results(users, PROFESSOR); });
-}
-
-function view_results(users, user_type) {
+function view_results(users) {
 	/* Clear any existing results */
-	$('#resultTable').hide();
-	$('#resultTable').find('tbody').remove();
+	$results.hide();
+	$results.find('tbody').remove();
 	/* Associative array of a user */
 	var users = eval('(' + users + ')');
 	/* Render results table */
@@ -90,15 +84,17 @@ function view_results(users, user_type) {
 		row[++j] = '</td><td>';
 		row[++j] = users[key]["email"];
 		row[++j] = '</td><td>';
-		row[++j] = '<button data-toggle="modal" data-target="#editProfileModal" class="btn btn-default edit-profile circle" data-usertype="'+ user_type +'" data-userid="'+users[key]["userID"]+'"><span class="glyphicon glyphicon-wrench"></span></button>'
+		row[++j] = '<button data-toggle="modal" data-target="#profile-modal" class="btn btn-default edit-profile circle" data-userid="'+users[key]["userID"]+'"><span class="glyphicon glyphicon-wrench"></span></button>'
 		row[++j] = '</td></tr>';
 		
 	}
 	
 	/* Render the appropriate user profile update forms */
-	$('#resultTable').append(row.join(''));
-	$resultTable.show();
-	$(".edit-profile").click(view_user_form);
+	$results.append(row.join(''));
+	$results.show();
+	$(".edit-profile").click(function() {
+		view_user_form($(this).data("userid"),$edit_profile_form.data("usertype"));
+	});
 
 }
 
@@ -115,10 +111,10 @@ function view_profile() {
 			action = "fetchProfessor";
 			break;
 		case STAFF:
-			action = "fetchStaff";
+			action = "TODO";
 			break;
 		case ADMIN:
-			action = "fetchAdmin";
+			action = "TODO";
 			break; 
 	}
 	var data = {
@@ -151,10 +147,7 @@ function prepare_student_modal(user) {
 
 }
 
-function view_user_form() {
-
-	var userID = $(this).data("userid");
-	var user_type = $(this).data("usertype");
+function view_user_form(user_id, user_type) {
 	var action = "";
 	switch(user_type){
 		case STUDENT:
@@ -171,48 +164,46 @@ function view_user_form() {
 			break; 
 	}
 	var data = {
-		userID: userID,
+		userID: user_id,
 		action: action
 	}
-	$.post(actions_url,data,function (user){ prepare_user_form(user); });
+	$.post(actions_url,data,function (user){ prepare_user_form(user, user_type); });
 }
 
-function prepare_user_form(user) {
+function prepare_user_form(user, user_type) {
 	$user = $.parseJSON(user);
 	switch($user['type']){
 		case STUDENT:
 			$('#modalHeader').html($user['firstName']+" "+$user['lastName']);
-			$("[name='firstName']",$student_profile_form).val($user['firstName']);
-			$("[name='lastName']",$student_profile_form).val($user['lastName']);
-			$("[name='email']",$student_profile_form).val($user['email']);
-			$("[name='mobilePhone']",$student_profile_form).val($user['mobilePhone']);
-			$("[name='classYear']",$student_profile_form).val($user['classYear']);
-			$("[name='major']",$student_profile_form).val($user['major']);
-			$("[name='gpa']",$student_profile_form).val($user['gpa']);
-			$("[name='universityID']",$student_profile_form).val($user['universityID']);
-			$("[name='aboutMe']",$student_profile_form).val($user['aboutMe']);
-			$("#update-student-button").click(update_user_profile);
+			$("[name='firstName']",$edit_profile_form).val($user['firstName']);
+			$("[name='lastName']",$edit_profile_form).val($user['lastName']);
+			$("[name='email']",$edit_profile_form).val($user['email']);
+			$("[name='mobilePhone']",$edit_profile_form).val($user['mobilePhone']);
+			$("[name='classYear']",$edit_profile_form).val($user['classYear']);
+			$("[name='major']",$edit_profile_form).val($user['major']);
+			$("[name='gpa']",$edit_profile_form).val($user['gpa']);
+			$("[name='universityID']",$edit_profile_form).val($user['universityID']);
+			$("[name='aboutMe']",$edit_profile_form).val($user['aboutMe']);
 			break;
 		case PROFESSOR:
 			$('#modalHeader').html($user['firstName']+" "+$user['lastName']);	
-			$("[name='firstName']",$professor_profile_form).val($user ['firstName']);
-			$("[name='lastName']",$professor_profile_form).val($user ['lastName']);
-			$("[name='email']",$professor_profile_form).val($user ['email']);
-			$("[name='mobilePhone']",$professor_profile_form).val($user ['mobilePhone']);
-			$("[name='officePhone']",$professor_profile_form).val($user ['officePhone']);
-			$("[name='building']",$professor_profile_form).val($user ['office']['building']);
-			$("[name='room']",$professor_profile_form).val($user ['office']['room']);		
-			$("#update-professor-button").click(update_user_profile);
+			$("[name='firstName']",$edit_profile_form).val($user ['firstName']);
+			$("[name='lastName']",$edit_profile_form).val($user ['lastName']);
+			$("[name='email']",$edit_profile_form).val($user ['email']);
+			$("[name='mobilePhone']",$edit_profile_form).val($user ['mobilePhone']);
+			$("[name='officePhone']",$edit_profile_form).val($user ['officePhone']);
+			$("[name='building']",$edit_profile_form).val($user ['office']['building']);
+			$("[name='room']",$edit_profile_form).val($user ['office']['room']);		
 			break;
 		case STAFF:
-			action = "fetchStaff";
+			action = "TODO";
 			break;
 		case ADMIN:
-			action = "fetchAdmin";
+			action = "TODO";
 			break; 
 	}
-
-	$profile_form_modal.modal("show");
+	$("[type='submit']").click(update_user_profile);
+	$user_modal.modal("show");
 }
 
 function update_user_profile() {
@@ -222,15 +213,15 @@ function update_user_profile() {
 			action = "updateStudentProfile";
 			/* Select the input fields in the context of the update form. */
 			var data = {
-				firstName: $("[name='firstName']",$student_profile_form).val(),
-				lastName: $("[name='lastName']",$student_profile_form).val(),
-				email: $("[name='email']",$student_profile_form).val(),
-				mobilePhone: $("[name='mobilePhone']",$student_profile_form).val(),
-				classYear: $("[name='classYear']",$student_profile_form).val(),
-				major: $("[name='major']",$student_profile_form).val(),
-				gpa: $("[name='gpa']",$student_profile_form).val(),
-				universityID: $("[name='universityID']", $student_profile_form).val(),
-				aboutMe: $("[name='aboutMe']",$student_profile_form).val(),
+				firstName: $("[name='firstName']",$edit_profile_form).val(),
+				lastName: $("[name='lastName']",$edit_profile_form).val(),
+				email: $("[name='email']",$edit_profile_form).val(),
+				mobilePhone: $("[name='mobilePhone']",$edit_profile_form).val(),
+				classYear: $("[name='classYear']",$edit_profile_form).val(),
+				major: $("[name='major']",$edit_profile_form).val(),
+				gpa: $("[name='gpa']",$edit_profile_form).val(),
+				universityID: $("[name='universityID']", $edit_profile_form).val(),
+				aboutMe: $("[name='aboutMe']",$edit_profile_form).val(),
 				action: action
 			}
 			break;
@@ -238,21 +229,21 @@ function update_user_profile() {
 			/* Select the input fields in the context of the update form. */
 			action = "updateProfessorProfile";
 			var data = {
-				firstName: $("[name='firstName']",$professor_profile_form).val(),
-				lastName: $("[name='lastName']",$professor_profile_form).val(),
-				email: $("[name='email']",$professor_profile_form).val(),
-				mobilePhone: $("[name='mobilePhone']",$professor_profile_form).val(),
-				officePhone: $("[name='officePhone']",$professor_profile_form).val(),
-				building: $("[name='building']",$professor_profile_form).val(),
-				room: $("[name='room']",$professor_profile_form).val(),
+				firstName: $("[name='firstName']",$edit_profile_form).val(),
+				lastName: $("[name='lastName']",$edit_profile_form).val(),
+				email: $("[name='email']",$edit_profile_form).val(),
+				mobilePhone: $("[name='mobilePhone']",$edit_profile_form).val(),
+				officePhone: $("[name='officePhone']",$edit_profile_form).val(),
+				building: $("[name='building']",$edit_profile_form).val(),
+				room: $("[name='room']",$edit_profile_form).val(),
 				action: action
 			}
 			break;
 		case STAFF:
-			action = "fetchStaff";
+			action = "TODO";
 			break;
 		case ADMIN:
-			action = "fetchAdmin";
+			action = "TODO";
 			break; 
 	}
 
@@ -260,7 +251,7 @@ function update_user_profile() {
 
 	/*TODO: Obtain a confirmation from the PHP script on success/failure and 
 	 * notify the user */
-	$profile_form_modal.modal("hide");
+	$user_modal.modal("hide");
 }
 
 function prepare_buildings_dropdown() { 
@@ -271,7 +262,7 @@ function prepare_buildings_dropdown() {
 	$.post(actions_url,data,function (buildings) { 
 		var buildings = eval('(' + buildings + ')');
 		for(var i = 0; i < buildings.length; i++){
-			$buildings_dropdown.append("<option>" + buildings[i]['building'] + "</option>");;
+			$buildings_dropdown.append("<option>" + buildings[i]['building'] + "</option>");
 		}
 		$buildings_dropdown.trigger('change');
 	 });
@@ -325,13 +316,3 @@ function clear_dropdown($dropdown){
 	$dropdown.find('option').remove();
 	
 }
-
-function prevent_redirection() {
-	$search_form.submit(function() { return false; });	
-	$student_profile_form.submit(function() { return false; });
-	$professor_profile_form.submit(function() { return false; });
-	$staff_profile_form.submit(function() { return false; });
-	$admin_profile_form.submit(function() { return false; });
-
-}
-

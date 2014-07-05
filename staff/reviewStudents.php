@@ -21,7 +21,7 @@ require_once 'staffSession.php';
 	<body>
 			
 		<!-- Profile Modal -->
-		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -123,7 +123,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<td><?= $student->getEmail() ?></td>
 										<td><?= $student->getGPA()?></td>
 										<td>
-										<button data-toggle="modal" data-target="#studentProfileModal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
+										<button data-toggle="modal" data-target="#profile-modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
 										<span class="glyphicon glyphicon-user"></span></button>			
 										</td>
 										<td>	<form>

@@ -3,316 +3,322 @@ $(document).ready(function() {
 	window.PROFESSOR = 1;
 	window.STAFF = 2;
 	window.ADMIN = 3;
-	window.actions_url = "../actions.php"; 
+	window.actionsUrl = "../actions.php"; 
 
-	if($(".search-users-form").length){
-		$user_search_form = $(".search-users-form");
-		$user_search_form.submit(function() { return false; });	
-		$user_search_button = $("[type='submit']", $user_search_form);
-		$user_search_button.click(function() { 
-			search_users($user_search_form.data("usertype"));
+	if( $( ".search-users-form" ).length ){
+		$userSearchForm = $( ".search-users-form" );
+		$userSearchForm.submit( function() { return false; });	
+		$userSearchButton = $( "[type='submit']", $userSearchForm );
+		$userSearchButton.click(function() { 
+			searchUsers( $userSearchForm.data( "usertype" ) );
 		});
 	}
 
-	if($(".user-search-table").length){
-		$results = $(".user-search-table");
+	if( $( ".user-search-table" ).length ){
+		$results = $( ".user-search-table" );
 
 	}
 
-	if($(".profile-modal").length){
-		$user_modal = $(".profile-modal");
-		if($(".edit-profile-form").length){
-			$edit_profile_form = $(".edit-profile-form");
-			$edit_profile_form.submit(function() { return false; });
+	if( $( ".profile-modal" ).length ){
+		$userModal = $( ".profile-modal" );
+		if( $( ".edit-profile-form" ).length ){
+			$editProfileForm = $( ".edit-profile-form" );
+			$editProfileForm.submit(function() { return false; });
 			//In case the button is not in a table
-			$(".edit-profile").click(function() { 
-				view_user_form($(this).data("userid"),$edit_profile_form.data("usertype"));
+			$( ".edit-profile" ).click(function() { 
+				viewUserForm( $(this).data( "userid" ), $editProfileForm.data( "usertype" ) );
 
 			})
 		}
-		if($(".profile").length){
-			$user_modal = $(".profile-modal");
-			$(".profile").click(view_profile);
+
+		if( $( ".profile" ).length ){
+			$userModal = $( ".profile-modal" );
+			$( ".profile" ).click( viewUserProfile );
 
 		}
 	}
 
-	if($(".buildings").length){
-		$buildings_dropdown = $(".buildings");
-		$rooms_dropdown = $(".rooms");
-		prepare_buildings_dropdown();
-		$buildings_dropdown.change(prepare_rooms_dropdown);
+	if( $( ".buildings" ).length ){
+		$buildingsDropdown = $( ".buildings" );
+		$roomsDropdown = $( ".rooms" );
+		prepareBuildingsDropdown();
+		$buildingsDropdown.change( prepareRoomsDropdown );
 	}
 
-	if($(".courses").length){
-		$courses_dropdown = $(".courses");
-		$professors_dropdown = $(".professors");
-		prepare_courses_dropdown();
-		$courses_dropdown.change(prepare_professors_dropdown);
+	if( $( ".courses" ).length ){
+		$coursesDropdown = $( ".courses" );
+		$professorsDropdown = $( ".professors" );
+		prepareCoursesDropdown();
+		$coursesDropdown.change( prepareProfessorsDropdown );
 	}
 
 });
 
 
-function search_users(user_type) {
+function searchUsers( userType ) {
 	var action = "searchForUsers";
 	var data = {
-		firstName: $("[name='firstName']",$user_search_form).val(),
-		lastName: $("[name='lastName']",$user_search_form).val(),
-		email: $("[name='emailSearch']",$user_search_form).val(),
-		searchType: user_type,
+		firstName: $( "[name='firstName']", $userSearchForm ).val(),
+		lastName: $( "[name='lastName']", $userSearchForm).val(),
+		email: $( "[name='emailSearch']", $userSearchForm).val(),
+		searchType: userType,
 		action: action
 	}
-	$.post(actions_url,data,function(users) { view_results(users); });
+	$.post( actionsUrl, data, function( users ) { viewResults( users ); });
 
 }
 
-function view_results(users) {
+function viewResults( users ) {
 	/* Clear any existing results */
 	$results.hide();
-	$results.find('tbody').remove();
+	$results.find( "tbody" ).remove();
 	/* Associative array of a user */
-	var users = eval('(' + users + ')');
+	var users = eval( "(" + users + ")" );
 	/* Render results table */
 	var row = new Array(), j = -1;
 	var size = users.length; 
-	for (var key = 0;key<size; key++){
-		row[++j] ='<tr><td>';
-		row[++j] = users[key]["firstName"];
-		row[++j] = '</td><td>';
-		row[++j] = users[key]["lastName"];
-		row[++j] = '</td><td>';
-		row[++j] = users[key]["email"];
-		row[++j] = '</td><td>';
-		row[++j] = '<button data-toggle="modal" data-target="#profile-modal" class="btn btn-default edit-profile circle" data-userid="'+users[key]["userID"]+'"><span class="glyphicon glyphicon-wrench"></span></button>'
-		row[++j] = '</td></tr>';
+	for ( var key = 0; key < size; key++ ){
+		row[ ++j ] ="<tr><td>";
+		row[ ++j ] = users[ key ][ "firstName" ];
+		row[ ++j ] = "</td><td>";
+		row[ ++j ] = users[ key ][ "lastName" ];
+		row[ ++j ] = "</td><td>";
+		row[ ++j ] = users[ key ][ "email" ];
+		row[ ++j ] = "</td><td>";
+		row[ ++j ] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" + 
+						users[ key ][ "userID" ] + "'><span class='glyphicon glyphicon-wrench'></span></button>"
+		row[ ++j ] = "</td></tr>";
 		
 	}
 	
 	/* Render the appropriate user profile update forms */
-	$results.append(row.join(''));
+	$results.append( row.join('') );
 	$results.show();
-	$(".edit-profile").click(function() {
-		view_user_form($(this).data("userid"),$edit_profile_form.data("usertype"));
+	$( ".edit-profile" ).click(function() {
+		viewUserForm( $(this).data( "userid" ),$editProfileForm.data( "usertype" ) );
 	});
 
 }
 
-function view_profile() {
-	var user_id = $(this).data('userid');
-	var user_type = $(this).data('usertype');
+function viewUserProfile() {
+	var userID = $(this).data( "userid" );
+	var userType = $(this).data( "usertype" );
 	var action = "";
 
-	switch(user_type){
-		case STUDENT:
-			action = "fetchStudent";
-			break;
-		case PROFESSOR:
-			action = "fetchProfessor";
-			break;
-		case STAFF:
-			action = "TODO";
-			break;
-		case ADMIN:
-			action = "TODO";
-			break; 
+	switch( userType ){
+	case STUDENT:
+		action = "fetchStudent";
+		break;
+	case PROFESSOR:
+		action = "fetchProfessor";
+		break;
+	case STAFF:
+		action = "TODO";
+		break;
+	case ADMIN:
+		action = "TODO";
+		break; 
 	}
 	var data = {
-		userID: user_id,
+		userID: userID,
 		action: action
 	}
 
-	$.post(actions_url,data,function(user) { prepare_student_modal(user); });
+	$.post( actionsUrl, data, function( user ) { prepareStudentModal( user ); } );
 }
 
-function prepare_student_modal(user) {
-	var student = $.parseJSON(user);
-	var num_comments = student['comments']['size'];
-	$comments = student['comments'];
-	$commentsBlock = $("#comments");
+function prepareStudentModal( user ) {
+	var student = $.parseJSON( user );
+	var commentsCnt = student[ "comments" ][ "size" ];
+	$comments = student[ "comments" ];
+	$commentsBlock = $( "#comments" );
 	
-	$('#studentModalTitle').html(student['firstName']+" "+student['lastName']);
-	$('#studentMajor').html("Major: " + student['major']);
-	$('#studentGPA').html("GPA: " + student['gpa']);
-	$('#studentEmail').html("Email: " + student['email']);
-	$('#studentMobilePhone').html("Mobile Phone: " + student['mobilePhone']);
-	$('#studentAboutMe').html(student['aboutMe']);
-	$('#studentClassYear').html("Class Year: " + student['classYear']);
+	$( "#studentModalTitle" ).html( student[ "firstName" ] + " " + student[ "lastName" ] );
+	$( "#studentMajor" ).html( "Major: " + student[ "major" ] );
+	$( "#studentGPA" ).html( "GPA: " + student[ "gpa" ] );
+	$( "#studentEmail" ).html( "Email: " + student[ "email" ] );
+	$( "#studentMobilePhone" ).html( "Mobile Phone: " + student[ "mobilePhone" ] );
+	$( "#studentAboutMe" ).html( student[ "aboutMe" ] );
+	$( "#studentClassYear" ).html( "Class Year: " + student[ "classYear" ] );
 
-	for (var i = num_comments -1; i >= 0; i--) {
+	for ( var i = commentsCnt -1; i >= 0; i-- ) {
 		$comment = $comments[i];
-		$commentsBlock.append('<div class="row"><div class="col-xs-4"><p>Date: ' + $comment['createTime'] + '</p></div><!-- End column --></div><!-- End row --><div class="row"><div class="col-xs-4"><p>Written By: ' + $comment['author'] + '</p></div> <!-- End column --></div> <!-- End row --><div class="row"><div class="col-xs-12"><p>Message: ' + $comment['comment'] + '</p></div><!-- End column --></div> <!-- End row --><br>');
-		
+		$commentsBlock.append( "<div class='row'><div class='col-xs-4'><p>Date: " + $comment[ "createTime" ] + 
+			"</p></div><!-- End column --></div><!-- End row --><div class='row'><div class='col-xs-4'><p>Written By: " + 
+			$comment[ "author" ] + "</p></div> <!-- End column --></div> <!-- End row --><div class='row'><div class='col-xs-12'><p>Message: " + 
+			$comment[ "comment" ] + "</p></div><!-- End column --></div> <!-- End row --><br>" );		
 	};
-
+	//TODO: Reset modal values on hidden.bs.modal to avoid having duplicate comments. 
 }
 
-function view_user_form(user_id, user_type) {
+function viewUserForm( userID, userType ) {
 	var action = "";
-	switch(user_type){
-		case STUDENT:
-			action = "fetchStudent";
-			break;
-		case PROFESSOR:
-			action = "fetchProfessor";
-			break;
-		case STAFF:
-			action = "fetchStaff";
-			break;
-		case ADMIN:
-			action = "fetchAdmin";
-			break; 
+	switch(userType){
+	case STUDENT:
+		action = "fetchStudent";
+		break;
+	case PROFESSOR:
+		action = "fetchProfessor";
+		break;
+	case STAFF:
+		action = "TODO";
+		break;
+	case ADMIN:
+		action = "TODO";
+		break; 
 	}
 	var data = {
-		userID: user_id,
+		userID: userID,
 		action: action
 	}
-	$.post(actions_url,data,function (user){ prepare_user_form(user, user_type); });
+	$.post( actionsUrl, data, function ( user ){ prepareUserForm( user, userType ); });
 }
 
-function prepare_user_form(user, user_type) {
-	$user = $.parseJSON(user);
-	switch($user['type']){
-		case STUDENT:
-			$('#modalHeader').html($user['firstName']+" "+$user['lastName']);
-			$("[name='firstName']",$edit_profile_form).val($user['firstName']);
-			$("[name='lastName']",$edit_profile_form).val($user['lastName']);
-			$("[name='email']",$edit_profile_form).val($user['email']);
-			$("[name='mobilePhone']",$edit_profile_form).val($user['mobilePhone']);
-			$("[name='classYear']",$edit_profile_form).val($user['classYear']);
-			$("[name='major']",$edit_profile_form).val($user['major']);
-			$("[name='gpa']",$edit_profile_form).val($user['gpa']);
-			$("[name='universityID']",$edit_profile_form).val($user['universityID']);
-			$("[name='aboutMe']",$edit_profile_form).val($user['aboutMe']);
-			break;
-		case PROFESSOR:
-			$('#modalHeader').html($user['firstName']+" "+$user['lastName']);	
-			$("[name='firstName']",$edit_profile_form).val($user ['firstName']);
-			$("[name='lastName']",$edit_profile_form).val($user ['lastName']);
-			$("[name='email']",$edit_profile_form).val($user ['email']);
-			$("[name='mobilePhone']",$edit_profile_form).val($user ['mobilePhone']);
-			$("[name='officePhone']",$edit_profile_form).val($user ['officePhone']);
-			$("[name='building']",$edit_profile_form).val($user ['office']['building']);
-			$("[name='room']",$edit_profile_form).val($user ['office']['room']);		
-			break;
-		case STAFF:
-			action = "TODO";
-			break;
-		case ADMIN:
-			action = "TODO";
-			break; 
+function prepareUserForm( user, userType ) {
+	$user = $.parseJSON( user );
+	switch( $user["type"] ){
+	case STUDENT:
+		$( "#modalHeader" ).html( $user[ "firstName" ] + " " + $user[ "lastName" ] );
+		$( "[name='firstName']", $editProfileForm ).val( $user[ "firstName" ] );
+		$( "[name='lastName']", $editProfileForm).val( $user[ "lastName" ] );
+		$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
+		$( "[name='mobilePhone']", $editProfileForm).val( $user[ "mobilePhone" ] );
+		$( "[name='classYear']", $editProfileForm).val( $user[ "classYear" ] );
+		$( "[name='major']", $editProfileForm).val( $user[ "major" ] );
+		$( "[name='gpa']", $editProfileForm).val( $user[ "gpa" ] );
+		$( "[name='universityID']", $editProfileForm).val( $user[ "universityID" ] );
+		$( "[name='aboutMe']", $editProfileForm).val( $user[ "aboutMe" ] );
+		break;
+	case PROFESSOR:
+		$( "#modalHeader" ).html( $user[ "firstName" ] + " " + $user[ "lastName" ] );	
+		$( "[name='firstName']", $editProfileForm).val( $user[ "firstName" ] );
+		$( "[name='lastName']", $editProfileForm).val( $user[ "lastName" ] );
+		$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
+		$( "[name='mobilePhone']", $editProfileForm).val( $user[ "mobilePhone" ] );
+		$( "[name='officePhone']", $editProfileForm).val( $user[ "officePhone" ] );
+		$( "[name='building']", $editProfileForm).val( $user[ "office" ][ "building" ] );
+		$( "[name='room']", $editProfileForm).val( $user[ "office" ][ "room" ] );		
+		break;
+	case STAFF:
+		action = "TODO";
+		break;
+	case ADMIN:
+		action = "TODO";
+		break; 
 	}
-	$("[type='submit']").click(update_user_profile);
-	$user_modal.modal("show");
+	$( "[type='submit']" ).click( update_user_profile );
+	$userModal.modal( "show" );
 }
 
 function update_user_profile() {
 	var action = "";
-	switch($user['type']){
-		case STUDENT:
-			action = "updateStudentProfile";
-			/* Select the input fields in the context of the update form. */
-			var data = {
-				firstName: $("[name='firstName']",$edit_profile_form).val(),
-				lastName: $("[name='lastName']",$edit_profile_form).val(),
-				email: $("[name='email']",$edit_profile_form).val(),
-				mobilePhone: $("[name='mobilePhone']",$edit_profile_form).val(),
-				classYear: $("[name='classYear']",$edit_profile_form).val(),
-				major: $("[name='major']",$edit_profile_form).val(),
-				gpa: $("[name='gpa']",$edit_profile_form).val(),
-				universityID: $("[name='universityID']", $edit_profile_form).val(),
-				aboutMe: $("[name='aboutMe']",$edit_profile_form).val(),
-				action: action
-			}
-			break;
-		case PROFESSOR:
-			/* Select the input fields in the context of the update form. */
-			action = "updateProfessorProfile";
-			var data = {
-				firstName: $("[name='firstName']",$edit_profile_form).val(),
-				lastName: $("[name='lastName']",$edit_profile_form).val(),
-				email: $("[name='email']",$edit_profile_form).val(),
-				mobilePhone: $("[name='mobilePhone']",$edit_profile_form).val(),
-				officePhone: $("[name='officePhone']",$edit_profile_form).val(),
-				building: $("[name='building']",$edit_profile_form).val(),
-				room: $("[name='room']",$edit_profile_form).val(),
-				action: action
-			}
-			break;
-		case STAFF:
-			action = "TODO";
-			break;
-		case ADMIN:
-			action = "TODO";
-			break; 
+	switch($user[ "type" ]){
+	case STUDENT:
+		action = "updateStudentProfile";
+		/* Select the input fields in the context of the update form. */
+		var data = {
+			firstName: $( "[name='firstName']", $editProfileForm ).val(),
+			lastName: $( "[name='lastName']", $editProfileForm ).val(),
+			email: $( "[name='email']", $editProfileForm ).val(),
+			mobilePhone: $( "[name='mobilePhone']", $editProfileForm ).val(),
+			classYear: $( "[name='classYear']", $editProfileForm ).val(),
+			major: $( "[name='major']", $editProfileForm ).val(),
+			gpa: $( "[name='gpa']", $editProfileForm ).val(),
+			universityID: $( "[name='universityID']", $editProfileForm ).val(),
+			aboutMe: $( "[name='aboutMe']", $editProfileForm ).val(),
+			action: action
+		}
+		break;
+	case PROFESSOR:
+		/* Select the input fields in the context of the update form. */
+		action = "updateProfessorProfile";
+		var data = {
+			firstName: $( "[name='firstName']", $editProfileForm ).val(),
+			lastName: $( "[name='lastName']", $editProfileForm ).val(),
+			email: $( "[name='email']", $editProfileForm ).val(),
+			mobilePhone: $( "[name='mobilePhone']", $editProfileForm ).val(),
+			officePhone: $( "[name='officePhone']", $editProfileForm ).val(),
+			building: $( "[name='building']", $editProfileForm ).val(),
+			room: $( "[name='room']", $editProfileForm ).val(),
+			action: action
+		}
+		break;
+	case STAFF:
+		action = "TODO";
+		break;
+	case ADMIN:
+		action = "TODO";
+		break; 
 	}
 
-	$.post(actions_url,data,function (info){ });
+	$.post( actionsUrl, data, function ( info ){});
 
 	/*TODO: Obtain a confirmation from the PHP script on success/failure and 
 	 * notify the user */
-	$user_modal.modal("hide");
+	$userModal.modal( "hide" );
 }
 
-function prepare_buildings_dropdown() { 
+function prepareBuildingsDropdown() { 
 	var action = "fetchBuildings";
 	var data = {
 		action: action
 	}
-	$.post(actions_url,data,function (buildings) { 
-		var buildings = eval('(' + buildings + ')');
-		for(var i = 0; i < buildings.length; i++){
-			$buildings_dropdown.append("<option>" + buildings[i]['building'] + "</option>");
+	$.post( actionsUrl, data, function ( buildings ) { 
+		var buildings = eval( "(" + buildings + ")" );
+		for( var i = 0; i < buildings.length; i++ ){
+			$buildingsDropdown.append( "<option>" + buildings[i][ "building" ] + "</option>" );
 		}
-		$buildings_dropdown.trigger('change');
+		$buildingsDropdown.trigger( "change" );
 	 });
 }
 
-function prepare_rooms_dropdown() {
+function prepareRoomsDropdown() {
 	var action = "fetchTheRooms";
 	var data = {
-		building: $(this).val(),
+		building: $( this ).val(),
 		action: action
 	}
-	clear_dropdown($rooms_dropdown);
-	$.post(actions_url,data,function (rooms) { 
-		var rooms = eval('(' + rooms + ')');
-		for(var i = 0; i < rooms.length; i++){
-			$rooms_dropdown.append("<option>" + rooms[i] + "</option>");
+	clearDropdown( $roomsDropdown );
+	$.post( actionsUrl, data, function ( rooms ) { 
+		var rooms = eval( "(" + rooms + ")" );
+		for( var i = 0; i < rooms.length; i++ ){
+			$roomsDropdown.append( "<option>" + rooms[i] + "</option>" );
 		}
 	 });	
 }
 
-function prepare_courses_dropdown() {
+function prepareCoursesDropdown() {
 	var action = "fetchCourses";
 	var data = {
 		action: action
 	}
-	$.post(actions_url,data, function (courses) { 
-		var courses = eval('(' + courses + ')');
-		for (var i = 0; i < courses.length; i++){
-			$courses_dropdown.append("<option>" + courses[i]['courseTitle'] + "</option>");
+	$.post( actionsUrl, data, function ( courses ) { 
+		var courses = eval( "("+ courses + ")" );
+		for ( var i = 0; i < courses.length; i++ ){
+			$coursesDropdown.append( "<option>" + courses[i][ "courseTitle" ] + "</option>" );
 		}
-		$courses_dropdown.trigger("change");
-	 });	
+		$coursesDropdown.trigger( "change" );
+	 });
+
 }
 
-function prepare_professors_dropdown() {
+function prepareProfessorsDropdown() {
 	var action = "fetchTheProfessors";
 	var data = {
-		courseTitle: $(this).val(),
+		courseTitle: $( this ).val(),
 		action: action
 	}	
-	$.post(url,data,function (professors) { 
-		clear_dropdown($professors_dropdown);
-		var professors = eval('(' + professors + ')');
-		for(var i = 0; i < professors.length; i++){
-			$professors_dropdown.append("<option>" +professors[i]['firstName'] + " " + professors[i]['lastName']+"</option>");
+	$.post( actionsUrl, data, function ( professors ) { 
+		clearDropdown( $professorsDropdown );
+		var professors = eval( "(" + professors + ")" );
+		for( var i = 0; i < professors.length; i++ ){
+			$professorsDropdown.append( "<option>" + professors[i][ "firstName" ] + " " + professors[i][ "lastName" ] + "</option>" );
 		}
-	 });	
+	 });
+
 }
 
-function clear_dropdown($dropdown){
-	$dropdown.find('option').remove();
+function clearDropdown( $dropdown ){
+	$dropdown.find( "option" ).remove();
 	
 }

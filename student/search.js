@@ -45,21 +45,15 @@ $(document).ready(function() {
 					currPos.hide(800);
 				} else {
 					appModalBody.find('#appAlertHolder').html(
-						'<div class="alert alert-danger alert-dismissible">' +
-						'<button type="button" class="close" data-dismiss="alert">' +
-						'<span aria-hidden="true">&times;</span><span class="sr-only">' +
-						'Close</span></button><strong>'+
-						data.error.title+'!</strong> '+
+						'<div class="alert alert-danger">' +
+						'<strong>' + data.error.title + '!</strong> '+
 						data.error.message+'</div>');
 				}
 			},
 			error: function(jsXHR, textStatus, errorThrown) {
 				appModalBody.find('#appAlertHolder').html(
-					'<div class="alert alert-danger alert-dismissible">' +
-					'<button type="button" class="close" data-dismiss="alert">' +
-					'<span aria-hidden="true">&times;</span><span class="sr-only">' +
-					'Close</span></button><strong>'+
-					'Error applying to position!</strong> '+
+					'<div class="alert alert-danger">' +
+					'<strong>Error applying to position!</strong> '+
 					'An AJAX error occured (' + errorThrown + ')</div>');
 			}
 		});

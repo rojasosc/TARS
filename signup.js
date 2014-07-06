@@ -9,11 +9,31 @@ $(document).ready(function () {
 		validating: 'glyphicon glyphicon-refresh'
 		},
 		submitHandler: function(validator, form, submitButton) {
-		// Ajax post(url,data,callback function)
-		var url = $('#signupForm').attr('action');
-		var data = $('#signupForm :input').serializeArray();
-		$.post(url,data,function (info){
-				displayConfirmation();  //Remove the form and display a confirmation.
+			// Ajax post(url,data,callback function)
+			var url = $('#signupForm').attr('action');
+			var data = $('#signupForm :input').serializeArray();
+			$.ajax({
+				type: 'POST',
+				url: url,
+				data: data,
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						//Remove the form and display a confirmation.
+						displayConfirmation();
+					} else {
+						$('#alertHolder').html(
+							'<div class="alert alert-danger">' +
+							'<strong>' + data.error.title + '!</strong> '+
+							data.error.message+'</div>');
+					}
+				},
+				error: function(jsXHR, textStatus, errorThrown) {
+					$('#alertHolder').html(
+						'<div class="alert alert-danger">' +
+						'<strong>Error creating an account!</strong> '+
+						'An AJAX error occured (' + errorThrown + ')</div>');
+				}
 				});
 		},
 		fields: {
@@ -109,54 +129,34 @@ $(document).ready(function () {
 
 			}
 		},
-		homePhone: {
-			message: 'Your home phone is not valid',
-			validators: {
-			notEmpty: {
-				message: 'Your home phone is required and can\'t be empty'
-			},
-			stringLength: {
-				min: 10,
-				max: 15,
-				message: 'Your home phone must be between 10 and 15 characters long'
-			},
-			regexp: {
-				regexp: /^[0-9]+$/,
-				message: 'Your home phone can only consist of numerical digits'
-			}
-			}
-		},	 
 		mobilePhone: {
 			message: 'Your mobile phone is not valid',
 			validators: {
 			notEmpty: {
 				message: 'Your mobile phone is required and can\'t be empty'
 			},
-			stringLength: {
-				min: 10,
-				max: 15,
-				message: 'Your mobile phone must be between 10 and 15 characters long'
-			},
-			regexp: {
-				regexp: /^[0-9]+$/,
-				message: 'Your mobile phone can only consist of numerical digits'
+			phone: {
+				country: 'US',
+				message: 'Your mobile phone must be valid and include the area code'
 			}
 			}
-		},	  
+		},
 		gpa: {
 			message: 'Your gpa is not valid',
 			validators: {
 			notEmpty: {
 				message: 'Your gpa is required and can\'t be empty'
 			},
-			stringLength: {
-				min: 3,
-				max: 6,
-				message: 'Your gpa must be a decimal between 2 and 5 digits long'
+			between: {
+				min: 0,
+				max: 4,
+				inclusive: false,
+				message: 'Your gpa must be a decimal value from 0.000 to 4.000'
 			},
-			regexp: {
-				regexp: /^\d+(.\d+){0,1}$/,
-				message: 'Your gpa can only consist of numerical digits'
+			stringLength: {
+				min: 1,
+				max: 5,
+				message: 'Your gpa will not be stored so precisely'
 			}
 
 			}
@@ -177,7 +177,15 @@ $(document).ready(function () {
 				message: 'Your University ID can only consist of numerical digits'
 			}
 			}
-		},	 
+		},
+		aboutMe: {
+			message: 'Your Qualifications is not valid',
+			validators: {
+			notEmpty: {
+				message: 'Your Qualifications is required and can\'t be empty'
+			}
+			}
+		}
 	} /* close fields */		
 });
 

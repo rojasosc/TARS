@@ -12,7 +12,7 @@ require_once 'db.php';
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>TARS</title>
+		<title>TARS Sign Up</title>
 
 		<link href="css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="signup.css" rel="stylesheet"/>
@@ -40,7 +40,8 @@ require_once 'db.php';
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron" id="formBox">
-						<h2>Sign Up</h2>
+						<h2>TARS Sign Up</h2>
+						<div class="row" id="alertHolder"></div>
 						<form action="process.php" class="form-horizontal" id="signupForm" method="post">
 							<!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
 							<input style="display:none" type="text" name="fakeusernameremembered"/>
@@ -91,7 +92,10 @@ require_once 'db.php';
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
-										<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="Mobile Phone" />
+										<div class="input-group">
+											<span class="input-group-addon">+1</span>
+											<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="ex. 555 555 5555" maxlength="14" />
+										</div>
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
@@ -126,13 +130,13 @@ require_once 'db.php';
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="gpa">Cumulative GPA</label>
-										<input type="text" class="form-control" id="gpa" name="gpa" placeholder="GPA" />
+										<input type="text" class="form-control" id="gpa" name="gpa" placeholder="ex. 3.500" maxlength="5" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="universityID">University Student ID</label>
-										<input type="text" class="form-control" id="universityID" name="universityID" placeholder="University ID" />
+										<input type="text" class="form-control" id="universityID" name="universityID" placeholder="ex. 27400000" maxlength="8" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
@@ -161,25 +165,6 @@ require_once 'db.php';
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
 			</div>
 			<!--END Page Footer -->
 	

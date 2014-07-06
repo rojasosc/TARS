@@ -10,7 +10,7 @@ function get_form_value($key, $default = false, $fromPost = true) {
 	if ($fromPost) {
 		$superglobal = $_POST;
 	}
-	if (isset($superglobal[$key]) && !empty($superglobal[$key])) {
+	if (isset($superglobal[$key])) {
 		return $superglobal[$key];
 	} else {
 		return $default;
@@ -30,18 +30,76 @@ function get_form_values($key_names, $superglobal = true) {
 	return $values;
 }
 
+const FORM_VALIDATE_NOTEMPTY = 0;
+const FORM_VALIDATE_EMAIL = 1;
+const FORM_VALIDATE_OTHERFIELD = 2;
+const FORM_VALIDATE_NUMERIC = 3;
+const FORM_VALIDATE_NUMSTR = 4;
+
 /**
  * get_invalid_values($form_fields)
  * Given the output of get_form_values(), returns an array of the fields that
- * had no set value (!isset()) or the set value was blank (empty())
+ * are not valid for the given value 
  */
-function get_invalid_values($values) {
-	$falses = array();
+function get_invalid_values($values, $params = array()) {
+	$invalids = array();
 	foreach ($values as $key => $value) {
-		if (!$value) {
-			$falses[] = $key;
+		$validate_as = isset($params[$key]) ? $params[$key] :
+			array('type' => FORM_VALIDATE_NOTEMPTY);
+		$invalid = false;
+		if (is_int($validate_as)) {
+			$validate_as = array('type' => $validate_as);
+		} elseif (!isset($validate_as['type'])) {
+			$validate_as = array('type' => FORM_VALIDATE_NOTEMPTY);
+		}
+		switch ($validate_as['type']) {
+		case FORM_VALIDATE_NOTEMPTY:
+			$invalid = empty($value);
+			break;
+		case FORM_VALIDATE_EMAIL:
+			$invalid = filter_var($value, FILTER_VALIDATE_EMAIL) === false;
+			break;
+		case FORM_VALIDATE_OTHERFIELD:
+			if (isset($validate_as['field'])) {
+				$field_key = $validate_as['field'];
+				$invalid = isset($values[$field_key]) ?
+					($values[$field_key] !== $value) : true;
+			} else {
+				$invalid = true;
+			}
+			break;
+		case FORM_VALIDATE_NUMERIC:
+			if (isset($validate_as['reject_signed'])) {
+				if ($value[0] == '-' || $value[0] == '+') {
+					$value = '';
+				}
+			}
+			if (isset($validate_as['reject_decimal'])) {
+				if (strpos($value, '.') !== false) {
+					$value = '';
+				}
+			}
+			$invalid = filter_var($value, FILTER_VALIDATE_FLOAT, $validate_as) === false;
+			break;
+		case FORM_VALIDATE_NUMSTR:
+			$value = preg_replace('/([^\d]+)/', '', $value);
+			if (isset($validate_as['min_length'])) {
+				if (strlen($value) < $validate_as['min_length']) {
+					$value = '';
+				}
+			}
+			if (isset($validate_as['max_length'])) {
+				if (strlen($value) > $validate_as['max_length']) {
+					$value = '';
+				}
+			}
+			$invalid = !is_numeric($value);
+			break;
+		}
+		if ($invalid) {
+			$invalids[] = $key;
 		}
 	}
-	return $falses;
+	return $invalids;
 }
 

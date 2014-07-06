@@ -448,13 +448,13 @@ final class Student extends User {
 		$applicationID = Application::insertApplication($this->id, $positionID, $compensation,
 			$qualifications, PENDING, $this->id, time());
 		Event::insertEvent(Event::STUDENT_APPLY, $this->getName().' applied to a position. '.
-			'Application object created.', $applicaitonID);
+			'Application object created.', $applicationID);
 	}
 	
 	public function withdraw($positionID){
 		Applicaiton::setApplicationStatus($this->id, $positionID, WITHDRAW);
 		Event::insertEvent(Event::STUDENT_WITHDRAW, $this->getName().' withdrew an application. '.
-			'Application object updated.', $applicaitonID);
+			'Application object updated.', null);
 	}
 	
 	public function getAllComments(){

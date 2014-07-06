@@ -24,7 +24,7 @@ $(document).ready(function() {
 		studentID = $('#studentID').val();
         compensation = $('#compensation').val();
         qualifications = $('#qualifications').val();
-		appModalBody = $(this).closest(".modal-body");
+		appModalBody = $(this).parent();
 		appModalFooter = appModalBody.next('.modal-footer');
 		appFormHTML = appModalBody.html();
 		appFormButtons = appModalFooter.html();	
@@ -39,14 +39,28 @@ $(document).ready(function() {
 			}, 
 			dataType: 'json',
 			success: function(data) {
+				if (data.success) {
 					appModalBody.html('<p>Thank you for applying for this position!<br/>We hope to be able to get back to you soon with our decision.</p>');
 					appModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="appOK">OK</button>');
 					currPos.hide(800);
+				} else {
+					appModalBody.find('#appAlertHolder').html(
+						'<div class="alert alert-danger alert-dismissible">' +
+						'<button type="button" class="close" data-dismiss="alert">' +
+						'<span aria-hidden="true">&times;</span><span class="sr-only">' +
+						'Close</span></button><strong>'+
+						data.error.title+'!</strong> '+
+						data.error.message+'</div>');
+				}
 			},
 			error: function(jsXHR, textStatus, errorThrown) {
-				alert('AJAX ERROR! We need a better error handling system.');
-				appModalFooter.append('<div class="error"><p><b>' + textStatus + '</b></p><br>' +
-									  '<p>' + errorThrown + '</p></div>');
+				appModalBody.find('#appAlertHolder').html(
+					'<div class="alert alert-danger alert-dismissible">' +
+					'<button type="button" class="close" data-dismiss="alert">' +
+					'<span aria-hidden="true">&times;</span><span class="sr-only">' +
+					'Close</span></button><strong>'+
+					'Error applying to position!</strong> '+
+					'An AJAX error occured (' + errorThrown + ')</div>');
 			}
 		});
     });

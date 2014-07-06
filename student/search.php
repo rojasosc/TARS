@@ -9,34 +9,35 @@ $pages = 7;
 $positions = array();
 $terms = array();
 $positionTypes = array();
-$error = null;
 $currentTermID = null;
-try {
-	// get App CURRENT_TERM value
-	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
-	// get all terms for the dropdown
-	$terms = Term::getAllTerms();
+if ($error == null) {
+	try {
+		// get App CURRENT_TERM value
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		// get all terms for the dropdown
+		$terms = Term::getAllTerms();
 
-	// get all the position types for the dropdown
-	$positionTypes = Position::getAllPositionTypes(true);
-	// add the "Any" type with value="0"
-	$positionTypes[0] = 'Any Position Type';
-	ksort($positionTypes);
+		// get all the position types for the dropdown
+		$positionTypes = Position::getAllPositionTypes(true);
+		// add the "Any" type with value="0"
+		$positionTypes[0] = 'Any Position Type';
+		ksort($positionTypes);
 
-	// get currently selected term, defaulting to CURRENT_TERM on not set
-	if (!$form_args['term']) {
-		$form_args['term'] = $currentTermID;
+		// get currently selected term, defaulting to CURRENT_TERM on not set
+		if (!$form_args['term']) {
+			$form_args['term'] = $currentTermID;
+		}
+		// get currently selected position, defaulting to "Any"
+		if (!$form_args['type']) {
+			$form_args['type'] = 0;
+		}
+
+		// find positions that match the fields
+		$positions = Position::findPositions(
+			$form_args['q'], $form_args['term'], $form_args['type'], $student->getID());
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 	}
-	// get currently selected position, defaulting to "Any"
-	if (!$form_args['type']) {
-		$form_args['type'] = 0;
-	}
-
-	// find positions that match the fields
-	$positions = Position::findPositions(
-		$form_args['q'], $form_args['term'], $form_args['type'], $student->getID());
-} catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 }
 
 ?>
@@ -134,26 +135,22 @@ try {
 					</div>
 					<div class="modal-body">
 						<form role="form" method="post" id="application" action="appProcess.php">
+							<div class="row" id="appAlertHolder"></div>
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
-									<input type="hidden" value="<?= $student->getID()?>" id="studentID"/>
-									<label>
-										Compensation:
-										<select name="compensation" class="form-control" id="compensation">
-											<option value="pay">Pay</option>
-											<option value="credit">Credit</option>
-										</select>
-									</label>
+									<label for="compensation">Compensation</label>
+									<select name="compensation" class="form-control" id="compensation">
+										<option value="pay">Pay</option>
+										<option value="credit">Credit</option>
+									</select>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-10 col-xs-offset-1">
-									<label>
-										<p>
-											Please explain below why you want to fill this position and why you are qualified to. Please keep it clear and concise.
-										</p>
-										<textarea class="form-control" rows="4" cols="64" name="qualifications" id="qualifications"></textarea>
-									</label>
+									<label for="qualifications">Qualifications <small><p>
+										Please explain below why you want to fill this position and why you are qualified to. Please keep it clear and concise.
+									</p></small></label>
+									<textarea class="form-control" rows="4" cols="64" name="qualifications" id="qualifications"></textarea>
 								</div>
 							</div>
 						</form>

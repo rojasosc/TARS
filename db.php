@@ -62,7 +62,7 @@ final class Database {
 			Database::$db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $ex) {
 			$error = new TarsException(Event::SERVER_DBERROR, Event::SERVER_DBERROR, $ex);
-			echo '<!DOCTYPE html>'.$error->toHTML();
+			echo $error->toHTML();
 			exit;
 		}
 	}
@@ -1048,14 +1048,10 @@ final class Term {
 						strtoupper($course['department']), strtoupper($course['number']),
 						$course['title'], $section['crn'], $section['type'], $creator, $createTime);
 					foreach ($section['sessions'] as $session) {
-						if (isset($session['day']) && isset($session['startTime']) &&
-							isset($session['endTime']) && isset($sesion['building']) &&
-							isset($session['room'])) {
-							foreach (str_split($session['day']) as $day) {
-								$sessionID = Section::insertSession($sectionID, $day,
-									$session['startTime'], $session['endTime'],
-									strtoupper($session['building']), strtoupper($session['room']));
-							}
+						foreach (str_split($session['days']) as $day) {
+							$sessionID = Section::insertSession($sectionID, $day,
+								$session['startTime'], $session['endTime'],
+								strtoupper($session['building']), strtoupper($session['room']));
 						}
 					}
 					foreach ($section['positions'] as $position) {
@@ -1152,7 +1148,7 @@ final class Term {
 								$sectionLiveObj['sessions'][$headerMult]['room'] = $cell;
 							break;
 						default:
-							if ($header[0] == '#') {
+							if (strlen($header) > 0 && substr($header, 0, 1) == '#') {
 								if (is_numeric($cell) && intval($cell) > 0 &&
 									in_array(substr($header, 1), $positionTypes)) {
 									$sectionLiveObj['positions'][] = array(
@@ -1206,7 +1202,7 @@ final class Term {
 		$this->semesterIndex = $row['semesterIndex'];
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = strftime($row['createTime']);
+		$this->createTime = strptime($row['createTime'], '%Y-%m-%d %H-%M-%S');
 	}
 
 	public function getID() { return $this->id; }
@@ -1235,7 +1231,7 @@ final class Term {
 	private $createTime;
 }
 
-final  class Comment {
+final class Comment {
 	public static function getCommentByID($commentID){
 		$sql = "SELECT * FROM Comments WHERE commentID = :commentID";
 		$args = array('commentID' => $commentID);
@@ -1264,7 +1260,7 @@ final  class Comment {
 		$this->commentText = $row['commentText'];
 		$this->studentID = $row['studentID'];
 		$this->creatorID = $row['creatorID'];
-		$this->createTime = strftime($row['createTime']);
+		$this->createTime = strptime($row['createTime'], '%Y-%m-%d %H-%M-%S');
 	}
 	
 	public function getID(){ return $this->id; }
@@ -1370,7 +1366,7 @@ final class Section {
 		$this->courseTerm = null;
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = strftime($row['createTime']);
+		$this->createTime = strptime($row['createTime'], '%Y-%m-%d %H-%M-%S');
 	}
 
 	// queries all professors for this section
@@ -1451,7 +1447,7 @@ final class Section {
 		}
 		return $this->creator;
 	}
-	public function getCreateTime() { return $ths->createTime; }
+	public function getCreateTime() { return $this->createTime; }
 
 	private $id;
 	private $crn;

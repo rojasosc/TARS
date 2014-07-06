@@ -3,7 +3,7 @@ require_once 'studentSession.php';
 require_once '../formInput.php';
 require_once '../error.php';
 
-$form_args = get_form_values(array('search','term','type'));
+$form_args = get_form_values(array('q','term','type'), false);
 $pages = 7;
 
 $positions = array();
@@ -34,7 +34,7 @@ try {
 
 	// find positions that match the fields
 	$positions = Position::findPositions(
-		$form_args['search'], $form_args['term'], $form_args['type'], $student->getID());
+		$form_args['q'], $form_args['term'], $form_args['type'], $student->getID());
 } catch (PDOException $ex) {
 	$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 }
@@ -188,11 +188,11 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					</div>
 					<div class="panel-body">
 						<div class="container-fluid display-area">
-							<form role="form" action="search.php" method="post" id="searchForm">
+							<form role="form" action="search.php" method="get" id="searchForm">
 								<div class="form-inline" id="inputrow">
 									<div class="form-group">
-										<label class="sr-only" for="search">Search</label>
-										<input type="text" id="search" name="search" class="form-control" placeholder="Search..." value="<?=get_form_value('search')?>"/>
+										<label class="sr-only" for="q">Search</label>
+										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=get_form_value('q', '', false)?>"/>
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="term">Term</label>
@@ -200,7 +200,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', $currentTermID) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
+											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', $currentTermID, false) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
 										<?php
 										}
 										?>
@@ -212,7 +212,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"<?php if(get_form_value('type', 0) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+											<option value="<?=$index?>"<?php if(get_form_value('type', 0, false) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
 										<?php
 										}
 										?>
@@ -231,15 +231,18 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<li><a href="#">&raquo;</a></li>
 								</ul>
 								<table class="table table-striped">
-									<tr>
-										<th class="hidden-xs hidden-sm">Position No.</th>
-										<th>Course Number</th>
-										<th class="hidden-xs">Course</th>
-										<th>Professor</th>
-										<th>Position Type <br/><button class="btn btn-default" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button></th>
-										<th>Time</th>
-										<th></th>
-									</tr>
+									<thead>
+										<tr>
+											<th class="hidden">#</th>
+											<th>Course Number</th>
+											<th class="hidden-xs">Course Title</th>
+											<th>Professor</th>
+											<th><button class="btn btn-default pull-right" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button><br/>Position Type</th>
+											<th>Time and Place</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
 									<?php
 										if($positions != false) {
 											foreach($positions as $position) {
@@ -250,13 +253,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													return $prof->getFILName();
 												}, $professors)) : 'TBA';
 												$sessions = $section->getAllSessions();
+												$sessions = SectionSession::combineSessions($sessions);
 												$session = count($sessions) > 0 ? implode(', ',
 												array_map(function ($sess) {
-													return $sess;
+													return $sess->getDayTimePlace();
 												}, $sessions)) : 'TBD';
 									?>
 											<tr>
-												<td class="positionID hidden-xs hidden-sm"><?=$position->getID()?></td>
+												<td class="positionID hidden"><?=$position->getID()?></td>
 												<td><?=$section->getCourseName()?></td>
 												<td class="hidden-xs"><?=$section->getCourseTitle()?></td>
 												<td><?=$professor?></td>
@@ -275,7 +279,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											</tr>
 									<?php
 										}
-									?>
+?>
+									</tbody>
 								</table>
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>

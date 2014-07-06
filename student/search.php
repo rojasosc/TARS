@@ -8,19 +8,33 @@ $pages = 7;
 
 $positions = array();
 $terms = array();
+$positionTypes = array();
 $error = null;
 $currentTermID = null;
 try {
+	// get App CURRENT_TERM value
 	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+	// get all terms for the dropdown
+	$terms = Term::getAllTerms();
+
+	// get all the position types for the dropdown
+	$positionTypes = Position::getAllPositionTypes(true);
+	// add the "Any" type with value="0"
+	$positionTypes[0] = 'Any Position Type';
+	ksort($positionTypes);
+
+	// get currently selected term, defaulting to CURRENT_TERM on not set
 	if (!$form_args['term']) {
 		$form_args['term'] = $currentTermID;
 	}
+	// get currently selected position, defaulting to "Any"
 	if (!$form_args['type']) {
-		$form_args['type'] = -1; // "Any"
+		$form_args['type'] = 0;
 	}
+
+	// find positions that match the fields
 	$positions = Position::findPositions(
 		$form_args['search'], $form_args['term'], $form_args['type'], $student->getID());
-	$terms = Term::getAllTerms();
 } catch (PDOException $ex) {
 	$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 }
@@ -175,14 +189,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="panel-body">
 						<div class="container-fluid display-area">
 							<form role="form" action="search.php" method="post" id="searchForm">
-								<div class="row" id="inputrow">
-									<div class="col-xs-12 col-sm-6">
-										Search:
-										<input type="text" name="search" class="form-control" placeholder="Search..." value="<?=get_form_value('search')?>"/>
+								<div class="form-inline" id="inputrow">
+									<div class="form-group">
+										<label class="sr-only" for="search">Search</label>
+										<input type="text" id="search" name="search" class="form-control" placeholder="Search..." value="<?=get_form_value('search')?>"/>
 									</div>
-									<div class="col-xs-6 col-sm-3">
-										Term:
-										<select class="form-control" name="term">
+									<div class="form-group">
+										<label class="sr-only" for="term">Term</label>
+										<select class="form-control" id="term" name="term">
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
@@ -192,26 +206,21 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										?>
 										</select>
 									</div>
-									<div class="col-xs-6 col-sm-3">
-										Type:
-										<select name="type" class="form-control">
+									<div class="form-group">
+										<label class="sr-only" for="type">Type</label>
+										<select id="type" name="type" class="form-control">
 										<?php
-										$type_opts = array(-1 => 'Any', 1 => 'Workshop Leader', 2 => 'Lab TA', 3 => 'Grader');
-										foreach ($type_opts as $index => $type_opt) {
+										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"<?php if(get_form_value('type', -1) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+											<option value="<?=$index?>"<?php if(get_form_value('type', 0) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
 										<?php
 										}
 										?>
 										</select>
 									</div>
+									<input type="submit" value="Search" class="btn btn-primary"/>
 								</div>
-								<div class="row">
-									<div class="col-xs-2 col-xs-offset-5">
-										<input type="submit" value="Search" class="btn btn-primary"/>
-									</div>
-								</div>
-							</form>				
+							</form>
 							<hr/>
 							<div id="search-results">
 								<ul class="pagination">

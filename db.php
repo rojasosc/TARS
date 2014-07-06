@@ -2,6 +2,7 @@
 
 require_once 'plugins/password_compat/password.php';
 require_once 'error.php';
+require_once 'session.php';
 
 /*******************************************
 *TARS- Teacher Assistant Registration System
@@ -642,10 +643,18 @@ final class Position {
 		return new Position($row);
 	}
 
-	public static function getAllPositionTypes() {
-		$sql = 'SELECT positionName FROM PositionTypes';
+	public static function getAllPositionTypes($useDisplayName = false) {
+		$field = 'positionName';
+		if ($useDisplayName) {
+			$field = 'positionTitle';
+		}
+		$sql = "SELECT positionTypeID, $field FROM PositionTypes";
 		$rows = Database::executeGetAllRows($sql, array());
-		return array_map(function ($row) { return $row['positionName']; }, $rows);
+		$results = array();
+		foreach ($rows as $row) {
+			$results[$row['positionTypeID']] = $row[$field];
+		}
+		return $results;
 	}
 
 	public static function getPositionTypeID($typeName) {

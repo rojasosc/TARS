@@ -696,11 +696,10 @@ final class Position {
 			$sql .= 'termID = :term AND ';
 			$args[':term'] = $term;
 		}
-		// TODO: implement position_type
-		//if ($position_type != null) {
-		//	$sql .= 'posType = :posType AND ';
-		//	$args[':posType'] = $position_type;
-		//}
+		if ($position_type != null && $position_type > 0) {
+			$sql .= 'Positions.positionTypeID = :posType AND ';
+			$args[':posType'] = $position_type;
+		}
 		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
 		//echo '<pre>';
 		//print_r($args);

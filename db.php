@@ -62,8 +62,7 @@ final class Database {
 			Database::$db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $ex) {
 			$error = new TarsException(Event::SERVER_DBERROR, Event::SERVER_DBERROR, $ex);
-			header('Content-Type: application/json');
-			echo json_encode($error->toArray());
+			echo '<!DOCTYPE html>'.$error->toHTML();
 			exit;
 		}
 	}

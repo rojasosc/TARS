@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS `Sections` (
 
   PRIMARY KEY (`sectionID`),
   UNIQUE KEY (`courseID`, `crn`),
+  FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

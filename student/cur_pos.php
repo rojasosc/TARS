@@ -1,21 +1,22 @@
 <?php  
 require_once 'studentSession.php';
 
-$error = null;
 $term = null;
 $positions = array();
 $currentApps = array();
-try {
-	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
-	if ($currentTermID != null) {
-		$term = Term::getTermByID($currentTermID);
-	}
+if ($error == null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+		}
 
-	$positions = $student->getApplications($term, APPROVED);
-	$currentApps = $student->getApplications($term, PENDING);
-} catch (PDOException $ex) {
-	$error = new TarsException(Event::SERVER_DBERROR,
-		Event::USER_GET_POSITIONS, $ex);
+		$positions = $student->getApplications($term, APPROVED);
+		$currentApps = $student->getApplications($term, PENDING);
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR,
+			Event::USER_GET_POSITIONS, $ex);
+	}
 }
 ?>
 
@@ -68,7 +69,6 @@ try {
 										<textarea class="form-control" rows="8" cols="64" form="releaseForm" name="releaseReasons" id="releaseReasons"></textarea>
 									</div>
 								</div>
-								<input name="studentID" id="studentID" type="hidden" value="<?=$student->getID()?>" />
 							</fieldset>
 						</form>
 					</div>
@@ -98,7 +98,6 @@ try {
 										</p>
 									</div>
 								</div>
-								<input id="studentID" type="hidden" value="<?=$student->getID()?>" />
 							</fieldset>
 						</form>
 					</div>

@@ -674,19 +674,31 @@ final class Position {
 	}
 
 	public static function findPositions($search_field, $term = null, $position_type = null, $studentID) {
-		$sql = 'SELECT * FROM Positions
+		$sql = 'SELECT 
+					positionID, Positions.sectionID, maximumAccepted,
+					Positions.positionTypeID, positionName, positionTitle,
+					responsibilities, times, compensation,
+					department, courseNumber, courseTitle, termID,
+					GROUP_CONCAT(DISTINCT Users.firstName SEPARATOR \' \') AS fnList,
+					GROUP_CONCAT(DISTINCT Users.lastName SEPARATOR \' \') AS lnList
+				FROM Positions
 				INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
 				INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
 				INNER JOIN Courses ON Sections.courseID = Courses.courseID
-				WHERE ';
+				LEFT JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+				LEFT JOIN Users ON Users.userID = Teaches.professorID
+				GROUP BY positionID HAVING ';
 		$args = array();
+		$sql_having = '';
 		if (!empty($search_field)) {
 			$i = 1;
 			foreach (explode(' ', $search_field) as $word) {
 				$sql .= "(department = :word$i OR
 					courseNumber = :word$i OR
 					INSTR(courseTitle, :word$i) OR
-					CONCAT(department, courseNumber) = :word$i) AND ";
+					CONCAT(department, courseNumber) = :word$i OR
+					INSTR(fnList, :word$i) OR
+					INSTR(lnList, :word$i)) AND ";
 				$args[":word$i"] = $word;
 				$i++;
 			}
@@ -699,7 +711,9 @@ final class Position {
 			$sql .= 'Positions.positionTypeID = :posType AND ';
 			$args[':posType'] = $position_type;
 		}
-		$sql .= '1 ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
+		$sql .= "1
+			ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC";
+			
 		//echo '<pre>';
 		//print_r($args);
 		//exit($sql);

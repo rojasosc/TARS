@@ -157,7 +157,7 @@
 				if($comments){
 					$studentComments['size'] = count($comments);
 					foreach($comments as $comment){
-						$author = User::getUserByID($comment->getCreatorID());
+						$author = User::getUserByID($comment->getCreator()->getID());
 						$createTime = $comment->getCreateTime();
 						$commentText = $comment->getComment();
 						$commentHash = [

@@ -86,7 +86,7 @@ require_once 'staffSession.php';
 		<div id="page-wrapper">
 <?php
 // Display header for Manage
-$header_active = 'payroll';
+$header_active = 'manage';
 require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->

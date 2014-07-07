@@ -168,18 +168,20 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							Event::USER_GET_POSITIONS, $ex);
 						echo $error->toHTML();
 					}
+					$asstCount = count($assistants);
+					if ($asstCount == 0) {
+						$asstCount = '';
+					}
 
 					/* create a new panel */ 
 					$panelID = "coursePanel" . $section->getID();
-
-					$coursePanelName = $section->getCourseTitle();
 				?>
 				
 				<div class="row">
 					<div class="container">					
 						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4 class="panelHeader" data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
+						<div class="panel-heading" data-toggle="collapse" data-target="#<?=$panelID?>">
+							<h4 class="panel-title panelHeader"><?= $section->getCourseName() ?> <small><?=$section->getCourseTitle()?></small><span class="badge alert-success pull-left"><?=$asstCount?></span><span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
 							</div> <!-- End panel-heading -->
 								<div class="collapse panel-collapse" id="<?= $panelID ?>">
 									<div class="panel-body">
@@ -226,7 +228,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									</div> <!-- End panel-body -->									
 								</div> <!-- End collapse panel-collapse -->
 							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">
-								<span class="glyphicon glyphicon-envelope"></span> Email</a>
+								<span class="glyphicon glyphicon-envelope"></span> Send Email</a>
 							</div> <!-- End panel-footer -->								
 						</div> <!-- End panel panel-primary -->
 					</div> <!-- End container -->	

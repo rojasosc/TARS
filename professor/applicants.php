@@ -29,7 +29,7 @@ if ($error == null) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="applicants.js"></script>
-		<script src="../tars_utilities.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
@@ -116,7 +116,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<h1 class="panelHeader">My Applicants</h1>
 				</div> <!-- End row -->			
 							
-				<!-- Course Panels -->
 				<?php
 				/*Obtain positionIDS that are in the Assistantship table
 				and that match a particular CRN	
@@ -137,7 +136,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					/* create a new panel */ 
 					$panelID = "coursePanel" . $section->getID();
 
-					$coursePanelName = $section->getCourseTitle();
 					/*TODO: Get total positions of a particular type and course.
 					For instance, all the graders for CSC 172.*/
 
@@ -163,18 +161,22 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							$positionTotals[] = $data;
 						}
 					}
+
+					$appCount = count($applications);
+					if ($appCount == 0) {
+						$appCount = '';
+					}
 					
 					/*TODO: Mark workshop super leader positions in the db so that we 
 					 can highlight them on professor pages. */
 					 
 					 /* Determine the color of the progress bars based on current/total ratio */
 				?>
-				
 				<div class="row">
-					<div class="container">					
+					<div class="container">
 						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4 class="panelHeader" data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
+							<div class="panel-heading" data-toggle="collapse" data-target="#<?=$panelID?>">
+							<h4 class="panel-title panelHeader"><?= $section->getCourseName() ?> <small><?=$section->getCourseTitle()?></small><span class="badge alert-warning pull-left"><?=$appCount?></span><span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
 							</div> <!-- End panel-heading -->
 							<div class="collapse panel-collapse" id="<?= $panelID ?>">
 								<div class="panel-body">
@@ -254,24 +256,29 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					}
 ?>
 								</div> <!-- End row -->
+<?php
+					if ($appCount > 0) {
+?>
 								<div class="row">
 									<div class="col-xs-4">
-										<button name="applyDecision" data-courseID="<?= $courseCRN ?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
+										<button name="applyDecision" data-courseID="<?= $section->getCRN() ?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
 									</div> <!-- End column -->
 								</div> <!-- End row -->
+<?php
+					}
+?>
 							</div> <!-- End panel-footer -->
 						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->	
+					</div> <!-- End container -->
 				</div> <!-- End row -->
-				
 				<?php
-				
 				/* Course panels closing brace */
 				}
 				if (count($sections) == 0) {
-					echo '<div class="alert alert-info">There are no sections assigned to you this term.</div>';
-				}
-				
+?>
+<div class="alert alert-info">There are no sections assigned to you this term.</div>
+<?php
+				}				
 				?>
 
 				<!-- END Course Panels -->

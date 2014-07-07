@@ -29,11 +29,12 @@ if ($error == null) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="applicants.js"></script>
+		<script src="comments.js"></script>
 		<script src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
-		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -52,11 +53,8 @@ if ($error == null) {
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
-						<h3>Staff Comments</h3>
-						<div class="container staffComments">
-						</div> <!-- End container -->
-						<h3>Professor Comments</h3>
-						<div class="container professorComments">
+						<h3>Comments</h3>
+						<div class="container" id="comments">
 						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
@@ -203,7 +201,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											
 										?>
 										<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
-											<td><button data-toggle="modal" data-target="#studentProfileModal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
+											<td><button data-toggle="modal" data-target="#profile-modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
 											<span class="glyphicon glyphicon-user"></span></button>
 											</td>
 											<td>

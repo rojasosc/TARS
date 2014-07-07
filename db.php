@@ -727,6 +727,7 @@ final class Position {
 					Positions.positionTypeID, positionName, positionTitle,
 					responsibilities, times, compensation,
 					department, courseNumber, courseTitle, termID,
+					Positions.creatorID, Positions.createTime,
 					GROUP_CONCAT(DISTINCT Users.firstName SEPARATOR \' \') AS fnList,
 					GROUP_CONCAT(DISTINCT Users.lastName SEPARATOR \' \') AS lnList
 				FROM Positions
@@ -799,6 +800,13 @@ final class Position {
 	public function getTypeResponsibilities() { return $this->typeResp; }
 	public function getTypeTimes() { return $this->typeTimes; }
 	public function getTypeCompensation() { return $this->typeComp; }
+	public function getCreator() {
+		if ($this->creator == null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $this->createTime; }
 
 	private $id;
 	private $sectionID;
@@ -810,6 +818,9 @@ final class Position {
 	private $typeTimes;
 	private $typeComp;
 	private $maximumAccepted;
+	private $creatorID;
+	private $creator;
+	private $createTime;
 }
 
 final class Application {
@@ -938,6 +949,13 @@ final class Application {
 	public function getCompensation() { return $this->compensation; }
 	public function getStatus() { return $this->appStatus; }
 	public function getQualifications() { return $this->qualifications; }
+	public function getCreator() {
+		if ($this->creator == null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $this->createTime; }
 
 	private $id;
 	private $position;
@@ -947,6 +965,9 @@ final class Application {
 	private $compensation;
 	private $appStatus;
 	private $qualifications;
+	private $creatorID;
+	private $creator;
+	private $createTime;
 }
 
 final class Term {
@@ -1278,19 +1299,26 @@ final class Comment {
 		$this->commentText = $row['commentText'];
 		$this->studentID = $row['studentID'];
 		$this->creatorID = $row['creatorID'];
+		$this->creator = null;
 		$this->createTime = strtotime($row['createTime']);
 	}
 	
 	public function getID(){ return $this->id; }
 	public function getComment(){ return $this->commentText; }
 	public function getStudentID(){ return $this->studentID; }
-	public function getCreatorID(){ return $this->creatorID; }
-	public function getCreateTime(){ return $this->createTime; }
+	public function getCreator() {
+		if ($this->creator == null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $this->createTime; }
 	
 	private $id;
 	private $commentText;
 	private $studentID;
 	private $creatorID;
+	private $creator;
 	private $createTime;
 }
 

@@ -67,6 +67,35 @@ if ($error == null) {
 		</div> <!-- End modal fade -->
 		<!-- End Profile Modal -->
 
+		 <!-- BEGIN Comment Modal-->
+		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Student Comment</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
+							<fieldset>
+								<legend>Message Content</legend>
+								<div class="row">
+									<div class="col-xs-12">
+										<textarea name="commentText" class="form-control"></textarea>
+									</div> <!-- End column -->
+								</div> <!-- End row -->													
+							</fieldset> <!-- End comment fieldset -->
+						</form> <!-- End comment form -->
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Comment Modal-->
+
 		<!-- BEGIN page-wrapper -->
 		<div id="page-wrapper">
 

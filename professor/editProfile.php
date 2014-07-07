@@ -126,21 +126,6 @@ if ($error != null) {
 						</div> <!-- End panel-body -->
 						<div class="panel-body">
 							<div class="row">
-								<div class="col-xs-4">
-									<legend> Courses </legend>
-									<?php 
-										$sections = $professor->getSections();
-										foreach($sections as $section){
-									?>
-										<div class="row">
-											<div class="col-xs-12">
-												<?= $section->getCourseTitle() ?>
-											</div> <!-- End column -->
-										</div> <!-- End row -->
-									<?php
-										}
-									?>
-								</div> <!-- End column -->
 								<div class="col-xs-8">
 									<legend>Personal Details</legend>
 									<div class="row">
@@ -170,6 +155,7 @@ if ($error != null) {
 										Room: <?= $office->getRoom() ?>	
 										</div> <!-- End column -->	
 									</div> <!-- End row -->
+									<br>
 									<div class="row">
 										<div class="col-xs-4">
 										Office Phone: <?= $professor->getOfficePhone() ?>
@@ -184,7 +170,7 @@ if ($error != null) {
 											<button data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
 										</div> <!-- End column -->
 									</div> <!-- End row --> 
-								</div> <!-- End column -->
+								</div> <!-- End column -->						
 							</div>	<!-- End Row -->
 						</div> <!-- End panel-body -->
 						<div class="panel-footer">

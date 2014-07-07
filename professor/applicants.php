@@ -132,7 +132,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					}
 
 					/* create a new panel */ 
-					$panelID = "coursePanel" . $section->getID();
+					$panelID = "panelID" . $section->getID();
 
 					/*TODO: Get total positions of a particular type and course.
 					For instance, all the graders for CSC 172.*/
@@ -208,13 +208,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
 												<span class="glyphicon glyphicon-comment"></span></button>
 											</td>
-											<td>	<form>
-												<div class="btn-group" data-toggle="buttons" data-positionID="<?= $application->getPosition()->getID() ?>" data-universityID="<?= $student->getID() ?>">
+											<td>	
+												<form>
+												<div class="btn-group" data-toggle="buttons" data-applicationID="<?= $application->getID() ?>">
 													<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve">
-														<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>" checked><span class="glyphicon glyphicon-ok"></span>
+														<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>"><span class="glyphicon glyphicon-ok"></span>
 													</label>
 													<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
-														<input type="radio" name="<?= $applicationID ?>" id="deny" value="<?= REJECTED ?>" checked><span class="glyphicon glyphicon-remove"></span>
+														<input type="radio" name="<?= $applicationID ?>" id="deny" value="<?= REJECTED ?>"><span class="glyphicon glyphicon-remove"></span>
 													</label>
 													<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
 														<input type="radio" name="<?= $applicationID ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
@@ -259,7 +260,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 								<div class="row">
 									<div class="col-xs-4">
-										<button name="applyDecision" data-courseID="<?= $section->getCRN() ?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
+										<button name="applyDecision" data-panelid="<?=$panelID?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
 									</div> <!-- End column -->
 								</div> <!-- End row -->
 <?php

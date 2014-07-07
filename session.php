@@ -7,6 +7,11 @@ require_once 'db.php';
 ********************/
 
 final class Session {
+	// we can cache this object over the course of a PHP script run
+	// it won't change more often
+	private static $cached = false;
+	private static $cachedUserObj = null;
+
 	/* Function Session::login($email, $password)
 	*  Purpose: Logs a user in.  Verifies that user's input password field against
 	*           a hashed password stored in the database.
@@ -59,8 +64,12 @@ final class Session {
 	*  Throws: PDOException if getUserByID failed due to database error
 	**/
 	public static function getLoggedInUser($expect_type = -1) {
-		return isset($_SESSION['userID']) ? User::getUserByID($_SESSION['userID'],
-			$expect_type) : false;
+		if (Session::$cached == false) {
+			Session::$cachedUserObj = isset($_SESSION['userID']) ?
+				User::getUserByID($_SESSION['userID'], $expect_type) : null;
+			Session::$cached = true;
+		}
+		return Session::$cachedUserObj;
 	}
 
 	/* Function destroy()
@@ -72,7 +81,7 @@ final class Session {
 		// If the getLoggedInUser code throws a database error,
 		// continue destroying session and throw the exception later
 		$delay_throw = null;
-		$user_obj = false;
+		$user_obj = null;
 		if (session_start()) {
 			try {
 				$user_obj = Session::getLoggedInUser();
@@ -103,7 +112,7 @@ final class Session {
 
 		/**************************************/
 
-		if ($user_obj) {
+		if ($user_obj != null) {
 			Event::insertEvent(Event::SESSION_LOGOUT,
 				$user_obj->getName().' logged out', $user_obj->getID());
 		}

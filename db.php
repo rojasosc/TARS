@@ -399,6 +399,9 @@ abstract class User {
 		$this->otype = $user_row['type'];
 		$this->firstName = $user_row['firstName'];
 		$this->lastName = $user_row['lastName'];
+		$this->creatorID = $user_row['creatorID'];
+		$this->creator = null;
+		$this->createTime = strtotime($user_row['createTime']);
 	}
 
 	public function getID() { return $this->id; }
@@ -407,6 +410,13 @@ abstract class User {
 	public function getObjectType() { return $this->otype; }
 	public function getFirstName() { return $this->firstName; }
 	public function getLastName() { return $this->lastName; }
+	public function geCreator() {
+		if ($this->creator == null && $this->creatorID != null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $this->createTime; }
 
 	/* "first-initial last" name */
 	public function getFILName() {
@@ -424,6 +434,9 @@ abstract class User {
 	protected $otype;
 	protected $firstName;
 	protected $lastName;
+	protected $creatorID;
+	protected $creator;
+	protected $createTime;
 }
 
 final class Student extends User {
@@ -523,8 +536,8 @@ final class Student extends User {
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::execute($sql, $args);
 
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their '.
-			'profile data.", $this->id);
+		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
+			'profile data.', $this->id);
 	}
 
 	public function getMobilePhone() { return $this->mobilePhone; }
@@ -595,8 +608,8 @@ final class Professor extends User {
 			':mobilePhone'=>$mobilePhone);
 		Database::execute($sql, $args);
 
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their '.
-			'profile data.", $this->id);
+		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
+			'profile data.', $this->id);
 	}
 
 	public function getSections() {
@@ -761,13 +774,16 @@ final class Position {
 		$this->id = $row['positionID'];
 		$this->sectionID = $row['sectionID'];
 		$this->section = null;
+		$this->maximumAccepted = $row['maximumAccepted'];
 		$this->type = $row['positionTypeID'];
 		$this->typeName = $row['positionName'];
 		$this->typeTitle = $row['positionTitle'];
 		$this->typeResp = $row['responsibilities'];
 		$this->typeTimes = $row['times'];
 		$this->typeComp = $row['compensation'];
-		$this->maximumAccepted = $row['maximumAccepted'];
+		$this->creatorID = $row['creatorID'];
+		$this->creator = null;
+		$this->createTime = strtotime($row['createTime']);
 	}
 
 	public function getID() { return $this->id; }
@@ -799,8 +815,9 @@ final class Position {
 final class Application {
 
 	public static function getApplicationByID($id) {
-		$row = Database::executeGetRow('SELECT * FROM Applications WHERE appID = :id',
-			array(':id' => $id));
+		$sql = 'SELECT * FROM Applications WHERE appID = :id';
+		$args = array(':id' => $id);
+		$row = Database::executeGetRow($sql, $args);
 		return new Application($row);
 	}
 
@@ -900,6 +917,9 @@ final class Application {
 		$this->compensation = $row['compensation'];
 		$this->appStatus = $row['appStatus'];
 		$this->qualifications = $row['qualifications'];
+		$this->creatorID = $row['creatorID'];
+		$this->creator = null;
+		$this->createTime = strtotime($row['createTime']);
 	}
 
 	public function getID() { return $this->id; }
@@ -980,65 +1000,6 @@ final class Term {
 		return $termID;
 	}
 
-	// TODO outdated
-	/*
-	 * Not totally sure if this should be here, but it's here for now.
-	 * Inserts a line into teaches to link the professor and the course
-	 */
-	public static function insertTeaches($courseID, $professorID) {
-		$sql = 'INSERT INTO Teaches (courseID, professorID) VALUES (:courseID, :professorID)';
-		$args = array(':courseID' => $courseID, ':professorID' => $professorID);
-		$teachID = Database::executeInsert($sql, $args);
-		return $teachID;
-	}
-
-	// TODO outdated
-	/*
-	 * Takes a file path and processes the JSON content and inserts entries into the DB
-	 */
-	public static function getTermFromFile($path){
-		$data = file_get_contents($path);
-		$data = json_decode($data,true);
-		//Insert Term into DB
-		//var_dump($data);
-		if(isset($data['termYear']) && isset($data['termSemester'])) {
-			//$termID = insertTerm($data['termYear'], $data['termSemester']);
-			$emailDomain = $data['defaultEmailDomain'];
-		}
-		if(isset($data['courses'])) {
-			foreach($data['courses'] as $course) {
-				//Insert Course into DB
-				$crn = $course['crn'];
-				$department = $course['dep'];
-				$courseNumber = $course['number'];
-				$courseTitle = $course['title'];
-				$website = $course['website'];
-				$courseID = Course::insertCourse($crn, $department, $courseNumber, $courseTitle, $website, CURRENT_TERM);
-				//Assign instructors to the course
-				if(isset($course['instructors'])) {
-					foreach($course['instructors'] as $instructor) {
-						$email = $instructor['email'].$emailDomain;
-						$professorID = User::getUserByEmail($email, PROFESSOR)->getID();
-						Term::insertTeaches($courseID, $professorID);
-					}
-				}
-				//Insert Positions into DB
-				if(isset($course['positions'])) {
-					foreach($course['positions'] as $position) {
-						$posType = $position['type'];
-						if(isset($position['sessions'])) {
-							$time = $position['sessions']['begin'].' - '.$position['sessions']['end'];
-						} elseif($posType === "Super Leader" || $posType === "Workshop Leader") {
-							$time = 'TBD';
-						} else {
-							$time = 'FLEXIBLE';
-						}
-						Position::insertPosition($courseID, $professorID, $time, $posType);
-					}
-				}
-			}
-		}
-	}
 
 	// expected structure:
 	// {"courses":
@@ -1087,7 +1048,7 @@ final class Term {
 	// }
 	public static function importTerm($termYear, $termSemester, $json_object) {
 		try {
-			$creator = Session::getLoggedInUser();
+			$creator = Session::getLoggedInUser(STAFF);
 			$createTime = time();
 
 			Database::beginTransaction();
@@ -1100,7 +1061,7 @@ final class Term {
 						$course['title'], $section['crn'], $section['type'], $creator, $createTime);
 					foreach ($section['sessions'] as $session) {
 						foreach (str_split($session['days']) as $day) {
-							$sessionID = Section::insertSession($sectionID, $day,
+							Section::insertSession($sectionID, $day,
 								$session['startTime'], $session['endTime'],
 								strtoupper($session['building']), strtoupper($session['room']));
 						}
@@ -1113,7 +1074,7 @@ final class Term {
 					foreach ($section['instructors'] as $instructor) {
 						$professor = User::getUserByEmail($instructor, PROFESSOR);
 						if ($professor) {
-							$teachesID = Section::insertTeachesRelation($sectionID, $professor->getID());
+							Section::insertTeachesRelation($sectionID, $professor->getID());
 						} else {
 							// right now it ignores missing professor accounts
 							// throw error or add?
@@ -1121,11 +1082,17 @@ final class Term {
 					}
 				}
 			}
+
+			Configuration::set(Configuration::CURRENT_TERM, $termID,
+				$creator, $createTime);
+			Event::insertEvent(Event::STAFF_TERM_IMPORT, 'Imported a new '.
+				'Term. Term object created.', $termID, $createTime, null, $creator);
 		} catch (PDOException $ex) {
 			Database::rollbackTransaction();
 			throw $ex;
 		}
 		Database::commitTransaction();
+		return $termID;
 	}
 
 	public static function importTermFromCSV($termYear, $termSemester, $lines, $uploadData) {
@@ -1253,7 +1220,7 @@ final class Term {
 		$this->semesterIndex = $row['semesterIndex'];
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = strptime($row['createTime'], '%Y-%m-%d %H-%M-%S');
+		$this->createTime = strtotime($row['createTime']);
 	}
 
 	public function getID() { return $this->id; }
@@ -1311,7 +1278,7 @@ final class Comment {
 		$this->commentText = $row['commentText'];
 		$this->studentID = $row['studentID'];
 		$this->creatorID = $row['creatorID'];
-		$this->createTime = strptime($row['createTime'], '%Y-%m-%d %H-%M-%S');
+		$this->createTime = strtotime($row['createTime']);
 	}
 	
 	public function getID(){ return $this->id; }
@@ -1502,7 +1469,7 @@ final class Section {
 		$this->courseTerm = null;
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = strptime($row['createTime'], '%Y-%m-%d %H-%M-%S');
+		$this->createTime = strtotime($row['createTime']);
 	}
 
 	// queries all professors for this section
@@ -1805,7 +1772,12 @@ final class Configuration {
 	const DOMAIN = 'domain';
 	const ENABLE_LOGIN = 'enableLogin';
 	const CURRENT_TERM = 'currentTerm';
+	const CONFIG_LAST_ID = 'configID';
+	const CONFIG_LAST_UPDATOR = 'creatorID';
+	const CONFIG_LAST_UPDATETIME = 'createTime';
 
+	// we can cache this row over the course of a PHP script run
+	// it is unlikely to change more often
 	private static $cachedConfig = null;
 
 	public static function get($key) {
@@ -1819,8 +1791,33 @@ final class Configuration {
 		if (isset(Configuration::$cachedConfig[$key])) {
 			return Configuration::$cachedConfig[$key];
 		} else {
-			return false;
+			return null;
 		}
+	}
+
+	public static function set($key, $value, $user, $time) {
+		// make sure cache is populated
+		Configuration::get(null); 
+		// set value if key is present
+		if (array_key_exists($key, Configuration::$cachedConfig) &&
+			$key != Configuration::CONFIG_LAST_ID &&
+			$key != Configuration::CONFIG_LAST_UPDATOR &&
+			$key != Configuration::CONFIG_LAST_UPDATETIME) {
+			Configuration::$cachedConfig[$key] = $value;
+		} else {
+			return null;
+		}
+		$sql = 'INSERT INTO Configurations
+			(logDebug, adminCreated, domain, enableLogin, currentTerm, creatorID, createTime) VALUES
+			(:logDebug, :adminCreated, :domain, :enableLogin, :currentTerm, :creatorID, :createTime)';
+		$args = array();
+		foreach (Configuration::$cachedConfig as $curKey => $curVal) {
+			$args[":$curKey"] = $curVal;
+		}
+		unset($args[':configID']);
+		$args[':creatorID'] = $user->getID();
+		$args[':createTime'] = date('Y-m-d H:i:s', $time);
+		return Database::executeInsert($sql, $args);
 	}
 }
 

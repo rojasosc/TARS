@@ -126,6 +126,7 @@ if ($error == null) {
 		</div>
 		<!-- END Info Modal -->
 		<!-- BEGIN Apply Modal -->
+		<!-- TODO: FIGURE OUT CLOSE BUTTON BUG -->
 		<div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="applyModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -156,7 +157,7 @@ if ($error == null) {
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal" id="appClose">Close</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<button type="submit" class="btn btn-primary" form="application" value="Submit" id="appSubmit">Submit</button>
 					</div>
 				</div>
@@ -234,7 +235,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<th>Course Number</th>
 											<th class="hidden-xs">Course Title</th>
 											<th>Professor</th>
-											<th><button class="btn btn-default pull-right" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button><br/>Position Type</th>
+											<th>Position <button class="btn btn-sm btn-default pull-right" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button><br/>Type</th>
 											<th>Time and Place</th>
 											<th></th>
 										</tr>

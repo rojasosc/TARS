@@ -29,22 +29,19 @@ function fillProfile(user){
 }
 
 function getDecisions(){
-	var courseID = "#" + $(this).data('courseid');
-	$courseTable = $(courseID);
-	$applications = $('.btn-group',$courseTable);
+	var panelID = "#" + $(this).data('panelid');
+	$panel = $(panelID);
+	$applications = $('.btn-group',$panel);
 	$applications.each(function () { submitDecisions($(this)); });
-	var panelID = "#coursePanel" + $(this).data('courseid');
-	$(panelID).collapse('hide');
+	$panel.collapse('hide');
 }
 
 function submitDecisions($application){
-	var universityID = $application.data('universityid');
-	var positionID = $application.data('positionid');
+	var applicationID = $application.data('applicationid');
 	var decision = $('input:checked',$application).val();
 	var url = "selections.php";
 	var data = {
-		universityID: universityID,
-		positionID: positionID,
+		applicationID: applicationID,
 		decision: decision
 	}
 	$.post(url,data,function () {});

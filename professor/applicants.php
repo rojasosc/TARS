@@ -3,7 +3,7 @@ require_once 'professorSession.php';
 
 $term = null;
 $sections = array();
-if ($error != null) {
+if ($error == null) {
 	try {
 		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 		if ($currentTermID != null) {
@@ -109,22 +109,36 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					$panelID = "coursePanel" . $section->getID();
 
 					$coursePanelName = $section->getCourseTitle();
-
 					/*TODO: Get total positions of a particular type and course.
 					For instance, all the graders for CSC 172.*/
-					
-					$totalGraders = $section->getTotalPositionsByType($professor, "Grader");
-					$currentGraders = $section->getCurrentPositionsByType($professor, "Grader");
-					$totalLabTAs = $section->getTotalPositionsByType($professor, "Lab TA");
-					$currentLabTAs = $section->getCurrentPositionsByType($professor, "Lab TA");
-					$totalWorkshopLeaders = $section->getTotalPositionsByType($professor, "Workshop Leader");
-					$currentWorkshopLeaders = $section->getCurrentPositionsByType($professor, "Workshop Leader");
+
+					$positionTypes = Position::getAllPositionTypes(true);
+					$positionTotals = array();
+					foreach ($positionTypes as $typeID => $title) {
+						$data = array(
+							'typeID' => $typeID,
+							'title' => $title,
+							'total' => $section->getTotalPositionsByType(
+								$professor, $typeID),
+							'current' => $section->getCurrentPositionsByType(
+								$professor, $typeID));
+						if ($data['total'] > 0) {
+							$data['ratio'] = $data['current'] / $data['total']; 
+							if ($data['ratio'] == 1) {
+								$data['alert'] = 'success';
+							} elseif ($data['ratio'] == 0) {
+								$data['alert'] = 'danger';
+							} else {
+								$data['alert'] = 'warning';
+							}
+							$positionTotals[] = $data;
+						}
+					}
 					
 					/*TODO: Mark workshop super leader positions in the db so that we 
 					 can highlight them on professor pages. */
 					 
 					 /* Determine the color of the progress bars based on current/total ratio */
-					require 'progressBars.php';
 				?>
 				
 				<div class="row">
@@ -151,13 +165,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										
 										/* Insert each application */
-										foreach($applications as $aapplication){
+										foreach($applications as $application){
 											$student = $application->getStudent();
 											$position = $application->getPosition();
 											$profileID = "myProfile" . $student->getID();
 											
 										?>
-										<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
+										<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
 											<td><button data-toggle="modal" data-target="#studentProfileModal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
 											<span class="glyphicon glyphicon-user"></span></button>
 											</td>
@@ -192,27 +206,24 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							</div> <!-- End collapse panel-collapse -->
 							<div class="panel-footer">
 								<div class="row">
-									<div class="col-xs-4">
-										<strong>Graders</strong>
+<?php
+					$totalsColumnWidth = 12;
+					while ($totalsColumnWidth > 0 &&
+						count($positionTotals) * $totalsColumnWidth > 12) {
+						$totalsColumnWidth--;
+					}
+					foreach ($positionTotals as $totalBar) {
+?>
+									<div class="col-xs-<?=$totalsColumnWidth?>">
+										<strong><?=$totalBar['title']?>s</strong>
 										<div class="progress progress-striped active">
-											<div class="progress-bar progress-bar-<?= $graderBar ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $graderRatio * 100 ?>%">
+											<div class="progress-bar progress-bar-<?= $totalBar['alert'] ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $totalBar['ratio'] * 100 ?>%">
 											</div> <!-- End progress-bar progress-bar-danger -->
 										</div> <!-- End progress-bar -->												
 									</div> <!-- End column -->
-									<div class="col-xs-4">
-										<strong>Lab TAs</strong>
-										<div class="progress progress-striped active">
-											<div class="progress-bar progress-bar-<?= $labTAsBar ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $labTAsRatio * 100 ?>%">
-											</div> <!-- End progress-bar progress-bar-danger -->		
-										</div> <!-- End progress-bar -->												
-									</div> <!-- End column -->
-									<div class="col-xs-4">
-										<strong>Workshop Leaders</strong>
-										<div class="progress progress-striped active">
-											<div class="progress-bar progress-bar-<?= $workshopLeaderBar ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $workShopLeaderRatio * 100 ?>%">
-											</div> <!-- End progress-bar progress-bar-danger -->
-										</div> <!-- End progress-bar -->												
-									</div> <!-- End column -->											
+<?php
+					}
+?>
 								</div> <!-- End row -->
 								<div class="row">
 									<div class="col-xs-4">

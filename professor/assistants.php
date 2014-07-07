@@ -3,7 +3,7 @@ require_once 'professorSession.php';
 
 $term = null;
 $sections = array();
-if ($error != null) {
+if ($error == null) {
 	try {
 		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 		if ($currentTermID != null) {
@@ -205,7 +205,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												
 											?>
 											
-											<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getPositionType() ?></td>
+											<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
 												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
 												<span class="glyphicon glyphicon-user"></span></button>
 												</td>

@@ -931,7 +931,9 @@ final class Application {
 
 final class Term {
 	public static function getTermByID($id) {
-		$sql = 'SELECT * FROM Terms WHERE termID = :id';
+		$sql = 'SELECT * FROM Terms
+				INNER JOIN TermSemesters ON Terms.semesterID = TermSemesters.semesterID
+				WHERE termID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
 		return new Term($row);
@@ -1531,7 +1533,9 @@ final class Section {
 			$args = array(':section_id' => $this->id);
 		} else {
 			$sql = 'SELECT COUNT(*) FROM Positions
-				WHERE professorID = :prof_id AND sectionID = :section_id';
+					INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
+					INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+				WHERE professorID = :prof_id AND Positions.sectionID = :section_id';
 			$args = array(':prof_id' => $prof->getID(), ':section_id' => $this->id);
 		}
 		return Database::executeGetScalar($sql, $args);
@@ -1539,7 +1543,10 @@ final class Section {
 	
 	public function getTotalPositionsByType($professor, $type){
 		$sql = 'SELECT COUNT(*) FROM Positions
-			WHERE sectionID = :section_id AND professorID = :prof_id AND posType = :pos_type';
+					INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
+					INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+				WHERE Positions.sectionID = :section_id AND professorID = :prof_id AND
+				positionTypeID = :pos_type';
 		$args = array(':section_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
 		return Database::executeGetScalar($sql, $args);
 		
@@ -1547,10 +1554,12 @@ final class Section {
 	
 	public function getCurrentPositionsByType($professor, $type){
 		$sql = 'SELECT COUNT(*) FROM Positions
-			INNER JOIN Applications ON Positions.positionID = Applications.positionID
-			WHERE Positions.sectionID = :section_id AND Positions.professorID = :prof_id 
-			AND Positions.posType = :pos_type AND Applications.appStatus = 3';
-		$args = array(':section_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type);
+					INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
+					INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+					INNER JOIN Applications ON Positions.positionID = Applications.positionID
+				WHERE Positions.sectionID = :section_id AND professorID = :prof_id 
+				AND Positions.positionTypeID = :pos_type AND Applications.appStatus = :approved';
+		$args = array(':section_id' => $this->id, ':prof_id' => $professor->getID(),':pos_type' => $type, ':approved' => APPROVED);
 		return Database::executeGetScalar($sql, $args);	
 	}
 

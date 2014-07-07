@@ -233,10 +233,12 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<tr>
 											<th class="hidden">#</th>
 											<th>Course Number</th>
-											<th class="hidden-xs">Course Title</th>
+											<th class="hidden-xs hidden-sm">Course Title</th>
 											<th>Professor</th>
 											<th>Position <button class="btn btn-sm btn-default pull-right" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button><br/>Type</th>
-											<th>Time and Place</th>
+											<th>Day</th>
+											<th>Time</th>
+											<th>Place</th>
 											<th></th>
 										</tr>
 									</thead>
@@ -251,19 +253,25 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													return $prof->getFILName();
 												}, $professors)) : 'TBA';
 												$sessions = $section->getAllSessions();
-												$sessions = SectionSession::combineSessions($sessions);
-												$session = count($sessions) > 0 ? implode(', ',
-												array_map(function ($sess) {
-													return $sess->getDayTimePlace();
-												}, $sessions)) : 'TBD';
+												$days = "";
+												$time = "TBA";
+												$place = "TBA";
+												foreach($sessions as $session) {
+													$days .= $session->getWeekdays();
+													$time = $session->getStartTime()." - ".$session->getEndTime();
+													$place = $session->getPlaceBuilding()." ".$session->getPlaceRoom();
+												}
+												if($days == "") {$days="TBA";}
 									?>
 											<tr>
 												<td class="positionID hidden"><?=$position->getID()?></td>
 												<td><?=$section->getCourseName()?></td>
-												<td class="hidden-xs"><?=$section->getCourseTitle()?></td>
+												<td class="hidden-xs hidden-sm"><?=$section->getCourseTitle()?></td>
 												<td><?=$professor?></td>
 												<td><?=$position->getTypeTitle()?></td>
-												<td><?=$session?></td>
+												<td><?=$days?></td>
+												<td><?=$time?></td>
+												<td><?=$place?></td>
 												<td>
 													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
 												</td>

@@ -133,7 +133,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
-								<th class="hidden-xs">Position ID</th>
+								<th class="hidden">Position ID</th>
 								<th>Course Number</th>
 								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
@@ -148,7 +148,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			$section = $position->getSection();
 							?>
 							<tr>
-								<td class="positionID hidden-xs"><?= $position->getID()?></td>
+								<td class="positionID hidden"><?= $position->getID()?></td>
 								<td><?= $section->getCourseName()?></td>
 								<td class="hidden-xs"><?= $section->getCourseTitle()?></td>
 								<td><?= $position->getTypeTitle()?></td>
@@ -172,12 +172,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
-								<th class="hidden-xs">Position ID</th>
+								<th class="hidden">Position ID</th>
 								<th>Course Number</th>
 								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
-								<th>Location</th>
+								<th>Day</th>
 								<th>Time</th>
+								<th>Place</th>
 								<th class="hidden-xs">Compensation</th>
 								<th>Withdraw</th>
 							</tr>
@@ -185,14 +186,24 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		foreach($currentApps as $app) {
 			$appPosition = $app->getPosition();
 			$appSection = $appPosition->getSection();
+			$appSectionSessions = $appSection->getAllSessions();
+			$days = "";
+			$time = "";
+			$place = "";
+			foreach($appSectionSessions as $sectionSession) {
+				$days .= $sectionSession->getWeekdays();
+				$time = $sectionSession->getStartTime()." - ".$sectionSession->getEndTime();
+				$place = $sectionSession->getPlaceBuilding()." ".$sectionSession->getPlaceRoom();
+			}
 							?>
 							<tr>
-								<td class="positionID hidden-xs"><?= $appPosition->getID()?></td>
+								<td class="positionID hidden"><?= $appPosition->getID()?></td>
 								<td><?= $appSection->getCourseName()?></td>
 								<td class="hidden-xs"><?= $appSection->getCourseTitle()?></td>
 								<td><?= $appPosition->getTypeTitle()?></td>
-								<td><?= "TBD"?></td>
-								<td><?= "TBD"?></td>
+								<td><?= $days?></td>
+								<td><?= $time?></td>
+								<td><?= $place?></td>
 								<td class="hidden-xs"><?= $app->getCompensation()?></td>
 								<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>

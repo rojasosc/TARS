@@ -67,6 +67,11 @@ final class Database {
 		}
 	}
 
+	/**
+	 * Database::isConnected()
+	 * Purpose: Tells us whether Database::connect() has succeeded
+	 * Returns: true or false
+	 */
 	public static function isConnected() {
 		return Database::$db_conn != null;
 	}
@@ -75,7 +80,7 @@ final class Database {
 	 * Database::executeStatement($sql, $args)
 	 * Purpose: Prepares and executes a statement with the specified arguments.
 	 * Returns: The statement object, for fetching.
-	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 * Throws:  A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function execute($sql, $args) {
 		//echo "<pre>EXECUTE: $sql\n";var_dump($args);echo '</pre>';
@@ -94,7 +99,7 @@ final class Database {
 	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
 	 *          Gets a row of the database.
 	 * Returns: The row requested, or NULL if no rows returned
-	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 * Throws:  A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function executeGetRow($sql, $args) {
 		/* create and execute the statement object */
@@ -115,7 +120,7 @@ final class Database {
 	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
 	 *          Gets all selected rows of the database.
 	 * Returns: The rows requested
-	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 * Throws:  A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function executeGetAllRows($sql, $args) {
 		/* create and execute the statement object */
@@ -130,7 +135,7 @@ final class Database {
 	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
 	 *          Gets a single cell/value (scalar) from the database.
 	 * Returns: The scalar requested, or NULL if no rows returned
-	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 * Throws:  A PDOException if prepare() or execute() fail (SQL syntax or database error).
 	 */
 	public static function executeGetScalar($sql, $args) {
 		/* create and execute the statement object */
@@ -151,9 +156,9 @@ final class Database {
 	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
 	 *          Gets the inserted ID
 	 * Returns: The last ID generated for an AUTO_INCREMENT column; the ID of the column inserted.
-	 * Throws: A PDOException if prepare() or execute() fail (SQL syntax or database error).
-	 * Note: Yes, you can run non-INSERT queries with this.
-	 *       It's silly to though, as why else do you need the last ID inserted?
+	 * Throws:  A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 * Note:    Yes, you can run non-INSERT queries with this.
+	 *          It's silly to though, as why else do you need the last ID inserted?
 	 */
 	public static function executeInsert($sql, $args) {
 		/* create and execute the statement object */
@@ -163,14 +168,26 @@ final class Database {
 		return Database::$db_conn->lastInsertId();
 	}
 
+	/**
+	 * Database::beginTransaction()
+	 * Purpose: Starts a PDO transaction
+	 */
 	public static function beginTransaction() {
 		return Database::$db_conn->beginTransaction();
 	}
 
+	/**
+	 * Database::rollbackTransaction()
+	 * Purpose: Cancels a PDO transaction; no database changes will be made
+	 */
 	public static function rollbackTransaction() {
 		return Database::$db_conn->rollback();
 	}
 
+	/**
+	 * Database::commitTransaction()
+	 * Purpose: Commits a PDO transaction; database changes will be made atomically
+	 */
 	public static function commitTransaction() {
 		return Database::$db_conn->commit();
 	}
@@ -249,17 +266,18 @@ final class Place {
 /*
  * User Object: Represents a User in the database.
  *
- * ::getUserByEmail($email) returns subclassed User object by given username
- * ::getUserByID($id) returns subclassed User object by given database row ID
- *
- * ->getID() return database row ID
- * ->getEmail() returns email string
- * ->getPassword() returns hashed password string
- * ->getObjectType() returns object type
- * ->getFirstName() return user first name
- * ->getLastName() return user last name
+ * This is a Primary Object: it has a creator and createTime field
  */
 abstract class User {
+	/**
+	 * User::getUserByID($id, [$type])
+	 *
+	 * Purpose: get a User subclass object (Student, Professor, Staff, Admin) by ID
+	 * Returns: the wanted object, or NULL on no match
+	 * Throws:  PDOException on SERVER_DBERROR
+	 * Note:    $type, if set, restricts the returned object to be of that user type.
+	 *          If the retrieved user is of the wrong type, it returns NULL.
+	 */
 	public static function getUserByID($id, $check_type = -1) {
 		$sql = 'SELECT * FROM Users WHERE userID = :id';
 		$args = array(':id' => $id);
@@ -272,10 +290,19 @@ abstract class User {
 		if ($user_row) {
 			return User::getUserSubclassObject($user_row);
 		} else {
-			return false;
+			return null;
 		}
 	}
 
+	/**
+	 * User::getUserByEmail($email, [$type])
+	 *
+	 * Purpose: get a User subclass object (Student, Professor, Staff, Admin) by email
+	 * Returns: the wanted object, or NULL on no match
+	 * Throws:  PDOException on SERVER_DBERROR
+	 * Note:    $type, if set, restricts the returned object to be of that user type.
+	 *          If the retrieved user is of the wrong type, it returns NULL.
+	 */
 	public static function getUserByEmail($email, $check_type = -1) {
 		$sql = 'SELECT * FROM Users WHERE email = :email';
 		$args = array(':email' => $email);
@@ -288,10 +315,17 @@ abstract class User {
 		if ($user_row) {
 			return User::getUserSubclassObject($user_row);
 		} else {
-			return false;
+			return null;
 		}
 	}
 
+	/**
+	 * PRIVATE User::getUserSubclassObject($row)
+	 *
+	 * Purpose: get a User subclass object from the Users table row
+	 * Returns: the wanted object, or NULL on usertype mismatch or missing data
+	 * Throws:  PDOException on SERVER_DBERROR
+	 */
 	private static function getUserSubclassObject($user_row) {
 		$args = array(':id' => $user_row['userID']);
 		switch ($user_row['type']) {
@@ -308,6 +342,7 @@ abstract class User {
 			// TODO add admin table?
 			return new Admin($user_row, false);
 		}
+		return null;
 	}
 
 	public static function findUsers($email, $firstName, $lastName, $check_type = -1) {
@@ -463,7 +498,7 @@ final class Student extends User {
 
 	public function saveComment($comment, $creator, $createTime = null) {
 		if ($createTime == null) {
-			$createTime = date();
+			$createTime = time();
 		}
 
 		$commentID = Comment::insertComment($comment, $this->id, $creator->getID(), $createTime);

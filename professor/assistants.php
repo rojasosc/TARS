@@ -27,11 +27,11 @@ if ($error == null) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="comments.js"></script>
-		<script src="profiles.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
-		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -50,11 +50,8 @@ if ($error == null) {
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
-						<h3>Staff Comments</h3>
-						<div class="container staffComments">
-						</div> <!-- End container -->
-						<h3>Professor Comments</h3>
-						<div class="container professorComments">
+						<h3>Comments</h3>
+						<div class="container" id="comments">
 						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
@@ -64,6 +61,35 @@ if ($error == null) {
 			</div> <!-- End modal-dialog -->
 		</div> <!-- End modal fade -->
 		<!-- End Profile Modal -->
+
+		 <!-- BEGIN Comment Modal-->
+		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Student Comment</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
+							<fieldset>
+								<legend>Message Content</legend>
+								<div class="row">
+									<div class="col-xs-12">
+										<textarea name="commentText" class="form-control"></textarea>
+									</div> <!-- End column -->
+								</div> <!-- End row -->													
+							</fieldset> <!-- End comment fieldset -->
+						</form> <!-- End comment form -->
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Comment Modal-->
 			
 			<!-- Begin Email Modal -->
 		<div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
@@ -101,35 +127,6 @@ if ($error == null) {
 			</div> <!--End modal-dialog-->
 		</div> <!-- End modal fade -->  
 		 <!-- End Email Modal -->
-
-		 <!-- BEGIN Comment Modal-->
-		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h1 class="modal-title">Student Comment</h1>
-					</div> <!-- End modal-header -->
-					<div class="modal-body">
-						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
-							<fieldset>
-								<legend>Message Content</legend>
-								<div class="row">
-									<div class="col-xs-12">
-										<textarea name="commentText" class="form-control"></textarea>
-									</div> <!-- End column -->
-								</div> <!-- End row -->													
-							</fieldset> <!-- End comment fieldset -->
-						</form> <!-- End comment form -->
-					</div> <!-- End modal-body -->
-					<div class="modal-footer">
-						<button class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
-					</div> <!-- End modal-footer -->				
-				</div> <!-- End modal-content -->
-			</div> <!-- End modal-dialog -->
-		</div> <!-- End modal fade -->	
-		<!-- END Comment Modal-->
 
 		<!-- BEGIN page-wrapper -->
 		<div id="page-wrapper">
@@ -208,7 +205,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											?>
 											
 											<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
-												<td><button data-toggle="modal" data-target="#studentProfileModal" data-id="<?= $student->getID() ?>" class="btn btn-default circle profile">
+												<td><button data-toggle="modal" data-target="#profile-modal" data-userid="<?= $student->getID() ?>" data-usertype="<?= STUDENT ?>" class="btn btn-default circle profile">
 												<span class="glyphicon glyphicon-user"></span></button>
 												</td>
 												<td>

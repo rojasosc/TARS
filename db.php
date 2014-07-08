@@ -919,6 +919,15 @@ final class Application {
 		Database::execute($sql, $args);
 	}
 
+	public static function setApplicationStatus($student,$position,$status){
+		$sql = 'UPDATE Applications
+				SET appStatus = :status
+				WHERE studentID = :student_id AND positionID = :position_id';
+		$args = array(':status' => $status,	':student_id' => $student->getID(),
+			':position_id' => $position->getID());
+		Database::execute($sql, $args);
+	}
+
 	public function __construct($row) {
 		$this->id = $row['appID'];
 		$this->positionID = $row['positionID'];

@@ -87,9 +87,27 @@ if ($error == null) {
 			</div> <!-- End modal-dialog -->
 		</div> <!-- End modal fade -->	
 		<!-- END Comment Modal-->
+
+		 <!-- BEGIN Reviews Modal-->
+		<div class="modal fade comments-modal" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Reviews</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body comments-block">
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Reviews Modal-->		
 			
 			<!-- Begin Email Modal -->
-		<div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
+		<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -182,13 +200,12 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<table class="table table-striped">
 												<thead>
 													<tr>
-															<th>University ID</th>
-															<th>First Name</th>
-															<th>Last Name</th>
-															<th>Email</th>
-															<th>Type</th>
-															<th>Profile</th>
-															<th>Comment</th>
+														<th>Name</th>
+														<th>University ID</th>
+														<th>Email</th>
+														<th>Type</th>
+														<th>Profile</th>
+														<th>Reviews</th>
 													</tr>
 												</thead>
 											<?php
@@ -201,15 +218,39 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												
 											?>
 											
-											<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
-												<td><button data-toggle="modal" data-target="#profile-modal" data-userid="<?= $student->getID() ?>" data-usertype="<?= STUDENT ?>" class="btn btn-default circle profile">
-												<span class="glyphicon glyphicon-user"></span></button>
-												</td>
-												<td>
-													<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
-													<span class="glyphicon glyphicon-comment"></span></button>
-												</td>
-											</tr> 											
+										<tr>
+											<td>
+												<div class="dropdown actions">
+													<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
+													<?= $student->getFirstName() . " " . $student->getLastName()?>
+													<span class="caret"></span>
+													</a>
+													<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
+														<li class="decision" role="presentation"><a role="menuitem" tabindex="-1">Review Student</a></li>
+														<li class="decision" role="presentation"><a role="menuitem" tabindex="-1">Send Email</a></li>
+													</ul>
+												</div>
+											</td>
+											<td>
+												<?= $student->getUniversityID() ?>
+											</td> 
+											<td>
+												<?= $student->getEmail() ?>
+											</td>
+											<td>
+												<?= $position->getTypeTitle() ?>
+											</td>
+											<td>
+												<button data-toggle="modal" data-target="#profile-modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
+													<span class="glyphicon glyphicon-file"></span>
+												</button>
+											</td>
+											<td>
+												<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
+													<span class="glyphicon glyphicon-comment"></span>
+												</button>
+											</td>
+										</tr>										
 											
 											<?php
 											/* Table entry closing brace */
@@ -221,7 +262,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 
 									</div> <!-- End panel-body -->									
 								</div> <!-- End collapse panel-collapse -->
-							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">
+							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailModal" class="btn btn-default">
 								<span class="glyphicon glyphicon-envelope"></span> Send Email</a>
 							</div> <!-- End panel-footer -->								
 						</div> <!-- End panel panel-primary -->

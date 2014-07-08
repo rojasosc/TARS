@@ -91,6 +91,10 @@ h1 {
 #studentModalTitle{
     text-align: center;
 }
+.actions{
+    cursor: pointer; 
+    cursor: hand;
+}
 
 /*
  * Everything below is NavBar coloring

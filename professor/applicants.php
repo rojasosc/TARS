@@ -26,7 +26,6 @@ if ($error == null) {
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="applicants.js"></script>
 		<script src="comments.js"></script>
 		<script src="../js/tars_utilities.js"></script>
 	</head> 
@@ -168,14 +167,11 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<table class="table table-striped">
 										<thead>
 											<tr>
+												<th>Name</th>
 												<th>University ID</th>
-												<th>First Name</th>
-												<th>Last Name</th>
-												<th>Email</th>
 												<th>Type</th>
 												<th>Application</th>
 												<th>Reviews</th>
-												<th>Action</th>
 											</tr>
 										</thead>
 										<?php
@@ -187,30 +183,37 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											$profileID = "myProfile" . $student->getID();
 											
 										?>
-										<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
-											<td><button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
-											<span class="glyphicon glyphicon-file"></span></button>
+										<tr>
+											<td>
+												<div class="dropdown actions">
+													<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
+													<?= $student->getFirstName() . " " . $student->getLastName()?>
+													<span class="caret"></span>
+													</a>
+													<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu" data-applicationID="<?= $application->getID() ?>">
+														<li class="decision" role="presentation" data-decision="<?= APPROVED ?>"><a role="menuitem" tabindex="-1">Approve</a></li>
+														<li class="decision" role="presentation" data-decision="<?= REJECTED ?>"><a role="menuitem" tabindex="-1">Reject</a></li>
+														<li class="decision" role="presentation" data-decision="<?= PENDING ?>"><a role="menuitem" tabindex="-1">Postpone</a></li>
+													</ul>
+												</div>
 											</td>
 											<td>
-												<button data-toggle="modal" data-target="#commentsModal" data-commenterID="<?= $professor->getID() ?>" data-userID="<?= $student->getID() ?>" class="btn btn-default comments">
-												<span class="glyphicon glyphicon-comment"></span></button>
+												<?= $student->getUniversityID() ?>
+											</td> 
+											<td>
+												<?= $position->getTypeTitle() ?>
 											</td>
-											<td>	
-												<form>
-												<div class="btn-group" data-toggle="buttons" data-applicationID="<?= $application->getID() ?>">
-													<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve">
-														<input type="radio" name="<?= $applicationID ?>" id="approve" value="<?= APPROVED ?>"><span class="glyphicon glyphicon-ok"></span>
-													</label>
-													<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
-														<input type="radio" name="<?= $applicationID ?>" id="deny" value="<?= REJECTED ?>"><span class="glyphicon glyphicon-remove"></span>
-													</label>
-													<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
-														<input type="radio" name="<?= $applicationID ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
-													</label>
-												</div> <!-- End btn-group -->
-												</form>
+											<td>
+												<button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
+													<span class="glyphicon glyphicon-file"></span>
+												</button>
 											</td>
-										</tr> 											
+											<td>
+												<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
+													<span class="glyphicon glyphicon-comment"></span>
+												</button>
+											</td>
+										</tr> 												
 											
 											<?php
 											/* Table entry closing brace */
@@ -242,17 +245,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					}
 ?>
 								</div> <!-- End row -->
-<?php
-					if ($appCount > 0) {
-?>
-								<div class="row">
-									<div class="col-xs-4">
-										<button name="applyDecision" data-panelid="<?=$panelID?>" class="btn btn-success decisions"><span class="glyphicon glyphicon-ok-circle"></span> Submit Decisions</button>												
-									</div> <!-- End column -->
-								</div> <!-- End row -->
-<?php
-					}
-?>
 							</div> <!-- End panel-footer -->
 						</div> <!-- End panel panel-primary -->
 					</div> <!-- End container -->

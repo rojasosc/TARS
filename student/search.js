@@ -4,8 +4,8 @@ $(document).ready(function() {
     var compensation;
     var qualifications;
     var url;
-	var appModalBody = $('#applyModal').children('.modal-body');
-	var appModalFooter = appModalBody.next('.modal-footer');
+	var appModalBody = $('#applyModal .modal-body');
+	var appModalFooter = $('#applyModal .modal-footer');
 	var appFormHTML;
 	var appFormButtons;
 	var currPos;
@@ -21,7 +21,6 @@ $(document).ready(function() {
     $('#applyModal').on('submit', '#application', function(event) {
 		event.preventDefault();
         url = $('#application').attr('action');
-		studentID = $('#studentID').val();
         compensation = $('#compensation').val();
         qualifications = $('#qualifications').val();
 		appFormHTML = appModalBody.html();
@@ -31,7 +30,6 @@ $(document).ready(function() {
 			url: url,
 			data: {
 				positionID: positionID,
-				studentID: studentID,
 				compensation: compensation,
 				qualifications: qualifications
 			}, 
@@ -40,16 +38,18 @@ $(document).ready(function() {
 				if (data.success) {
 					appModalBody.html('<p>Thank you for applying for this position!<br/>We hope to be able to get back to you soon with our decision.</p>');
 					appModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="appOK">OK</button>');
-					currPos.hide(800);
+					appBtn = currPos.find('.applyButton');
+					appBtn.attr('disabled', 'disabled');
+					appBtn.text('Applied');
 				} else {
-					appModalBody.find('#appAlertHolder').html(
+					$('#appAlertHolder').html(
 						'<div class="alert alert-danger">' +
 						'<strong>' + data.error.title + '!</strong> '+
 						data.error.message+'</div>');
 				}
 			},
 			error: function(jsXHR, textStatus, errorThrown) {
-				appModalBody.find('#appAlertHolder').html(
+				$('#appAlertHolder').html(
 					'<div class="alert alert-danger">' +
 					'<strong>Error applying to position!</strong> '+
 					'An AJAX error occured (' + errorThrown + ')</div>');

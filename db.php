@@ -493,7 +493,7 @@ final class Student extends User {
 	
 
 	public function apply($positionID, $compensation, $qualifications) {
-		$applicationID = Application::insertApplication($this->id, $positionID, $compensation,
+		$applicationID = Application::insertApplication($positionID, $compensation,
 			$qualifications, PENDING, $this->id, time());
 		Event::insertEvent(Event::STUDENT_APPLY, $this->getName().' applied to a position. '.
 			'Application object created.', $applicationID);
@@ -888,13 +888,13 @@ final class Application {
 		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
 
-	public static function insertApplication($studentID, $positionID, $comp, $qual, $status, $creatorID, $createTime) {
+	public static function insertApplication($positionID, $comp, $qual, $status, $creatorID, $createTime) {
 		$sql = 'INSERT INTO Applications
-				(positionID, studentID, compensation, appStatus, qualifications, creatorID, createTime) VALUES
-				(:position, :student, :comp, :status, :qual, :creator, :createTime)';
-		$args = array(':position' => $positionID, ':student' => $studentID,
-			':comp' => $comp, ':status' => $status, ':qual' => $qual,
-			':creator' => $creatorID, ':createTime' => date('Y-m-d H:i:s', $createTime));
+				(positionID, compensation, appStatus, qualifications, creatorID, createTime) VALUES
+				(:position, :comp, :status, :qual, :creator, :createTime)';
+		$args = array(':position' => $positionID, ':comp' => $comp, ':status' => $status,
+			':qual' => $qual, ':creator' => $creatorID,
+			':createTime' => date('Y-m-d H:i:s', $createTime));
 		return Database::executeInsert($sql, $args);
 	}
 

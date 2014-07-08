@@ -82,7 +82,7 @@ foreach ($terms as $term) {
 										<div class="col-md-5">
 											<a class="btn btn-success btn-block" name="termSelectButton">View</a>
 										</div> <!-- End col-md-5 -->
-									</div> <!-- End row --->
+									</div> <!-- End row -->
 									<br>
 								</form> <!-- End term select form -->
 								<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
@@ -101,7 +101,7 @@ foreach ($terms as $term) {
 									<?php
 									
 									foreach($assistants as $assistant){
-										$student = $assistant->getStudent();
+										$student = $assistant->getCreator();
 										$position = $assistant->getPosition();
 										$course = $position->getCourse();
 									

@@ -10,7 +10,7 @@
 
 	/* Insert each position into the spreadsheet */
 	foreach($assistants as $assistant){
-		$student = $assistant->getStudent();
+		$student = $assistant->getCreator();
 		$position = $assistant->getPosition();
 		$course = $position->getCourse();
 		

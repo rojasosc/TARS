@@ -856,7 +856,8 @@ final class Application {
 		if ($is_count) {
 			$sql_sel = 'COUNT(*)';
 		} else {
-			$sql_sel = '*';
+			$sql_sel = 'appID, Applications.positionID, compensation, appStatus, qualifications, '.
+			   'Applications.creatorID, Applications.createTime';
 		}
 		if ($sql_ij_t) {
 			$sql_ij_teaches = 'INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID';

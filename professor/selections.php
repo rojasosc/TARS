@@ -8,7 +8,7 @@ $appID = $_POST['applicationID'];
 $decision = $_POST['decision'];
 if($decision > 0){
 	$app = Application::getApplicationByID($appID);
-	$student = $app->getStudent();
+	$student = $app->getCreator();
 	$position = $app->getPosition();
 	Application::setApplicationStatus($student, $position, $decision);
 }

@@ -195,7 +195,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											
 											/* Insert each application */
 											foreach($assistants as $assistant){
-												$student = $assistant->getStudent();
+												$student = $assistant->getCreator();
 												$position = $assistant->getPosition();
 												$profileID = "myProfile" . $student->getID();
 												

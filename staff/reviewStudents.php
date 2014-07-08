@@ -107,7 +107,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							</div> <!-- End panel-heading -->
 							<div class="panel-body">
 								<table class="table table-striped table-hover">
-									<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Comment</th><th>Status</th></tr>
+									<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>GPA</th><th>Profile</th><th>Comment</th></tr>
 									<?php
 									
 									$studentsToReview = Student::getStudentsToReview();
@@ -131,21 +131,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
 										<span class="glyphicon glyphicon-comment"></span></button>
 										</td>
-										<td>	<form>
-											<div class="btn-group" data-toggle="buttons" data-userID="<?= $student->getID() ?>">
-												<label name="selection" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Verify">
-													<input type="radio" name="<?= $student->getID() ?>" id="approve" value="<?= STAFF_VERIFIED ?>" checked><span class="glyphicon glyphicon-ok"></span>
-												</label>
-												<label name="selection" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Deny">
-													<input type="radio" name="<?= $student->getID() ?>" id="deny" value="<?= PENDING ?>" checked><span class="glyphicon glyphicon-remove"></span>
-												</label>
-												<label name="selection" class="btn btn-info active" data-toggle="tooltip" data-placement="bottom" title="Postpone">
-													<input type="radio" name="<?= $student->getID() ?>" id="postpone" value="0" checked><span class="glyphicon glyphicon-time" ></span>												
-												</label>
-											</div> <!-- End btn-group -->
-											</form>
-										</td>
-									</tr>							
+									</tr>
 									<?php
 									$tableEntry++;
 									}

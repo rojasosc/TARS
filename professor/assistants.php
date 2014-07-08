@@ -50,9 +50,6 @@ if ($error == null) {
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
-						<h3>Comments</h3>
-						<div class="container" id="comments">
-						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

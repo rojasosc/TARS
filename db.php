@@ -461,6 +461,13 @@ final class Student extends User {
 		return $userID;
 	}
 
+	public static function getStudentsToReview(){
+		$sql = 'SELECT userID FROM Students';
+		$args = array();
+		$rows = Database::executeGetAllRows($sql,$args);
+		return array_map(function ($row) { return User::getUserByID($row['userID']);}, $rows);
+	}
+	
 	public function __construct($user_row, $student_row) {
 		parent::__construct($user_row);
 
@@ -474,13 +481,6 @@ final class Student extends User {
 		}
 	}
 
-	public function getStudentsToReview(){
-		$sql = 'SELECT userID FROM Students';
-		$args = array();
-		$rows = Database::executeGetAllRows($sql,$args);
-		return array_map(function ($row) { return User::getUserByID($row['userID']);}, $rows);
-	}
-	
 	public function setStudentStatus($userID,$status){
 		$sql = "UPDATE Students SET status = :status WHERE userID = :userID";
 		$args = array(':status' => $status,':userID' => $userID);

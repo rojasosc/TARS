@@ -10,6 +10,6 @@ if($decision > 0){
 	$app = Application::getApplicationByID($appID);
 	$student = $app->getStudent();
 	$position = $app->getPosition();
-	Application::setPositionStatus($student, $position, $decision);
+	Application::setApplicationStatus($student, $position, $decision);
 }
 

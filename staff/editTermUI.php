@@ -44,8 +44,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<div class="panel-heading">
 								<h2 class="panel-title" data-toggle="collapse" data-target="#csc171Panel">CSC 171<span class="hidden-xs">: The Science of Programming</span></h2>
 							</div>
-							<div class="panel-body">
-								<div class="collapse panel-collapse" id="csc171Panel">
+							<div class="panel-collapse collapse in" id="csc171Panel">
+								<div class="panel-body" >
 									<div class="container-fluid">
 										<form role="form" action="#" method="post" id="csc171">
 											<div class="row">
@@ -99,7 +99,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												</div>
 											</div> <br/>
 											<div class="row">
-												<div class="col-xs-4">
+												<div class="col-xs-4 col-sm-3 col-md-2">
 													<button type="submit" value="Submit" class="form-control btn btn-success">Save</button>
 												</div>
 											</div>

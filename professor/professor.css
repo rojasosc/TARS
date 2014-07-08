@@ -77,6 +77,20 @@ th,td {
 h1 {
 	text-align: center;
 }
+.commentAuthor{
+    color: red;
+}
+
+.commentDate{
+    float: right;
+}
+
+.commentContent{
+    font-style: italic;
+}
+#studentModalTitle{
+    text-align: center;
+}
 
 /*
  * Everything below is NavBar coloring

@@ -475,7 +475,7 @@ final class Student extends User {
 	}
 
 	public function getStudentsToReview(){
-		$sql = "SELECT userID FROM Students WHERE status = ".PENDING;
+		$sql = 'SELECT userID FROM Students';
 		$args = array();
 		$rows = Database::executeGetAllRows($sql,$args);
 		return array_map(function ($row) { return User::getUserByID($row['userID']);}, $rows);
@@ -545,8 +545,6 @@ final class Student extends User {
 	public function getGPA() { return $this->gpa; }
 	public function getClassYear() { return $this->classYear; }
 	public function getAboutMe() { return $this->aboutMe; }
-	public function getStatus() { return $this->status; }
-	public function getReputation() { return $this->reputation; }
 	public function getUniversityID() { return $this->universityID; }
 
 	private $mobilePhone;
@@ -554,8 +552,6 @@ final class Student extends User {
 	private $gpa;
 	private $classYear;
 	private $aboutMe;
-	private $status;
-	private $reputation;
 	private $universityID;
 }
 
@@ -584,7 +580,6 @@ final class Professor extends User {
 			$this->officeID = $professor_row['officeID'];
 			$this->office = null;
 			$this->officePhone = $professor_row['officePhone'];
-			$this->mobilePhone = $professor_row['mobilePhone'];
 		}
 	}
 
@@ -633,12 +628,10 @@ final class Professor extends User {
 	
 	public function getOfficeID() { return $this->officeID; }
 	public function getOfficePhone() { return $this->officePhone; }
-	public function getMobilePhone() { return $this->mobilePhone; }
 
 	private $officeID;
 	private $office;
 	private $officePhone;
-	private $mobilePhone;
 }
 
 final class Staff extends User {
@@ -663,15 +656,12 @@ final class Staff extends User {
 
 		if ($staff_row) {
 			$this->officePhone = $staff_row['officePhone'];
-			$this->mobilePhone = $staff_row['mobilePhone'];
 		}
 	}
 
 	public function getOfficePhone() { return $this->officePhone; }
-	public function getMobilePhone() { return $this->mobilePhone; }
 
 	private $officePhone;
-	private $mobilePhone;
 }
 
 final class Admin extends User {

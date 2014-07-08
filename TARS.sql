@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS Teaches;
 DROP TABLE IF EXISTS Feedback; -- old name
+DROP TABLE IF EXISTS Comments;
+DROP TABLE IF EXISTS FilesPayrollPaperwork;
 DROP TABLE IF EXISTS Applications;
 DROP TABLE IF EXISTS Assistantship; -- old name
 DROP TABLE IF EXISTS PositionTypes;
@@ -99,10 +101,9 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `mobilePhone` bigint(20) NOT NULL,
   `major` varchar(75) NOT NULL,
   `gpa` decimal(4,3) NOT NULL,
-  `classYear` int(10) NOT NULL,
+  `classYear` year NOT NULL,
   `aboutMe` longtext NOT NULL,
-  `status` int(11) NOT NULL, -- XXX: deprecated
-  `reputation` int(11) NOT NULL, -- XXX: deprecated
+  `reputation` int(10) NOT NULL,
   `universityID` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
@@ -120,7 +121,6 @@ CREATE TABLE IF NOT EXISTS `Professors` (
   `userID` bigint(20) NOT NULL,
   `officeID` bigint(20) NOT NULL,
   `officePhone` bigint(20) NOT NULL,
-  `mobilePhone` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`),
@@ -137,7 +137,6 @@ CREATE TABLE IF NOT EXISTS `Professors` (
 CREATE TABLE IF NOT EXISTS `Staff` (
   `userID` bigint(20) NOT NULL,
   `officePhone` bigint(20) NOT NULL,
-  `mobilePhone` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
@@ -293,7 +292,6 @@ CREATE TABLE IF NOT EXISTS `Positions` (
 CREATE TABLE IF NOT EXISTS `Applications` (
   `appID` bigint(20) NOT NULL AUTO_INCREMENT,
   `positionID` bigint(20) NOT NULL,
-  `studentID` bigint(20) NOT NULL,
   `compensation` enum('pay','credit') NOT NULL,
   `appStatus` int(11) NOT NULL, -- TODO: enumify
   `qualifications` text NOT NULL,
@@ -301,9 +299,8 @@ CREATE TABLE IF NOT EXISTS `Applications` (
   `createTime` timestamp NOT NULL,
 
   PRIMARY KEY (`appID`),
-  UNIQUE KEY (`positionID`, `studentID`),
+  UNIQUE KEY (`positionID`, `creatorID`),
   FOREIGN KEY (`positionID`) REFERENCES `Positions` (`positionID`),
-  FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -325,6 +322,23 @@ CREATE TABLE IF NOT EXISTS `Comments` (
   FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- 
+-- Table structure for table `FilesPayrollPaperwork`
+--
+-- Represents the relation of which Students filed payroll paperwork.
+--
+-- Secondary, created with Student-Term pairs when Payroll page checkboxes are checked.
+--
+CREATE TABLE IF NOT EXISTS `FilesPayrollPaperwork` (
+  `fppID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `studentID` bigint(20) NOT NULL,
+  `termID` bigint(20) NOT NULL,
+  
+  PRIMARY KEY (`fppID`),
+  FOREIGN KEY (`studentID`) REFERENCES `Students` (`userID`),
+  FOREIGN KEY (`termID`) REFERENCES `Terms` (`termID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `Teaches`

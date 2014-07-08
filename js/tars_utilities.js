@@ -62,7 +62,24 @@ $(document).ready(function() {
 		$coursesDropdown.change( prepareProfessorsDropdown );
 	}
 
+	if( $( ".decision" ).length ){
+		$( ".decision" ).click(submitDecision);
+	}
+
+
 });
+
+function submitDecision(){
+	var action = "setAppStatus";
+	var appID = $(this).parent().data( "applicationid" );
+	var decision = $(this).data( "decision" );
+	var data = {
+		appID: appID,
+		decision: decision,
+		action: action
+	}
+	$.post(actionsUrl,data,function () {});	
+}
 
 function injectQualifications() {
 	var appID = $(this).data("appid");

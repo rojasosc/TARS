@@ -34,15 +34,25 @@ $(document).ready(function() {
 		if( $( ".profile" ).length ){
 			$userModal = $( ".profile-modal" );
 			$( ".profile" ).click( viewUserProfile );
-
+			if( $( ".qualifications" ).length ){
+				$qualifications = $( ".qualifications" );
+				$( ".profile" ).click( injectQualifications );
+			}
 		}
+	}
+
+	if( $( ".comments-modal").length ){
+		$commentsModal = $( ".comments-modal" );
+		$commentsBlock = $( ".comments-block" )
+		$( ".comments" ).click( viewUserComments );
 	}
 
 	if( $( ".buildings" ).length ){
 		$buildingsDropdown = $( ".buildings" );
 		$roomsDropdown = $( ".rooms" );
-		prepareBuildingsDropdown();
 		$buildingsDropdown.change( prepareRoomsDropdown );
+		prepareBuildingsDropdown();
+		
 	}
 
 	if( $( ".courses" ).length ){
@@ -54,7 +64,39 @@ $(document).ready(function() {
 
 });
 
+function injectQualifications() {
+	var appID = $(this).data("appid");
+	var action = "fetchQualifications";
+	var data = {
+		appID: appID,
+		action: action
+	}
+	$.post( actionsUrl, data, function(qual) {
+		$qual = $.parseJSON(qual);
+		$qualifications.html($qual['qualifications']);
+	});
+}
 
+function viewUserComments() {
+	var action = "fetchComments";
+	var data = {
+		userID: $(this).data("userid"),
+		action: action
+	}
+	$.post( actionsUrl, data, function(comments){
+		$comments = $.parseJSON(comments);
+		var commentsCnt = $comments['size'];
+		for ( var i = commentsCnt -1; i >= 0; i-- ) {
+			$comment = $comments[i];
+			$commentsBlock.append( "<p class='commentDate'>" + $comment[ "createTime" ] + "</p><blockquote><p class='commentContent'>"+ 
+				$comment[ "comment" ] + "</p><footer>" + $comment[ "author" ] + "</footer></blockquote></div><!-- End column --></div> <!-- End row --><br>" );		
+		};
+		if(!commentsCnt){
+			$commentsBlock.html("There are no reviews available for this student.");
+		}
+	});
+	$commentsModal.bind("hidden.bs.modal", function() { $commentsBlock.html(""); });
+}
 function searchUsers( userType ) {
 	var action = "searchForUsers";
 	var data = {
@@ -129,10 +171,6 @@ function viewUserProfile() {
 
 function prepareStudentModal( user ) {
 	var student = $.parseJSON( user );
-	var commentsCnt = student[ "comments" ][ "size" ];
-	$comments = student[ "comments" ];
-	$commentsBlock = $( "#comments" );
-	
 	$( "#studentModalTitle" ).html( student[ "firstName" ] + " " + student[ "lastName" ] );
 	$( "#studentMajor" ).html( "Major: " + student[ "major" ] );
 	$( "#studentGPA" ).html( "GPA: " + student[ "gpa" ] );
@@ -141,14 +179,6 @@ function prepareStudentModal( user ) {
 	$( "#studentAboutMe" ).html( student[ "aboutMe" ] );
 	$( "#studentClassYear" ).html( "Class Year: " + student[ "classYear" ] );
 
-	for ( var i = commentsCnt -1; i >= 0; i-- ) {
-		$comment = $comments[i];
-		$commentsBlock.append( "<div class='row'><div class='col-xs-4'><p>Date: " + $comment[ "createTime" ] + 
-			"</p></div><!-- End column --></div><!-- End row --><div class='row'><div class='col-xs-4'><p>Written By: " + 
-			$comment[ "author" ] + "</p></div> <!-- End column --></div> <!-- End row --><div class='row'><div class='col-xs-12'><p>Message: " + 
-			$comment[ "comment" ] + "</p></div><!-- End column --></div> <!-- End row --><br>" );		
-	};
-	//TODO: Reset modal values on hidden.bs.modal to avoid having duplicate comments. 
 }
 
 function viewUserForm( userID, userType ) {

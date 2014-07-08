@@ -500,7 +500,7 @@ final class Student extends User {
 	}
 	
 	public function withdraw($positionID){
-		Application::setPositionStatus($this->id, $positionID, WITHDRAW);
+		Application::setPositionStatus($this->id, $positionID, WITHDRAWN);
 		Event::insertEvent(Event::STUDENT_WITHDRAW, $this->getName().' withdrew an application. '.
 			'Application object updated.', null);
 	}
@@ -910,12 +910,12 @@ final class Application {
 		return Database::executeInsert($sql, $args);
 	}
 
-	public static function setPositionStatus($studentID, $position, $status) {
+	public static function setPositionStatus($studentID, $positionID, $status) {
 		$sql = 'UPDATE Applications
 				SET appStatus = :status
 				WHERE studentID = :student_id AND positionID = :position_id';
 		$args = array(':status' => $status,	':student_id' => $studentID,
-			':position_id' => $position->getID());
+			':position_id' => $positionID);
 		Database::execute($sql, $args);
 	}
 

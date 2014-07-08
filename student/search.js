@@ -4,8 +4,8 @@ $(document).ready(function() {
     var compensation;
     var qualifications;
     var url;
-	var appModalBody;
-	var appModalFooter;
+	var appModalBody = $('#applyModal').children('.modal-body');
+	var appModalFooter = appModalBody.next('.modal-footer');
 	var appFormHTML;
 	var appFormButtons;
 	var currPos;
@@ -24,8 +24,6 @@ $(document).ready(function() {
 		studentID = $('#studentID').val();
         compensation = $('#compensation').val();
         qualifications = $('#qualifications').val();
-		appModalBody = $(this).parent();
-		appModalFooter = appModalBody.next('.modal-footer');
 		appFormHTML = appModalBody.html();
 		appFormButtons = appModalFooter.html();	
 		$.ajax({

@@ -273,7 +273,17 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<td><?=$time?></td>
 												<td><?=$place?></td>
 												<td>
+<?php
+												if ($position->hasStudentApplied($student)) {
+?>
+													<button class="btn btn-default applyButton" disabled="disabled">Applied</button>
+<?php
+												} else {
+?>
 													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
+<?php
+												}
+?>
 												</td>
 											</tr>
 									<?php

@@ -775,6 +775,13 @@ final class Position {
 		$this->createTime = strtotime($row['createTime']);
 	}
 
+	public function hasStudentApplied($student) {
+		$sql = 'SELECT COUNT(*)	FROM Applications
+				WHERE positionID = :position AND creatorID = :student';
+		$args = array(':position' => $this->id, ':student' => $student->getID());
+		return Database::executeGetScalar($sql, $args) != 0;
+	}
+
 	public function getID() { return $this->id; }
 	public function getSection() {
 		if ($this->section == null) {
@@ -901,7 +908,7 @@ final class Application {
 	public static function setPositionStatus($studentID, $positionID, $status) {
 		$sql = 'UPDATE Applications
 				SET appStatus = :status
-				WHERE studentID = :student_id AND positionID = :position_id';
+				WHERE creatorID = :student_id AND positionID = :position_id';
 		$args = array(':status' => $status,	':student_id' => $studentID,
 			':position_id' => $positionID);
 		Database::execute($sql, $args);
@@ -920,8 +927,6 @@ final class Application {
 		$this->id = $row['appID'];
 		$this->positionID = $row['positionID'];
 		$this->position = null;
-		$this->studentID = $row['studentID'];
-		$this->student = null;
 		$this->compensation = $row['compensation'];
 		$this->appStatus = $row['appStatus'];
 		$this->qualifications = $row['qualifications'];
@@ -937,12 +942,6 @@ final class Application {
 		}
 		return $this->position;
 	}
-	public function getStudent() {
-		if ($this->student == null) {
-			$this->student = User::getUserByID($this->studentID);
-		}
-		return $this->student;
-	}
 	public function getCompensation() { return $this->compensation; }
 	public function getStatus() { return $this->appStatus; }
 	public function getQualifications() { return $this->qualifications; }
@@ -957,8 +956,6 @@ final class Application {
 	private $id;
 	private $position;
 	private $positionID;
-	private $student;
-	private $studentID;
 	private $compensation;
 	private $appStatus;
 	private $qualifications;

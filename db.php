@@ -1300,7 +1300,7 @@ final class Comment {
 		$this->studentID = $row['studentID'];
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = strtotime($row['createTime']);
+		$this->createTime = $row['createTime'];
 	}
 	
 	public function getID(){ return $this->id; }

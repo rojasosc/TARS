@@ -21,9 +21,7 @@ if ($error == null) {
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
-
 		<title>My Applicants</title>		
-
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -33,28 +31,44 @@ if ($error == null) {
 		<script src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
+		<style>
+			.commentAuthor{
+				color: red;
+			}
+
+			.commentDate{
+				float: right;
+			}
+
+			.commentContent{
+				font-style: italic;
+			}
+			#studentModalTitle{
+				text-align: center;
+			}
+		</style>
 		<!-- Profile Modal -->
 		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="studentModalTitle"></h4>
+						<h2 class="modal-title" id="studentModalTitle"></h2>
 					</div>
-					<div class="modal-body">			
-						<h3>Personal Information</h3>
+					<div class="modal-body">
+						<h3>Qualifications</h3>
+						<div class="container qualifications">
+						</div> <!-- End container -->									
+						<h3>Academic Information</h3>
 						<div class="container">
 							<p id="studentMajor"></p>
 							<p id="studentGPA"></p>
 							<p id="studentClassYear"></p>
-						</div> <!-- End container -->			
+						</div> <!-- End container -->								
 						<h3>Contact Information</h3>
 						<div class="container">
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
-						</div> <!-- End container -->
-						<h3>Comments</h3>
-						<div class="container" id="comments">
 						</div> <!-- End container -->
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
@@ -66,28 +80,17 @@ if ($error == null) {
 		<!-- End Profile Modal -->
 
 		 <!-- BEGIN Comment Modal-->
-		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+		<div class="modal fade comments-modal" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h1 class="modal-title">Student Comment</h1>
+						<h1 class="modal-title">Reviews</h1>
 					</div> <!-- End modal-header -->
-					<div class="modal-body">
-						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
-							<fieldset>
-								<legend>Message Content</legend>
-								<div class="row">
-									<div class="col-xs-12">
-										<textarea name="commentText" class="form-control"></textarea>
-									</div> <!-- End column -->
-								</div> <!-- End row -->													
-							</fieldset> <!-- End comment fieldset -->
-						</form> <!-- End comment form -->
+					<div class="modal-body comments-block">
 					</div> <!-- End modal-body -->
 					<div class="modal-footer">
 						<button class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
 					</div> <!-- End modal-footer -->				
 				</div> <!-- End modal-content -->
 			</div> <!-- End modal-dialog -->
@@ -186,8 +189,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<th>Last Name</th>
 												<th>Email</th>
 												<th>Type</th>
-												<th>Profile</th>
-												<th>Comment</th>
+												<th>Application</th>
+												<th>Reviews</th>
 												<th>Action</th>
 											</tr>
 										</thead>
@@ -201,11 +204,11 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											
 										?>
 										<tr><td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td><td><?= $student->getEmail() ?></td><td><?= $position->getTypeTitle() ?></td>
-											<td><button data-toggle="modal" data-target="#profile-modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
-											<span class="glyphicon glyphicon-user"></span></button>
+											<td><button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-default circle profile">
+											<span class="glyphicon glyphicon-file"></span></button>
 											</td>
 											<td>
-												<button data-toggle="modal" data-target="#commentModal" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" class="btn btn-default comment">
+												<button data-toggle="modal" data-target="#commentsModal" data-commenterID="<?= $professor->getID() ?>" data-userID="<?= $student->getID() ?>" class="btn btn-default comments">
 												<span class="glyphicon glyphicon-comment"></span></button>
 											</td>
 											<td>	

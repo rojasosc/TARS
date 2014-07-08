@@ -30,6 +30,12 @@
 			case 'fetchStudent':
 				fetchStudent();
 				break;
+			case 'fetchQualifications':
+				fetchQualifications();
+				break;
+			case 'fetchComments':
+				fetchComments();
+				break;
 			case 'newStudentComment':
 				newStudentComment();
 				break;	
@@ -151,31 +157,9 @@
 				$gpa = $user->getGPA();
 				$universityID = $user->getUniversityID();
 				$aboutMe = $user->getAboutMe();
-				$comments = Comment::getAllComments($userID);
-				$studentComments = array();
-
-				if($comments){
-					$studentComments['size'] = count($comments);
-					foreach($comments as $comment){
-						$author = User::getUserByID($comment->getCreator()->getID());
-						$createTime = $comment->getCreateTime();
-						$commentText = $comment->getComment();
-						$commentHash = [
-							"author" => $author->getFirstName() ." ". $author->getLastName(),
-							"createTime" => $createTime,
-							"comment" => $commentText
-
-						];
-						$studentComments[] = $commentHash;					
-					}
-
-				}else{
-					$studentComments['size'] = 0;
-
-				}
 				/* Prepare to encode JSON object */
 				$student = array('valid' => true, 'type' => STUDENT,'firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
-				'classYear' => $classYear,'major' => $major,'gpa' => $gpa, 'universityID' => $universityID,'aboutMe' => $aboutMe, 'comments' => $studentComments);
+				'classYear' => $classYear,'major' => $major,'gpa' => $gpa, 'universityID' => $universityID,'aboutMe' => $aboutMe);
 				echo json_encode($student,true);
 			}else{
 				$error = "User with ID: ".$userID." was not found.";
@@ -187,6 +171,41 @@
 			echo json_encode(array('valid' => false, 'error' => $error));
 			
 		}
+	}
+
+	function fetchQualifications(){
+		if(isset($_POST['appID'])){
+			$app = Application::getApplicationByID($_POST['appID']);
+			$qualifications = $app->getQualifications();
+			echo json_encode(array('valid' => true, 'qualifications' => $qualifications),true);
+		}else{
+			echo json_encode(array('valid' => false),true);
+		}
+	}
+
+	function fetchComments(){
+		$userID = $_POST['userID'];
+		$comments = Comment::getAllComments($userID);
+			if($comments){
+				$studentComments['size'] = count($comments);
+				foreach($comments as $comment){
+					$author = User::getUserByID($comment->getCreator()->getID());
+					$createTime = $comment->getCreateTime();
+					$commentText = $comment->getComment();
+					$commentHash = [
+						"author" => $author->getFirstName() ." ". $author->getLastName(),
+						"createTime" => $createTime,
+						"comment" => $commentText
+
+					];
+					$studentComments[] = $commentHash;					
+				}
+
+			}else{
+				$studentComments['size'] = 0;
+
+			}		
+		echo json_encode($studentComments,true);
 	}
 
 	function newStudentComment(){

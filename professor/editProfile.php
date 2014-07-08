@@ -54,12 +54,6 @@ if ($professor) {
 									<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
 								</div> <!-- End form-group -->							
 							</div>	<!-- End column -->						
-							<div class="col-md-4">
-								<div class="form-group">
-									<label class="control-label" for="mobilePhone">Mobile Phone</label>
-									<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone">
-								</div> <!-- End form-group -->
-							</div> <!-- End column -->								
 						</div> <!-- End row -->
 						<legend>Office</legend>
 						<div class="row">
@@ -141,9 +135,6 @@ if ($error != null) {
 										<div class="col-xs-4">
 										Email: 	<?= $professor->getEmail() ?>
 										</div> <!-- End column -->
-										<div class="col-xs-4">
-										Mobile Phone: 	<?= $professor->getMobilePhone() ?>
-										</div> <!-- End column -->									
 									</div> <!-- End row -->
 									<br>
 									<legend>Office</legend>

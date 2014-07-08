@@ -70,7 +70,7 @@
 		$office = Place::getPlaceByBuildingAndRoom($_POST['building'],$_POST['room']);	
 		$officeID = $office->getPlaceID();
 		Professor::registerProfessor($_POST['email'], $_POST['password'], $_POST['firstName'], $_POST['lastName'],
-			$officeID, $_POST['officePhone'], $_POST['mobilePhone']);
+			$officeID, $_POST['officePhone']);
 			
 	}
 	
@@ -80,7 +80,7 @@
 		$room = $_POST['room'];
 		$office = Place::getPlaceByBuildingAndRoom($building, $room);
 		$officeID = $office->getPlaceID();
-		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone'],$_POST['mobilePhone']);
+		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone']);
 		
 	}
 	

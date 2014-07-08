@@ -557,17 +557,17 @@ final class Student extends User {
 
 final class Professor extends User {
 	public static function registerProfessor($email, $password, $firstName, $lastName,
-		$officeID, $officePhone, $mobilePhone) {
+		$officeID, $officePhone) {
 
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, PROFESSOR);
 
 		$sql = 'INSERT INTO Professors
-				(userID, officeID, officePhone, mobilePhone) VALUES
-				(:id, :officeID, :officePhone, :mobilePhone)';
+				(userID, officeID, officePhone) VALUES
+				(:id, :officeID, :officePhone)';
 		$args = array(':id' => $userID, ':officeID' => $officeID,
-				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
+				':officePhone' => $officePhone);
 		Database::executeInsert($sql, $args);
 
 		return $userID;
@@ -591,16 +591,14 @@ final class Professor extends User {
 		return array_map(function ($row) { return new Professor($row); }, $rows );
 	}
 		
-	public function updateProfile($firstName, $lastName, $officeID, $officePhone, $mobilePhone) {
+	public function updateProfile($firstName, $lastName, $officeID, $officePhone) {
 		$sql = 'UPDATE Professors
 				INNER JOIN Users ON Users.userID = Professors.userID
 				SET firstName = :firstName, lastName = :lastName,
-					officeID = :officeID, officePhone = :officePhone,
-					mobilePhone = :mobilePhone
+					officeID = :officeID, officePhone = :officePhone
 				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':officeID' => $officeID, ':officePhone' => $officePhone,
-			':mobilePhone'=>$mobilePhone);
+			':officeID' => $officeID, ':officePhone' => $officePhone);
 		Database::execute($sql, $args);
 
 		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".

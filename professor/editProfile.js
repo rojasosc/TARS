@@ -36,7 +36,6 @@ function fillUpdateForm(user){
 	$("[name='firstName']",$updateForm).val(professor['firstName']);
 	$("[name='lastName']",$updateForm).val(professor['lastName']);
 	$("[name='email']",$updateForm).val(professor['email']);
-	$("[name='mobilePhone']",$updateForm).val(professor['mobilePhone']);
 	$("[name='officePhone']",$updateForm).val(professor['officePhone']);
 	$("building",$updateForm).val(professor['building']);
 	$("room",$updateForm).val(professor['room']);
@@ -53,7 +52,6 @@ function updateProile(){
 		'firstName': $("[name='firstName']",$updateForm).val(),
 		'lastName': $("[name='lastName']",$updateForm).val(),
 		'email': $("[name='email']",$updateForm).val(),
-		'mobilePhone': $("[name='mobilePhone']",$updateForm).val(),
 		'officePhone': $("[name='officePhone']",$updateForm).val(),
 		'building': $("[name='building']",$updateForm).val(),
 		'room': $("[name='room']",$updateForm).val(),

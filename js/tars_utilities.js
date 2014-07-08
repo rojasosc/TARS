@@ -266,7 +266,6 @@ function update_user_profile() {
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
 			email: $( "[name='email']", $editProfileForm ).val(),
-			mobilePhone: $( "[name='mobilePhone']", $editProfileForm ).val(),
 			officePhone: $( "[name='officePhone']", $editProfileForm ).val(),
 			building: $( "[name='building']", $editProfileForm ).val(),
 			room: $( "[name='room']", $editProfileForm ).val(),

@@ -31,22 +31,6 @@ if ($error == null) {
 		<script src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
-		<style>
-			.commentAuthor{
-				color: red;
-			}
-
-			.commentDate{
-				float: right;
-			}
-
-			.commentContent{
-				font-style: italic;
-			}
-			#studentModalTitle{
-				text-align: center;
-			}
-		</style>
 		<!-- Profile Modal -->
 		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
 			<div class="modal-dialog">

@@ -30,6 +30,9 @@
 			case 'fetchStudent':
 				fetchStudent();
 				break;
+			case 'setAppStatus':
+				setAppStatus();
+				break;
 			case 'fetchQualifications':
 				fetchQualifications();
 				break;
@@ -66,6 +69,18 @@
 		echo "action not specified";
 	}
 	
+	function setAppStatus(){
+		$appID = $_POST['appID'];
+		$decision = $_POST['decision'];
+		if($decision > 0){
+			$app = Application::getApplicationByID($appID);
+			$student = $app->getCreator();
+			$position = $app->getPosition();
+			Application::setApplicationStatus($student, $position, $decision);
+		}
+
+	}
+
 	function createProfessor(){
 		$office = Place::getPlaceByBuildingAndRoom($_POST['building'],$_POST['room']);	
 		$officeID = $office->getPlaceID();

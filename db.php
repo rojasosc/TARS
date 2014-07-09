@@ -915,12 +915,10 @@ final class Application {
 		Database::execute($sql, $args);
 	}
 
-	public static function setApplicationStatus($student,$position,$status){
-		$sql = 'UPDATE Applications
-				SET appStatus = :status
-				WHERE studentID = :student_id AND positionID = :position_id';
-		$args = array(':status' => $status,	':student_id' => $student->getID(),
-			':position_id' => $position->getID());
+	public static function setApplicationStatus($application, $decision){
+		$sql = "UPDATE Applications SET appStatus = :decision 
+		WHERE appID = :appID";
+		$args = array(':appID' => $application->getID(), ':decision' => $decision);
 		Database::execute($sql, $args);
 	}
 

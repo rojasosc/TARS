@@ -78,7 +78,8 @@ function submitDecision(){
 		decision: decision,
 		action: action
 	}
-	$.post(actionsUrl,data,function () {});	
+	$.post(actionsUrl,data,function () {});
+	location.reload();	
 }
 
 function injectQualifications() {

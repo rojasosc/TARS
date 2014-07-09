@@ -4,7 +4,8 @@ require_once 'studentSession.php';
 $term = null;
 $positions = array();
 $currentApps = array();
-if ($error == null) {
+
+if ($error == null) { //Error checking
 	try {
 		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 		if ($currentTermID != null) {
@@ -47,11 +48,15 @@ if ($error == null) {
 		<div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="releaseModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
+					<!-- BEGIN Modal Header -->
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h1 class="modal-title">Release From Position</h1>
 					</div>
+					<!-- END Modal Header -->
+					<!-- BEGIN Modal Body -->
 					<div class="modal-body">
+						<!-- BEGIN Release Form -->
 						<form action="withdraw.php" method="post" id="releaseForm">
 							<fieldset>
 								<div class="row">
@@ -71,11 +76,15 @@ if ($error == null) {
 								</div>
 							</fieldset>
 						</form>
+						<!-- END Release Form -->
 					</div>
+					<!-- END Modal Body -->
+					<!-- BEGIN Modal Footer -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal" id="cancelRelease">Cancel</button>
 						<button type="submit" class="btn btn-success" form="releaseForm" id="#releaseConfirm" value="Submit">Release</button>
 					</div>
+					<!-- END Modal Footer -->
 				</div>
 			</div>
 		</div>
@@ -84,11 +93,14 @@ if ($error == null) {
 		<div class="modal fade" id="withdrawModal" tabindex="-1" role="dialog" aria-labelledby="withdrawModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-sm">
 				<div class="modal-content">
+					<!-- BEGIN Modal Header -->
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h1 class="modal-title">Withdraw Application</h1>
 					</div>
+					<!-- BEGIN Modal Body -->
 					<div class="modal-body">
+						<!-- BEGIN Withdraw Form -->
 						<form action="withdraw.php" method="post" id="withdrawForm">
 							<fieldset>
 								<div class="row">
@@ -100,11 +112,14 @@ if ($error == null) {
 								</div>
 							</fieldset>
 						</form>
+						<!-- END Withdraw Form -->
 					</div>
+					<!-- BEGIN Modal Footer -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal" id="withdrawCancel">Cancel</button>
 						<button type="submit" class="btn btn-success" form="withdrawForm" id="#withdrawConfirm" value="Submit">Withdraw</button>
 					</div>
+					<!-- END Modal Footer -->
 				</div>
 			</div>
 		</div>
@@ -125,12 +140,12 @@ if ($error != null) {
 }
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
+				<!-- BEGIN Current Positions Table -->
 				<div class="panel panel-primary"> 
 					<div class="panel-heading">
 						<h1 class="panel-title">My Current Positions</h1>
 					</div>
 					<div class="panel-body">	
-						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
 								<th class="hidden">Position ID</th>
@@ -161,15 +176,15 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		}
 							?>
 						</table>
-						<!-- END Current Positions Table -->
 					</div>
 				</div>
+				<!-- END Current Positions Table -->
+				<!-- BEGIN Pending Applications Table-->
 				<div class="panel panel-primary"> 
 					<div class="panel-heading">
 						<h1 class="panel-title">My Pending Applications</h1>
 					</div>
 					<div class="panel-body">	
-						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
 								<th class="hidden">Position ID</th>
@@ -211,9 +226,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		}
 							?>
 						</table>
-						<!-- END Current Positions Table -->
 					</div>
 				</div>
+				<!-- END Pending Applications Table -->
 <?php
 }
 ?>

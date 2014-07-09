@@ -13,17 +13,33 @@ $(document).ready(function() {
     var releaseModalButtons = releaseModalFooter.html();
 	var withdrawModalHTML = withdrawModalBody.html();
 	var withdrawModalButtons = withdrawModalFooter.html();
-	
+	/*
+	 * Grabs the positionID of the position that the user may potentially 
+	 * be releasing themselves from.
+	 */
 	$('.releaseButton').on('click', function(){
 		curPos = $(this).closest('tr');
 		positionID = curPos.find('.positionID').text();
 	});
-	
+	/*
+	 * Grabs the positionID of the application that the user may potentially
+	 * withdraw.
+	 */
 	$('.withdrawButton').on('click', function(){
 		curPos = $(this).closest('tr');
 		positionID = curPos.find('.positionID').text();
 	});
 
+	/*
+	 * Processes a release request on a position already held by the student without page redirect
+	 * TODO: SEND AN EMAIL NOTIFCATION TO STAFF AND PROFESSOR
+	 * Mechanism:
+	 * Fetches URL of the page that is going to process the request
+	 * Fetches the student's reasons for releasing themselves from the position
+	 * Fetches the student's ID
+	 * Sends AJAX request to the previously specified URL
+	 * Returns either affirmative message on success, or error message on error
+	 */
     $('#releaseModal').on('submit', '#releaseForm', function(event) {
 		event.preventDefault();
         alert('Email notification should be sent to the staff and professor');
@@ -55,7 +71,9 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
+	/*
+	 * Handles an application withdraw using the same mechanism as above
+	 */
 	$('#withdrawModal').on('submit', '#withdrawForm', function(event) {
 		event.preventDefault();
 		alert('Email notification should be sent to the staff and professor');
@@ -82,7 +100,9 @@ $(document).ready(function() {
 			}
 		});
     });
-	
+	/*
+	 * Once the modals are closed, these restore the form HTML
+	 */
 	$('#releaseModal').on('hidden.bs.modal', function(event){
 		releaseModalBody.html(releaseModalHTML);
 		releaseModalFooter.html(releaseModalButtons);

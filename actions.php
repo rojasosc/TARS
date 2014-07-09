@@ -74,11 +74,8 @@
 		$decision = $_POST['decision'];
 		if($decision > 0){
 			$app = Application::getApplicationByID($appID);
-			$student = $app->getCreator();
-			$position = $app->getPosition();
-			Application::setApplicationStatus($student, $position, $decision);
+			Application::setApplicationStatus($app, $decision);
 		}
-
 	}
 
 	function createProfessor(){

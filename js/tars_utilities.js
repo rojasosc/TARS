@@ -41,6 +41,72 @@ $(document).ready(function() {
 		}
 	}
 
+	if( $( ".password-modal" ).length ){
+		$passwordModal = $( ".password-modal" );
+		$passwordForm = $( ".change-password-form");
+		$( ".change-password" ).click( function(){
+		//TODO: Attach a submit handler to process password change.
+		$passwordForm.bootstrapValidator({
+			message: 'This value is not valid',
+			feedbackIcons: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				oldPassword: {
+					message: 'Your password is not valid',
+					validators: {
+						notEmpty: {
+							message: 'Your old password is required and can\'t be empty'
+						},
+						stringLength: {
+							min: 6,
+							max: 20,
+							message: 'Your old password must be between 6 and 20 characters long'
+						},
+						regexp: {
+							regexp: /^[a-zA-Z0-9]+$/,
+							message: 'Your old password can only consist of alphabetical and numerical characters'
+						}
+					}
+				},			
+				newPassword: {
+					message: 'Your password is not valid',
+					validators: {
+						notEmpty: {
+							message: 'Your new password is required and can\'t be empty'
+						},
+						stringLength: {
+							min: 6,
+							max: 20,
+							message: 'Your new password must be between 6 and 20 characters long'
+						},
+						regexp: {
+							regexp: /^[a-zA-Z0-9]+$/,
+							message: 'Your new password can only consist of alphabetical and numerical characters'
+						}
+					}
+				},	 
+				confirmPassword: {
+					message: 'Your password is not valid',
+					validators: {
+						notEmpty: {
+							message: 'Your new password is required and can\'t be empty'
+						},
+						identical: {
+							field: 'newPassword',
+							message: 'Passwords don\'t match'
+							
+						}
+					}
+				}
+		} /* close fields */		
+	});			
+			viewPasswordForm( $(this).data( "userid" ), $passwordForm.data( "usertype" ) );
+		}); 
+	}
+
 	if( $( ".comments-modal").length ){
 		$commentsModal = $( ".comments-modal" );
 		$commentsBlock = $( ".comments-block" )
@@ -199,9 +265,34 @@ function prepareStudentModal( user ) {
 
 }
 
+function viewPasswordForm( userID, userType ){
+	var action = "";
+	switch( userType ){
+	case STUDENT:
+		action = "fetchStudent";
+		break;
+	case PROFESSOR:
+		action = "fetchProfessor";
+		break;
+	case STAFF:
+		action = "TODO";
+		break;
+	case ADMIN:
+		action = "TODO";
+		break; 
+	}
+	var data = {
+		userID: userID,
+		action: action
+	}
+
+	$.post( actionsUrl, data, function ( user ){ preparePasswordForm( user, userType ); });	
+
+}
+
 function viewUserForm( userID, userType ) {
 	var action = "";
-	switch(userType){
+	switch( userType ){
 	case STUDENT:
 		action = "fetchStudent";
 		break;
@@ -220,6 +311,13 @@ function viewUserForm( userID, userType ) {
 		action: action
 	}
 	$.post( actionsUrl, data, function ( user ){ prepareUserForm( user, userType ); });
+}
+
+function preparePasswordForm( user ){
+	$user = $.parseJSON( user );
+	$( "[name='email']", $passwordForm).val( $user[ "email" ] );
+	$( "[type='submit']" ).click( changeUserPassword );
+	$passwordModal.modal( "show" );	
 }
 
 function prepareUserForm( user, userType ) {
@@ -253,11 +351,22 @@ function prepareUserForm( user, userType ) {
 		action = "TODO";
 		break; 
 	}
-	$( "[type='submit']" ).click( update_user_profile );
+	$( "[type='submit']" ).click( updateUserProfile );
 	$userModal.modal( "show" );
 }
 
-function update_user_profile() {
+function changeUserPassword(){
+	var action = "changeUserPassword";
+	var data = {
+		oldPassword: $( "[name='oldPassword']" , $passwordForm ).val(),
+		newPassword: $( "[name='newPassword']" , $passwordForm ).val(),
+		confirmPassword: $( "[name='confirmPassword']" , $passwordForm ).val()
+	}
+	$.post( actionsUrl, data, function ( info ){});
+	$.passwordModal.modal( "hide" );
+}
+
+function updateUserProfile() {
 	var action = "";
 	switch($user[ "type" ]){
 	case STUDENT:

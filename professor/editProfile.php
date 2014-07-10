@@ -14,11 +14,12 @@ if ($professor) {
 		
 		<title>My Profile</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="professor.css" rel="stylesheet">
-		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
+		<link href="../css/bootstrap.min.css" rel="stylesheet" />
+		<link href="professor.css" rel="stylesheet" />
+		<link href="../bootstrapValidator.min.css" rel="stylesheet" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="../bootstrapValidator.min.js"></script>		
 		<script src="../js/tars_utilities.js"></script>
 	</head>
   
@@ -34,13 +35,13 @@ if ($professor) {
 				<div class="modal-body">
 					<form class="edit-profile-form" data-usertype="<?= PROFESSOR ?>">
 						<div class="row">
-							<div class="col-md-4">				
+							<div class="col-xs-4">				
 								<div class="form-group"> 				
 									<label class="control-label" for="firstName">First Name</label>
 										<input id="firstName" type="text" class="form-control" name="firstName">																					
 								</div> <!-- End form-group -->											
 							</div> <!-- End column -->
-								<div class="col-md-4">
+								<div class="col-xs-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">Last Name</label>
 											<input id="lastName" type="text" class="form-control" name="lastName">													
@@ -48,7 +49,7 @@ if ($professor) {
 								</div>	<!-- End column -->						
 						</div> <!-- End row -->
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-xs-8">
 								<div class="form-group">
 									<label class="control-label" for="email">Email</label>
 									<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
@@ -57,14 +58,14 @@ if ($professor) {
 						</div> <!-- End row -->
 						<legend>Office</legend>
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-xs-4">
 								<div class="form-group">
 									<label class="control-label" for="building">Building</label>
 									<select name="building" class="form-control buildings" id="buildings">
 									</select> <!-- End select -->										
 								</div> <!-- End form-group -->
 							</div> <!-- End column -->
-							<div class="col-md-4">
+							<div class="col-xs-4">
 								<div class="form-group">
 									<label class="control-label" for="room">Room</label>
 									<select name="room" class="form-control rooms" id="rooms">
@@ -73,7 +74,7 @@ if ($professor) {
 							</div> <!-- End column -->							
 						</div> <!-- End Row -->	
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-xs-4">
 								<div class="form-group">
 									<label class="control-label" for="homePhone">Office Phone</label>
 									<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
@@ -83,13 +84,63 @@ if ($professor) {
 					</form> <!-- End form -->					
 				</div> <!-- End modal-body -->
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
 				</div> <!-- End modal-footer -->			
 			</div> <!-- End modal-content -->
 		</div> <!-- End modal dialog -->
 	</div> <!-- End modal fade -->
-	<!-- END Edit Profile Modal-->       
+	<!-- END Edit Profile Modal-->
+
+	<!-- BEGIN Change Password Modal-->
+	<div class="modal fade password-modal" id="password-modal" tabindex="-1" role="dialog" aria-labelledby="passwordMdalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h1 class="modal-title">Change password</h1>
+					<small>To change your password, provide the following information, and click Continue.</small>
+				</div> <!-- End modal-header -->
+				<div class="modal-body">
+					<form class="change-password-form" data-usertype="<?= PROFESSOR ?>">
+						<div class="row">
+							<div class="col-xs-8">
+								<div class="form-group">
+									<label class="control-label" for="email">Email</label>
+									<input type="email" class="form-control" disabled="disabled" name="email">					
+								</div> <!-- End form-group -->							
+							</div>	<!-- End column -->						
+						</div> <!-- End row -->
+						<br>
+						<div class="row">
+								<div class="col-xs-8">
+										<label class="control-label" for="oldPassword">Old Password</label>
+										<input type="password" class="form-control" name="oldPassword">	
+								</div> <!-- End column -->
+						</div> <!-- End row -->
+						<div class="row">
+								<div class="col-xs-8">
+										<label class="control-label" for="newPassword">New Password</label>
+										<input type="password" class="form-control" name="newPassword">	
+								</div> <!-- End column -->
+						</div> <!-- End row -->	
+						<div class="row">
+								<div class="col-xs-8">
+										<label class="control-label" for="confirmPassword">Confirm New Password</label>
+										<input type="password" class="form-control" name="confirmPassword">	
+								</div> <!-- End column -->
+						</div> <!-- End row -->													
+					</form> <!-- End form -->					
+				</div> <!-- End modal-body -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
+				</div> <!-- End modal-footer -->			
+			</div> <!-- End modal-content -->
+		</div> <!-- End modal dialog -->
+	</div> <!-- End modal fade -->
+	<!-- END Change Password Modal-->  	
+
 		
 		<!-- BEGIN page-wrapper -->
             
@@ -158,7 +209,7 @@ if ($error != null) {
 											<button data-target="#profile-modal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
 										</div> <!-- End column -->										
 										<div class="col-xs-3">
-											<button data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
+											<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
 										</div> <!-- End column -->
 									</div> <!-- End row --> 
 								</div> <!-- End column -->						

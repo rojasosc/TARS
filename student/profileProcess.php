@@ -6,10 +6,18 @@ require_once '../formInput.php';
 require_once '../error.php';
 
 $error = null;
+/*
+ * Fetch all the POST arguments from the profile form to be used to modify the database entry
+ * that corresponds with the student.
+ */
+
 $form_args = get_form_values(array(
 	'firstName', 'lastName', 'email', 'mobilePhone', 'classYear', 'major', 'gpa', 'universityID',
 	'aboutMe'));
-
+/*
+ * A single function call wrapped in layers of error catching and event logging
+ * updateProfile is called to send SQL queries to the database to modify it with changes
+ */
 $invalid_values = get_invalid_values($form_args);
 if (count($invalid_values) > 0) {
 	$error = new TarsException(Event::ERROR_FORM_FIELD,

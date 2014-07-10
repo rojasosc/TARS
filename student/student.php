@@ -30,7 +30,7 @@ require 'header.php';
 			<!-- BEGIN Page Content -->
 			<div id="content">
 <?php
-if ($error != null) {
+if ($error != null) { //Display any errors
 	echo $error->toHTML();
 }
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {

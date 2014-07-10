@@ -126,7 +126,6 @@ if ($error == null) {
 		</div>
 		<!-- END Info Modal -->
 		<!-- BEGIN Apply Modal -->
-		<!-- TODO: FIGURE OUT CLOSE BUTTON BUG -->
 		<div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="applyModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -135,6 +134,8 @@ if ($error == null) {
 						<h1 class="modal-title">Application</h1>
 					</div>
 					<div class="modal-body">
+						<div id="jobDetails">
+						</div>
 						<form role="form" method="post" id="application" action="appProcess.php">
 							<div class="row" id="appAlertHolder"></div>
 							<div class="row">
@@ -180,12 +181,14 @@ if ($error != null) {
 }
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
+				<!-- BEGIN Position Search -->
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h1 class="panel-title">Position Search</h1>
 					</div>
 					<div class="panel-body">
 						<div class="container-fluid display-area">
+							<!-- BEGIN Search Form -->
 							<form role="form" action="search.php" method="get" id="searchForm">
 								<div class="form-inline" id="inputrow">
 									<div class="form-group">
@@ -219,8 +222,11 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<input type="submit" value="Search" class="btn btn-primary"/>
 								</div>
 							</form>
+							<!-- END Search Form -->
 							<hr/>
+							<!-- BEGIN Search Results -->
 							<div id="search-results">
+								<!-- BEGIN Pagination -->
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>
 									<?php for($i= 1; $i <= $pages; $i++){?>
@@ -228,6 +234,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<?php }?>
 									<li><a href="#">&raquo;</a></li>
 								</ul>
+								<!-- END Pagination -->
+								<!-- BEGIN Results Table -->
 								<table class="table table-striped">
 									<thead>
 										<tr>
@@ -265,13 +273,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									?>
 											<tr>
 												<td class="positionID hidden"><?=$position->getID()?></td>
-												<td><?=$section->getCourseName()?></td>
-												<td class="hidden-xs hidden-sm"><?=$section->getCourseTitle()?></td>
-												<td><?=$professor?></td>
-												<td><?=$position->getTypeTitle()?></td>
-												<td><?=$days?></td>
-												<td><?=$time?></td>
-												<td><?=$place?></td>
+												<td class="courseName"><?=$section->getCourseName()?></td>
+												<td class="courseTitle hidden-xs hidden-sm"><?=$section->getCourseTitle()?></td>
+												<td class="instructor"><?=$professor?></td>
+												<td class="posType"><?=$position->getTypeTitle()?></td>
+												<td class="days"><?=$days?></td>
+												<td class="time"><?=$time?></td>
+												<td class="place"><?=$place?></td>
 												<td>
 <?php
 												if ($position->hasStudentApplied($student)) {
@@ -298,6 +306,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 									</tbody>
 								</table>
+								<!-- END Results Table -->
+								<!-- BEGIN Pagination -->
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>
 									<?php for($i= 1; $i <= $pages; $i++){?>
@@ -305,10 +315,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<?php }?>
 									<li><a href="#">&raquo;</a></li>
 								</ul>
+								<!-- END Pagination -->
 							</div>
+							<!-- END Search Results -->
 						</div>
 					</div>
 				</div>
+				<!-- END Position Search -->
 <?php
 }
 ?>

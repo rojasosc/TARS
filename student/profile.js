@@ -11,8 +11,9 @@ $(document).ready(function() {
             var url = $('#profile').attr('action');
             var data = $('#profile :input').serializeArray();
             $.post(url, data, function(data) {
-                //I should probably have a different mechanism for this
+                //TODO: Replace alert mechanism with Bootstrap Alert
                 alert('Your profile has been successfully updated!');
+				window.location.replace("profile.php");
             });
         },
         fields: {
@@ -103,6 +104,6 @@ $(document).ready(function() {
     });
     //Prevent page redirection
     $('#profile').submit(function(event) {
-        return false;
+       return false;
     });
 });

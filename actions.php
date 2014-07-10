@@ -115,7 +115,6 @@
 				$firstName = $user->getFirstName();
 				$lastName = $user->getLastName();
 				$email = $user->getEmail();
-				$mobilePhone = $user->getMobilePhone();
 				$officePhone = $user->getOfficePhone();			
 				$office = $user->getOffice();
 
@@ -126,7 +125,6 @@
 				'firstName' => $firstName,
 				'lastName' => $lastName,
 				'email' => $email,
-				'mobilePhone' => $mobilePhone,
 				'officePhone' => $officePhone,
 					'office' => [
 						'building' => $office->getBuilding(),

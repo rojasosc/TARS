@@ -242,7 +242,6 @@ function prepareUserForm( user, userType ) {
 		$( "[name='firstName']", $editProfileForm).val( $user[ "firstName" ] );
 		$( "[name='lastName']", $editProfileForm).val( $user[ "lastName" ] );
 		$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
-		$( "[name='mobilePhone']", $editProfileForm).val( $user[ "mobilePhone" ] );
 		$( "[name='officePhone']", $editProfileForm).val( $user[ "officePhone" ] );
 		$( "[name='building']", $editProfileForm).val( $user[ "office" ][ "building" ] );
 		$( "[name='room']", $editProfileForm).val( $user[ "office" ][ "room" ] );		

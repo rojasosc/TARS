@@ -1,5 +1,5 @@
 <?php  
-require_once 'studentSession.php';
+require_once '../studentSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -12,8 +12,8 @@ require_once 'studentSession.php';
 		
 		<title>TARS</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
+		<link href="../../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../student.css" rel="stylesheet">
 
 	</head>
   
@@ -25,7 +25,7 @@ require_once 'studentSession.php';
 <?php
 // Display header for Home
 $header_active = 'home';
-require 'header.php';
+require '../header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -64,7 +64,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script src="../../js/bootstrap.min.js"></script>
 		<!-- END Scripts -->
 	</body>
 </html>

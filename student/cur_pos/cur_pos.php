@@ -1,5 +1,5 @@
 <?php  
-require_once 'studentSession.php';
+require_once '../studentSession.php';
 
 $term = null;
 $positions = array();
@@ -31,13 +31,13 @@ if ($error == null) { //Error checking
 		
 		<title>TARS</title>
 		<!-- BEGIN CSS -->
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
+		<link href="../../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../student.css" rel="stylesheet">
 		<link href="cur_pos.css" rel="stylesheet">
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script src="../../js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="cur_pos.js"></script>
 		<!-- END Scripts -->
 		
@@ -130,7 +130,7 @@ if ($error == null) { //Error checking
 <?php
 // Display header for Home
 $header_active = 'curp';
-require 'header.php';
+require '../header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">

@@ -53,18 +53,19 @@ require_once 'staffSession.php';
 		</div> <!-- End modal fade -->
 		<!-- End Profile Modal -->
 			
-		<!-- BEGIN Comment Modal-->
+		 <!-- BEGIN Comment Modal-->
 		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h1 class="modal-title">Student Comment</h1>
+						<h1 class="modal-title">Student Review</h1>
+						<small>Please, briefly describe this student's performance.</small>
+						<small> For example, describe this assistant's productivity, enthusiasm, punctuality, initiative, or dependability.</small>
 					</div> <!-- End modal-header -->
 					<div class="modal-body">
-						<form action="staffCommands.php" method="post" id="commentForm" class="form-horizontal">
+						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
 							<fieldset>
-								<legend>Message Content</legend>
 								<div class="row">
 									<div class="col-xs-12">
 										<textarea name="commentText" class="form-control"></textarea>

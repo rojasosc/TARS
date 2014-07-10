@@ -226,8 +226,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													<span class="caret"></span>
 													</a>
 													<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
-														<li class="decision" role="presentation"><a role="menuitem" tabindex="-1">Review Student</a></li>
-														<li class="decision" role="presentation"><a role="menuitem" tabindex="-1">Send Email</a></li>
+														<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
+														<li role="presentation"><a role="menuitem" tabindex="-1">Send Email</a></li>
 													</ul>
 												</div>
 											</td>
@@ -262,7 +262,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 
 									</div> <!-- End panel-body -->									
 								</div> <!-- End collapse panel-collapse -->
-							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailModal" class="btn btn-default">
+							<div class="panel-footer"><a type="button" data-toggle="modal" href="#emailModal" class="btn btn-default">
 								<span class="glyphicon glyphicon-envelope"></span> Send Email</a>
 							</div> <!-- End panel-footer -->								
 						</div> <!-- End panel panel-primary -->

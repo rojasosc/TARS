@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 			$type = $login_user->getObjectType();
 			
 			if ($type == STUDENT) {
-				header('Location: student/home/home.php');
+				header('Location: student/student.php');
 				exit;
 			} elseif ($type == PROFESSOR) {
 				header('Location: professor/professor.php');

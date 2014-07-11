@@ -6,6 +6,7 @@ require_once '../error.php';
 =======
 require_once '../studentSession.php';
 <<<<<<< HEAD:student/search.php
+<<<<<<< HEAD:student/search.php
 require_once '/TARS/formInput.php';
 require_once '/TARS/error.php';
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/search/search.php
@@ -13,6 +14,10 @@ require_once '/TARS/error.php';
 require_once '../../formInput.php';
 require_once '../../error.php';
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/search/search.php
+=======
+require_once '/TARS/formInput.php';
+require_once '/TARS/error.php';
+>>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/search/search.php
 
 $form_args = get_form_values(array('q','term','type'), false);
 $pages = 7;
@@ -66,6 +71,7 @@ if ($error == null) {
 		<!-- BEGIN CSS -->
 <<<<<<< HEAD:student/search.php
 <<<<<<< HEAD:student/search.php
+<<<<<<< HEAD:student/search.php
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 =======
@@ -73,6 +79,9 @@ if ($error == null) {
 =======
 		<link href="../../css/bootstrap.min.css" rel="stylesheet">
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/search/search.php
+=======
+		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
+>>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/search/search.php
 		<link href="../student.css" rel="stylesheet">
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/search/search.php
 		<link href="search.css" rel="stylesheet">
@@ -82,6 +91,7 @@ if ($error == null) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <<<<<<< HEAD:student/search.php
 <<<<<<< HEAD:student/search.php
+<<<<<<< HEAD:student/search.php
 		<script src="../js/bootstrap.min.js"></script>
 =======
 		<script src="/TARS/js/bootstrap.min.js"></script>
@@ -89,6 +99,9 @@ if ($error == null) {
 =======
 		<script src="../../js/bootstrap.min.js"></script>
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/search/search.php
+=======
+		<script src="/TARS/js/bootstrap.min.js"></script>
+>>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/search/search.php
 		<script type="text/javascript" src="search.js"></script>
 		<!-- END Scripts -->
 		

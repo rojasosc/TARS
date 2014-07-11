@@ -24,10 +24,17 @@ if ($error != null) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<title>Home</title>		
+<<<<<<< HEAD:professor/professor.php
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+=======
+		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../professor.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="/TARS/js/bootstrap.min.js"></script>
+>>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:professor/home/home.php
 	</head> 
 	<body>
 		<div id="page-wrapper">

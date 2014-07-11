@@ -4,7 +4,11 @@
 // TODO: session check x6
 
 	if(isset($_POST['action'])){
+<<<<<<< HEAD:professor/professorCommands.php
 		require_once '../db.php';
+=======
+		require_once '/TARS/db.php';
+>>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:professor/assistants/professorCommands.php
 		$action = $_POST['action'];
 		switch($action){
 			case 'fetchProfessor': 

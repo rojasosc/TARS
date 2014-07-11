@@ -6,7 +6,6 @@ require_once '../error.php';
 =======
 require_once '../studentSession.php';
 <<<<<<< HEAD:student/profile.php
-<<<<<<< HEAD:student/profile.php
 require_once '/TARS/formInput.php';
 require_once '/TARS/error.php';
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/profile/profile.php
@@ -14,10 +13,6 @@ require_once '/TARS/error.php';
 require_once '../../formInput.php';
 require_once '../../error.php';
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/profile/profile.php
-=======
-require_once '/TARS/formInput.php';
-require_once '/TARS/error.php';
->>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/profile/profile.php
 
 ?>
 
@@ -33,7 +28,6 @@ require_once '/TARS/error.php';
 		<!-- BEGIN CSS -->
 <<<<<<< HEAD:student/profile.php
 <<<<<<< HEAD:student/profile.php
-<<<<<<< HEAD:student/profile.php
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="../bootstrapValidator.min.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
@@ -44,17 +38,12 @@ require_once '/TARS/error.php';
 		<link href="../../css/bootstrap.min.css" rel="stylesheet">
 		<link href="../../bootstrapValidator.min.css" rel="stylesheet">
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/profile/profile.php
-=======
-		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
-		<link href="/TARS/bootstrapValidator.min.css" rel="stylesheet">
->>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/profile/profile.php
 		<link href="../student.css" rel="stylesheet">
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/profile/profile.php
 		<link href="profile.css" rel="stylesheet">
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<<<<<<< HEAD:student/profile.php
 <<<<<<< HEAD:student/profile.php
 <<<<<<< HEAD:student/profile.php
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
@@ -67,10 +56,6 @@ require_once '/TARS/error.php';
 		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="../../bootstrapValidator.min.js"></script>
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/profile/profile.php
-=======
-		<script type="text/javascript" src="/TARS/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="/TARS/bootstrapValidator.min.js"></script>
->>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/profile/profile.php
 		<script type="text/javascript" src="profile.js"></script>
 		<!-- END Scripts -->
 		

@@ -14,12 +14,8 @@ require_once 'studentSession.php';
 		
 <<<<<<< HEAD:student/student.php
 <<<<<<< HEAD:student/student.php
-<<<<<<< HEAD:student/student.php
 <<<<<<< HEAD:student/home/home.php
 		<link href="../../css/bootstrap.min.css" rel="stylesheet">
-=======
-		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
->>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/home/home.php
 =======
 		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/home/home.php

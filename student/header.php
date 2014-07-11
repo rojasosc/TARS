@@ -35,7 +35,6 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 								<ul class="nav navbar-nav navbar-right">
 <<<<<<< HEAD
 <<<<<<< HEAD
-<<<<<<< HEAD
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 =======
 									<li><a href="/TARS/logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -43,9 +42,6 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 =======
 									<li><a href="../../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory
-=======
-									<li><a href="/TARS/logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
->>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring
 								</ul> <!-- End navbar unordered list -->
 								
 							</div> <!-- End navbar-collapse collapse -->        
@@ -71,7 +67,6 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 								<ul class="nav navbar-nav navbar-right">
 <<<<<<< HEAD
 <<<<<<< HEAD
-<<<<<<< HEAD
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 =======
 									<li><a href="/TARS/logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
@@ -79,9 +74,6 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 =======
 									<li><a href="../../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 >>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory
-=======
-									<li><a href="/TARS/logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
->>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring
 								</ul> <!-- End navbar unordered list -->
 								
 							</div> <!-- End navbar-collapse collapse -->        

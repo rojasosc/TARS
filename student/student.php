@@ -13,7 +13,6 @@ require_once 'studentSession.php';
 		<title>TARS</title>
 		
 <<<<<<< HEAD:student/student.php
-<<<<<<< HEAD:student/student.php
 <<<<<<< HEAD:student/home/home.php
 		<link href="../../css/bootstrap.min.css" rel="stylesheet">
 =======
@@ -29,10 +28,6 @@ require_once 'studentSession.php';
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 >>>>>>> parent of 2a6b245... student directory revamp:student/student.php
-=======
-		<link href="../../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../student.css" rel="stylesheet">
->>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/home/home.php
 
 	</head>
   
@@ -80,7 +75,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 	
 		</div> 
 		<!-- End page-wrapper -->
-<<<<<<< HEAD:student/student.php
 <<<<<<< HEAD:student/home/home.php
 =======
 		
@@ -89,12 +83,5 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		<script src="../js/bootstrap.min.js"></script>
 		<!-- END Scripts -->
 >>>>>>> parent of 2a6b245... student directory revamp:student/student.php
-=======
-		
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../../js/bootstrap.min.js"></script>
-		<!-- END Scripts -->
->>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/home/home.php
 	</body>
 </html>

@@ -32,14 +32,10 @@ if ($error == null) { //Error checking
 		<title>TARS</title>
 		<!-- BEGIN CSS -->
 <<<<<<< HEAD:student/cur_pos.php
-<<<<<<< HEAD:student/cur_pos.php
 		<link href="../css/bootstrap.min.css" rel="stylesheet">
 		<link href="student.css" rel="stylesheet">
 =======
 		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
-=======
-		<link href="../../css/bootstrap.min.css" rel="stylesheet">
->>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/cur_pos/cur_pos.php
 		<link href="../student.css" rel="stylesheet">
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/cur_pos/cur_pos.php
 		<link href="cur_pos.css" rel="stylesheet">
@@ -47,14 +43,10 @@ if ($error == null) { //Error checking
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <<<<<<< HEAD:student/cur_pos.php
-<<<<<<< HEAD:student/cur_pos.php
 		<script src="../js/bootstrap.min.js"></script>
 =======
 		<script src="/TARS/js/bootstrap.min.js"></script>
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/cur_pos/cur_pos.php
-=======
-		<script src="../../js/bootstrap.min.js"></script>
->>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/cur_pos/cur_pos.php
 		<script type="text/javascript" src="cur_pos.js"></script>
 		<!-- END Scripts -->
 		

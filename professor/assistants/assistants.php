@@ -1,5 +1,5 @@
 <?php
-require_once 'professorSession.php';	
+require_once '../professorSession.php';	
 
 $term = null;
 $sections = array();
@@ -22,12 +22,12 @@ if ($error == null) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<title>My Assistants</title>		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="professor.css" rel="stylesheet">
+		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script src="comments.js"></script>
-		<script src="../js/tars_utilities.js"></script>
+		<script src="/TARS/js/bootstrap.min.js"></script>
+		<script src="../comments.js"></script>
+		<script src="/TARS/js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
@@ -70,7 +70,7 @@ if ($error == null) {
 						<small> For example, describe this assistant's productivity, enthusiasm, punctuality, initiative, or dependability.</small>
 					</div> <!-- End modal-header -->
 					<div class="modal-body">
-						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
+						<form action="../professorCommands.php" method="post" id="commentForm" class="form-horizontal">
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-12">
@@ -150,7 +150,7 @@ if ($error == null) {
 <?php
 // Display header for Assistants
 $header_active = 'asst';
-require 'header.php';
+require '../header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">

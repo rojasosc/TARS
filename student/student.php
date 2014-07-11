@@ -1,5 +1,5 @@
 <?php  
-require_once '../studentSession.php';
+require_once 'studentSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -12,6 +12,7 @@ require_once '../studentSession.php';
 		
 		<title>TARS</title>
 		
+<<<<<<< HEAD:student/home/home.php
 		<link href="../../css/bootstrap.min.css" rel="stylesheet">
 		<link href="../student.css" rel="stylesheet">
 		
@@ -19,6 +20,10 @@ require_once '../studentSession.php';
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../../js/bootstrap.min.js"></script>
 		<!-- END Scripts -->
+=======
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="student.css" rel="stylesheet">
+>>>>>>> parent of 2a6b245... student directory revamp:student/student.php
 
 	</head>
   
@@ -30,7 +35,7 @@ require_once '../studentSession.php';
 <?php
 // Display header for Home
 $header_active = 'home';
-require '../header.php';
+require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -66,5 +71,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 	
 		</div> 
 		<!-- End page-wrapper -->
+<<<<<<< HEAD:student/home/home.php
+=======
+		
+		<!-- BEGIN Scripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<!-- END Scripts -->
+>>>>>>> parent of 2a6b245... student directory revamp:student/student.php
 	</body>
 </html>

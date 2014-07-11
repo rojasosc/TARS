@@ -1,5 +1,5 @@
 <?php
-	require_once "/TARS/db.php";
+	require_once "../db.php";
 	$term = Term::getTermByID(CURRENT_TERM);
 	$fileName = "payroll-{$term->getYear()}-{$term->getSession()}.xls";
 	$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');

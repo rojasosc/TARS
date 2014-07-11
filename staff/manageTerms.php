@@ -1,5 +1,5 @@
 <?php  
-require_once '../../staffSession.php';
+require_once 'staffSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -9,11 +9,12 @@ require_once '../../staffSession.php';
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Manage Professors</title>
+		<title>Manage Terms</title>
 		
-		<link href="../../../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../../staff.css" rel="stylesheet">
-		<script src="../../../js/bootstrap.min.js"></script>
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="staff.css" rel="stylesheet">
+		<script src="../js/bootstrap.min.js"></script>
+
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -22,7 +23,7 @@ require_once '../../staffSession.php';
 <?php
 // Display header for Manage
 $header_active = 'manage';
-require '../../header.php';
+require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -32,12 +33,13 @@ if ($error != null) {
 }
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
+	
 				<div class="container">
 					<div class="jumbotron">
-						<h2>Professor Management History</h2>
-					
+						<h2>Term Management History</h2>
+						
 					</div> <!-- End jumbotron -->
-				</div> <!-- End container -->
+				</div> <!-- End container -->	
 <?php
 }
 ?>

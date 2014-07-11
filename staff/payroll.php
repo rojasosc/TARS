@@ -1,5 +1,5 @@
 <?php  
-require_once '../staffSession.php';
+require_once 'staffSession.php';
 
 $termID = isset($_GET['term']) ? $_GET['term'] : null;
 $terms = array();
@@ -35,10 +35,10 @@ if ($error == null) {
 		
 		<title>Payroll</title>
 		
-		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
-		<link href="../staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="/TARS/js/bootstrap.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 
 	</head>
 	<body>
@@ -48,7 +48,7 @@ if ($error == null) {
 <?php
 // Display header for Manage
 $header_active = 'payroll';
-require '../header.php';
+require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">

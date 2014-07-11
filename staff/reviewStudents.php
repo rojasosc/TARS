@@ -1,5 +1,5 @@
 <?php  
-require_once '../../staffSession.php';
+require_once 'staffSession.php';
 ?>
 
 <!DOCTYPE HTML>
@@ -11,13 +11,13 @@ require_once '../../staffSession.php';
 		
 		<title>Student Verification</title>
 		
-		<link href="../../../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../../staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../../../js/bootstrap.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 		<script src="reviewStudents.js"></script>
 		<script src="comments.js"></script>
-		<script src="../../../js/tars_utilities.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 	</head>
 	<body>
 			
@@ -89,7 +89,7 @@ require_once '../../staffSession.php';
 <?php
 // Display header for Manage
 $header_active = 'manage';
-require '../../header.php';
+require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">

@@ -3,9 +3,9 @@
 <?php
 if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 	$header_items = array(
-		'home' => array('icon' => 'home', 'link' => 'home', 'text' => 'Home'),
-		'asst' => array('icon' => 'th-list', 'link' => 'assistants', 'text' => 'Assistants'),
-		'appl' => array('icon' => 'inbox', 'link' => 'applicants', 'text' => 'Applicants'));
+		'home' => array('icon' => 'home', 'link' => 'professor.php', 'text' => 'Home'),
+		'asst' => array('icon' => 'th-list', 'link' => 'assistants.php', 'text' => 'Assistants'),
+		'appl' => array('icon' => 'inbox', 'link' => 'applicants.php', 'text' => 'Applicants'));
 ?>
 				<div class="row" id="navbar-theme">
 					<nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -17,7 +17,7 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="../profile/profile.php"><span class="glyphicon glyphicon-user"></span> <?= $professor->getFILName() ?></a>
+								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $professor->getFILName() ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
@@ -28,12 +28,12 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 		if (isset($header_active) && $header_active == $key) {
 			$atext = ' class="active"';
 		}
-		echo "<li$atext><a href=\"../$item[link]/$item[link].php\"><span class=\"glyphicon glyphicon-$item[icon]\"></span> $item[text]</a></li>";
+		echo "<li$atext><a href=\"$item[link]\"><span class=\"glyphicon glyphicon-$item[icon]\"></span> $item[text]</a></li>";
 	}
 ?>
 								</ul> <!-- End navbar unordered list -->								
 								<ul class="nav navbar-nav navbar-right">
-									<li><a href="/TARS/logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
 								
 							</div> <!-- End navbar-collapse collapse -->        
@@ -57,7 +57,7 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav navbar-right">
-									<li><a href="/TARS/logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 								</ul> <!-- End navbar unordered list -->
 								
 							</div> <!-- End navbar-collapse collapse -->        

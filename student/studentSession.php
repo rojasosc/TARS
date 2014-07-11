@@ -1,11 +1,16 @@
 <?php
 <<<<<<< HEAD
+<<<<<<< HEAD
 require_once '../db.php';
 require_once '../session.php';
 =======
 require_once '/TARS/db.php';
 require_once '/TARS/session.php';
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring
+=======
+require_once '../../db.php';
+require_once '../../session.php';
+>>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory
 
 $error = null;
 $success = session_start();

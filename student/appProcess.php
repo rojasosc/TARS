@@ -5,9 +5,14 @@ require_once '../formInput.php';
 require_once '../error.php';
 =======
 require_once '../studentSession.php';
+<<<<<<< HEAD:student/appProcess.php
 require_once '/TARS/formInput.php';
 require_once '/TARS/error.php';
 >>>>>>> parent of 39b2bbb... bug fixes to files in directory refactoring:student/search/appProcess.php
+=======
+require_once '../../formInput.php';
+require_once '../../error.php';
+>>>>>>> parent of f6dab39... refactored professor directory, tweaked student directory:student/search/appProcess.php
 
 $form_args = get_form_values(array(
 	'positionID','compensation','qualifications'));

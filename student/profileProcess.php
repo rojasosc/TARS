@@ -1,9 +1,9 @@
 <?php
 
 require_once 'studentSession.php';
-require_once '/TARS/db.php';
-require_once '/TARS/formInput.php';
-require_once '/TARS/error.php';
+require_once '../db.php';
+require_once '../formInput.php';
+require_once '../error.php';
 
 $error = null;
 /*

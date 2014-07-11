@@ -4,7 +4,7 @@
 // TODO: session check x6
 
 	if(isset($_POST['action'])){
-		require_once '/TARS/db.php';
+		require_once '../db.php';
 		$action = $_POST['action'];
 		switch($action){
 			case 'fetchProfessor': 

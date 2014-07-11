@@ -1,8 +1,8 @@
 <?php
 require_once '../studentSession.php';
-require_once '../../db.php';
-require_once '../../formInput.php';
-require_once '../../error.php';
+require_once '/TARS/db.php';
+require_once '/TARS/formInput.php';
+require_once '/TARS/error.php';
 
 $form_args = get_form_values(array('positionID'));
 

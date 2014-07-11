@@ -1,5 +1,5 @@
 <?php
-require_once 'professorSession.php';
+require_once '../professorSession.php';
 
 $term = null;
 $pendingApps = 0;
@@ -24,17 +24,17 @@ if ($error != null) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<title>Home</title>		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="professor.css" rel="stylesheet">
+		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script src="/TARS/js/bootstrap.min.js"></script>
 	</head> 
 	<body>
 		<div id="page-wrapper">
 <?php
 // Display header for Home
 $header_active = 'home';
-require 'header.php';
+require '../header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -50,7 +50,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<h2>Welcome Professor <?= $professor->getLastName() ?>!</h2>
 							
 							<h3>Notifications</h3> 
-							<p> You have <?= $pendingApps ?> <a href="applicants.php" >applications</a> pending!</p> 
+							<p> You have <?= $pendingApps ?> <a href="../applicants/applicants.php" >applications</a> pending!</p> 
 							
 							<h3>Announcements</h3>
 							<p>Remember to submit feedback for your assistants by (date).</p>

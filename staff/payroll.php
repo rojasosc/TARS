@@ -103,12 +103,12 @@ foreach ($terms as $term) {
 									foreach($assistants as $assistant){
 										$student = $assistant->getCreator();
 										$position = $assistant->getPosition();
-										$course = $position->getCourse();
+										$section = $position->getSection();
 									
 									?>
 									
 									<tr>
-										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $course->getCRN() ?></td><td><?= $position->getPositionType() ?></td><td><?= $student->getClassYear() ?></td>
+										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $section->getCourseName() ?></td><td><?= $position->getPositionType() ?></td><td><?= $student->getClassYear() ?></td>
 										<td><?= $assistant->getCompensation() ?></td>
 									</tr>
 									<?php

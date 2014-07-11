@@ -1,5 +1,5 @@
 <?php  
-require_once '../../staffSession.php';
+require_once 'staffSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -11,9 +11,9 @@ require_once '../../staffSession.php';
 		
 		<title>Manage Assistants</title>
 		
-		<link href="../../../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../../staff.css" rel="stylesheet">
-		<script src="../../../js/bootstrap.min.js"></script>
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="staff.css" rel="stylesheet">
+		<script src="../js/bootstrap.min.js"></script>
 
 	</head>
 	<body>
@@ -23,7 +23,7 @@ require_once '../../staffSession.php';
 <?php
 // Display header for Manage
 $header_active = 'manage';
-require '../../header.php';
+require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">

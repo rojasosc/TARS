@@ -1,5 +1,5 @@
 <?php
-	require_once '/TARS/db.php';
+	require_once '../db.php';
 	
 	
 	/* Retrieve results based on the user's query */

@@ -6,7 +6,7 @@
 	/* Check if an action has been specified, otherwise
 	exit. */
 	if(isset($_POST['action'])){
-		require_once '/TARS/db.php';
+		require_once '../db.php';
 		$action = $_POST['action'];
 		switch($action){
 			case 'createProfessor' : 

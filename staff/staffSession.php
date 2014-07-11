@@ -1,6 +1,6 @@
 <?php
-require_once '../../db.php';
-require_once '../../session.php';
+require_once '../db.php';
+require_once '../session.php';
 
 $error = null;
 $success = session_start();

@@ -22,12 +22,12 @@ if ($error == null) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<title>My Assistants</title>		
-		<link href="/TARS/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../../css/bootstrap.min.css" rel="stylesheet">
 		<link href="../professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="/TARS/js/bootstrap.min.js"></script>
+		<script src="../../js/bootstrap.min.js"></script>
 		<script src="../comments.js"></script>
-		<script src="/TARS/js/tars_utilities.js"></script>
+		<script src="../../js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->

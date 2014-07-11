@@ -1,5 +1,5 @@
 <?php
-require_once 'staffSession.php';
+require_once '../../staffSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -11,12 +11,12 @@ require_once 'staffSession.php';
 		
 		<title>Edit Term</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../../../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../../staff.css" rel="stylesheet">
 		<link href="editTermUI.css" rel="stylesheet">
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script src="../../../js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -25,7 +25,7 @@ require_once 'staffSession.php';
 <?php
 // Display header for Manage
 $header_active = 'manage';
-require 'header.php';
+require '../../header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -122,6 +122,5 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

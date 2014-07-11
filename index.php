@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
 				header('Location: student/home/home.php');
 				exit;
 			} elseif ($type == PROFESSOR) {
-				header('Location: professor/professor.php');
+				header('Location: professor/home/home.php');
 				exit;
 			} elseif ($type == STAFF) {
 				header('Location: staff/staff.php');

@@ -1,5 +1,5 @@
 <?php
-require_once 'staffSession.php';
+require_once '../../staffSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -11,15 +11,14 @@ require_once 'staffSession.php';
 		
 		<title>Create Account</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../../../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../../staff.css" rel="stylesheet">
 		<!--<link href="newTerm.css" rel="stylesheet">-->
-		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
+		<link rel="stylesheet" href="/TARS/bootstrapValidator.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
+		<script src="../../../js/bootstrap.min.js"></script>
+		<script rel="text/javascript" src="/TARS/bootstrapValidator.min.js"></script>
 		<script src="createProfessor.js"></script>
-		<script src="dropdowns.js"></script>
 
 	</head>
 	<body>
@@ -29,7 +28,7 @@ require_once 'staffSession.php';
 <?php
 // Display header for Manage
 $header_active = 'manage';
-require 'header.php';
+require '../../header.php';
 ?>
 
 			<!-- BEGIN Page Content -->

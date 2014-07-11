@@ -1,5 +1,5 @@
 <?php  
-require_once 'staffSession.php';
+require_once '../staffSession.php';
 
 $term = null;
 $totalUnverified = 0;
@@ -26,10 +26,10 @@ if ($error == null) {
 		
 		<title>Home</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script src="../../js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -38,7 +38,7 @@ if ($error == null) {
 <?php
 // Display header for Home
 $header_active = 'home';
-require 'header.php';
+require '../header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -52,7 +52,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="jumbotron">
 						<h2 class="welcome">Welcome <?= $staff->getFirstName() ?>!</h2>					
 						<h3><span class="glyphicon glyphicon-warning-sign"></span> Notifications</h3> 
-							<p>You have <?= $totalUnverified ?> <a href="reviewStudents.php">students</a> that need to be verified.</p>
+							<p>You have <?= $totalUnverified ?> <a href="../manage/students/reviewStudents.php">students</a> that need to be verified.</p>
 							<p>(name) has dropped out of his assistantship.</p>
 							<p>(name) has replaced (name) in (course) as a (type).</p>
 					</div> <!-- End jumbotron -->
@@ -69,6 +69,5 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

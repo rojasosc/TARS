@@ -216,6 +216,11 @@ table th{
 	color: black;
 }
 
+.dropdown-header{
+	font-weight: bold;
+	font-color: black;
+}
+
 /*
  * Everything below is NavBar coloring
  */

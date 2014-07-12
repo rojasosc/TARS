@@ -52,14 +52,16 @@ if ($error == null) {
 		<title>TARS</title>
 		
 		<!-- BEGIN CSS -->
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
-		<link href="search.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="student.css" rel="stylesheet">
+		<link type="text/css" href="search.css" rel="stylesheet">
 		<!-- END CSS -->
 		
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="search.js"></script>
 		<!-- END Scripts -->
 	</head>
@@ -139,7 +141,7 @@ if ($error == null) {
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
 									<label for="compensation">Compensation</label>
-									<select name="compensation" class="form-control" id="compensation">
+									<select name="compensation" class="selectpicker form-control" id="compensation">
 										<option value="pay">Pay</option>
 										<option value="credit">Credit</option>
 									</select>
@@ -195,7 +197,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="term">Term</label>
-										<select class="form-control" id="term" name="term">
+										<select class="selectpicker form-control" id="term" name="term">
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
@@ -207,7 +209,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="type">Type</label>
-										<select id="type" name="type" class="form-control">
+										<select id="type" name="type" class="selectpicker form-control">
 										<?php
 										foreach ($positionTypes as $index => $type_opt) {
 										?>

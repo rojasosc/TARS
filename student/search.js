@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	$('select').selectpicker();
+
 	//Hehlper Variables
     var positionID;
     var studentID;

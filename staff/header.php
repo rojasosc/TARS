@@ -22,17 +22,16 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 									<li class="dropdown <?php if ($header_active == 'manage') { echo ' active'; } ?>">
 										<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage<b class="caret"></b></a>
 										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-											<li role="presentation" class="dropdown-header">Terms</li>
-												<li><a href="newTerm.php">New Term</a></li>
-												<li><a href="editTerm.php">Edit Term</a></li>
+											<li role="presentation" class="dropdown-header">New</li>
+												<li><a href="newTerm.php">Term</a></li>
+												<li><a href="createProfessor.php">Professor</a></li>
 											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Professors</li>
-												<li><a href="createProfessor.php">New Account</a></li>
-												<li><a href="editProfessor.php">Edit Account</a></li>											
+											<li role="presentation" class="dropdown-header">Edit</li>
+												<li><a href="editTerm.php">Term</a></li>
+												<li><a href="editUsers.php">User</a></li>											
 											<li role="presentation" class="divider"></li>
-											<li role="presentation" class="dropdown-header">Students</li>
-												<li><a href="reviewStudents.php">Review Students</a></li>	
-												<li><a href="editStudent.php">Edit Account</a></li>																				  
+											<li role="presentation" class="dropdown-header">Review</li>
+												<li><a href="reviewStudents.php">Applications</a></li>																				  
 										</ul>
 									</li> <!-- End dropdown list item -->
 									<li<?php if ($header_active == 'payroll') { echo ' class="active"'; } ?>><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>

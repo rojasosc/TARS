@@ -1,5 +1,13 @@
 <?php  
-require_once 'staffSession.php';
+require_once '../session.php';
+
+$error = null;
+$staff = null;
+try {
+	$staff = Session::start(STAFF);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 ?>
 
 <!DOCTYPE html>

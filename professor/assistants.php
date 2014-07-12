@@ -1,5 +1,13 @@
 <?php
-require_once 'professorSession.php';	
+require_once '../session.php';
+
+$error = null;
+$professor = null;
+try {
+	$professor = Session::start(PROFESSOR);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 
 $term = null;
 $sections = array();

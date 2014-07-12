@@ -1,6 +1,15 @@
 <?php
-require_once 'professorSession.php';
-if ($professor) {
+require_once '../session.php';
+
+$error = null;
+$professor = null;
+try {
+	$professor = Session::start(PROFESSOR);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
+
+if ($professor != null) {
 	$office = $professor->getOffice();
 }
 ?>

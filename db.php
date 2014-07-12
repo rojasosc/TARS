@@ -615,6 +615,29 @@ final class Professor extends User {
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Section($row); }, $rows);
 	}
+	public function getSectionsByCourseID($courseID){
+		$sql = 'SELECT * FROM Sections
+				INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID
+				WHERE Teaches.professorID = :prof_id
+				AND Courses.courseID = :courseID
+				ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC';
+		$args = array(':prof_id' => $this->id, ':courseID' => $courseID);
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return new Section($row); }, $rows);		
+	}
+
+	public function getCourses(){
+		$sql = "SELECT DISTINCT Courses.courseID, Courses.department, Courses.courseNumber, Courses.courseTitle \n"
+		    . "FROM Courses,Sections,Teaches\n"
+		    . "WHERE Teaches.sectionID = Sections.sectionID \n"
+		    . "AND Courses.courseID = Sections.courseID\n"
+		    . "AND Teaches.professorID = :professorID";
+		$args = array(':professorID' => $this->id);
+		$rows = Database::executeGetAllRows($sql,$args);
+		return $rows;
+
+	}	
 
 
 	public function getOffice() {
@@ -647,6 +670,20 @@ final class Staff extends User {
 				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
 		Database::executeInsert($sql, $args);
 		return $userID;
+	}
+
+	public function updateProfile($firstName, $lastName, $officePhone) {
+		$sql = 'UPDATE Staff
+				INNER JOIN Users ON Users.userID = Professors.userID
+				SET firstName = :firstName, lastName = :lastName,
+					officePhone = :officePhone
+				WHERE Users.userID = :id';
+		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
+				':officePhone' => $officePhone);
+		Database::execute($sql, $args);
+
+		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
+			'profile data.', $this->id);
 	}
 
 	public function __construct($user_row, $staff_row) {
@@ -873,6 +910,20 @@ final class Application {
 		//print_r($args);
 		//exit($sql);
 		return array($sql, $args);
+	}
+
+	public static function getApplicationsByCourseID($courseID, $professor){
+		$sql = "Select Applications.appID\n"
+    . "From Applications, Sections, Teaches, Positions\n"
+    . "WHERE Applications.appStatus = 0 \n"
+    . "AND Applications.positionID = Positions.positionID\n"
+    . "AND Positions.sectionID = Sections.sectionID\n"
+    . "AND Sections.courseID = :courseID\n"
+    . "AND Teaches.sectionID = Sections.sectionID\n"
+    . "AND Teaches.professorID = :professorID";
+    	$args = array('courseID' => $courseID, 'professorID' => $professor->getID());
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return Application::getApplicationByID($row['appID']); }, $rows);
 	}
 
 	/**

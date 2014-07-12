@@ -19,7 +19,7 @@ require_once 'staffSession.php';
 		<script src="../js/bootstrap.min.js"></script>
 		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
 		<script src="createProfessor.js"></script>
-		<script src="dropdowns.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 
 	</head>
 	<body>

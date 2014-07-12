@@ -17,7 +17,7 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $professor->getFILName() ?></a>
+								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $professor->getFILName() ?></a>
 							</div> <!-- End navbar-header -->					
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">

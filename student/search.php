@@ -70,6 +70,7 @@ if ($error == null) {
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 		<script type="text/javascript" src="search.js"></script>
 		<!-- END Scripts -->
 	</head>
@@ -144,7 +145,7 @@ if ($error == null) {
 					<div class="modal-body">
 						<div id="jobDetails">
 						</div>
-						<form role="form" method="post" id="application" action="appProcess.php">
+						<form role="form" method="post" id="application" action="#">
 							<div class="row" id="appAlertHolder"></div>
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">

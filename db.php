@@ -205,6 +205,9 @@ final class Place {
 		$sql = 'SELECT * FROM Places WHERE placeID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Place($row);
 	}
 	/*
@@ -217,6 +220,9 @@ final class Place {
 		$sql = 'SELECT * FROM Places WHERE building = :building AND room = :room';
 		$args = array(':building' => $building, ':room' => $room);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Place($row);
 	}
 	/*
@@ -286,12 +292,10 @@ abstract class User {
 			$args[':type'] = $check_type;
 		}
 		$user_row = Database::executeGetRow($sql, $args);
-
-		if ($user_row) {
-			return User::getUserSubclassObject($user_row);
-		} else {
+		if ($user_row == null) {
 			return null;
 		}
+		return User::getUserSubclassObject($user_row);
 	}
 
 	/**
@@ -491,16 +495,19 @@ final class Student extends User {
 		return Application::getApplications(null, null, $term, $status);
 	}
 	
-
-	public function apply($positionID, $compensation, $qualifications) {
-		$applicationID = Application::insertApplication($positionID, $compensation,
+	// TODO move this to Position object
+	// TODO create notification
+	public function apply($position, $compensation, $qualifications) {
+		$applicationID = Application::insertApplication($position, $compensation,
 			$qualifications, PENDING, $this->id, time());
 		Event::insertEvent(Event::STUDENT_APPLY, $this->getName().' applied to a position. '.
 			'Application object created.', $applicationID);
 	}
-	
-	public function withdraw($positionID){
-		Application::setPositionStatus($this->id, $positionID, WITHDRAWN);
+
+	// TODO move this to Position object
+	// TODO create notification
+	public function withdraw($position){
+		Application::setPositionStatus($this->id, $position, WITHDRAWN);
 		Event::insertEvent(Event::STUDENT_WITHDRAW, $this->getName().' withdrew an application. '.
 			'Application object updated.', null);
 	}
@@ -712,6 +719,9 @@ final class Position {
 				INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
 				WHERE positionID = :id';
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Position($row);
 	}
 
@@ -861,6 +871,9 @@ final class Application {
 		$sql = 'SELECT * FROM Applications WHERE appID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Application($row);
 	}
 
@@ -961,22 +974,22 @@ final class Application {
 		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
 
-	public static function insertApplication($positionID, $comp, $qual, $status, $creatorID, $createTime) {
+	public static function insertApplication($position, $comp, $qual, $status, $creatorID, $createTime) {
 		$sql = 'INSERT INTO Applications
 				(positionID, compensation, appStatus, qualifications, creatorID, createTime) VALUES
 				(:position, :comp, :status, :qual, :creator, :createTime)';
-		$args = array(':position' => $positionID, ':comp' => $comp, ':status' => $status,
+		$args = array(':position' => $position->getID(), ':comp' => $comp, ':status' => $status,
 			':qual' => $qual, ':creator' => $creatorID,
 			':createTime' => date('Y-m-d H:i:s', $createTime));
 		return Database::executeInsert($sql, $args);
 	}
 
-	public static function setPositionStatus($studentID, $positionID, $status) {
+	public static function setPositionStatus($studentID, $position, $status) {
 		$sql = 'UPDATE Applications
 				SET appStatus = :status
 				WHERE creatorID = :student_id AND positionID = :position_id';
 		$args = array(':status' => $status,	':student_id' => $studentID,
-			':position_id' => $positionID);
+			':position_id' => $position->getID());
 		Database::execute($sql, $args);
 	}
 
@@ -1035,6 +1048,9 @@ final class Term {
 				WHERE termID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Term($row);
 	}
 
@@ -1333,6 +1349,9 @@ final class Comment {
 		$sql = "SELECT * FROM Comments WHERE commentID = :commentID";
 		$args = array('commentID' => $commentID);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Comment($row);
 	}
 	
@@ -1387,6 +1406,9 @@ final class SectionSession {
 				WHERE sessionID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new SectionSession($row);
 	}
 
@@ -1472,6 +1494,9 @@ final class Section {
 				WHERE sectionID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Section($row);
 	}
 

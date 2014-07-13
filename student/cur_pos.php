@@ -39,13 +39,14 @@ if ($error == null) { //Error checking
 		
 		<title>TARS</title>
 		<!-- BEGIN CSS -->
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
-		<link href="cur_pos.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="student.css" rel="stylesheet">
+		<link type="text/css" href="cur_pos.css" rel="stylesheet">
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 		<script type="text/javascript" src="cur_pos.js"></script>
 		<!-- END Scripts -->
 		
@@ -65,7 +66,8 @@ if ($error == null) { //Error checking
 					<!-- BEGIN Modal Body -->
 					<div class="modal-body">
 						<!-- BEGIN Release Form -->
-						<form action="withdraw.php" method="post" id="releaseForm">
+						<form action="#" method="post" id="releaseForm">
+							<div class="row" id="relAlertHolder"></div>
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-10 col-xs-offset-1">
@@ -109,7 +111,8 @@ if ($error == null) { //Error checking
 					<!-- BEGIN Modal Body -->
 					<div class="modal-body">
 						<!-- BEGIN Withdraw Form -->
-						<form action="withdraw.php" method="post" id="withdrawForm">
+						<form action="#" method="post" id="withdrawForm">
+							<div class="row" id="wAlertHolder"></div>
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-10 col-xs-offset-1">

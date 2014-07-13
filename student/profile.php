@@ -23,15 +23,18 @@ try {
 		
 		<title>TARS</title>
 		<!-- BEGIN CSS -->
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="../bootstrapValidator.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
-		<link href="profile.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap-validator.min.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
+		<link type="text/css" href="student.css" rel="stylesheet">
+		<link type="text/css" href="profile.css" rel="stylesheet">
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../bootstrapValidator.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-validator.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 		<script type="text/javascript" src="profile.js"></script>
 		<!-- END Scripts -->
 		
@@ -62,6 +65,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="panel-body">
 						<div class="container-fluid display-area">
 							<form role="form" action="profileProcess.php" method="post" id="profile">
+								<div class="row" id="alertHolder"></div>
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">
@@ -86,7 +90,10 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="mobilePhone">Mobile Phone</label>
-											<input class="form-control" type="text" id="mobilePhone" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" />
+											<div class="input-group">
+												<span class="input-group-addon">+1</span>
+												<input class="form-control" type="tel" id="mobilePhone" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" maxlength="14" />
+											</div>
 										</div>
 									</div>
 								</div>
@@ -108,13 +115,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="gpa">Cumulative GPA</label>
-											<input class="form-control" type="text" id="gpa" name="gpa" size="30" value="<?=$student->getGPA()?>" />
+											<input class="form-control" type="text" id="gpa" name="gpa" size="30" value="<?=$student->getGPA()?>" maxlength="5" />
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="universityID">University Student ID</label>
-											<input class="form-control" type="text" id="universityID" name="universityID" size="30" value="<?=$student->getUniversityID()?>" />
+											<input class="form-control" type="text" id="universityID" name="universityID" size="30" value="<?=$student->getUniversityID()?>" maxlength="8" />
 										</div>
 									</div>
 								</div>

@@ -135,6 +135,28 @@ $(document).ready(function() {
 
 });
 
+function doAction(action, params) {
+	if (params instanceof Array) {
+		params.push({name: 'action', value: action});
+	} else {
+		params.action = action;
+	}
+	// return the Deferred so that code can .done() and .fail() it
+	return $.ajax({
+		type: 'POST',
+		url: actionsUrl,
+		data: params,
+		dataType: 'json'
+	});
+}
+
+function showError(errorObj, element) {
+	if (!('title' in errorObj)) { 
+		errorObj.title = 'An error occured';
+	}
+	element.html('<div class="alert alert-danger"><strong>' + errorObj.title + '!</strong> ' + errorObj.message + '</div>');
+}
+
 function submitDecision(){
 	var action = "setAppStatus";
 	var appID = $(this).parent().data( "applicationid" );

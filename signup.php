@@ -14,12 +14,14 @@ require_once 'db.php';
 		
 		<title>TARS Sign Up</title>
 
-		<link href="css/bootstrap.min.css" rel="stylesheet"/>
-		<link href="signup.css" rel="stylesheet"/>
-		<link rel="stylesheet" href="bootstrapValidator.min.css"/>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="bootstrapValidator.min.js"></script>
-		<script src="signup.js"></script>
+		<link type="text/css" href="css/bootstrap.min.css" rel="stylesheet"/>
+		<link type="text/css" rel="stylesheet" href="css/bootstrap-validator.min.css"/>
+		<link type="text/css" rel="stylesheet" href="css/bootstrap-select.min.css"/>
+		<link type="text/css" href="signup.css" rel="stylesheet"/>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-validator.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="signup.js"></script>
 
 	</head>
   

@@ -185,7 +185,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								$applications = array();
 								try {
 									/* applications for this particular section */
-									$applications = Application::getApplications($section, $professor, $term, PENDING);
+									$applications = Application::getApplications($section, $professor, $term, APPROVED);
 								} catch (PDOException $ex) {
 									$error = new TarsException(Event::SERVER_DBERROR,
 										Event::USER_GET_APPLICATIONS, $ex);
@@ -291,7 +291,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 																</a>
 																<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
 																	<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
-																	<li role="presentation"><a role="menuitem" tabindex="-1">Send Email</a></li>
+																	<li role="presentation"><a data-toggle="modal" role="menuitem" tabindex="-1" data-target="#emailModal">Send Email</a></li>
 																</ul>
 															</div>
 														</td>

@@ -165,8 +165,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<!-- Section description -->
 												<div class="col-xs-2">
-													<legend><?= ucfirst($section->getSectionType()) ?>
-														<small>
+													<legend><?= ucfirst($section->getSectionType()) ?></legend>	
+														
 															<?php
 																foreach($sessions as $session){
 																	$days = $session->getWeekDays();
@@ -175,15 +175,15 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 																	$room = $session->getPlaceRoom();
 																	$location = $building . " " . $room;
 																?>
-																	<p><?= $days . " " . $time ?></p>
+																	<p><small><?= $days . " " . $time ?></small></p>
 
 															<?php
 
 																}
 															?>
-															<p><?= $location ?></p>  
-														</small>
-													</legend>													
+															<p><small><?= $location ?></small></p> 
+														
+																									
 												</div> <!-- End column -->
 												<!-- Applications -->
 												<div class="col-xs-8">

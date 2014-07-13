@@ -14,6 +14,7 @@ if ($error == null) {
 		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
 	}
 }
+$courses = $professor->getCourses();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -152,7 +153,7 @@ if ($error == null) {
 $header_active = 'asst';
 require 'header.php';
 ?>
-			<!-- BEGIN Page Content -->
+			<!-- BEGIN page content -->s
 			<div id="content">
 <?php
 if ($error != null) {
@@ -163,127 +164,189 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 				<div class="row">
 					<h1 class="panelHeader">My Assistants</h1>
 				</div> <!-- End row -->			
-							
-				<!-- Course Panels -->
+				<div class="container">
 				<?php
-				/*Obtain positionIDS that are in the Assistantship table
-				and that match a particular CRN	
-				Pack these assistants into a panel... repeat.
-				 */
-				$tableEntry = 0;
-				foreach($sections as $section){
-					$assistants = array();
-					try {
-						/* assistants for this particular section */
-						$assistants = Application::getApplications($section, $professor, $term, APPROVED);
-					} catch (PDOException $ex) {
-						$error = new TarsException(Event::SERVER_DBERROR,
-							Event::USER_GET_POSITIONS, $ex);
-						echo $error->toHTML();
-					}
-					$asstCount = count($assistants);
-					if ($asstCount == 0) {
-						$asstCount = '';
-					}
-
-					/* create a new panel */ 
-					$panelID = "coursePanel" . $section->getID();
-				?>
-				
-				<div class="row">
-					<div class="container">					
+					foreach($courses as $course) {
+						$sections = $professor->getSectionsByCourseID($course['courseID']);
+						$applications = Application::getAssistantsByCourseID($course['courseID'],$professor);
+						$panelHeading = $course['department'] . " " . $course['courseNumber'] . " " . $course['courseTitle'];
+						$panelID = "course".$course['courseNumber'];
+						?>
 						<div class="panel panel-primary">
-						<div class="panel-heading" data-toggle="collapse" data-target="#<?=$panelID?>">
-							<h4 class="panel-title panelHeader"><?= $section->getCourseName() ?> <small><?=$section->getCourseTitle()?></small><span class="badge alert-success pull-left"><?=$asstCount?></span><span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
+							<div class="panel-heading" data-toggle="collapse" data-target="#<?= $panelID ?>">
+								<h4 class="panel-title panelHeader"><?= $panelHeading ?> <span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
 							</div> <!-- End panel-heading -->
-								<div class="collapse panel-collapse" id="<?= $panelID ?>">
-									<div class="panel-body">
-											<table class="table table-striped">
-												<thead>
+							<div class="collapse panel-collapse" id="<?= $panelID ?>">
+								<div class="panel-body">
+									
+						<?php
+							foreach($sections as $section){
+								$sessions = $section->getAllSessions();
+								$applications = array();
+								try {
+									/* applications for this particular section */
+									$applications = Application::getApplications($section, $professor, $term, PENDING);
+								} catch (PDOException $ex) {
+									$error = new TarsException(Event::SERVER_DBERROR,
+										Event::USER_GET_APPLICATIONS, $ex);
+									echo $error->toHTML();
+								}
+
+								/* create a new panel */ 
+								$panelID = "panelID" . $section->getID();
+
+								/*TODO: Get total positions of a particular type and course.
+								For instance, all the graders for CSC 172.*/
+
+								$positionTypes = Position::getAllPositionTypes(true);
+								$positionTotals = array();
+								foreach ($positionTypes as $typeID => $title) {
+									$data = array(
+										'typeID' => $typeID,
+										'title' => $title,
+										'total' => $section->getTotalPositionsByType(
+											$professor, $typeID),
+										'current' => $section->getCurrentPositionsByType(
+											$professor, $typeID));
+									if ($data['total'] > 0) {
+										$data['ratio'] = $data['current'] / $data['total']; 
+										if ($data['ratio'] == 1) {
+											$data['alert'] = 'success';
+										} elseif ($data['ratio'] == 0) {
+											$data['alert'] = 'danger';
+										} else {
+											$data['alert'] = 'warning';
+										}
+										$positionTotals[] = $data;
+									}
+								}
+
+								$appCount = count($applications);
+								if ($appCount == 0) {
+									$appCount = '';
+								} ?>
+											<div class="row">
+												<!-- Section description -->
+												<div class="col-xs-2">
+													<legend><?= ucfirst($section->getSectionType()) ?></legend>	
+														
+															<?php
+																foreach($sessions as $session){
+																	$days = $session->getWeekDays();
+																	$time = $session->getStartTime() . "-" . $session->getEndTime();
+																	$building = $session->getPlaceBuilding();
+																	$room = $session->getPlaceRoom();
+																	$location = $building . " " . $room;
+																?>
+																	<p><small><?= $days . " " . $time ?></small></p>
+
+															<?php
+
+																}
+															?>
+															<p><small><?= $location ?></small></p> 
+														
+																									
+												</div> <!-- End column -->
+												<!-- Applications -->
+												<div class="col-xs-10">
+														<?php
+															if(!$applications){
+														?>
+															<div class="alert alert-danger" role="alert">
+																<p>You have not yet approved any applications for this section.</p>
+															</div>
+															
+														<?php
+															}else{																
+
+														?>
+
+												<table class="table table-striped">
+													<thead>
+														<tr>
+															<th>Name</th>
+															<th>University ID</th>
+															<th>Email</th>
+															<th>Type</th>
+															<th>Profile</th>
+															<th>Reviews</th>
+														</tr>
+													</thead>
+													<?php
+
+													/* Insert each application */
+													foreach($applications as $application){
+														$student = $application->getCreator();
+														$position = $application->getPosition();
+														$profileID = "myProfile" . $student->getID();
+
+													?>
 													<tr>
-														<th>Name</th>
-														<th>University ID</th>
-														<th>Email</th>
-														<th>Type</th>
-														<th>Profile</th>
-														<th>Reviews</th>
-													</tr>
-												</thead>
-											<?php
-											
-											/* Insert each application */
-											foreach($assistants as $assistant){
-												$student = $assistant->getCreator();
-												$position = $assistant->getPosition();
-												$profileID = "myProfile" . $student->getID();
-												
-											?>
-											
-										<tr>
-											<td>
-												<div class="dropdown actions">
-													<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
-													<?= $student->getFirstName() . " " . $student->getLastName()?>
-													<span class="caret"></span>
-													</a>
-													<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
-														<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
-														<li role="presentation"><a role="menuitem" tabindex="-1">Send Email</a></li>
-													</ul>
-												</div>
-											</td>
-											<td>
-												<?= $student->getUniversityID() ?>
-											</td> 
-											<td>
-												<?= $student->getEmail() ?>
-											</td>
-											<td>
-												<?= $position->getTypeTitle() ?>
-											</td>
-											<td>
-												<button data-toggle="modal" data-target="#profile-modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
-													<span class="glyphicon glyphicon-file"></span>
-												</button>
-											</td>
-											<td>
-												<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
-													<span class="glyphicon glyphicon-comment"></span>
-												</button>
-											</td>
-										</tr>										
-											
-											<?php
-											/* Table entry closing brace */
-											$tableEntry++;
-											}
-											
-											?>
-											</table> <!-- End table -->
+														<td>
+															<div class="dropdown actions">
+																<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
+																<?= $student->getFirstName() . " " . $student->getLastName()?>
+																<span class="caret"></span>
+																</a>
+																<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
+																	<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
+																	<li role="presentation"><a role="menuitem" tabindex="-1">Send Email</a></li>
+																</ul>
+															</div>
+														</td>
+														<td>
+															<?= $student->getUniversityID() ?>
+														</td>
+														<td>
+															<?= $student->getEmail() ?>
+														</td> 
+														<td>
+															<?= $position->getTypeTitle() ?>
+														</td>
+														<td>
+															<button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
+																<span class="glyphicon glyphicon-user"></span>
+															</button>
+														</td>
+														<td>
+															<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
+																<span class="glyphicon glyphicon-comment"></span>
+															</button>
+														</td>
+													</tr> 												
+														
+														<?php
+														/* Table entry closing brace */
+														$tableEntry++;
+														}
 
-									</div> <!-- End panel-body -->									
-								</div> <!-- End collapse panel-collapse -->
-							<div class="panel-footer"><a type="button" data-toggle="modal" href="#emailModal" class="btn btn-default">
-								<span class="glyphicon glyphicon-envelope"></span> Send Email</a>
-							</div> <!-- End panel-footer -->								
+														?>
+												</table> <!-- End table -->														
+														<?php
+
+															}
+														?>
+
+												</div> <!-- End column -->
+											</div> <!-- End row -->
+											<hr>
+						<?php
+							}
+						?>
+									
+								</div> <!-- End panel-body -->
+							</div> <!-- End panel panel-collapse -->
+							<div class="panel-footer">
+							</div> <!-- End panel-footer -->
 						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->	
-				</div> <!-- End row -->
-				
-				<?php
-				
-				/* Course panels closing brace */
-				}
-				if (count($sections) == 0) {
-					echo '<div class="alert alert-info">There are no sections assigned to you this term.</div>';
-				}
-				
-				?>
 
-				<!-- END Course Panels -->
-<?php
-}
-?>
+				<?php	
+
+					}
+				}
+				?>
+			</div> <!-- End panel container -->
 			</div>
 			<!-- END Page Content --> 
 	    

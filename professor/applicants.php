@@ -149,12 +149,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										$data['ratio'] = $data['current'] / $data['total']; 
 										if ($data['ratio'] == 1) {
 											$data['alert'] = 'success';
-										} elseif ($data['ratio'] == 0) {
-											$data['alert'] = 'danger';
-										} else {
+										} 
+										elseif ($data['ratio'] > .66){
+											$data['alert'] = 'primary';
+										}
+										elseif ($data['ratio'] > .33) {
 											$data['alert'] = 'warning';
 										}
-										$positionTotals[] = $data;
+										$positionTotals[$data['title']] = $data;
 									}
 								}
 
@@ -219,6 +221,15 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 
 													?>
 													<tr>
+														<?php
+															if($positionTotals[$position->getTypeTitle()]['ratio'] == 1){
+														?>
+														<td>
+															<?= $student->getFirstName() . " " . $student->getLastName()?>
+														</td>
+														<?php		
+															}else{
+														?>
 														<td>
 															<div class="dropdown actions">
 																<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
@@ -232,6 +243,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 																</ul>
 															</div>
 														</td>
+														<?php		
+															}
+														?>
 														<td>
 															<?= $student->getUniversityID() ?>
 														</td> 
@@ -265,7 +279,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												</div> <!-- End column -->
 												<!-- Progress --> 
 												<div class="col-xs-2">
-													<div class="panel-footer">
+													<div class="footer">
 														<div class="row">
 						<?php
 											$totalsColumnWidth = 12;
@@ -276,11 +290,34 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											foreach ($positionTotals as $totalBar) {
 						?>
 															<div class="col-xs-<?=$totalsColumnWidth?>">
-																<strong><?=$totalBar['title']?>s</strong>
-																<div class="progress progress-striped active">
-																	<div class="progress-bar progress-bar-<?= $totalBar['alert'] ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $totalBar['ratio'] * 100 ?>%">
-																	</div> <!-- End progress-bar progress-bar-danger -->
-																</div> <!-- End progress-bar -->												
+																<?php
+																	if($totalBar['current']){
+																	?>
+																		<strong>
+																			<?=$totalBar['title']?>s
+																			<?php
+																				if($totalBar['ratio'] == 1){
+																			?>
+																				<span class="glyphicon glyphicon-ok"></span>
+																			<?php		
+																				}
+																			?>
+																		</strong> 
+																		<div class="progress progress-striped active">
+																			<div class="progress-bar progress-bar-<?= $totalBar['alert'] ?>"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: <?= $totalBar['ratio'] * 100 ?>%">
+																				<?= $totalBar['current']."/".$totalBar['total'] ?> 
+																			</div> <!-- End progress-bar progress-bar-danger -->
+																			</div> <!-- End progress-bar -->	
+																<?php																				
+																	}else{
+
+																?>
+																		<div class="alert alert-danger" role="alert">
+																			All <strong><?= $totalBar['title']?></strong> Positions are unfilled!
+																		</div>
+																<?php
+																	}
+																?>											
 															</div> <!-- End column -->
 						<?php
 											}

@@ -926,6 +926,20 @@ final class Application {
 		return array_map(function ($row) { return Application::getApplicationByID($row['appID']); }, $rows);
 	}
 
+	public static function getAssistantsByCourseID($courseID, $professor){
+		$sql = "Select Applications.appID\n"
+    . "From Applications, Sections, Teaches, Positions\n"
+    . "WHERE Applications.appStatus = 3 \n"
+    . "AND Applications.positionID = Positions.positionID\n"
+    . "AND Positions.sectionID = Sections.sectionID\n"
+    . "AND Sections.courseID = :courseID\n"
+    . "AND Teaches.sectionID = Sections.sectionID\n"
+    . "AND Teaches.professorID = :professorID";
+    	$args = array('courseID' => $courseID, 'professorID' => $professor->getID());
+		$rows = Database::executeGetAllRows($sql, $args);
+		return array_map(function ($row) { return Application::getApplicationByID($row['appID']); }, $rows);
+	}	
+
 	/**
 	 * General purpose function to get application object count.
 	 *

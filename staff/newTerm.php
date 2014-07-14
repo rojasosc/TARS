@@ -19,12 +19,15 @@ try {
 		
 		<title>New Term</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script src="fileinput.js"></script>
-		<script src="newTerm.js"></script>
+		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
+		<link type="text/css" href="staff.css" rel="stylesheet">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-fileinput.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-select.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
+		<script type="text/javascript" src="newTerm.js"></script>
 		
 	</head>
 	<body>
@@ -71,7 +74,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="col-md-2">
 												<div class="form-group">
 													<label class="control-label" for="termSemester">Term Semester</label>
-													<select id="termSemester" name="termSemester" class="form-control">
+													<select id="termSemester" name="termSemester" class="selectpicker form-control">
 <?php
 $termSemesters = Term::getAllTermSemesters();
 foreach ($termSemesters as $termSemester) {

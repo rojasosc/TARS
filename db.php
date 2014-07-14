@@ -1477,7 +1477,7 @@ final class Section {
 
 	// TODO: outdated
 	public static function getAllSections() {
-		$sql = "Select * from Sections group by sectionTitle";
+		$sql = "Select * from Sections";
 		$args = array();
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows; 

@@ -108,9 +108,11 @@ require 'header.php';
 if ($error != null) {
 	echo $error->toHTML();
 }
-if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				</div>
+<?php
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="row">
 					<h1 class="panelHeader">My Applicants</h1>
 				</div> <!-- End row -->			

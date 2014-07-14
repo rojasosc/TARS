@@ -52,10 +52,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="panel panel-primary">
@@ -65,7 +69,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="panel-body">
 						<div class="container-fluid display-area">
 							<form role="form" action="profileProcess.php" method="post" id="profile">
-								<div class="row" id="alertHolder"></div>
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">

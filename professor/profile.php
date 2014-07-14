@@ -170,12 +170,14 @@ require 'header.php';
 			<div id="content">
 				<div id="alertHolder">
 <?php
-// only possible error is SESSION_CONTINUE
 if ($error != null) {
 	echo $error->toHTML();
-} else {
+}
 ?>
 				</div>
+<?php
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="container">				
 					<div class="row">
 						<h1 class="panelHeader">My Profile</h1>

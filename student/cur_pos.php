@@ -145,10 +145,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<!-- BEGIN Current Positions Table -->

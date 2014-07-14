@@ -153,10 +153,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="panel panel-primary">
@@ -170,7 +174,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							?>
 									<div class="row">
 										<div class="col-xs-6">
-											<div class="alert alert-danger" role="alert">
+											<div class="alert alert-info" role="alert">
 												<p>There are currently no available applications for this term.</p>
 											</div>											
 										</div> <!-- End column -->

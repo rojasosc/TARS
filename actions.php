@@ -408,6 +408,23 @@ if (isset($_REQUEST['action'])) {
 				} else {
 					return $params;
 				}
+			}),
+		'newStudentComment' => array('event' => Event::NONSTUDENT_COMMENT,
+			'fn' => function ($user) {
+				if ($user->getObjectType() == STUDENT) {
+					return 'Permission denied';
+				}
+				$params = params(array('studentID', 'comment'));
+				if (is_array($params)) {
+					$student = User::getUserByID($params['studentID'], STUDENT);
+					if ($student == null) {
+						return 'Student not found';
+					} else {
+						$student->saveComment($params['comment'], $user, time());
+					}
+				} else {
+					return $params;
+				}
 			}));
 
 	// start of action-handling code

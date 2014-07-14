@@ -1434,6 +1434,7 @@ final class Comment {
 		$this->id = $row['commentID'];
 		$this->commentText = $row['commentText'];
 		$this->studentID = $row['studentID'];
+		$this->student = null;
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
 		$this->createTime = strtotime($row['createTime']);
@@ -1441,7 +1442,12 @@ final class Comment {
 	
 	public function getID(){ return $this->id; }
 	public function getComment(){ return $this->commentText; }
-	public function getStudentID(){ return $this->studentID; }
+	public function getStudent(){
+		if ($this->student == null) {
+			$this->student = User::getUserByID($this->studentID, STUDENT);
+		}
+		return $this->student;
+	}
 	public function getCreator() {
 		if ($this->creator == null) {
 			$this->creator = User::getUserByID($this->creatorID);
@@ -1463,6 +1469,7 @@ final class Comment {
 	private $id;
 	private $commentText;
 	private $studentID;
+	private $student;
 	private $creatorID;
 	private $creator;
 	private $createTime;

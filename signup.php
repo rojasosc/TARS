@@ -1,6 +1,6 @@
 <?php
 
-require('db.php');
+require_once 'db.php';
 
 
 ?>
@@ -12,7 +12,7 @@ require('db.php');
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>TARS</title>
+		<title>TARS Sign Up</title>
 
 		<link href="css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="signup.css" rel="stylesheet"/>
@@ -40,7 +40,8 @@ require('db.php');
 			<div id="content">
 				<div class="container">
 					<div class="jumbotron" id="formBox">
-						<h2>Sign Up</h2>
+						<h2>TARS Sign Up</h2>
+						<div class="row" id="alertHolder"></div>
 						<form action="process.php" class="form-horizontal" id="signupForm" method="post">
 							<!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
 							<input style="display:none" type="text" name="fakeusernameremembered"/>
@@ -49,13 +50,13 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="firstName">First Name</label>
-										<input type="text" class="form-control" name="firstName" placeholder="First Name" />
+										<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="firstName">Last Name</label>
-										<input type="text" class="form-control" name="lastName" placeholder="Last Name" />
+										<label class="control-label" for="lastName">Last Name</label>
+										<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -63,13 +64,13 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
-										<input type="email" class="form-control" name="email" data-bv-remote-name="email" placeholder="Email" />
+										<input type="email" class="form-control" id="email" name="email" data-bv-remote-name="email" placeholder="Email" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="emailConfirm">Re-type Email</label>
-										<input type="email" class="form-control" name="emailConfirm" autocomplete="off" placeholder="Confirm Email" />
+										<input type="email" class="form-control" id="emailConfirm" name="emailConfirm" autocomplete="off" placeholder="Confirm Email" />
 									</div> <!-- End form-group -->							
 								</div>							
 							</div> <!-- End row -->
@@ -77,13 +78,13 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="password">Password</label>
-										<input type="password" class="form-control" name="password" placeholder="Create Password" />
+										<input type="password" class="form-control" id="password" name="password" placeholder="Create Password" />
 									</div> <!-- End form-group -->							
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="passwordConfirm">Re-type Password</label>
-										<input type="password" class="form-control" name="passwordConfirm" autocomplete="off" placeholder="Confirm Password" />
+										<input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" autocomplete="off" placeholder="Confirm Password" />
 									</div> <!-- End form-group -->						
 								</div>							
 							</div> <!-- End row -->	
@@ -91,7 +92,10 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="mobilePhone">Mobile Phone</label>
-										<input type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone" />
+										<div class="input-group">
+											<span class="input-group-addon">+1</span>
+											<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="ex. 555 555 5555" maxlength="14" />
+										</div>
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
@@ -100,7 +104,7 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="classYear">Class Year</label>
-										<select name="classYear" class="form-control" placeholder="Class Year">
+										<select id="classYear" name="classYear" class="form-control" placeholder="Class Year">
 											<option>2014</option>
 											<option>2015</option>
 											<option>2016</option>
@@ -112,7 +116,7 @@ require('db.php');
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="major">Major</label>
-										<select name="major" class="form-control" placeholder="Major">
+										<select id="major" name="major" class="form-control" placeholder="Major">
 											<option>Accounting</option>
 											<option>Computer Science</option>
 											<option>Physics</option>
@@ -125,14 +129,14 @@ require('db.php');
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="GPA">GPA</label>
-										<input type="text" class="form-control" name="gpa" placeholder="GPA" />
+										<label class="control-label" for="gpa">Cumulative GPA</label>
+										<input type="text" class="form-control" id="gpa" name="gpa" placeholder="ex. 3.500" maxlength="5" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="universityID">University Student ID</label>
-										<input type="text" class="form-control" name="universityID" placeholder="University ID" />
+										<input type="text" class="form-control" id="universityID" name="universityID" placeholder="ex. 27400000" maxlength="8" />
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->								
 							</div> <!-- End row -->	
@@ -140,7 +144,11 @@ require('db.php');
 								<div class="col-md-8">
 									<div class="form-group">
 										<label class="control-label" for="aboutMe">Qualifications and TA-ing History</label>
+<<<<<<< HEAD
 										<textarea class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications." rows="8" cols="64"></textarea>
+=======
+										<textarea class="form-control" id="aboutMe" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications." rows="8" cols="64"></textarea>
+>>>>>>> origin/stage
 									</div> <!-- End form-group -->
 								</div> <!-- End row -->
 							</div> <!-- End row -->
@@ -161,25 +169,6 @@ require('db.php');
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-4">						
-							<ul id="contact-us">
-								<lh>Contact Us</lh>
-								<li> <br />
-									Oscar Rojas <br />
-									Email: orojas@u.rochester.edu <br />
-									Phone Number: 404-996-7988<br />
-								</li>
-								<li> <br />
-									Jinze An <br />
-									Email: jan2@u.rochester.edu <br />
-									Phone Number: 585-749-5590 <br />
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> <!-- End row -->
 			</div>
 			<!--END Page Footer -->
 	

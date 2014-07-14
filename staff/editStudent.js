@@ -5,15 +5,14 @@ $(document).ready(function() {
 	$updateForm = $('#updateForm');
 	$profileModal = $('#editProfileModal');
 	
-	preventRedirection();
+	//preventRedirection();
 	
 	
 	$noResults.hide();
 	$('#searchType').hide();
 	
 	/* Bind buttons */
-	$('#searchButton').click(findUsers);
-	$('#updateButton').click(updateUser);
+
 
 	/*TODO: Keep track of the users currently being displayed to avoid 
 	 *duplicate rows. As of now the table is recreated after every search.

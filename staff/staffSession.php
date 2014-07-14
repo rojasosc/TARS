@@ -1,21 +1,24 @@
 <?php
+require_once '../db.php';
+require_once '../session.php';
 
-	include('../db.php');
-	
-	session_start();
-	
-	if(!isset($_SESSION['auth'])){
-		header('Location: ../index.php');
-		exit;
-	} else {
-		$email = $_SESSION['email'];	//Extract the email from the session to fetch a staff object
-		$staff = User::getUserByEmail($email, STAFF);		//Fetch said staff object
-		if (!$staff) {
-			header('Location: ../index.php');
-			exit;
-		}
-		$fn = $staff->getFirstName();	//Fetch the first name
-		$ln = $staff->getLastName();		//Fetch the last name
-		$nameBrand = $fn[0].". ".$ln;		//Create a single variable to hold the brand at the far left of the navbar
+$error = null;
+$success = session_start();
+$staff = false;
+if (!$success) {
+	$error = new TarsException(Event::SERVER_EXCEPTION, Event::SESSION_CONTINUE,
+		new Exception('Session continue failed'));
+} else {
+	try {
+		$staff = Session::getLoggedInUser(STAFF);
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::SESSION_CONTINUE, $ex);
 	}
+}
+if (!$staff) {
+	if ($error == null) {
+		$error = new TarsException(Event::ERROR_PERMISSION, Event::SESSION_CONTINUE,
+			array('not staff'));
+	}
+}
 

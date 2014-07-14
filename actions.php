@@ -1,10 +1,4 @@
 <?php
-<<<<<<< HEAD
-	/* Check if an action has been specified, otherwise
-	exit. */
-	if(isset($_POST['action'])){
-		require('../db.php');
-=======
 
 // TODO: error handle x15
 // TODO: session check x15
@@ -12,8 +6,7 @@
 	/* Check if an action has been specified, otherwise
 	exit. */
 	if(isset($_POST['action'])){
-		require_once '../db.php';
->>>>>>> origin/stage
+		require_once 'db.php';
 		$action = $_POST['action'];
 		switch($action){
 			case 'createProfessor' : 
@@ -37,6 +30,15 @@
 			case 'fetchStudent':
 				fetchStudent();
 				break;
+			case 'setAppStatus':
+				setAppStatus();
+				break;
+			case 'fetchQualifications':
+				fetchQualifications();
+				break;
+			case 'fetchComments':
+				fetchComments();
+				break;
 			case 'newStudentComment':
 				newStudentComment();
 				break;	
@@ -58,27 +60,29 @@
 			case 'preparePayrollDownload':
 				preparePayrollDownload();
 				break;
-<<<<<<< HEAD
-=======
 			case 'uploadTerm':
 				uploadTerm();
 				break;
->>>>>>> origin/stage
 		}
 	}else{
 		/*TODO: Add error handling */
 		echo "action not specified";
 	}
 	
+	function setAppStatus(){
+		$appID = $_POST['appID'];
+		$decision = $_POST['decision'];
+		if($decision > 0){
+			$app = Application::getApplicationByID($appID);
+			Application::setApplicationStatus($app, $decision);
+		}
+	}
+
 	function createProfessor(){
 		$office = Place::getPlaceByBuildingAndRoom($_POST['building'],$_POST['room']);	
 		$officeID = $office->getPlaceID();
 		Professor::registerProfessor($_POST['email'], $_POST['password'], $_POST['firstName'], $_POST['lastName'],
-<<<<<<< HEAD
-			$officeID, $_POST['officePhone'], $_POST['mobilePhone']);
-=======
 			$officeID, $_POST['officePhone']);
->>>>>>> origin/stage
 			
 	}
 	
@@ -88,17 +92,13 @@
 		$room = $_POST['room'];
 		$office = Place::getPlaceByBuildingAndRoom($building, $room);
 		$officeID = $office->getPlaceID();
-<<<<<<< HEAD
-		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone'],$_POST['mobilePhone']);
-=======
 		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone']);
->>>>>>> origin/stage
 		
 	}
 	
 	function updateStudentProfile(){
 		$student = User::getUserByEmail($_POST['email'],STUDENT);
-		$student->updateProfile($_POST['firstName'],$_POST['lastName'],$_POST['mobilePhone'],$_POST['major'],$_POST['classYear'],$_POST['gpa'],$_POST['aboutMe']);
+		$student->updateProfile($_POST['firstName'],$_POST['lastName'],$_POST['mobilePhone'],$_POST['classYear'],$_POST['major'],$_POST['gpa'],$_POST['universityID'],$_POST['aboutMe']);
 		
 	}
 	
@@ -108,37 +108,38 @@
 	}
 	
 	function fetchProfessor(){
-		$user = User::getUserByID($_POST['userID']);
-		$professor = array();
-		if($user){
-			$firstName = $user->getFirstName();
-			$lastName = $user->getLastName();
-			$email = $user->getEmail();
-			$mobilePhone = $user->getMobilePhone();
-			$officePhone = $user->getOfficePhone();
-			
-			/*TODO: Need to fix the Professor::getOffice() to return a place object */
-			
-			$officeID = $user->getOfficeID();
-			$office = Place::getPlaceByID($officeID);
-<<<<<<< HEAD
-			$building = $office->getBuilding();
-			$room = $office->getRoom();
+		if(isset($_POST['userID'])){
+			$user = User::getUserByID($_POST['userID']);
+			$professor = array();
+			if($user){
+				$firstName = $user->getFirstName();
+				$lastName = $user->getLastName();
+				$email = $user->getEmail();
+				$officePhone = $user->getOfficePhone();			
+				$office = $user->getOffice();
 
-			/* Prepare to encode JSON object */
-			$professor = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,'officePhone' => $officePhone,'building' => $building,
-=======
-			$building = $offie->getBuildings();
-			$room = $office->getRoom();
-
-			/* Prepare to encode JSON object */
-			$professor = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'officePhone' => $officePhone,'building' => $building,
->>>>>>> origin/stage
-			'room' => $room);
-			echo json_encode($professor,true);
+				/* Prepare to encode JSON object */
+				$professor = [
+				'valid' => true,
+				'type' => PROFESSOR,
+				'firstName' => $firstName,
+				'lastName' => $lastName,
+				'email' => $email,
+				'officePhone' => $officePhone,
+					'office' => [
+						'building' => $office->getBuilding(),
+						'room' => $office->getRoom()
+						]
+					];
+				echo json_encode($professor,true);
+			}else{
+				$error = "User with ID: ".$userID." was not found.";
+				echo json_encode(array('valid' => false, 'error' => $error));
+			}
 		}else{
-			echo json_encode(false);
-		}	
+			$error = "userID POST variable is not set.";
+			echo json_encode(array('valid' => false, 'error' => $error));
+		}
 	
 	}
 	
@@ -153,43 +154,73 @@
 	}
 	
 	function fetchStudent(){
+		if(isset($_POST['userID'])){
+			$userID = $_POST['userID'];
+			$user = User::getUserByID($userID);
+			if($user){
+				$firstName = $user->getFirstName();
+				$lastName = $user->getLastName();
+				$email = $user->getEmail();
+				$mobilePhone = $user->getMobilePhone();
+				$classYear = $user->getClassYear();
+				$major = $user->getMajor();
+				$gpa = $user->getGPA();
+				$universityID = $user->getUniversityID();
+				$aboutMe = $user->getAboutMe();
+				/* Prepare to encode JSON object */
+				$student = array('valid' => true, 'type' => STUDENT,'firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
+				'classYear' => $classYear,'major' => $major,'gpa' => $gpa, 'universityID' => $universityID,'aboutMe' => $aboutMe);
+				echo json_encode($student,true);
+			}else{
+				$error = "User with ID: ".$userID." was not found.";
+				echo json_encode(array('valid' => false, 'error' => $error));
 
-		$user = User::getUserByID($_POST['userID']);
-		$student = array();
-		if($user){
-			$firstName = $user->getFirstName();
-			$lastName = $user->getLastName();
-			$email = $user->getEmail();
-			$mobilePhone = $user->getMobilePhone();
-			$classYear = $user->getClassYear();
-			$major = $user->getMajor();
-			$gpa = $user->getGPA();
-			$aboutMe = $user->getAboutMe();
-			
-<<<<<<< HEAD
-			/* Prepare to encode JSON object */
-			$student = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
-			'classYear' => $classYear,'major' => $major,'gpa' => $gpa,'aboutMe' => $aboutMe);
-=======
-			$staffComments = Feedback::getCommentsFromStaff($_POST['userID']);
-			$professorComments = Feedback::getCommentsFromProfessors($_POST['userID']);
-			/* Prepare to encode JSON object */
-			$student = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
-			'classYear' => $classYear,'major' => $major,'gpa' => $gpa,'aboutMe' => $aboutMe, 'staffComments' => $staffComments, 'professorComments' => $professorComments);
->>>>>>> origin/stage
-			echo json_encode($student,true);
+			}
 		}else{
-			echo json_encode(false);
-		}	
+			$error = "userID POST variable is not set.";
+			echo json_encode(array('valid' => false, 'error' => $error));
+			
+		}
+	}
+
+	function fetchQualifications(){
+		if(isset($_POST['appID'])){
+			$app = Application::getApplicationByID($_POST['appID']);
+			$qualifications = $app->getQualifications();
+			echo json_encode(array('valid' => true, 'qualifications' => $qualifications),true);
+		}else{
+			echo json_encode(array('valid' => false),true);
+		}
+	}
+
+	function fetchComments(){
+		$userID = $_POST['userID'];
+		$comments = Comment::getAllComments($userID);
+			if($comments){
+				$studentComments['size'] = count($comments);
+				foreach($comments as $comment){
+					$author = User::getUserByID($comment->getCreator()->getID());
+					$createTime = $comment->getCreateTime();
+					$commentText = $comment->getComment();
+					$commentHash = [
+						"author" => $author->getFirstName() ." ". $author->getLastName(),
+						"createTime" => $createTime,
+						"comment" => $commentText
+
+					];
+					$studentComments[] = $commentHash;					
+				}
+
+			}else{
+				$studentComments['size'] = 0;
+
+			}		
+		echo json_encode($studentComments,true);
 	}
 
 	function newStudentComment(){
-<<<<<<< HEAD
-		Feedback::newComment($_POST['studentID'],$_POST['commenterID'],$_POST['comment']);
-=======
 		$student = User::getUserByID($_POST['studentID'], STUDENT);
 		$student->saveComment($_POST['comment'], User::getUserByID($_POST['commenterID'], STAFF), time());
->>>>>>> origin/stage
 	}
 	
 	function fetchCourses(){
@@ -199,11 +230,7 @@
 	}
 	
 	function fetchBuildings(){
-<<<<<<< HEAD
-		$buildings = Place::getBuildings();
-=======
 		$buildings = Place::getAllBuildings();
->>>>>>> origin/stage
 		echo json_encode($buildings);	
 	}
 	
@@ -248,11 +275,7 @@
 
 		/* Insert each position into the spreadsheet */
 		foreach($assistants as $assistant){
-<<<<<<< HEAD
-			$student = $assistant->getStudent();
-=======
 			$student = $assistant->getCreator();
->>>>>>> origin/stage
 			$position = $assistant->getPosition();
 			$course = $position->getCourse();
 			
@@ -273,10 +296,6 @@
 		header("Content-disposition: attachment; filename=".$fileName);	
 		
 	}
-<<<<<<< HEAD
-	
-?>
-=======
 
 	function uploadTerm(){
 		$fileName = $_POST['fileName'];
@@ -284,4 +303,3 @@
 	}
 	
 ?>
->>>>>>> origin/stage

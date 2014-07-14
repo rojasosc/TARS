@@ -1,5 +1,5 @@
 <?php
-	include("../db.php");
+	require_once "../db.php";
 	$term = Term::getTermByID(CURRENT_TERM);
 	$fileName = "payroll-{$term->getYear()}-{$term->getSession()}.xls";
 	$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
@@ -10,7 +10,7 @@
 
 	/* Insert each position into the spreadsheet */
 	foreach($assistants as $assistant){
-		$student = $assistant->getStudent();
+		$student = $assistant->getCreator();
 		$position = $assistant->getPosition();
 		$course = $position->getCourse();
 		

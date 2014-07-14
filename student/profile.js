@@ -11,8 +11,14 @@ $(document).ready(function() {
             var url = $('#profile').attr('action');
             var data = $('#profile :input').serializeArray();
             $.post(url, data, function(data) {
+<<<<<<< HEAD
                 //I should probably have a different mechanism for this
                 alert('Your profile has been successfully updated!');
+=======
+                //TODO: Replace alert mechanism with Bootstrap Alert
+                alert('Your profile has been successfully updated!');
+				window.location.replace("profile.php");
+>>>>>>> origin/stage
             });
         },
         fields: {
@@ -89,6 +95,7 @@ $(document).ready(function() {
                         message: 'Your GPA is required and cannot be empty'
                     },
                     stringLength: {
+<<<<<<< HEAD
                         min: 4,
                         max: 4,
                         message: 'Your GPA must have the following format: \'A.BC\''
@@ -96,6 +103,15 @@ $(document).ready(function() {
                     regexp: {
                         regexp: /^[0-4][.][0-9]{2}$/,
                         message: 'Your GPA must be a valid 3 digit decimal number'
+=======
+                        min: 5,
+                        max: 5,
+                        message: 'Your GPA must have the following format: \'A.BCD\''
+                    },
+                    regexp: {
+                        regexp: /^[0-4][.][0-9]{3}$/,
+                        message: 'Your GPA must be a valid decimal number with 3 digits of precision'
+>>>>>>> origin/stage
                     }
                 }
             }
@@ -103,6 +119,12 @@ $(document).ready(function() {
     });
     //Prevent page redirection
     $('#profile').submit(function(event) {
+<<<<<<< HEAD
         return false;
     });
 });
+=======
+       return false;
+    });
+});
+>>>>>>> origin/stage

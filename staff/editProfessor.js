@@ -15,9 +15,7 @@ $(document).ready(function() {
 	$('#searchType').hide();
 	
 	/* Bind buttons */
-	$('#searchButton').click(findUsers);
-	$('#updateButton').click(updateUser);
-	
+
 	$buildingSelect.bind('change',getRooms);
 
 	/*TODO: Keep track of the users currently being displayed to avoid 

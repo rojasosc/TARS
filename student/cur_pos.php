@@ -1,7 +1,24 @@
 <?php  
-    include('studentSession.php');
-	$positions = $student->getApplications(APPROVED);
-	$currentApps = $student->getApplications(PENDING);
+require_once 'studentSession.php';
+
+$term = null;
+$positions = array();
+$currentApps = array();
+
+if ($error == null) { //Error checking
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+		}
+
+		$positions = $student->getApplications($term, APPROVED);
+		$currentApps = $student->getApplications($term, PENDING);
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR,
+			Event::USER_GET_POSITIONS, $ex);
+	}
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,11 +48,15 @@
 		<div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="releaseModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
+					<!-- BEGIN Modal Header -->
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h1 class="modal-title">Release From Position</h1>
 					</div>
+					<!-- END Modal Header -->
+					<!-- BEGIN Modal Body -->
 					<div class="modal-body">
+						<!-- BEGIN Release Form -->
 						<form action="withdraw.php" method="post" id="releaseForm">
 							<fieldset>
 								<div class="row">
@@ -53,14 +74,17 @@
 										<textarea class="form-control" rows="8" cols="64" form="releaseForm" name="releaseReasons" id="releaseReasons"></textarea>
 									</div>
 								</div>
-								<input name="studentID" id="studentID" type="hidden" value="<?=$student->getID()?>" />
 							</fieldset>
 						</form>
+						<!-- END Release Form -->
 					</div>
+					<!-- END Modal Body -->
+					<!-- BEGIN Modal Footer -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal" id="cancelRelease">Cancel</button>
 						<button type="submit" class="btn btn-success" form="releaseForm" id="#releaseConfirm" value="Submit">Release</button>
 					</div>
+					<!-- END Modal Footer -->
 				</div>
 			</div>
 		</div>
@@ -69,11 +93,14 @@
 		<div class="modal fade" id="withdrawModal" tabindex="-1" role="dialog" aria-labelledby="withdrawModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-sm">
 				<div class="modal-content">
+					<!-- BEGIN Modal Header -->
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h1 class="modal-title">Withdraw Application</h1>
 					</div>
+					<!-- BEGIN Modal Body -->
 					<div class="modal-body">
+						<!-- BEGIN Withdraw Form -->
 						<form action="withdraw.php" method="post" id="withdrawForm">
 							<fieldset>
 								<div class="row">
@@ -83,14 +110,16 @@
 										</p>
 									</div>
 								</div>
-								<input id="studentID" type="hidden" value="<?=$student->getID()?>" />
 							</fieldset>
 						</form>
+						<!-- END Withdraw Form -->
 					</div>
+					<!-- BEGIN Modal Footer -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal" id="withdrawCancel">Cancel</button>
 						<button type="submit" class="btn btn-success" form="withdrawForm" id="#withdrawConfirm" value="Submit">Withdraw</button>
 					</div>
+					<!-- END Modal Footer -->
 				</div>
 			</div>
 		</div>
@@ -98,50 +127,32 @@
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="student.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li  class="active"><a href="cur_pos.php"><span class="glyphicon glyphicon-th-list"></span> Current Positions</a></li>
-									<li><a href="search.php"><span class="glyphicon glyphicon-inbox"></span> Position Search</a></li>
-								</ul> <!-- End navbar unordered list -->
-
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	  
-	  
+<?php
+// Display header for Home
+$header_active = 'curp';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
-			<div id="content">	    
+			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
+				<!-- BEGIN Current Positions Table -->
 				<div class="panel panel-primary"> 
 					<div class="panel-heading">
 						<h1 class="panel-title">My Current Positions</h1>
 					</div>
 					<div class="panel-body">	
-						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
+<<<<<<< HEAD
 								<th class="hidden-xs">Position ID</th>
+=======
+								<th class="hidden">Position ID</th>
+>>>>>>> origin/stage
 								<th>Course Number</th>
 								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
@@ -152,16 +163,25 @@
 							</tr>
 							<?php
 		foreach($positions as $row) {
-		$course = $row->getPosition()->getCourse();
-		$position = $row->getPosition();
+			$position = $row->getPosition();
+			$section = $position->getSection();
 							?>
 							<tr>
+<<<<<<< HEAD
 								<td class="positionID hidden-xs"><?= $position->getID()?></td>
 								<td><?= $course->getDepartment()." ".$course->getNumber()?></td>
 								<td class="hidden-xs"><?= $course->getTitle()?></td>
 								<td><?= $position->getPositionType()?></td>
 								<td><?= "TBD"?></td>
 								<td><?= $position->getTime()?></td>
+=======
+								<td class="positionID hidden"><?= $position->getID()?></td>
+								<td><?= $section->getCourseName()?></td>
+								<td class="hidden-xs"><?= $section->getCourseTitle()?></td>
+								<td><?= $position->getTypeTitle()?></td>
+								<td><?= "TBD"?></td>
+								<td><?= "TBD"?></td>
+>>>>>>> origin/stage
 								<td class="hidden-xs"><?= $row->getCompensation()?></td>
 								<td><a class="btn btn-default releaseButton" href="#releaseModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>
@@ -169,38 +189,65 @@
 		}
 							?>
 						</table>
-						<!-- END Current Positions Table -->
 					</div>
 				</div>
+				<!-- END Current Positions Table -->
+				<!-- BEGIN Pending Applications Table-->
 				<div class="panel panel-primary"> 
 					<div class="panel-heading">
 						<h1 class="panel-title">My Pending Applications</h1>
 					</div>
 					<div class="panel-body">	
-						<!-- BEGIN Current Positions Table -->
 						<table class="table table-striped">
 							<tr>
+<<<<<<< HEAD
 								<th class="hidden-xs">Position ID</th>
+=======
+								<th class="hidden">Position ID</th>
+>>>>>>> origin/stage
 								<th>Course Number</th>
 								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
-								<th>Location</th>
+								<th>Day</th>
 								<th>Time</th>
+<<<<<<< HEAD
+=======
+								<th>Place</th>
+>>>>>>> origin/stage
 								<th class="hidden-xs">Compensation</th>
 								<th>Withdraw</th>
 							</tr>
 							<?php
 		foreach($currentApps as $app) {
-		$appCourse = $app->getPosition()->getCourse();
-		$appPosition = $app->getPosition();
+			$appPosition = $app->getPosition();
+			$appSection = $appPosition->getSection();
+			$appSectionSessions = $appSection->getAllSessions();
+			$days = "";
+			$time = "";
+			$place = "";
+			foreach($appSectionSessions as $sectionSession) {
+				$days .= $sectionSession->getWeekdays();
+				$time = $sectionSession->getStartTime()." - ".$sectionSession->getEndTime();
+				$place = $sectionSession->getPlaceBuilding()." ".$sectionSession->getPlaceRoom();
+			}
 							?>
 							<tr>
+<<<<<<< HEAD
 								<td class="positionID hidden-xs"><?= $appPosition->getID()?></td>
 								<td><?= $appCourse->getDepartment()." ".$appCourse->getNumber()?></td>
 								<td class="hidden-xs"><?= $appCourse->getTitle()?></td>
 								<td><?= $appPosition->getPositionType()?></td>
 								<td><?= "TBD"?></td>
 								<td><?= $appPosition->getTime()?></td>
+=======
+								<td class="positionID hidden"><?= $appPosition->getID()?></td>
+								<td><?= $appSection->getCourseName()?></td>
+								<td class="hidden-xs"><?= $appSection->getCourseTitle()?></td>
+								<td><?= $appPosition->getTypeTitle()?></td>
+								<td><?= $days?></td>
+								<td><?= $time?></td>
+								<td><?= $place?></td>
+>>>>>>> origin/stage
 								<td class="hidden-xs"><?= $app->getCompensation()?></td>
 								<td><a class="btn btn-default withdrawButton" href="#withdrawModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>
@@ -208,15 +255,22 @@
 		}
 							?>
 						</table>
-						<!-- END Current Positions Table -->
 					</div>
 				</div>
+				<!-- END Pending Applications Table -->
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    
 			<!--BEGIN Page Footer -->
 			<div id="footer">
+<<<<<<< HEAD
 w			</div>
+=======
+			</div>
+>>>>>>> origin/stage
 			<!--END Page Footer -->
 	
 		</div> 

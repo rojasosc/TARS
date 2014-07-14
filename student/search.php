@@ -1,31 +1,61 @@
 <?php  
+<<<<<<< HEAD
 include('studentSession.php');
 include('../formInput.php');
 include('../error.php');
 
 $form_args = get_form_values(array('search','term','type'));
 $pages = 7;
+=======
+require_once 'studentSession.php';
+require_once '../formInput.php';
+require_once '../error.php';
 
-try {
-	if (!$form_args['term']) {
-		$form_args['term'] = CURRENT_TERM;
+$form_args = get_form_values(array('q','term','type'), false);
+>>>>>>> origin/stage
+
+$positions = array();
+$terms = array();
+$positionTypes = array();
+$currentTermID = null;
+if ($error == null) {
+	try {
+		// get App CURRENT_TERM value
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		// get all terms for the dropdown
+		$terms = Term::getAllTerms();
+
+		// get all the position types for the dropdown
+		$positionTypes = Position::getAllPositionTypes(true);
+		// add the "Any" type with value="0"
+		$positionTypes[0] = 'Any Position Type';
+		ksort($positionTypes);
+
+		// get currently selected term, defaulting to CURRENT_TERM on not set
+		if (!$form_args['term']) {
+			$form_args['term'] = $currentTermID;
+		}
+		// get currently selected position, defaulting to "Any"
+		if (!$form_args['type']) {
+			$form_args['type'] = 0;
+		}
+
+		// find positions that match the fields
+		$positions = Position::findPositions(
+			$form_args['q'], $form_args['term'], $form_args['type'], $student->getID());
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 	}
-	if (!$form_args['type']) {
-		$form_args['type'] = -1; // "Any"
-	}
+<<<<<<< HEAD
 	$positions = Position::findPositions(
 		$form_args['search'], $form_args['term'], $form_args['type'], $sID);
 } catch (PDOException $ex) {
 	Error::setError(Error::EXCEPTION, 'Error getting position list.', $ex);
 	$positions = array();
+=======
+>>>>>>> origin/stage
 }
 
-try {
-	$terms = Term::getAllTerms();
-} catch (PDOException $ex) {
-	Error::setError(Error::EXCEPTION, 'Error getting term list.', $ex);
-	$terms = array();
-}
 ?>
 
 <!DOCTYPE html>
@@ -45,11 +75,10 @@ try {
 		<!-- END CSS -->
 		
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="search.js"></script>
 		<!-- END Scripts -->
-		
 	</head>
   
 	<body>
@@ -120,33 +149,31 @@ try {
 						<h1 class="modal-title">Application</h1>
 					</div>
 					<div class="modal-body">
+						<div id="jobDetails">
+						</div>
 						<form role="form" method="post" id="application" action="appProcess.php">
+							<div class="row" id="appAlertHolder"></div>
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
-									<input type="hidden" value="<?= $student->getID()?>" id="studentID"/>
-									<label>
-										Compensation:
-										<select name="compensation" class="form-control" id="compensation">
-											<option value="pay">Pay</option>
-											<option value="credit">Credit</option>
-										</select>
-									</label>
+									<label for="compensation">Compensation</label>
+									<select name="compensation" class="form-control" id="compensation">
+										<option value="pay">Pay</option>
+										<option value="credit">Credit</option>
+									</select>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-10 col-xs-offset-1">
-									<label>
-										<p>
-											Please explain below why you want to fill this position and why you are qualified to. Please keep it clear and concise.
-										</p>
-										<textarea class="form-control" rows="4" cols="64" name="qualifications" id="qualifications"></textarea>
-									</label>
+									<label for="qualifications">Qualifications <small><p>
+										Please explain below why you want to fill this position and why you are qualified to. Please keep it clear and concise.
+									</p></small></label>
+									<textarea class="form-control" rows="4" cols="64" name="qualifications" id="qualifications"></textarea>
 								</div>
 							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal" id="appClose">Close</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<button type="submit" class="btn btn-primary" form="application" value="Submit" id="appSubmit">Submit</button>
 					</div>
 				</div>
@@ -156,47 +183,27 @@ try {
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="profile.php"><span class="glyphicon glyphicon-user"></span> <?= $brand ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="student.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="cur_pos.php"><span class="glyphicon glyphicon-th-list"></span> Current Positions</a></li>
-									<li class="active"><a href="search.php"><span class="glyphicon glyphicon-inbox"></span> Position Search</a></li>
-								</ul> <!-- End navbar unordered list -->
-
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	  
-	  
+<?php
+// Display header for Home
+$header_active = 'search';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
+				<!-- BEGIN Position Search -->
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h1 class="panel-title">Position Search</h1>
 					</div>
 					<div class="panel-body">
 						<div class="container-fluid display-area">
+<<<<<<< HEAD
 							<form role="form" action="search.php" method="post" id="searchForm">
 								<div class="row" id="inputrow">
 									<div class="col-xs-12 col-sm-6">
@@ -206,37 +213,53 @@ try {
 									<div class="col-xs-6 col-sm-3">
 										Term:
 										<select class="form-control" name="term">
+=======
+							<!-- BEGIN Search Form -->
+							<form role="form" action="search.php" method="get" id="searchForm">
+								<div class="form-inline" id="inputrow">
+									<div class="form-group">
+										<label class="sr-only" for="q">Search</label>
+										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=get_form_value('q', '', false)?>"/>
+									</div>
+									<div class="form-group">
+										<label class="sr-only" for="term">Term</label>
+										<select class="form-control" id="term" name="term">
+>>>>>>> origin/stage
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', CURRENT_TERM) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->toString()?></option>
+											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', $currentTermID, false) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
 										<?php
 										}
 										?>
 										</select>
 									</div>
+<<<<<<< HEAD
 									<div class="col-xs-6 col-sm-3">
 										Type:
 										<select name="type" class="form-control">
+=======
+									<div class="form-group">
+										<label class="sr-only" for="type">Type</label>
+										<select id="type" name="type" class="form-control">
+>>>>>>> origin/stage
 										<?php
-										$type_opts = array(-1 => 'Any', 1 => 'Workshop Leader', 2 => 'Lab TA', 3 => 'Grader');
-										foreach ($type_opts as $index => $type_opt) {
+										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"<?php if(get_form_value('type', -1) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+											<option value="<?=$index?>"<?php if(get_form_value('type', 0, false) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
 										<?php
 										}
 										?>
 										</select>
 									</div>
+									<input type="submit" value="Search" class="btn btn-primary"/>
 								</div>
-								<div class="row">
-									<div class="col-xs-2 col-xs-offset-5">
-										<input type="submit" value="Search" class="btn btn-primary"/>
-									</div>
-								</div>
-							</form>				
+							</form>
+							<!-- END Search Form -->
 							<hr/>
+							<!-- BEGIN Search Results -->
 							<div id="search-results">
+<<<<<<< HEAD
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>
 									<?php for($i= 1; $i <= $pages; $i++){?>
@@ -254,21 +277,91 @@ try {
 										<th>Time</th>
 										<th></th>
 									</tr>
+=======
+								<!-- BEGIN Pagination -->
+								<ul class="pagination">
+									<li><a href="#">&laquo;</a></li>
+									<?php
+										$positionCount = count($positions);
+										$rpp = 10;
+										$pageCountFloat = $positionCount / $rpp;
+										$pages = ceil($pageCountFloat);
+										$currentPage = 1;
+										for($i= 1; $i <= $pages; $i++){?>
+											<li <?php if($currentPage == $i){?> class="active" <?php }?>><a href="#"><?=$i?></a></li>
+									<?php
+										}
+									?>
+									<li><a href="#">&raquo;</a></li>
+								</ul>
+								<!-- END Pagination -->
+								<!-- BEGIN Results Table -->
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th class="hidden">#</th>
+											<th>Course Number</th>
+											<th class="hidden-xs hidden-sm">Course Title</th>
+											<th>Professor</th>
+											<th>Position <button class="btn btn-sm btn-default pull-right" data-target="#infoModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign"></span></button><br/>Type</th>
+											<th>Day</th>
+											<th>Time</th>
+											<th>Place</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+>>>>>>> origin/stage
 									<?php
 										if($positions != false) {
 											foreach($positions as $position) {
-												$course = $position->getCourse();
-												$professor = $position->getProfessor();
+												$section = $position->getSection();
+												$professors = $section->getAllProfessors();
+												$professor = count($professors) > 0 ? implode(', ',
+												array_map(function ($prof) {
+													return $prof->getFILName();
+												}, $professors)) : 'TBA';
+												$sessions = $section->getAllSessions();
+												$days = "";
+												$time = "TBA";
+												$place = "TBA";
+												foreach($sessions as $session) {
+													$days .= $session->getWeekdays();
+													$time = $session->getStartTime()." - ".$session->getEndTime();
+													$place = $session->getPlaceBuilding()." ".$session->getPlaceRoom();
+												}
+												if($days == "") {$days="TBA";}
 									?>
 											<tr>
+<<<<<<< HEAD
 												<td class="positionID hidden-xs hidden-sm"><?=$position->getID()?></td>
 												<td><?=$course->getDepartment()?><?=$course->getNumber()?></td>
 												<td class="hidden-xs"><?=$course->getTitle()?></td>
 												<td><?=$professor->getFILName()?></td>
 												<td><?=$position->getPositionType()?></td>
 												<td><?=$position->getTime()?></td>
+=======
+												<td class="positionID hidden"><?=$position->getID()?></td>
+												<td class="courseName"><?=$section->getCourseName()?></td>
+												<td class="courseTitle hidden-xs hidden-sm"><?=$section->getCourseTitle()?></td>
+												<td class="instructor"><?=$professor?></td>
+												<td class="posType"><?=$position->getTypeTitle()?></td>
+												<td class="days"><?=$days?></td>
+												<td class="time"><?=$time?></td>
+												<td class="place"><?=$place?></td>
+>>>>>>> origin/stage
 												<td>
+<?php
+												if ($position->hasStudentApplied($student)) {
+?>
+													<button class="btn btn-default applyButton" disabled="disabled">Applied</button>
+<?php
+												} else {
+?>
 													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
+<?php
+												}
+?>
 												</td>
 											</tr>
 									<?php
@@ -280,8 +373,10 @@ try {
 											</tr>
 									<?php
 										}
-									?>
+?>
+									</tbody>
 								</table>
+<<<<<<< HEAD
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>
 									<?php for($i= 1; $i <= $pages; $i++){?>
@@ -289,10 +384,35 @@ try {
 									<?php }?>
 									<li><a href="#">&raquo;</a></li>
 								</ul>
+=======
+								<!-- END Results Table -->
+								<!-- BEGIN Pagination -->
+								<ul class="pagination">
+									<li><a href="#">&laquo;</a></li>
+									<?php
+										$positionCount = count($positions);
+										$rpp = 10;
+										$pageCountFloat = $positionCount / $rpp;
+										$pages = ceil($pageCountFloat);
+										$currentPage = 1;
+										for($i= 1; $i <= $pages; $i++){?>
+											<li <?php if($currentPage == $i){?> class="active" <?php }?>><a href="#"><?=$i?></a></li>
+									<?php
+										}
+									?>
+									<li><a href="#">&raquo;</a></li>
+								</ul>
+								<!-- END Pagination -->
+>>>>>>> origin/stage
 							</div>
+							<!-- END Search Results -->
 						</div>
 					</div>
 				</div>
+				<!-- END Position Search -->
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 
 	    

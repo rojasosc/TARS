@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 	include('staffSession.php');
+=======
+require_once 'staffSession.php';
+>>>>>>> origin/stage
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +26,7 @@
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
+<<<<<<< HEAD
 			
 			<!-- BEGIN Page Header -->
 			<div id="header">
@@ -76,6 +81,21 @@
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
+=======
+<?php
+// Display header for Manage
+$header_active = 'manage';
+require 'header.php';
+?>
+			<!-- BEGIN Page Content -->
+			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
+>>>>>>> origin/stage
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h1 class="panel-title">Fall 2014</h1>
@@ -85,8 +105,13 @@
 							<div class="panel-heading">
 								<h2 class="panel-title" data-toggle="collapse" data-target="#csc171Panel">CSC 171<span class="hidden-xs">: The Science of Programming</span></h2>
 							</div>
+<<<<<<< HEAD
 							<div class="panel-body">
 								<div class="collapse panel-collapse" id="csc171Panel">
+=======
+							<div class="panel-collapse collapse in" id="csc171Panel">
+								<div class="panel-body" >
+>>>>>>> origin/stage
 									<div class="container-fluid">
 										<form role="form" action="#" method="post" id="csc171">
 											<div class="row">
@@ -140,7 +165,11 @@
 												</div>
 											</div> <br/>
 											<div class="row">
+<<<<<<< HEAD
 												<div class="col-xs-4">
+=======
+												<div class="col-xs-4 col-sm-3 col-md-2">
+>>>>>>> origin/stage
 													<button type="submit" value="Submit" class="form-control btn btn-success">Save</button>
 												</div>
 											</div>
@@ -151,6 +180,12 @@
 						</div>
 					</div>
 				</div>
+<<<<<<< HEAD
+=======
+<?php
+}
+?>
+>>>>>>> origin/stage
 			</div>
 			<!-- END Page Content --> 
 	    
@@ -162,4 +197,8 @@
 		<!-- End page-wrapper -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> origin/stage

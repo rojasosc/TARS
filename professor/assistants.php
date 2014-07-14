@@ -1,6 +1,25 @@
 <?php
+<<<<<<< HEAD
 	include('professorSession.php');	
 	$courses = $professor->getCourses();
+=======
+require_once 'professorSession.php';	
+
+$term = null;
+$sections = array();
+if ($error == null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+			$sections = $professor->getSections();
+		}
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
+	}
+}
+$courses = $professor->getCourses();
+>>>>>>> origin/stage
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,12 +32,21 @@
 		<link href="professor.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+<<<<<<< HEAD
 		<script src="applicants.js"></script>
 		<script src="comments.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
 		<div class="modal fade" id="studentProfileModal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+=======
+		<script src="comments.js"></script>
+		<script src="../js/tars_utilities.js"></script>
+	</head> 
+	<body>
+		<!-- Profile Modal -->
+		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="studentProfileModal" aria-hidden="true">
+>>>>>>> origin/stage
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -31,18 +59,25 @@
 							<p id="studentMajor"></p>
 							<p id="studentGPA"></p>
 							<p id="studentClassYear"></p>
+<<<<<<< HEAD
 						</div> <!-- End container -->
 						
+=======
+						</div> <!-- End container -->			
+>>>>>>> origin/stage
 						<h3>Contact Information</h3>
 						<div class="container">
 							<p id="studentEmail"></p>
 							<p id="studentMobilePhone"></p>
 						</div> <!-- End container -->
+<<<<<<< HEAD
 						
 						<h3>About Me</h3>
 						<div class="container">
 							<p id="studentAboutMe"></p>	
 						</div> <!-- End container -->							
+=======
+>>>>>>> origin/stage
 					</div> <!-- End modal body -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -51,9 +86,63 @@
 			</div> <!-- End modal-dialog -->
 		</div> <!-- End modal fade -->
 		<!-- End Profile Modal -->
+<<<<<<< HEAD
 			
 			<!-- Begin Email Modal -->
 		<div class="modal fade" id="emailTAs" tabindex="-1" role="dialog" aria-labelledby="emailTAsLabel" aria-hidden="true">
+=======
+
+		 <!-- BEGIN Comment Modal-->
+		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Student Review</h1>
+						<small>Please, briefly describe this student's performance.</small>
+						<small> For example, describe this assistant's productivity, enthusiasm, punctuality, initiative, or dependability.</small>
+					</div> <!-- End modal-header -->
+					<div class="modal-body">
+						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
+							<fieldset>
+								<div class="row">
+									<div class="col-xs-12">
+										<textarea name="commentText" class="form-control"></textarea>
+									</div> <!-- End column -->
+								</div> <!-- End row -->													
+							</fieldset> <!-- End comment fieldset -->
+						</form> <!-- End comment form -->
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Comment Modal-->
+
+		 <!-- BEGIN Reviews Modal-->
+		<div class="modal fade comments-modal" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="modal-title">Reviews</h1>
+					</div> <!-- End modal-header -->
+					<div class="modal-body comments-block">
+					</div> <!-- End modal-body -->
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div> <!-- End modal-footer -->				
+				</div> <!-- End modal-content -->
+			</div> <!-- End modal-dialog -->
+		</div> <!-- End modal fade -->	
+		<!-- END Reviews Modal-->		
+			
+			<!-- Begin Email Modal -->
+		<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+>>>>>>> origin/stage
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -89,6 +178,7 @@
 		</div> <!-- End modal fade -->  
 		 <!-- End Email Modal -->
 
+<<<<<<< HEAD
 		 <!-- BEGIN Comment Modal-->
 		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -118,87 +208,40 @@
 		</div> <!-- End modal fade -->	
 		<!-- END Comment Modal-->
 
+=======
+>>>>>>> origin/stage
 		<!-- BEGIN page-wrapper -->
 		<div id="page-wrapper">
-			
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $nameBrand ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li class="active"><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-										<?php
-											/* Create links for each course */
-											foreach($courses as $course){
-											
-											?>
-											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
-	
-										<?php	
-											}
-										?>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
-								</ul> <!-- End navbar unordered list -->								
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-								
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	  	  
-			<!-- BEGIN Page Content -->
+
+<?php
+// Display header for Assistants
+$header_active = 'asst';
+require 'header.php';
+?>
+			<!-- BEGIN page content -->s
 			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 				<div class="row">
 					<h1 class="panelHeader">My Assistants</h1>
 				</div> <!-- End row -->			
-							
-				<!-- Course Panels -->
+				<div class="container">
 				<?php
-				/*Obtain positionIDS that are in the Assistantship table
-				and that match a particular CRN	
-				Pack these assistants into a panel... repeat.
-				*/
-				$tableEntry = 0;
-				$term = Term::getTermByID(CURRENT_TERM);
-				foreach($courses as $course){
-				
-				/* assistants for this particular course */
-				$assistants = Application::getApplications($course, $professor, $term, APPROVED);
-								
-				/* create a new panel */ 
-				$panelID = "coursePanel" . $course->getID();
-
-				$coursePanelName = $course->getTitle();
-				?>
-				
-				<div class="row">
-					<div class="container">					
+					foreach($courses as $course) {
+						$sections = $professor->getSectionsByCourseID($course['courseID']);
+						$applications = Application::getAssistantsByCourseID($course['courseID'],$professor);
+						$panelHeading = $course['department'] . " " . $course['courseNumber'] . " " . $course['courseTitle'];
+						$panelID = "course".$course['courseNumber'];
+						?>
 						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4 class="panelHeader" data-toggle="collapse" data-target="#<?= $panelID ?>"><?= $coursePanelName ?></h4>
+							<div class="panel-heading" data-toggle="collapse" data-target="#<?= $panelID ?>">
+								<h4 class="panel-title panelHeader"><?= $panelHeading ?> <span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
 							</div> <!-- End panel-heading -->
+<<<<<<< HEAD
 								<div class="collapse panel-collapse" id="<?= $panelID ?>">
 									<div class="panel-body">
 											<table class="table table-striped">
@@ -240,25 +283,179 @@
 											
 											?>
 											</table> <!-- End table -->
+=======
+							<div class="collapse panel-collapse" id="<?= $panelID ?>">
+								<div class="panel-body">
+									
+						<?php
+							foreach($sections as $section){
+								$sessions = $section->getAllSessions();
+								$applications = array();
+								try {
+									/* applications for this particular section */
+									$applications = Application::getApplications($section, $professor, $term, APPROVED);
+								} catch (PDOException $ex) {
+									$error = new TarsException(Event::SERVER_DBERROR,
+										Event::USER_GET_APPLICATIONS, $ex);
+									echo $error->toHTML();
+								}
 
-									</div> <!-- End panel-body -->									
-								</div> <!-- End collapse panel-collapse -->
-							<div class="panel-footer"><a type="button" type="button" data-toggle="modal" href="#emailTAs" class="btn btn-default">
-								<span class="glyphicon glyphicon-envelope"></span> Email</a>
-							</div> <!-- End panel-footer -->								
+								/* create a new panel */ 
+								$panelID = "panelID" . $section->getID();
+
+								/*TODO: Get total positions of a particular type and course.
+								For instance, all the graders for CSC 172.*/
+
+								$positionTypes = Position::getAllPositionTypes(true);
+								$positionTotals = array();
+								foreach ($positionTypes as $typeID => $title) {
+									$data = array(
+										'typeID' => $typeID,
+										'title' => $title,
+										'total' => $section->getTotalPositionsByType(
+											$professor, $typeID),
+										'current' => $section->getCurrentPositionsByType(
+											$professor, $typeID));
+									if ($data['total'] > 0) {
+										$data['ratio'] = $data['current'] / $data['total']; 
+										if ($data['ratio'] == 1) {
+											$data['alert'] = 'success';
+										} elseif ($data['ratio'] == 0) {
+											$data['alert'] = 'danger';
+										} else {
+											$data['alert'] = 'warning';
+										}
+										$positionTotals[] = $data;
+									}
+								}
+
+								$appCount = count($applications);
+								if ($appCount == 0) {
+									$appCount = '';
+								} ?>
+											<div class="row">
+												<!-- Section description -->
+												<div class="col-xs-2">
+													<legend><?= ucfirst($section->getSectionType()) ?></legend>	
+														
+															<?php
+																foreach($sessions as $session){
+																	$days = $session->getWeekDays();
+																	$time = $session->getStartTime() . "-" . $session->getEndTime();
+																	$building = $session->getPlaceBuilding();
+																	$room = $session->getPlaceRoom();
+																	$location = $building . " " . $room;
+																?>
+																	<p><small><?= $days . " " . $time ?></small></p>
+
+															<?php
+
+																}
+															?>
+															<p><small><?= $location ?></small></p> 
+														
+																									
+												</div> <!-- End column -->
+												<!-- Applications -->
+												<div class="col-xs-10">
+														<?php
+															if(!$applications){
+														?>
+															<div class="alert alert-danger" role="alert">
+																<p>You have not yet approved any applications for this section.</p>
+															</div>
+															
+														<?php
+															}else{																
+
+														?>
+
+												<table class="table table-striped">
+													<thead>
+														<tr>
+															<th>Name</th>
+															<th>University ID</th>
+															<th>Email</th>
+															<th>Type</th>
+															<th>Profile</th>
+															<th>Reviews</th>
+														</tr>
+													</thead>
+													<?php
+
+													/* Insert each application */
+													foreach($applications as $application){
+														$student = $application->getCreator();
+														$position = $application->getPosition();
+														$profileID = "myProfile" . $student->getID();
+
+													?>
+													<tr>
+														<td>
+															<div class="dropdown actions">
+																<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
+																<?= $student->getFirstName() . " " . $student->getLastName()?>
+																<span class="caret"></span>
+																</a>
+																<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
+																	<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $professor->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
+																	<li role="presentation"><a data-toggle="modal" role="menuitem" tabindex="-1" data-target="#emailModal">Send Email</a></li>
+																</ul>
+															</div>
+														</td>
+														<td>
+															<?= $student->getUniversityID() ?>
+														</td>
+														<td>
+															<?= $student->getEmail() ?>
+														</td> 
+														<td>
+															<?= $position->getTypeTitle() ?>
+														</td>
+														<td>
+															<button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
+																<span class="glyphicon glyphicon-user"></span>
+															</button>
+														</td>
+														<td>
+															<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
+																<span class="glyphicon glyphicon-comment"></span>
+															</button>
+														</td>
+													</tr> 												
+														
+														<?php
+														/* Table entry closing brace */
+														$tableEntry++;
+														}
+>>>>>>> origin/stage
+
+														?>
+												</table> <!-- End table -->														
+														<?php
+
+															}
+														?>
+
+												</div> <!-- End column -->
+											</div> <!-- End row -->
+											<hr>
+						<?php
+							}
+						?>
+									
+								</div> <!-- End panel-body -->
+							</div> <!-- End panel panel-collapse -->
+							<div class="panel-footer">
+							</div> <!-- End panel-footer -->
 						</div> <!-- End panel panel-primary -->
-					</div> <!-- End container -->	
-				</div> <!-- End row -->
-				
-				<?php
-				
-				/* Course panels closing brace */
-				}
-				
-				?>		
 
-				<!-- END Course Panels -->
-			
+				<?php	
+
+					}
+				}
+				?>
+			</div> <!-- End panel container -->
 			</div>
 			<!-- END Page Content --> 
 	    

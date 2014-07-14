@@ -1,5 +1,5 @@
 <?php
-include('db.php');
+require_once 'db.php';
 
 $result = array('valid' => false);
 
@@ -8,9 +8,8 @@ if (isset($_POST['email'])) {
 		$result['valid'] = User::checkEmailAvailable($_POST['email']);
 	} catch (PDOException $ex) {
 		// valid = false on error
-		Error::setError(Error::EXCEPTION, 'Error checking e-mail availability.',
-			$ex);
-		$result['error'] = Error::getError()->toArray();
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_CHECKEMAIL, $ex);
+		$result['error'] = $error->toArray();
 	}
 }
 

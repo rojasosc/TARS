@@ -1,16 +1,21 @@
-
 <?php
-	include('professorSession.php');
+require_once 'professorSession.php';
 
-	$term = Term::getTermByID(CURRENT_TERM);
-	/* Obtain the number of pending applications */
-	$pendingApps = Application::getApplicationCount(null, $professor, $term, PENDING);
-	
-	
-	/* Obtain a CRN and a courseNumber */
-	
-	$courses = $professor->getCourses();
-
+$term = null;
+$pendingApps = 0;
+if ($error != null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+			/* Obtain the number of pending applications */
+			$pendingApps = Application::getApplicationCount(null, $professor, $term, PENDING);
+		}
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_APPLICATIONS, $ex);
+	}
+}
+$unfilledPositions = false; /*TODO: Check for the existence of vacant positions */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,69 +31,90 @@
 	</head> 
 	<body>
 		<div id="page-wrapper">
-			<!-- BEGIN Page Header -->
-			<div id="header">
-				<div class="row" id="navbar-theme">
-					<nav class="navbar navbar-default navbar-static-top" role="navigation">
-						<div class="container-fluid">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-									<span class="sr-only">Toggle Navigation</span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-									<span class="icon-bar"></span>
-								</button>
-								<a class="navbar-brand" href="editProfile.php"><span class="glyphicon glyphicon-user"></span> <?= $nameBrand ?></a>
-							</div> <!-- End navbar-header -->					
-	    
-							<div class="collapse navbar-collapse" id="navigationbar">
-								<ul class="nav navbar-nav">
-									<li class="active"><a href="professor.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-									<li><a href="assistants.php"><span class="glyphicon glyphicon-th-list"></span> Assistants</a></li>
-									<li><a href="applicants.php"><span class="glyphicon glyphicon-inbox"></span> Applicants</a></li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Feedback <b class="caret"></b></a>
-										<ul class="dropdown-menu">
-										<?php
-											/* Create links for each course */
-											foreach($courses as $course){
-											
-											?>
-											
-											<li data-toggle="tool-tip" title="<?= "CRN: ".$course->getCRN() ?>"><a href="#"><?= $course->getTitle() ?></a></li>
-	
-										<?php	
-											}
-										?>
-										</ul> <!-- End drop down unordered list -->
-									</li> <!-- End drop down list item -->
-								</ul> <!-- End navbar unordered list -->								
-								<ul class="nav navbar-nav navbar-right">
-									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-								</ul> <!-- End navbar unordered list -->
-								
-							</div> <!-- End navbar-collapse collapse -->        
-						</div> <!-- End container-fluid -->
-					</nav>
-				</div> <!-- End navbar-theme -->
-			</div>		
-			<!--END Page Header -->	 	      
+<?php
+// Display header for Home
+$header_active = 'home';
+require 'header.php';
+?>
 			<!-- BEGIN Page Content -->
-			<div id="content">						
-			    <div class="row">
-					<div class="container">
-						<div class="jumbotron">
-							<h2>Welcome Professor <?= $lastName ?>!</h2>
-							
-							<h3>Notifications</h3> 
-							<p> You have <?= $pendingApps ?> <a href="applicants.php" >applications</a> pending!</p> 
-							
-							<h3>Announcements</h3>
-							<p>Remember to submit feedback for your assistants by (date).</p>
-							<p>Your feedback helps rank assistants by their past experience.</p>
-						</div> <!-- End jumbotron -->
-					</div> <!-- End container -->
-			    </div> <!--End Row -->			    
+			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
+				<div class="container">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h4 class="panel-title panelHeader">Home</h4>
+						</div> <!-- End panel-heading -->
+						<div class="panel-body">
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="row">
+											<div class="col-xs-12">
+												<h3>Announcements</h3>
+											</div> <!-- End column -->
+										</div> <!-- End row --> 								
+									    <div class="row">
+									    	<div class="col-xs-12">
+													<p>Remember to submit reviews for your <a href="assistants.php">assistants</a> to help other
+														professors make informed decisions.</p>							    			
+									    	</div> <!-- End column -->
+										</div> <!--End Row -->		
+									</div> <!-- End column -->
+									<div class="col-xs-6">
+										<div class="row">
+											<div class="col-xs-12">
+												<h3>Notifications</h3>
+											</div> <!-- End column -->
+										</div> <!-- End row -->
+										<?php
+											if(!$professor->getSections()){
+										?>
+										<div class="row">
+											<div class="col-xs-12">
+													<div class="alert alert-danger" role="alert">
+															You have not yet been assigned any sections. 
+													</div> <!-- End alert alert-danger -->
+											</div> <!-- End column -->									
+										</div> <!-- End row -->
+										<?php		
+											}
+											if($professor->getSections() && $unfilledPositions){
+										?>
+										<div class="row">
+											<div class="col-xs-12">
+													<div class="alert alert-danger" role="alert">
+														There are still unfilled positions for some of your sections.<br>
+														Review <a href="applicants.php">pending applications</a> to fill these positions.
+													</div> <!-- End alert alert-danger -->
+											</div> <!-- End column -->									
+										</div> <!-- End row -->
+										<?php		
+											}
+											if($professor->getSections() && !$unfilledPositions){
+										?>
+										<div class="row">
+											<div class="col-xs-12">
+													<div class="alert alert-success" role="alert">
+															There are currently no notifications to display.
+													</div> <!-- End alert alert-danger -->
+											</div> <!-- End column -->									
+										</div> <!-- End row -->		
+										<?php		
+											}
+										?>									
+										</div> <!-- End row -->											
+									</div> <!-- End column -->									
+								</div> <!-- End row -->																			
+						</div> <!-- End panel-body -->
+					</div> <!-- End panel panel-primary -->
+				</div> <!-- End container -->
+<?php
+}
+?>
 			</div>
 			<!-- END Page Content --> 	    
 			<!--BEGIN Page Footer -->

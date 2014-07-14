@@ -1,6 +1,15 @@
 <?php
+<<<<<<< HEAD
 	if(isset($_POST['action'])){
 		require('../db.php');
+=======
+
+// TODO: error handle x6
+// TODO: session check x6
+
+	if(isset($_POST['action'])){
+		require_once '../db.php';
+>>>>>>> origin/stage
 		$action = $_POST['action'];
 		switch($action){
 			case 'fetchProfessor': 
@@ -15,6 +24,12 @@
 			case 'fetchTheRooms':
 				fetchTheRooms();
 				break;
+<<<<<<< HEAD
+=======
+			case 'fetchStudent':
+				fetchStudent();
+				break;
+>>>>>>> origin/stage
 			case 'newStudentComment':
 				newStudentComment();
 				break;
@@ -55,11 +70,19 @@
 		$room = $_POST['room'];
 		$office = Place::getPlaceByBuildingAndRoom($building, $room);
 		$officeID = $office->getPlaceID();
+<<<<<<< HEAD
 		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone'],$_POST['mobilePhone']);	
 	}
 	
 	function fetchBuildings(){
 		$buildings = Place::getBuildings();
+=======
+		$professor->updateProfile($_POST['firstName'],$_POST['lastName'],$officeID,$_POST['officePhone']);	
+	}
+	
+	function fetchBuildings(){
+		$buildings = Place::getAllBuildings();
+>>>>>>> origin/stage
 		echo json_encode($buildings);	
 	}
 	
@@ -73,6 +96,39 @@
 	}
 
 	function newStudentComment(){
+<<<<<<< HEAD
 		Feedback::newComment($_POST['studentID'],$_POST['commenterID'],$_POST['comment']);
 	}
 ?>
+=======
+		$student = User::getUserByID($_POST['studentID'], STUDENT);
+		$student->saveComment($_POST['comment'], User::getUserByID($_POST['commenterID'],
+			PROFESSOR), time());
+	}
+
+	function fetchStudent(){
+
+		$user = User::getUserByID($_POST['userID']);
+		$student = array();
+		if($user){
+			$firstName = $user->getFirstName();
+			$lastName = $user->getLastName();
+			$email = $user->getEmail();
+			$mobilePhone = $user->getMobilePhone();
+			$classYear = $user->getClassYear();
+			$major = $user->getMajor();
+			$gpa = $user->getGPA();
+			$aboutMe = $user->getAboutMe();
+			
+			$staffComments = Feedback::getCommentsFromStaff($_POST['userID']);
+			$professorComments = Feedback::getCommentsFromProfessors($_POST['userID']);
+			/* Prepare to encode JSON object */
+			$student = array('firstName' => $firstName,'lastName' => $lastName,'email' => $email,'mobilePhone' => $mobilePhone,
+			'classYear' => $classYear,'major' => $major,'gpa' => $gpa,'aboutMe' => $aboutMe, 'staffComments' => $staffComments, 'professorComments' => $professorComments);
+			echo json_encode($student,true);
+		}else{
+			echo json_encode(false);
+		}	
+	}	
+?>
+>>>>>>> origin/stage

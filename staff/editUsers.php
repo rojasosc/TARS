@@ -1,6 +1,7 @@
-<?php
+<?php  
 require_once 'staffSession.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -8,16 +9,31 @@ require_once 'staffSession.php';
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>Edit Student</title>
+		<title>Edit Users</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
-		<link href="staff.css" rel="stylesheet"/>
-		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="staff.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script src="../js/tars_utilities.js"></script>		
+		<script src="../js/bootstrap.min.js"></script>	
+		<script src="../js/tars_utilities.js"></script>
 	</head>
 	<body>
+		<!-- BEGIN page-wrapper -->
+            
+		<div id="page-wrapper">
+<?php
+// Display header for Manage
+$header_active = 'profile';
+require 'header.php';
+?>
+			<!-- BEGIN Page Content -->
+			<div id="content">
+<?php
+if ($error != null) {
+	echo $error->toHTML();
+}
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
+?>
 		<!-- BEGIN Edit Profile Modal-->
 		<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
 			<div class="modal-dialog">
@@ -27,11 +43,7 @@ require_once 'staffSession.php';
 						<h1 class="modal-title" id="modalHeader"></h1>
 					</div> 
 					<div class="modal-body">
-<<<<<<< HEAD
-						<form action="staffCommands.php" class="form-horizontal" id="updateForm" method="post">
-=======
 						<form class="edit-profile-form" data-usertype="<?= STUDENT ?>">
->>>>>>> origin/stage
 							<div class="row">
 								<div class="col-md-4">				
 									<div class="form-group"> 				
@@ -116,87 +128,65 @@ require_once 'staffSession.php';
 				</div>
 			</div>
 		</div>
-		<!-- END Edit Profile Modal-->    	
-	
-		<!-- BEGIN page-wrapper -->
-            
-		<div id="page-wrapper">
-<?php
-// Display header for Manage
-$header_active = 'manage';
-require 'header.php';
-?>
-			<!-- BEGIN Page Content -->
-			<div id="content">
-<?php
-if ($error != null) {
-	echo $error->toHTML();
-}
-if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
-?>
-				<div class="row">
-					<h1>Edit Student</h1>
-				</div> <!-- End row -->		
-				<div class="container">
-					<div class="container" id="search">
-						<div class="row">
-							<h3>Filter Constraints</h3>
-						</div> <!-- end row -->
-						<div class="row">
-<<<<<<< HEAD
-							<form class="form-horizontal" id="searchUsersForm" method="post" action="staffCommands.php">
-=======
-							<form class="form-horizontal search-users-form" data-usertype="<?= STUDENT ?>">
->>>>>>> origin/stage
-								<div class="row">
-									<div class="col-md-10">
-											<label class="control-label" for="emailSearch">Email</label>
-											<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email">																				
-									</div> <!-- End column -->					
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-md-10">
-											<label class="control-label" for="firstName">First Name</label>
-												<input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name">																				
-									</div> <!-- End column -->					
-								</div> <!-- End row -->
-								<div class="row">
-									<div class="col-md-10">
-											<label class="control-label" for="lastName">Last Name</label>
-												<input id="lastName" type="text" class="form-control" name="lastName" placeholder="Last Name">																				
-									</div> <!-- End column -->									
-								</div> <!-- End row -->								
-								<br>
-								<div class="row">
-									<div class="col-md-6">
-										<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span> Search</button>
-									</div> <!-- End column -->
-								</div> <!-- End row -->	
-							</form> <!-- End form-horizontal -->
-						</div> <!-- End row -->
-					</div> <!-- End container -->					
-					<div class="container" id="result">
-						<div class="row">
-							<div class="col-md-4">
-								<h3>Results</h3>
-							</div> <!-- End column -->
-						</div> <!-- End row -->						
-						<div class="row">
-							<div class="col-md-12">
-								<table class="table table-striped table-hover user-search-table">
-									<thead>
-										<tr>
-										<th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table> <!-- End table table-striped -->									
-							</div> <!-- End column -->
-						</div> <!-- End row -->
-						<!-- TODO: Implement pagination every 10 rows -->				
-					</div> <!-- End container -->					
-				</div>
+		<!-- END Edit Profile Modal-->   
+
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h1 class="panel-title">Edit Users</h1>
+							</div> <!-- End panel-heading -->
+
+								<div class="panel-body">
+										<form class="form-horizontal search-users-form"  role="form" data-usertype="<?= STUDENT ?>">
+											<div class="row">
+												<div class="col-xs-3">
+													<label class="control-label" for="emailSearch">Email</label>
+													<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email">			
+												</div> <!-- End column -->
+												<div class="col-xs-3">
+														<label class="control-label" for="firstName">First Name</label>
+															<input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name">				
+												</div> <!-- End column -->
+												<div class="col-xs-3">
+													<label class="control-label" for="lastName">Last Name</label>
+													<input id="lastName" type="text" class="form-control" name="lastName" placeholder="Last Name">
+												</div> <!-- End column -->												
+											</div> <!-- End row -->
+											<br>
+											<div class="row">
+												<div class="col-xs-3">
+													<div class="btn-group" data-toggle="buttons">
+														  <label class="btn btn-primary active">
+														    	<input type="checkbox" checked> Students
+														  </label>
+														  <label class="btn btn-primary">
+														   		<input type="checkbox"> Professors
+														  </label>
+													</div>																
+												</div> <!-- End column -->
+												<div class="col-xs-3">
+													<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+												</div> <!-- End column -->																					
+											</div> <!-- End row -->
+										</form> <!-- End form -->
+										<br>
+										<div class="row">
+											<div class="col-md-12">
+												<table class="table table-striped table-hover user-search-table">
+													<thead>
+														<tr>
+														<th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table> <!-- End table table-striped -->									
+											</div> <!-- End column -->
+										</div> <!-- End row -->										
+								</div> <!-- End panel-body -->									
+
+							<div class="panel-footer">
+							</div> <!-- End panel-footer -->
+						</div> <!-- End panel panel-primary -->
 <?php
 }
 ?>
@@ -209,5 +199,5 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-	</body>	
+	</body>
 </html>

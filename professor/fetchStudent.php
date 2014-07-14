@@ -1,23 +1,37 @@
 <?php
-include('../db.php');
-$student = array();
-if (isset($_POST['userID'])) {
+require_once 'professorSession.php';
+require_once '../db.php';
+require_once '../formInput.php';
+require_once '../error.php';
+
+$error = null;
+if (!isset($_POST['userID']))
+	$error = new TarsException(Event::ERROR_FORM_FIELD, Event::USER_GET_PROFILE,
+		array('userID'));
+} else {
 	try {
-		$user = User::getUserByID($_POST['userID']);
-		if ($user) {
-			$student['firstName'] = $user->getFirstName();
-			$student['lastName'] = $user->getLastName();
-			$student['email'] = $user->getEmail();
-			$student['mobilePhone'] = $user->getMobilePhone();
-			$student['classYear'] = $user->getClassYear();
-			$student['major'] = $user->getMajor();
-			$student['gpa'] = $user->getGPA();
-			$student['aboutMe'] = $user->getAboutMe();
+		$user = User::getUserByID($_POST['userID'], STUDENT);
+		if (!$user) {
+			$error = new TarsException(Event::ERROR_NOT_FOUND, Event::USER_GET_PROFILE);
 		}
 	} catch (PDOException $ex) {
-		Error::setError(Error::EXCEPTION, 'Error getting user object.', $ex);
-		$student['error'] = Error::getError()->toArray();
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_PROFILE, $ex);
 	}
 }
-echo json_encode($student, true);
+
+if ($error == null) {
+	$result = array('success' => true, 'object' => array(
+		'firstName' => $user->getFirstName(),
+		'lastName' => $user->getLastName(),
+		'email' => $user->getEmail(),
+		'mobilePhone' => $user->getMobilePhone(),
+		'classYear' => $user->getClassYear(),
+		'major' => $user->getMajor(),
+		'gpa' => $user->getGPA(),
+		'aboutMe' => $user->getAboutMe()));
+} else {
+	$result = array('success' => false, 'error' => $error->toArray());
+}
+
+echo json_encode($result);
 

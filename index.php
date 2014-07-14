@@ -1,22 +1,38 @@
 <?php
-require('db.php');
-require('formInput.php');
-require('error.php');
+require_once 'db.php';
+require_once 'formInput.php';
+require_once 'error.php';
+require_once 'session.php';
 
+function show_version() {
+	$version_code = trim(@file_get_contents('version.txt'));
+	//$git_revision = array(getcwd());
+	@exec('git log -1 --format="%h%d %ci"', $git_revision);
+	if (count($git_revision) >= 1) {
+		echo "$version_code: {$git_revision[0]}";
+	} else {
+		echo $version_code;
+	}
+}
+
+$error = null;
 if (isset($_POST['submit'])) {
 	$form_args = get_form_values(array('email','password'));
-	
+
 	if (!$form_args['email']) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error logging in.',
-			array('email'));
+		$error = new TarsException(Event::ERROR_FORM_FIELD,
+			Event::SESSION_LOGIN, array('email'));
 	} elseif (!$form_args['password']) {
-		Error::setError(Error::FORM_SUBMISSION, 'Error logging in.',
-			array('password'));
+		$error = new TarsException(Event::ERROR_FORM_FIELD,
+			Event::SESSION_LOGIN, array('password'));
 	} else {
 		try {
-			$login_user = login($form_args['email'], $form_args['password']);
-		} catch (Exception $ex) {
-			Error::setError(Error::EXCEPTION, 'Error logging in.', $ex);
+			$login_user = Session::login($form_args['email'], $form_args['password']);
+		} catch (TarsException $ex) {
+			$error = $ex;
+		} catch (PDOException $ex) {
+			$error = new TarsException(Event::SERVER_DBERROR,
+				Event::SESSION_LOGIN, $ex);
 		}
 
 		if ($login_user) {
@@ -32,13 +48,15 @@ if (isset($_POST['submit'])) {
 			} elseif ($type == STAFF) {
 				header('Location: staff/staff.php');
 				exit;
+			} elseif ($type == ADMIN) {
+				header('Location: admin/admin.php');
+				exit;
 			} else {
-				Error::setError(Error::EXCEPTION, 'Error logging in.',
-					new Exception('Admin not implemented!'));
+				$error = new TarsException(Event::SERVER_EXCEPTION,
+					Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
 			}
 		} else {
-			Error::setError(Error::CUSTOM_MESSAGE, 'Error logging in.',
-				'The email or password you entered is incorrect.');
+			$error = new TarsException(Event::ERROR_LOGIN, Event::SESSION_LOGIN);
 		}
 	}
 }
@@ -75,7 +93,8 @@ if (isset($_POST['submit'])) {
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-6">
-										E-mail: <input type="email" name="passrecov" class="form-control" size="64"/>
+										<label for="passrecovemail">Email</label>
+										<input type="email" id="passrecovemail" name="passrecov" class="form-control" size="64"/>
 									</div>
 								</div>
 							</fieldset>
@@ -106,21 +125,18 @@ if (isset($_POST['submit'])) {
 							<fieldset>
 								<div class="row">
 									<div class="col-xs-5 col-xs-offset-1">
-										<label>
-											E-mail: <input class="form-control" type="email" name="bugrep" size="32"/>
-										</label>
+										<label for="bugrepemail">Email</label>
+										<input class="form-control" type="email" id="bugrepemail" name="bugrep" size="32"/>
 									</div>
 									<div class="col-xs-5">
-										<label>
-											Password: <input class="form-control" type="password" name="bugreppass" size="32"/>
-										</label>
+										<label for="bugreppass">Password</label>
+										<input class="form-control" type="password" id="bugreppass" name="bugreppass" size="32"/>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-10 col-xs-offset-1">
-										<label>
-											<textarea class="form-control" rows="4" cols="64"></textarea>
-										</label>
+										<label for="bugrepdata">Comments</label>
+										<textarea class="form-control" id="bugrepdata" name="bugrepdata" rows="4" cols="64"></textarea>
 									</div>
 								</div>
 							</fieldset>
@@ -140,14 +156,21 @@ if (isset($_POST['submit'])) {
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<<<<<<< HEAD
 						<h1 class="modal-title">Bug Report</h1>
+=======
+						<h1 class="modal-title">Contact Us</h1>
+>>>>>>> origin/stage
 					</div>
 					<div class="modal-body">
 						<div class="container">
 							<div class="row">
 								<div class="col-xs-4">      
 									<ul id="contact-us">
+<<<<<<< HEAD
 										<lh>Contact Us</lh>
+=======
+>>>>>>> origin/stage
 										<li> <br />
 											Oscar Rojas <br />
 											Email: orojas@u.rochester.edu <br />
@@ -160,8 +183,13 @@ if (isset($_POST['submit'])) {
 										</li>
 										<li> <br />
 											Nate Book <br />
+<<<<<<< HEAD
 											Email: nbook@u.rochester.edu <br />
 											Phone Number: I have no clue <br />
+=======
+											Email: me@natembook.com <br />
+											Phone Number: 860-324-4055 <br />
+>>>>>>> origin/stage
 										</li>
 									</ul>
 								</div>
@@ -191,18 +219,18 @@ if (isset($_POST['submit'])) {
 				<div id="login">
 					<form action="index.php" method="post">
 						<fieldset>
-							<?php Error::putError(); ?>
-							<h2 class="center" id="colorWhite">Sign In</h2>
+							<?php if ($error != null) { echo $error->toHtml(); } ?>
+							<h2 class="center colorWhite">TARS Sign In</h2>
 							<div class="row">
 								<div class="col-md-10">
-									<label id="colorWhite">Email</label>
-									<input type="email" name="email" class="form-control" place-holder="" value="<?=get_form_value('email')?>">
+									<label for="email" class="colorWhite">Email</label>
+									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=get_form_value('email')?>">
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-10">
-									<label id="colorWhite">Password</label>
-									<input type="password" name="password" class="form-control" place-holder="">
+									<label for="password" class="colorWhite">Password</label>
+									<input type="password" id="password" name="password" class="form-control" place-holder="">
 								</div> <!-- End column -->
 							</div> <!-- End row -->	
 							<br>
@@ -224,7 +252,6 @@ if (isset($_POST['submit'])) {
 									</div>
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
-							<br>
 							<div class="row">
 								<div class="col-xs-6">
 									<a href="#bugmodal" data-toggle="modal">Report A Bug</a>
@@ -233,6 +260,12 @@ if (isset($_POST['submit'])) {
 									<a href="#contactModal" data-toggle="modal">Contact Us</a>
 								</div>
 							</div> <!-- End row -->							
+							<br>
+							<div class="row">
+								<div class="col-xs-12 versionData">
+									<?php show_version(); ?>
+								</div>
+							</div> <!-- End row -->
 						</fieldset> <!-- End fieldset -->
 					</form> <!-- End form -->
 				</div> <!-- End container -->

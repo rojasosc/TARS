@@ -1,6 +1,5 @@
 <?php
-
-	include('../db.php');
+	require_once '../db.php';
 	
 	
 	/* Retrieve results based on the user's query */
@@ -11,4 +10,4 @@
 	
 	$student = User::getUserByEmail($_POST['emailSearch'], STUDENT);
 	echo json_encode($student,true);
-?>
+

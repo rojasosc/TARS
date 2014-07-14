@@ -1,31 +1,24 @@
 <?php
-    include('../db.php');
-    
-    session_start();
-	
-    /* Does the user have an existing session? */
-    if (!isset($_SESSION['auth'])) {
-	
-		/* redirect to login page */
-		header('Location: ../index.php');
-		exit;
+require_once '../db.php';
+require_once '../session.php';
 
-    }else{
-		$email = $_SESSION['email'];
-		
-		/* Obtain professor associate array representation */	
-		$professor = User::getUserByEmail($email, PROFESSOR);
-
-		if (!$professor) {
-			/* redirect to login page if not a professor */
-			header('Location: ../index.php');
-			exit;
-		}
-		
-		$firstName = $professor->getFirstName();
-		$lastName = $professor->getLastName();
-		
-		/* Used in the navbar brand */
-		$nameBrand = $firstName[0].".".$lastName;
-    }
+$error = null;
+$success = session_start();
+$professor = false;
+if (!$success) {
+	$error = new TarsException(Event::SERVER_EXCEPTION, Event::SESSION_CONTINUE,
+		new Exception('Session continue failed'));
+} else {
+	try {
+		$professor = Session::getLoggedInUser(PROFESSOR);
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::SESSION_CONTINUE, $ex);
+	}
+}
+if (!$professor) {
+	if ($error == null) {
+		$error = new TarsException(Event::ERROR_PERMISSION, Event::SESSION_CONTINUE,
+			array('not professor'));
+	}
+}
 

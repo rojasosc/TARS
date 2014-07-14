@@ -73,6 +73,7 @@ body {
 .center {
     text-align: center;
 }
+<<<<<<< HEAD
 .error {
     color: white;
     background-color: #880000;
@@ -82,6 +83,15 @@ body {
 }
 #colorWhite {
     color: white;
+=======
+.colorWhite {
+    color: white;
+}
+.versionData {
+	color: #ddd;
+	font-style: italic;
+	font-size: 0.8em;
+>>>>>>> origin/stage
 }
 /*
  * Everything below is NavBar coloring

@@ -31,7 +31,7 @@ function params($param_names, $param_properties = array(), $isForm = false) {
 	if (count($invalids) > 0) {
 		$s = (count($invalids) == 1) ? '' : 's';
 		$i = implode(', ', $invalids);
-		if ($is_form) {
+		if ($isForm) {
 			return "Invalid input in field$s. Please fix these fields and try again ($i)";
 		} else {
 			return "Invalid parameter$s ($i)";
@@ -39,6 +39,14 @@ function params($param_names, $param_properties = array(), $isForm = false) {
 	} else {
 		return $params;
 	}
+}
+
+/**
+ * A function to tell us whether the given array is "associative" (has any string keys)
+ * Source: http://stackoverflow.com/a/4254008/835995
+ */
+function is_assoc(array $array) {
+	return (bool)count(array_filter(array_keys($array), 'is_string'));
 }
 
 $output = array();
@@ -78,6 +86,13 @@ if (isset($_REQUEST['action'])) {
 	//    nobody is logged in)
 	// '
 	$action_map = array(
+		// Action:           emailAvailable 
+		// Session required: none
+		// Parameters:
+		//     email: the email to check
+		// Returns:
+		//     valid: Whether the email can be used
+		//     success and error: Action status
 		'emailAvailable' => array('event' => Event::USER_CHECK_EMAIL, 'noSession' => true,
 			'fn' => function ($user) {
 				$params = params(array('email'));
@@ -88,6 +103,14 @@ if (isset($_REQUEST['action'])) {
 					return $params;
 				}
 			}),
+		// Action:           signup 
+		// Session required: none
+		// Parameters:       all user fields
+		//     email, emailConfirm, password, passwordConfirm,
+		//     firstName, lastName, mobilePhone, classYear, major,
+		//     gpa, universityID, aboutMe
+		// Returns:
+		//     success and error: Action status
 		'signup' => array('event' => Event::USER_CREATE, 'noSession' => true,
 			'fn' => function ($user) {
 				$signup_param_props = array(
@@ -122,9 +145,22 @@ if (isset($_REQUEST['action'])) {
 					return $params;
 				}
 			}),
+		// Action:           search 
+		// Session required: STUDENT
+		// Parameters:
+		// Returns:
+		//     success and error: Action status
 		// TODO convert search.php search form
 		'search' => array('event' => Event::STUDENT_SEARCH, 'userType' => STUDENT,
 			'fn' => function ($student) {return null;}),
+		// Action:           apply
+		// Session required: STUDENT
+		// Parameters:
+		//     positionID:   Position ID
+		//     compensation: pay|credit
+		//     qualifications: text field
+		// Returns:
+		//     success and error: Action status
 		'apply' => array('event' => Event::STUDENT_APPLY, 'userType' => STUDENT,
 			'fn' => function ($student) {
 				$params = params(array('positionID','compensation','qualifications'));
@@ -145,6 +181,12 @@ if (isset($_REQUEST['action'])) {
 					return $params;
 				}
 			}),
+		// Action:           withdraw
+		// Session required: STUDENT
+		// Parameters:
+		//     positionID:   Position ID
+		// Returns:
+		//     success and error: Action status
 		'withdraw' => array('event' => Event::STUDENT_WITHDRAW, 'userType' => STUDENT,
 			'fn' => function ($student) {
 				$params = params(array('positionID'));
@@ -162,7 +204,14 @@ if (isset($_REQUEST['action'])) {
 					return $params;
 				}
 			}),
-		'updateProfile' => array('event' => Event::USER_SET_PROFILE, 'userType' => -1,
+		// Action:           updateProfile
+		// Session required: STUDENT, PROFESSOR, STAFF
+		// Parameters:       all user fields (varies with session user type)
+		//     firstName, lastName, mobilePhone, classYear, major,
+		//     gpa, universityID, aboutMe, officePhone, officeBuilding, officeRoom
+		// Returns:
+		//     success and error: Action status
+		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
 			'fn' => function ($user) {
 				switch ($user->getObjectType()) {
 				case STUDENT:
@@ -191,6 +240,173 @@ if (isset($_REQUEST['action'])) {
 					} else {
 						return $params;
 					}
+				case PROFESSOR:
+					$profile_param_props = array(
+						'firstName' => array('type' => FORM_VALIDATE_NOTEMPTY),
+						'lastName' => array('type' => FORM_VALIDATE_NOTEMPTY),
+						'officePhone' => array('type' => FORM_VALIDATE_NUMSTR,
+							'min_length' => 10, 'max_length' => 10),
+						'building' => array('type' => FORM_VALIDATE_NOTEMPTY),
+						'room' => array('type' => FORM_VALIDATE_NOTEMPTY));
+					$profile_params = array_keys($profile_param_props);
+					$params = params($profile_params, $profile_param_props, true);
+					if (is_array($params)) {
+						$user->updateProfile(
+							$params['firstName'], $params['lastName'],
+							$params['officePhone'], $params['building'],
+							$params['room']);
+						return null;
+					} else {
+						return $params;
+					}
+				}
+			}),
+		// Action:           changeUserPassword
+		// Session required: logged in
+		// Parameters:
+		//     oldPassword, newPassword, confirmPassword
+		// Returns:
+		//     success and error: Action status
+		'changeUserPassword' => array('event' => Event::USER_SET_PROFILE,
+			'fn' => function ($user) {
+				$chpw_param_props = array(
+					'oldPassword' => array('type' => FORM_VALIDATE_NOTEMPTY),
+					'newPassword' => array('type' => FORM_VALIDATE_NOTEMPTY),
+					'confirmPassword' => array('type' => FORM_VALIDATE_OTHERFIELD,
+						'field' => 'newPassword'));
+				$chpw_params = array_keys($chpw_param_props);
+				$params = params($chpw_params, $chpw_param_props, true);
+				if (is_array($params)) {
+					$oldPassword = $params['oldPassword'];
+					$newPassword = $params['newPassword'];
+					$confirmPassword = $params['confirmPassword'];
+					if (password_verify($oldPassword, $user->getPassword())) {
+						$user->changePassword($newPassword);
+						return null;
+					} else {
+						return 'Incorrect password';
+					}
+				} else {
+					return $params;
+				}
+			}),
+		// Action:           fetchBuildings
+		// Session required: logged in
+		// Parameters:       none
+		// Returns:
+		//     objects: array of building names
+		//     success and error: Action status
+		'fetchBuildings' => array('event' => Event::USER_GET_PROFILE,
+			'fn' => function ($user) {
+				return Place::getAllBuildings();
+			}),
+		// Action:           fetchTheRooms
+		// Session required: logged in
+		// Parameters:
+		//     building: name of building to look in
+		// Returns:
+		//     objects: array of room numbers (or names) in this building
+		//     success and error: Action status
+		'fetchTheRoom' => array('event' => Event::USER_GET_PROFILE, 
+			'fn' => function ($user) {
+				$params = params(array('building'));
+				if (is_array($params)) {
+					$places = Place::getPlacesByBuilding($params['building']);
+					return array_map(function ($place) {
+						return $place->getRoom();
+					}, $places);
+				} else {
+					return $params;
+				}
+			}),
+		// Action:           fetchUser
+		// Session required: logged in
+		// Parameters:
+		//     userID: The user's ID
+		//     userType: The expected user type (pass -1 for any)
+		// Returns:
+		//     object: The user's data
+		//     success and error: Action status
+		'fetchUser' => array('event' => Event::USER_GET_PROFILE,
+			'fn' => function ($user) {
+				$params = params(array('userID', 'userType'));
+				if (is_array($params)) {
+					$user = User::getUserByID($params['userID'], $params['userType']);
+					if ($user == null) {
+						return 'User not found';
+					} else {
+						return $user;
+					}
+				} else {
+					return $params;
+				}
+			}),
+		// Action:           fetchApplication
+		// Session required: logged in (not STUDENT)
+		// Parameters:
+		//     appID: The application ID
+		// Returns:
+		//     object: The application data
+		//     success and error: Action status
+		'fetchApplication' => array('event' => Event::USER_GET_PROFILE,
+			'fn' => function ($user) {
+				if ($user->getObjectType() == STUDENT) {
+					return 'Permission denied';
+				}
+				$params = params(array('appID'));
+				if (is_array($params)) {
+					$application = Application::getApplicationByID($params['appID']);
+					if ($application == null) {
+						return 'Application not found';
+					} else {
+						return $application;
+					}
+				} else {
+					return $params;
+				}
+			}),
+		// Action:           fetchComments
+		// Session required: logged in (not STUDENT)
+		// Parameters:
+		//     userID: The user ID
+		// Returns:
+		//     objects: The comments
+		//     success and error: Action status
+		'fetchComments' => array('event' => Event::USER_GET_PROFILE,
+			'fn' => function ($user) {
+				if ($user->getObjectType() == STUDENT) {
+					return 'Permission denied';
+				}
+				$params = params(array('userID'));
+				if (is_array($params)) {
+					$student = User::getUserByID($params['userID'], STUDENT);
+					if ($student == null) {
+						return 'Student not found';
+					} else {
+						$comments = $student->getAllComments();
+						return $comments;
+					}
+				} else {
+					return $params;
+				}
+			}),
+		'setAppStatus' => array('event' => Event::NONSTUDENT_SET_APP,
+			'fn' => function ($user) {
+				if ($user->getObjectType() == STUDENT) {
+					return 'Permission denied';
+				}
+				$params = params(array('appID', 'decision'));
+				if (is_array($params)) {
+					$decision = $params['decision'];
+					$application = Application::getApplicationByID($params['appID']);
+					if ($application == null) {
+						return 'Application not found';
+					} else {
+						$application->setApplicationStatus($params['decision']);
+						return null;
+					}
+				} else {
+					return $params;
 				}
 			}));
 
@@ -234,10 +450,21 @@ if (isset($_REQUEST['action'])) {
 						$output['object'] = $result_obj->toArray();
 					} elseif (is_array($result_obj)) {
 						// object-array result
-						$output['objects'] =
-							array_map(function ($obj) {
-								return $obj->toArray();
-							}, $result_obj);
+						if (is_assoc($result_obj)) {
+							// object result (as array)
+							$output['object'] = $result_obj;
+						} else {
+							// array of objects result
+							$output['objects'] =
+								array_map(function ($obj) {
+									if (is_object($obj)) {
+										// as object
+										return $obj->toArray();
+									} else {
+										return $obj;
+									}
+								}, $result_obj);
+						}
 					} elseif (is_string($result_obj)) {
 						// string result is a special one for custom errors from actions
 						// they are of the type ERROR_FORM_FIELD

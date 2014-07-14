@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	$('.selectpicker').selectpicker();
+
 	window.STUDENT = 0;
 	window.PROFESSOR = 1;
 	window.STAFF = 2;
@@ -151,55 +153,81 @@ function doAction(action, params) {
 }
 
 function showError(errorObj, element) {
-	if (!('title' in errorObj)) { 
-		errorObj.title = 'An error occured';
+	showAlert(errorObj, element, 'danger');
+}
+
+function showAlert(alertObj, element, level) {
+	if (!('title' in alertObj)) {
+		switch (level) {
+			default:
+				alertObj.title = 'Notice';
+				level = 'info';
+				break;
+			case 'success':
+				alertObj.title = 'Success';
+				break;
+			case 'warning':
+				alertObj.title = 'Warning';
+				break;
+			case 'danger':
+				alertObj.title = 'An error occured';
+				break;
+		}
 	}
-	element.html('<div class="alert alert-danger"><strong>' + errorObj.title + '!</strong> ' + errorObj.message + '</div>');
+	element.hide();
+	element.html('<div class="alert alert-' + level + '"><strong>' + alertObj.title + '!</strong> ' + alertObj.message + '</div>');
+	element.fadeIn('slow');
 }
 
 function submitDecision(){
-	var action = "setAppStatus";
-	var appID = $(this).parent().data( "applicationid" );
-	var decision = $(this).data( "decision" );
-	var data = {
-		appID: appID,
-		decision: decision,
-		action: action
-	}
-	$.post(actionsUrl,data,function () {});
-	location.reload();	
+	doAction('setAppStatus', {
+		appID: $(this).parent().data('applicationid'),
+		decision: $(this).data('decision')
+	}).done(function (data) {
+		if (data.success) {
+			showAlert({message: 'Application status updated.'}, $('#alertHolder'), 'success');
+			location.reload(); // XXX: hides alert that something happened!
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function injectQualifications() {
-	var appID = $(this).data("appid");
-	var action = "fetchQualifications";
-	var data = {
-		appID: appID,
-		action: action
-	}
-	$.post( actionsUrl, data, function(qual) {
-		$qual = $.parseJSON(qual);
-		$qualifications.html($qual['qualifications']);
+	doAction('fetchApplication', {
+		appID: $(this).data('appid')
+	}).done(function (data) {
+		if (data.success) {
+			$qualifications.html(data.object.qualifications);
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
 	});
 }
 
 function viewUserComments() {
-	var action = "fetchComments";
-	var data = {
-		userID: $(this).data("userid"),
-		action: action
-	}
-	$.post( actionsUrl, data, function(comments){
-		$comments = $.parseJSON(comments);
-		var commentsCnt = $comments['size'];
-		for ( var i = commentsCnt -1; i >= 0; i-- ) {
-			$comment = $comments[i];
-			$commentsBlock.append( "<p class='commentDate'>" + $comment[ "createTime" ] + "</p><blockquote><p class='commentContent'>"+ 
-				$comment[ "comment" ] + "</p><footer>" + $comment[ "author" ] + "</footer></blockquote></div><!-- End column --></div> <!-- End row --><br>" );		
-		};
-		if(!commentsCnt){
-			$commentsBlock.html("There are no reviews available for this student.");
+	doAction('fetchComments', {
+		userID: $(this).data('userid')
+	}).done(function (data) {
+		if (data.success) {
+			var comments = data.objects;
+			for ( var i = comments.length - 1; i >= 0; i-- ) {
+				$comment = comments[i];
+				$commentsBlock.append( "<p class='commentDate'>" + $comment.createTime + "</p><blockquote><p class='commentContent'>"+ 
+					$comment.comment + "</p><footer>" + $comment.creator.firstName + ' ' + $comment.creator.lastName + "</footer></blockquote></div><!-- End column --></div> <!-- End row --><br>" );		
+			};
+			if(!comments.length){
+				$commentsBlock.html("There are no reviews available for this student.");
+			}
+		} else {
+			showError(data.error, $('#alertHolder'));
 		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
 	});
 	$commentsModal.bind("hidden.bs.modal", function() { $commentsBlock.html(""); });
 }
@@ -249,41 +277,28 @@ function viewResults( users ) {
 }
 
 function viewUserProfile() {
-	var userID = $(this).data( "userid" );
-	var userType = $(this).data( "usertype" );
-	var action = "";
-
-	switch( userType ){
-	case STUDENT:
-		action = "fetchStudent";
-		break;
-	case PROFESSOR:
-		action = "fetchProfessor";
-		break;
-	case STAFF:
-		action = "TODO";
-		break;
-	case ADMIN:
-		action = "TODO";
-		break; 
-	}
-	var data = {
-		userID: userID,
-		action: action
-	}
-
-	$.post( actionsUrl, data, function( user ) { prepareStudentModal( user ); } );
+	doAction('fetchUser', {
+		userID: $(this).data('userid'),
+		userType: $(this).data('usertype')
+	}).done(function (data) {
+		if (data.success) {
+			prepareStudentModal(data.object, $(this).data('usertype'));
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
-function prepareStudentModal( user ) {
-	var student = $.parseJSON( user );
-	$( "#studentModalTitle" ).html( student[ "firstName" ] + " " + student[ "lastName" ] );
-	$( "#studentMajor" ).html( "Major: " + student[ "major" ] );
-	$( "#studentGPA" ).html( "GPA: " + student[ "gpa" ] );
-	$( "#studentEmail" ).html( "Email: " + student[ "email" ] );
-	$( "#studentMobilePhone" ).html( "Mobile Phone: " + student[ "mobilePhone" ] );
-	$( "#studentAboutMe" ).html( student[ "aboutMe" ] );
-	$( "#studentClassYear" ).html( "Class Year: " + student[ "classYear" ] );
+function prepareStudentModal( student ) {
+	$( "#studentModalTitle" ).html( student.firstName + " " + student.lastName );
+	$( "#studentMajor" ).html( "Major: " + student.major );
+	$( "#studentGPA" ).html( "GPA: " + student.gpa );
+	$( "#studentEmail" ).html( "Email: " + student.email );
+	$( "#studentMobilePhone" ).html( "Mobile Phone: " + student.mobilePhone );
+	$( "#studentAboutMe" ).html( student.aboutMe );
+	$( "#studentClassYear" ).html( "Class Year: " + student.classYear );
 
 }
 
@@ -313,26 +328,16 @@ function viewPasswordForm( userID, userType ){
 }
 
 function viewUserForm( userID, userType ) {
-	var action = "";
-	switch( userType ){
-	case STUDENT:
-		action = "fetchStudent";
-		break;
-	case PROFESSOR:
-		action = "fetchProfessor";
-		break;
-	case STAFF:
-		action = "TODO";
-		break;
-	case ADMIN:
-		action = "TODO";
-		break; 
-	}
-	var data = {
-		userID: userID,
-		action: action
-	}
-	$.post( actionsUrl, data, function ( user ){ prepareUserForm( user, userType ); });
+	doAction('fetchUser', {userID: userID, userType: userType})
+	.done(function (data) {
+		if (data.success) {
+			prepareUserForm(data.object, userType);
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function preparePasswordForm( user ){
@@ -342,9 +347,9 @@ function preparePasswordForm( user ){
 	$passwordModal.modal( "show" );	
 }
 
-function prepareUserForm( user, userType ) {
-	$user = $.parseJSON( user );
-	switch( $user["type"] ){
+function prepareUserForm( $user, userType ) {
+	window.$user = $user;
+	switch( userType ){
 	case STUDENT:
 		$( "#modalHeader" ).html( $user[ "firstName" ] + " " + $user[ "lastName" ] );
 		$( "[name='firstName']", $editProfileForm ).val( $user[ "firstName" ] );
@@ -378,90 +383,105 @@ function prepareUserForm( user, userType ) {
 }
 
 function changeUserPassword(){
-	var action = "changeUserPassword";
-	var data = {
-		oldPassword: $( "[name='oldPassword']" , $passwordForm ).val(),
-		newPassword: $( "[name='newPassword']" , $passwordForm ).val(),
-		confirmPassword: $( "[name='confirmPassword']" , $passwordForm ).val()
-	}
-	$.post( actionsUrl, data, function ( info ){});
-	$.passwordModal.modal( "hide" );
+	doAction('changeUserPassword', {
+		oldPassword: $( "[name='oldPassword']", $passwordForm).val(),
+		newPassword: $( "[name='newPassword']", $passwordForm).val(),
+		confirmPassword: $( "[name='confirmPassword']", $passwordForm).val()
+	}).done(function (data) {
+		if (data.success) {
+			$passwordModal.modal('hide');
+			showAlert({message:'Your password has been changed.'}, $('#alertHolder'),	'success');
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function updateUserProfile() {
 	var action = "";
+	var data = {};
 	switch($user[ "type" ]){
 	case STUDENT:
-		action = "updateStudentProfile";
 		/* Select the input fields in the context of the update form. */
-		var data = {
+		data = {
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
-			email: $( "[name='email']", $editProfileForm ).val(),
 			mobilePhone: $( "[name='mobilePhone']", $editProfileForm ).val(),
 			classYear: $( "[name='classYear']", $editProfileForm ).val(),
 			major: $( "[name='major']", $editProfileForm ).val(),
 			gpa: $( "[name='gpa']", $editProfileForm ).val(),
 			universityID: $( "[name='universityID']", $editProfileForm ).val(),
 			aboutMe: $( "[name='aboutMe']", $editProfileForm ).val(),
-			action: action
 		}
 		break;
 	case PROFESSOR:
 		/* Select the input fields in the context of the update form. */
-		action = "updateProfessorProfile";
-		var data = {
+		data = {
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
-			email: $( "[name='email']", $editProfileForm ).val(),
 			officePhone: $( "[name='officePhone']", $editProfileForm ).val(),
 			building: $( "[name='building']", $editProfileForm ).val(),
 			room: $( "[name='room']", $editProfileForm ).val(),
-			action: action
 		}
 		break;
 	case STAFF:
-		action = "TODO";
 		break;
 	case ADMIN:
-		action = "TODO";
 		break; 
 	}
 
-	$.post( actionsUrl, data, function ( info ){});
-
-	/*TODO: Obtain a confirmation from the PHP script on success/failure and 
-	 * notify the user */
-	$userModal.modal( "hide" );
+	doAction('updateProfile', data)
+	.done(function(data) {
+		if (data.success) {
+			$userModal.modal('hide');
+			showAlert({message:'Your profile has been updated.'}, $('#alertHolder'), 'success');
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function prepareBuildingsDropdown() { 
-	var action = "fetchBuildings";
-	var data = {
-		action: action
-	}
-	$.post( actionsUrl, data, function ( buildings ) { 
-		var buildings = eval( "(" + buildings + ")" );
-		for( var i = 0; i < buildings.length; i++ ){
-			$buildingsDropdown.append( "<option>" + buildings[i][ "building" ] + "</option>" );
+	doAction('fetchBuildings', {})
+	.done(function (data) {
+		if (data.success) {
+			var buildings = data.objects;
+			for( var i = 0; i < buildings.length; i++ ){
+				$buildingsDropdown.append( "<option>" + buildings[i] + "</option>" );
+			}
+			$buildingsDropdown.trigger( "change" );
+			$buildingsDropdown.selectpicker('refresh');
+		} else {
+			showError(data.error, $('#alertHolder'));
 		}
-		$buildingsDropdown.trigger( "change" );
-	 });
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function prepareRoomsDropdown() {
-	var action = "fetchTheRooms";
-	var data = {
-		building: $( this ).val(),
-		action: action
-	}
 	clearDropdown( $roomsDropdown );
-	$.post( actionsUrl, data, function ( rooms ) { 
-		var rooms = eval( "(" + rooms + ")" );
-		for( var i = 0; i < rooms.length; i++ ){
-			$roomsDropdown.append( "<option>" + rooms[i] + "</option>" );
-		}
-	 });	
+	if ($(this).val() != '') {
+		doAction('fetchTheRoom', {building: $(this).val()})
+		.done(function ( data ) {
+			if (data.success) {
+				var rooms = data.objects;
+				for( var i = 0; i < rooms.length; i++ ){
+					$roomsDropdown.append( '<option>' + rooms[i] + '</option>' );
+				}
+				$roomsDropdown.trigger( "change" );
+				$roomsDropdown.selectpicker('refresh');
+			} else {
+				showError(data.error, $('#alertHolder'));
+			}
+		}).fail(function (jqXHR, textStatus, errorMessage) {
+			showError({message: errorMessage}, $('#alertHolder'));
+		});
+	}
 }
 
 function prepareCoursesDropdown() {
@@ -497,5 +517,6 @@ function prepareProfessorsDropdown() {
 
 function clearDropdown( $dropdown ){
 	$dropdown.find( "option" ).remove();
+	$dropdown.selectpicker('refresh');
 	
 }

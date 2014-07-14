@@ -70,8 +70,8 @@ if ($error == null) {
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 		<script type="text/javascript" src="search.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 		<!-- END Scripts -->
 	</head>
   

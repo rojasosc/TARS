@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	$('select').selectpicker();
-
     //Attach the boostrap validator js to the form
     $('#profile').bootstrapValidator({
         message: 'This value is invalid',
@@ -13,7 +11,7 @@ $(document).ready(function() {
 			doAction('updateProfile', $('#profile :input').serializeArray()
 			).done(function (data) {
 				if (data.success) {
-					$('#alertHolder').html('<div class="alert alert-success"><strong>Success!</strong> Your profile has been updated!</div>');
+					showAlert({message: 'Your profile has been updated'}, $('#alertHolder'), 'success');
 				} else {
 					showError(data.error, $('#alertHolder'));
 				}

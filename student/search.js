@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	$('select').selectpicker();
-
 	//Hehlper Variables
     var positionID;
     var studentID;
@@ -53,5 +51,6 @@ $(document).ready(function() {
 	$('#applyModal').on('hidden.bs.modal', function(event) {
 		appModalBody.html(appFormHTML);
 		appModalFooter.html(appFormButtons);
+		$('[name=compensation]').selectpicker('refresh');
 	});
 });

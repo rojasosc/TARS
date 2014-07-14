@@ -31,12 +31,16 @@ $courses = $professor->getCourses();
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<title>My Applicants</title>		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="professor.css" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script src="comments.js"></script>
-		<script src="../js/tars_utilities.js"></script>
+
+		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="professor.css" rel="stylesheet">
+
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="comments.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
@@ -99,12 +103,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
+				</div>
 				<div class="row">
 					<h1 class="panelHeader">My Applicants</h1>
 				</div> <!-- End row -->			
@@ -177,6 +183,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													<legend><?= ucfirst($section->getSectionType()) ?></legend>	
 														
 															<?php
+																$location = '';
 																foreach($sessions as $session){
 																	$days = $session->getWeekDays();
 																	$time = $session->getStartTime() . "-" . $session->getEndTime();
@@ -199,7 +206,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 														<?php
 															if(!$applications){
 														?>
-															<div class="alert alert-danger" role="alert">
+															<div class="alert alert-info" role="alert">
 																<p>There are currently no available applications for this section.</p>
 															</div>
 															
@@ -273,7 +280,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 														
 														<?php
 														/* Table entry closing brace */
-														$tableEntry++;
 														}
 
 														?>

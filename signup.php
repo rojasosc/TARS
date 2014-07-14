@@ -21,6 +21,7 @@ require_once 'db.php';
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap-validator.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="js/tars_utilities.js"></script>
 		<script type="text/javascript" src="signup.js"></script>
 
 	</head>
@@ -106,7 +107,7 @@ require_once 'db.php';
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="classYear">Class Year</label>
-										<select id="classYear" name="classYear" class="form-control" placeholder="Class Year">
+										<select id="classYear" name="classYear" class="selectpicker form-control" placeholder="Class Year">
 											<option>2014</option>
 											<option>2015</option>
 											<option>2016</option>
@@ -118,7 +119,7 @@ require_once 'db.php';
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="major">Major</label>
-										<select id="major" name="major" class="form-control" placeholder="Major">
+										<select id="major" name="major" class="selectpicker form-control" placeholder="Major">
 											<option>Accounting</option>
 											<option>Computer Science</option>
 											<option>Physics</option>

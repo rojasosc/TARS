@@ -239,7 +239,7 @@ final class Place {
 		$sql = 'SELECT DISTINCT building FROM Places';
 		$args = array();
 		$rows = Database::executeGetAllRows($sql, $args);
-		return $rows;
+		return array_map(function ($row) { return $row['building']; }, $rows);
 	}
 
 	public static function getOrCreatePlace($building, $room) {
@@ -263,6 +263,12 @@ final class Place {
 	public function getBuilding() { return $this->building; }
 	public function getRoom() { return $this->room; }
 	public function getPlaceID() { return $this->placeID; }
+
+	public function toArray() {
+		return array(
+			'building' => $this->building,
+			'room' => $this->room);
+	}
 
 	private $building;
 	private $room;
@@ -408,6 +414,16 @@ abstract class User {
 		$this->createTime = strtotime($user_row['createTime']);
 	}
 
+	public function changePassword($newPassword) {
+		$password_hash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+		$sql = 'UPDATE Users
+				SET password = :password
+				WHERE userID = :userID';
+		$args = array(':userID' => $this->id, ':password' => $password_hash);
+		return Database::execute($sql, $args);
+	}
+
 	public function getID() { return $this->id; }
 	public function getEmail() { return $this->email; }
 	public function getPassword() { return $this->password; }
@@ -513,7 +529,11 @@ final class Student extends User {
 	}
 	
 	public function getAllComments(){
-		return Comment::getAllComments($this->id);
+		$sql = 'SELECT * FROM Comments
+   				WHERE studentID = :studentID';
+		$args = array(':studentID' => $this->id);
+   		$rows = Database::executeGetAllRows($sql, $args);
+   		return array_map(function($row) { return new Comment($row); }, $rows);
 	}
 
 	public function saveComment($comment, $creator, $createTime = null) {
@@ -553,6 +573,20 @@ final class Student extends User {
 	public function getClassYear() { return $this->classYear; }
 	public function getAboutMe() { return $this->aboutMe; }
 	public function getUniversityID() { return $this->universityID; }
+
+	public function toArray() {
+		return array(
+			'type' => STUDENT,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
+			'mobilePhone' => $this->mobilePhone,
+			'major' => $this->major,
+			'gpa' => $this->gpa,
+			'classYear' => $this->classYear,
+			'aboutMe' => $this->aboutMe,
+			'universityID' => $this->universityID);
+	}
 
 	private $mobilePhone;
 	private $major;
@@ -598,14 +632,18 @@ final class Professor extends User {
 		return array_map(function ($row) { return new Professor($row); }, $rows );
 	}
 		
-	public function updateProfile($firstName, $lastName, $officeID, $officePhone) {
+	public function updateProfile($firstName, $lastName, $officePhone, $building, $room) {
+		$building = strtoupper($building);
+		$room = strtoupper($room);
+
 		$sql = 'UPDATE Professors
 				INNER JOIN Users ON Users.userID = Professors.userID
 				SET firstName = :firstName, lastName = :lastName,
 					officeID = :officeID, officePhone = :officePhone
 				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':officeID' => $officeID, ':officePhone' => $officePhone);
+			':officeID' => Place::getOrCreatePlace($building, $room),
+			':officePhone' => $officePhone);
 		Database::execute($sql, $args);
 
 		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
@@ -657,6 +695,17 @@ final class Professor extends User {
 	public function getOfficeID() { return $this->officeID; }
 	public function getOfficePhone() { return $this->officePhone; }
 
+	public function toArray() {
+		$office = $this->getOffice();
+		return array(
+			'type' => PROFESSOR,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
+			'officePhone' => $this->officePhone,
+			'office' => $office->toArray());
+	}
+
 	private $officeID;
 	private $office;
 	private $officePhone;
@@ -702,6 +751,14 @@ final class Staff extends User {
 	}
 
 	public function getOfficePhone() { return $this->officePhone; }
+
+	public function toArray() {
+		return array(
+			'type' => STAFF,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName);
+	}
 
 	private $officePhone;
 }
@@ -993,13 +1050,6 @@ final class Application {
 		Database::execute($sql, $args);
 	}
 
-	public static function setApplicationStatus($application, $decision){
-		$sql = "UPDATE Applications SET appStatus = :decision 
-		WHERE appID = :appID";
-		$args = array(':appID' => $application->getID(), ':decision' => $decision);
-		Database::execute($sql, $args);
-	}
-
 	public function __construct($row) {
 		$this->id = $row['appID'];
 		$this->positionID = $row['positionID'];
@@ -1029,6 +1079,23 @@ final class Application {
 		return $this->creator;
 	}
 	public function getCreateTime() { return $this->createTime; }
+
+	public function setApplicationStatus($decision){
+		$sql = "UPDATE Applications SET appStatus = :decision 
+				WHERE appID = :appID";
+		$args = array(':appID' => $this->id, ':decision' => $decision);
+		return Database::execute($sql, $args);
+	}
+
+	public function toArray() {
+		$creator = $this->getCreator();
+		return array(
+			'status' => $this->appStatus,
+			'compensation' => $this->compensation,
+			'qualifications' => $this->qualifications,
+			'creator' => $creator->toArray(),
+			'createTime' => date('g:i:sa \o\n Y/m/d', $this->createTime));
+	}
 
 	private $id;
 	private $position;
@@ -1355,14 +1422,6 @@ final class Comment {
 		return new Comment($row);
 	}
 	
-	public static function getAllComments($studentID){
-		$sql = 'SELECT * FROM Comments
-   				WHERE studentID = :studentID';
-		$args = array(':studentID' => $studentID);
-   		$rows = Database::executeGetAllRows($sql, $args);
-   		return array_map(function($row) { return new Comment($row); }, $rows);
-	}
-	
 	public static function insertComment($comment, $studentID, $creatorID, $createTime) {
 		$sql = "INSERT INTO Comments (commentText, studentID, creatorID, createTime) VALUES
 				(:comment, :student, :creator, :createTime)";
@@ -1377,7 +1436,7 @@ final class Comment {
 		$this->studentID = $row['studentID'];
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = $row['createTime'];
+		$this->createTime = strtotime($row['createTime']);
 	}
 	
 	public function getID(){ return $this->id; }
@@ -1390,6 +1449,16 @@ final class Comment {
 		return $this->creator;
 	}
 	public function getCreateTime() { return $this->createTime; }
+
+	public function toArray() {
+		$creator = $this->getCreator();
+		$student = $this->getStudent();
+		return array(
+			'comment' => $this->commentText,
+			'student' => $student->toArray(),
+			'creator' => $creator->toArray(),
+			'createTime' => date('g:i:sa \o\n Y/m/d', $this->createTime));
+	}
 	
 	private $id;
 	private $commentText;

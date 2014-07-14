@@ -54,7 +54,7 @@ function get_invalid_values($values, $params = array()) {
 		}
 		switch ($validate_as['type']) {
 		case FORM_VALIDATE_NOTEMPTY:
-			$invalid = empty($value);
+			$invalid = ($value === false) || ($value === '');
 			break;
 		case FORM_VALIDATE_EMAIL:
 			$invalid = filter_var($value, FILTER_VALIDATE_EMAIL) === false;

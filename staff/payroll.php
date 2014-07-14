@@ -43,10 +43,13 @@ if ($error == null) {
 		
 		<title>Payroll</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
+		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
+		<link type="text/css" href="staff.css" rel="stylesheet">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="../js/tars_utilities.js"></script>
 
 	</head>
 	<body>
@@ -78,7 +81,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<div class="row">
 										<div class="col-md-5">										
 											<!--<label class="control-label" for="term">Term</label>-->
-											<select id="term" name="term" class="form-control" placeholder="Term">
+											<select id="term" name="term" class="selectpicker form-control" placeholder="Term">
 <?php
 foreach ($terms as $term) {
 	$sel = ($thisTerm != null && $term->getID() == $thisTerm->getID()) ? ' selected="selected"' : '';

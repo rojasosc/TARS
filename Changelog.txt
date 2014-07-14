@@ -4,6 +4,26 @@ CHANGELOG
 ****************************************************************
 ================================================================
 
+================================
+********************************
+Publish v0.5.0
+********************************
+================================
+Date: 13 July, 2014
+
+===General===
+Event Logging has been implemented with a new DB structure
+
+===Student===
+Everything is now functional aside from pagination
+
+===Professor===
+Complete UI overhaul
+Commenting has been implemented
+
+===Staff===
+UI overhauled
+Commenting has been implemented
 
 ================================
 ********************************

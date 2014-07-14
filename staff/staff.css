@@ -1,0 +1,329 @@
+html,body{
+    margin: 0;
+    padding: 0;
+    height: 100%; 
+    overflow-x: hidden;		
+}
+
+th,td {
+	text-align: center;
+	
+}
+
+.welcome{
+	
+	text-align: center;
+	
+}
+#page-wrapper {
+    min-height: 100%;
+    width: 100%;
+    position: relative;
+
+}
+#header {
+    background-image: url('../images/header-logo.png');
+    background-repeat: no-repeat;
+    background-color: #011227;
+    background-position: center;
+    padding: 10px;
+    color: #a2c2db;
+    margin: 0;
+    height: 100px;
+}
+#content {
+    padding: 10px;
+    margin-top: 80px;
+    padding-bottom: 250px;
+    
+}
+#footer {
+    width: 100%;
+    background-image: url('../images/meliora_challenge_330x60.png');
+    background-repeat: no-repeat;
+    background-color: #474747;
+    background-position: center;
+    color: #ffffff;
+    position: absolute;
+    height: 250px;
+    bottom: 0;
+    left: 0;
+	
+}
+#contact-us {
+    list-style-type: none;
+    padding: 10px;
+}
+#contact-us lh {
+    font-size: 15px;
+    font-weight: bold;
+}
+#navbar-theme {
+    background-color: #334d6c;
+    padding-right: 45px;
+    padding-left: 45px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color: #a2c2db;
+    height: 60px;
+    margin-top: 90px;
+
+}
+
+.circle {
+	border-radius: 100%;
+}
+.panel-heading{
+	height: 50px;
+}
+
+.col-md-4{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.panelHeader{
+	
+	font-weight: bold;
+	font-size: 20pt;
+	text-align: center;
+}
+
+.optionHeader{
+	
+	font-weight: bold;
+	font-size: 15pt;
+}
+
+#newTermButton{
+	
+	margin-top: 25px;
+	width: 150px;
+	
+}
+
+#copyTermButton{
+	
+	margin-top: 27px;
+	width: 150px;
+
+	
+}
+
+#payrollContainer{	
+	float:left;
+	width: 25%;
+	padding: 10px;
+}
+
+#resultsContainer{
+	float:right;
+	width: 75%;
+
+}
+
+#termContainer {
+	padding: 25px;
+	margin-bottom: 20px;
+	color: black;
+	width: 100%;
+}
+
+.termHeader{
+	font-weight: bold;
+	text-align: center;
+	color: #334d6c;
+	
+}
+.nav-tabs p{
+	
+	font-weight: bold;
+	font-size: 20pt;
+	color: #3c763d;
+}
+
+#manageCourses legend{
+	
+	color: black;
+}
+
+table th{
+	
+	color: black;
+}
+
+#search{
+	float:left;
+	width: 25%;
+	padding: 10px;
+	height: 100%;
+}
+
+
+#result{	
+	float:right;
+	width: 75%;
+	margin-bottom: 10px;
+}
+
+
+.pagination{
+	
+	text-align: center;
+	margin: auto;
+	font-weight: bold;
+	
+}
+
+#navTabs{
+	
+	float:left;
+	width: 25%;
+	padding: 10px;		
+}
+
+#termPanes{
+
+	float:right;
+	width: 75%;
+}
+
+#navTabs li {
+	margin: 10px;
+	margin-left: 0;
+	background-color: #334d6c;
+	border-radius: 10px;
+}
+
+#navTabs li:hover {
+	margin: 10px;
+	margin-left: 0;	
+	border-radius: 10px;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+	background-color: #3498db;
+
+	
+}
+
+#navTabs a {
+	
+	color: white;
+}
+
+#navTabs a:hover {
+	
+	color: black;
+}
+
+.dropdown-header{
+	font-weight: bold;
+	font-color: black;
+}
+.commentAuthor{
+    color: red;
+}
+
+.commentDate{
+    float: right;
+}
+
+.commentContent{
+    font-style: italic;
+}
+#studentModalTitle{
+    text-align: center;
+}
+.actions{
+    cursor: pointer; 
+    cursor: hand;
+}
+
+/*
+ * Everything below is NavBar coloring
+ */
+.navbar-default {
+    background-color: #334d6c;
+    border-color: #334d6c;
+}
+.navbar-default .navbar-brand {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #fed100;
+}
+.navbar-default .navbar-text {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #fed100;
+    background-color: #011227;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #fed100;
+    background-color: #011227;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #fed100;
+    background-color: #011227;
+}
+.navbar-default .navbar-toggle {
+    border-color: #011227;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #011227;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ecf0f1;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+    border-color: #ecf0f1;
+}
+.navbar-default .navbar-link {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-link:hover {
+    color: #150b0b;
+}
+@media (max-width: 765px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #150b0b;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #150b0b;
+        background-color: #011227;
+    }
+}
+
+h1{
+	text-align: center;
+}
+
+.submitbutton {
+	margin: 10px;
+}
+
+.panel {
+	margin: 52px;
+}
+.panel-title {
+	font-size: 32px;
+}
+

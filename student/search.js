@@ -67,4 +67,9 @@ $(document).ready(function() {
 		appModalBody.html(appFormHTML);
 		appModalFooter.html(appFormButtons);
 	});
+	
+	$('.pagination').pagination({
+		items: 100;
+		itemsOnPage: 10;
+	});
 });

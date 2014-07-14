@@ -4,7 +4,6 @@ require_once '../formInput.php';
 require_once '../error.php';
 
 $form_args = get_form_values(array('q','term','type'), false);
-$pages = 7;
 
 $positions = array();
 $terms = array();
@@ -59,11 +58,10 @@ if ($error == null) {
 		<!-- END CSS -->
 		
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="search.js"></script>
 		<!-- END Scripts -->
-		
 	</head>
   
 	<body>
@@ -229,9 +227,17 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<!-- BEGIN Pagination -->
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>
-									<?php for($i= 1; $i <= $pages; $i++){?>
-										<li><a href="#"><?=$i?></a></li>
-									<?php }?>
+									<?php
+										$positionCount = count($positions);
+										$rpp = 10;
+										$pageCountFloat = $positionCount / $rpp;
+										$pages = ceil($pageCountFloat);
+										$currentPage = 1;
+										for($i= 1; $i <= $pages; $i++){?>
+											<li <?php if($currentPage == $i){?> class="active" <?php }?>><a href="#"><?=$i?></a></li>
+									<?php
+										}
+									?>
 									<li><a href="#">&raquo;</a></li>
 								</ul>
 								<!-- END Pagination -->
@@ -310,9 +316,17 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<!-- BEGIN Pagination -->
 								<ul class="pagination">
 									<li><a href="#">&laquo;</a></li>
-									<?php for($i= 1; $i <= $pages; $i++){?>
-										<li><a href="#"><?=$i?></a></li>
-									<?php }?>
+									<?php
+										$positionCount = count($positions);
+										$rpp = 10;
+										$pageCountFloat = $positionCount / $rpp;
+										$pages = ceil($pageCountFloat);
+										$currentPage = 1;
+										for($i= 1; $i <= $pages; $i++){?>
+											<li <?php if($currentPage == $i){?> class="active" <?php }?>><a href="#"><?=$i?></a></li>
+									<?php
+										}
+									?>
 									<li><a href="#">&raquo;</a></li>
 								</ul>
 								<!-- END Pagination -->

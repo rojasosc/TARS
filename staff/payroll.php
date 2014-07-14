@@ -129,7 +129,7 @@ foreach ($terms as $term) {
 									?>
 									
 									<tr>
-										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $section->getCourseName() ?></td><td><?= $posType ?></td><td><?= $student->getClassYear() ?></td>
+										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $section->getCourseName() ?></td><td><?= $position->getTypeTitle() ?></td><td><?= $student->getClassYear() ?></td>
 										<td><?= $assistant->getCompensation() ?></td>
 									</tr>
 									<?php

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	alert("sanity check");
 	//Hehlper Variables
     var positionID;
     var studentID;
@@ -21,6 +22,7 @@ $(document).ready(function() {
 		var prof = currPos.find('.instructor').text();
 		var place = currPos.find('.place').text();
 		var time = currPos.find('.days').text() + " " + currPos.find('.time').text();
+
 		$('#jobDetails').html('<div class="row"><div class="col-xs-10 col-xs-offset-1"><h2>Position Details</h2></div></div><div class="row"><div class="col-xs-10 col-xs-offset-1"><p>Type: ' + posType + '</p></div></div><div class="row"><div class="col-xs-10 col-xs-offset-1"><p>Course: ' + course + '</p></div></div><div class="row"><div class="col-xs-10 col-xs-offset-1"><p>Instructor: ' + prof + '</p></div></div><div class="row"><div class="col-xs-10 col-xs-offset-1"><p>Place: ' + place + '</p></div></div><div class="row"><div class="col-xs-10 col-xs-offset-1"><p>Time: ' + time + '</p></div></div>');
 	});
 
@@ -69,7 +71,7 @@ $(document).ready(function() {
 	});
 	
 	$('.pagination').pagination({
-		items: 100;
-		itemsOnPage: 10;
+		items: 100,
+		itemsOnPage: 10
 	});
 });

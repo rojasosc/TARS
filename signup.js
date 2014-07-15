@@ -176,8 +176,9 @@ function clearInput() {
 /*Removes the form and displays a confirmation message*/
 function displayConfirmation(){
 	var message ="<p>We have sent you an email confirmation.</p> <p> Start seeking available positions by <a href=\"index.php\">signing in</a> with your email address.</p>";
-	$('#signupForm').fadeOut(600);
-	$('#formBox').html(message).fadeIn();
+	$('#signupForm').fadeOut('slow', function () {
+		$('#formBox').html(message).fadeIn('slow');
+	});
 	
 }
 

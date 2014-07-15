@@ -11,7 +11,7 @@ $(document).ready(function() {
 			doAction('updateProfile', $('#profile :input').serializeArray()
 			).done(function (data) {
 				if (data.success) {
-					showAlert({message: 'Your profile has been updated'}, $('#alertHolder'), 'success');
+					showAlert({message: 'Your profile has been updated.'}, $('#alertHolder'), 'success');
 				} else {
 					showError(data.error, $('#alertHolder'));
 				}

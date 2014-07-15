@@ -21,8 +21,8 @@ require_once 'db.php';
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="js/bootstrap-validator.min.js"></script>
 		<script src="js/bootstrap-select.min.js"></script>
-		<script src="js/tars_utilities.js"></script>
 		<script src="signup.js"></script>
+		<script src="js/tars_utilities.js"></script>
 
 	</head>
   

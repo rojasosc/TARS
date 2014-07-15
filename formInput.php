@@ -30,11 +30,12 @@ function get_form_values($key_names, $superglobal = true) {
 	return $values;
 }
 
-const FORM_VALIDATE_NOTEMPTY = 0;
-const FORM_VALIDATE_EMAIL = 1;
-const FORM_VALIDATE_OTHERFIELD = 2;
-const FORM_VALIDATE_NUMERIC = 3;
-const FORM_VALIDATE_NUMSTR = 4;
+const FORM_VALIDATE_NOTEMPTY = 1;
+const FORM_VALIDATE_IGNORE = 2;
+const FORM_VALIDATE_EMAIL = 3;
+const FORM_VALIDATE_OTHERFIELD = 4;
+const FORM_VALIDATE_NUMERIC = 5;
+const FORM_VALIDATE_NUMSTR = 6;
 
 /**
  * get_invalid_values($form_fields)
@@ -55,6 +56,9 @@ function get_invalid_values($values, $params = array()) {
 		switch ($validate_as['type']) {
 		case FORM_VALIDATE_NOTEMPTY:
 			$invalid = ($value === false) || ($value === '');
+			break;
+		case FORM_VALIDATE_IGNORE:
+			$invalid = false;
 			break;
 		case FORM_VALIDATE_EMAIL:
 			$invalid = filter_var($value, FILTER_VALIDATE_EMAIL) === false;

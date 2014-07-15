@@ -27,19 +27,19 @@ $courses = $professor->getCourses();
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">		
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>My Assistants</title>		
-		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
-		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
-		<link type="text/css" href="professor.css" rel="stylesheet">
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="professor.css" rel="stylesheet"/>
 
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
-		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="comments.js"></script>
-		<script type="text/javascript" src="../js/tars_utilities.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap-select.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<script src="comments.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 	</head> 
 	<body>
 		<!-- Profile Modal -->
@@ -164,7 +164,7 @@ $courses = $professor->getCourses();
 $header_active = 'asst';
 require 'header.php';
 ?>
-			<!-- BEGIN page content -->s
+			<!-- BEGIN page content -->
 			<div id="content">
 				<div id="alertHolder">
 <?php
@@ -176,7 +176,6 @@ if ($error != null) {
 <?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
-				</div>
 				<div class="row">
 					<h1 class="panelHeader">My Assistants</h1>
 				</div> <!-- End row -->			

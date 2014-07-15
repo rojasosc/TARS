@@ -8,19 +8,31 @@ try {
 } catch (TarsException $ex) {
 	$error = $ex;
 }
+
+$term = null;
+if ($error == null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+		}
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
+	}
+}
 ?>
 
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>Student Verification</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="comments.js"></script>

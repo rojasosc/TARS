@@ -37,19 +37,19 @@ if ($error == null) {
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>Payroll</title>
 		
-		<link type="text/css" href="../css/bootstrap.min.css" rel="stylesheet">
-		<link type="text/css" href="../css/bootstrap-select.min.css" rel="stylesheet">
-		<link type="text/css" href="staff.css" rel="stylesheet">
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
-		<script type="text/javascript" src="../js/tars_utilities.js"></script>
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<script src="../js/bootstrap-select.min.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 
 	</head>
 	<body>

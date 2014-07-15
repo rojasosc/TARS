@@ -13,18 +13,20 @@ try {
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>Edit Term</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="editTerm.js"></script>
+		<script src="../js/bootstrap-select.min.js"></script>
 		<script src="../js/tars_utilities.js"></script>
+		<script src="editTerm.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN Positions Modal-->
@@ -42,7 +44,7 @@ try {
 									<div class="row">
 										<div class="col-xs-10">									
 										<label class="control-label" for="positionType">Position Type</label>
-											<select id="positionType" name="positionType" class="form-control">
+											<select id="positionType" name="positionType" class="selectpicker form-control">
 												<option>Grader</option>
 												<option>Workshop Leader</option>
 												<option>Lab TA</option>
@@ -66,7 +68,7 @@ try {
 											<div class="row">
 												<div class="col-xs-4">
 													<label class="control-label" for="days">Days</label>
-													<select name="days" class="form-control" multiple>
+													<select name="days" class="selectpicker form-control" multiple>
 														<option>Monday</option>
 														<option>Tuesday</option>
 														<option>Wednesday</option>
@@ -81,12 +83,12 @@ try {
 											<div class="row">
 												<div class="col-xs-4">											
 													<label class="control-label" for="building">Building</label>
-													<select name="building" class="form-control" placeholder="Building">
+													<select name="building" class="selectpicker form-control" placeholder="Building">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->
 												<div class="col-xs-4">													
 													<label class="control-label" for="rooms">Room</label>
-													<select name="room" class="form-control" placeholder="Room">
+													<select name="room" class="selectpicker form-control" placeholder="Room">
 													</select> <!-- End select -->																							
 												</div> <!-- End column -->							
 											</div> <!-- End Row -->
@@ -132,7 +134,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<div class="row">		
 								<div class="col-xs-8">
 									<label class="control-label" for="termName">Select Term</label>
-										<select id="selectTerm" name="termName" class="form-control">
+										<select id="selectTerm" name="termName" class="selectpicker form-control">
 											<option>Summer-2014</option>
 											<option>Fall-2014</option>
 											<option>Spring-2015</option>
@@ -197,7 +199,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-xs-4">						
 													<label class="control-label" for="professor">Professor</label>
-													<select name="professor" class="form-control all-professors">
+													<select name="professor" class="selectpicker form-control all-professors">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->											
 												<div class="col-xs-4">
@@ -218,7 +220,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-xs-4">
 													<label class="control-label" for="days">Days</label>
-													<select name="days" class="form-control" multiple>
+													<select name="days" class="selectpicker form-control" multiple>
 														<option>Monday</option>
 														<option>Tuesday</option>
 														<option>Wednesday</option>
@@ -233,7 +235,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-xs-4">											
 													<label class="control-label" for="buildings">Building</label>
-													<select name="building" class="form-control buildings" placeholder="Building">
+													<select name="building" class="selectpicker form-control buildings" placeholder="Building">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->
 												<div class="col-xs-4">													
@@ -256,14 +258,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<div class="col-xs-4">
 													<div class="form-group">
 														<label class="control-label" for="course">Select Course</label>
-														<select name="course" class="form-control courses" placeholder="Courses">
+														<select name="course" class="selectpicker form-control courses" placeholder="Courses">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-xs-4" id="professorColumn">
 													<div class="form-group">
 														<label class="control-label" for="professor">Select Professor</label>
-														<select name="professor" class="form-control professors" placeholder="Professors">
+														<select name="professor" class="selectpicker form-control professors" placeholder="Professors">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->									
@@ -282,7 +284,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-xs-4">						
 													<label class="control-label" for="professor">Professor</label>
-													<select name="professor" class="form-control all-professors">
+													<select name="professor" class="selectpicker form-control all-professors">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->											
 												<div class="col-xs-4">
@@ -303,7 +305,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-xs-4">
 													<label class="control-label" for="days">Days</label>
-													<select name="days" class="form-control" multiple>
+													<select name="days" class="selectpicker form-control" multiple>
 														<option>Monday</option>
 														<option>Tuesday</option>
 														<option>Wednesday</option>
@@ -318,12 +320,12 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-xs-4">											
 													<label class="control-label" for="buildings">Building</label>
-													<select name="buildings" class="form-control buildings" placeholder="Building">
+													<select name="buildings" class="selectpicker form-control buildings" placeholder="Building">
 													</select> <!-- End select -->										
 												</div> <!-- End column -->
 												<div class="col-xs-4">													
 													<label class="control-label" for="rooms">Room</label>
-													<select name="rooms" class="form-control rooms" placeholder="Room">
+													<select name="rooms" class="selectpicker form-control rooms" placeholder="Room">
 													</select> <!-- End select -->																							
 												</div> <!-- End column -->							
 											</div> <!-- End Row -->
@@ -346,12 +348,12 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<div class="row">
 										<div class="col-xs-4">
 											<label class="control-label" for="course">Select Course</label>
-											<select name="course" class="form-control courses">
+											<select name="course" class="selectpicker form-control courses">
 											</select> <!-- End select -->										
 										</div> <!-- End column -->
 										<div class="col-xs-4" id="professorColumn">
 											<label class="control-label" for="professor">Select Professor</label>
-											<select name="professor" class="form-control professors">
+											<select name="professor" class="selectpicker form-control professors">
 											</select> <!-- End select -->										
 										</div> <!-- End column -->												
 									</div> <!-- End row -->										

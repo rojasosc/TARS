@@ -138,18 +138,26 @@ $(document).ready(function() {
 });
 
 function doAction(action, params) {
-	if (params instanceof Array) {
-		params.push({name: 'action', value: action});
-	} else {
-		params.action = action;
-	}
-	// return the Deferred so that code can .done() and .fail() it
-	return $.ajax({
+	var request = {
 		type: 'POST',
 		url: actionsUrl,
-		data: params,
 		dataType: 'json'
-	});
+	};
+	if (typeof FormData === 'function' && params instanceof FormData) {
+		request.data = params;
+		request.url += '?action=' + encodeURIComponent(action);
+		request.cache = false;
+		request.contentType = false;
+		request.processData = false;
+	} else if (params instanceof Array) {
+		params.push({name: 'action', value: action});
+		request.data = params;
+	} else {
+		params.action = action;
+		request.data = params;
+	}
+	// return the Deferred so that code can .done() and .fail() it
+	return $.ajax(request);
 }
 
 function showError(errorObj, element) {
@@ -232,16 +240,20 @@ function viewUserComments() {
 	$commentsModal.bind("hidden.bs.modal", function() { $commentsBlock.html(""); });
 }
 function searchUsers( userType ) {
-	var action = "searchForUsers";
-	var data = {
+	doAction('searchForUsers', {
 		firstName: $( "[name='firstName']", $userSearchForm ).val(),
 		lastName: $( "[name='lastName']", $userSearchForm).val(),
 		email: $( "[name='emailSearch']", $userSearchForm).val(),
-		searchType: userType,
-		action: action
-	}
-	$.post( actionsUrl, data, function( users ) { viewResults( users ); });
-
+		userTypes: Math.pow(2,STUDENT)+Math.pow(2,1+ PROFESSOR)
+	}).done(function (data) {
+		if (data.success) {
+			viewResults(data.objects);
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function viewResults( users ) {
@@ -249,7 +261,6 @@ function viewResults( users ) {
 	$results.hide();
 	$results.find( "tbody" ).remove();
 	/* Associative array of a user */
-	var users = eval( "(" + users + ")" );
 	/* Render results table */
 	var row = new Array(), j = -1;
 	var size = users.length; 
@@ -303,28 +314,16 @@ function prepareStudentModal( student ) {
 }
 
 function viewPasswordForm( userID, userType ){
-	var action = "";
-	switch( userType ){
-	case STUDENT:
-		action = "fetchStudent";
-		break;
-	case PROFESSOR:
-		action = "fetchProfessor";
-		break;
-	case STAFF:
-		action = "TODO";
-		break;
-	case ADMIN:
-		action = "TODO";
-		break; 
-	}
-	var data = {
-		userID: userID,
-		action: action
-	}
-
-	$.post( actionsUrl, data, function ( user ){ preparePasswordForm( user, userType ); });	
-
+	doAction('fetchUser', {userID: userID, userType: userType})
+	.done(function (data) {
+		if (data.success) {
+			preparePasswordForm(data.object, userType);
+		} else {
+			showError(data.error, $('#alertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#alertHolder'));
+	});
 }
 
 function viewUserForm( userID, userType ) {
@@ -340,9 +339,8 @@ function viewUserForm( userID, userType ) {
 	});
 }
 
-function preparePasswordForm( user ){
-	$user = $.parseJSON( user );
-	$( "[name='email']", $passwordForm).val( $user[ "email" ] );
+function preparePasswordForm( user, userType ){
+	$( "[name='email']", $passwordForm).val( user.email );
 	$( "[type='submit']" ).click( changeUserPassword );
 	$passwordModal.modal( "show" );	
 }
@@ -485,6 +483,7 @@ function prepareRoomsDropdown() {
 }
 
 function prepareCoursesDropdown() {
+	// TODO update with editTermUI
 	var action = "fetchCourses";
 	var data = {
 		action: action
@@ -495,11 +494,13 @@ function prepareCoursesDropdown() {
 			$coursesDropdown.append( "<option>" + courses[i][ "courseTitle" ] + "</option>" );
 		}
 		$coursesDropdown.trigger( "change" );
+		$coursesDropdown.selectpicker('refresh');
 	 });
 
 }
 
 function prepareProfessorsDropdown() {
+	// TODO update with editTermUI
 	var action = "fetchTheProfessors";
 	var data = {
 		courseTitle: $( this ).val(),
@@ -509,8 +510,10 @@ function prepareProfessorsDropdown() {
 		clearDropdown( $professorsDropdown );
 		var professors = eval( "(" + professors + ")" );
 		for( var i = 0; i < professors.length; i++ ){
-			$professorsDropdown.append( "<option>" + professors[i][ "firstName" ] + " " + professors[i][ "lastName" ] + "</option>" );
+			$professorsDropdown.append( "<option>" + professors[i].firstName + " " + professors[i].lastName + "</option>" );
 		}
+		$professorsDropdown.trigger('change');
+		$professorsDropdown.selectpicker('refresh');
 	 });
 
 }

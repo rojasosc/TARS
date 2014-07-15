@@ -36,6 +36,7 @@ const FORM_VALIDATE_EMAIL = 3;
 const FORM_VALIDATE_OTHERFIELD = 4;
 const FORM_VALIDATE_NUMERIC = 5;
 const FORM_VALIDATE_NUMSTR = 6;
+const FORM_VALIDATE_UPLOAD = 7;
 
 /**
  * get_invalid_values($form_fields)

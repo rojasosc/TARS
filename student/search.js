@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	alert("sanity check");
 	//Hehlper Variables
     var positionID;
     var studentID;

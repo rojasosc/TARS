@@ -1,6 +1,5 @@
 <?php  
 require_once '../session.php';
-require_once '../formInput.php';
 require_once '../error.php';
 
 $error = null;
@@ -27,7 +26,6 @@ try {
 		<link href="../css/bootstrap-validator.min.css" rel="stylesheet"/>
 		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
 		<link href="student.css" rel="stylesheet"/>
-		<link href="profile.css" rel="stylesheet"/>
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

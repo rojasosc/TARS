@@ -137,10 +137,14 @@ $(document).ready(function() {
 
 });
 
-function doAction(action, params) {
+function doAction(action, params, altUrl) {
+	var url = actionsUrl;
+	if (arguments.length == 3) {
+		url = altUrl;
+	}
 	var request = {
 		type: 'POST',
-		url: actionsUrl,
+		url: url,
 		dataType: 'json'
 	};
 	if (typeof FormData === 'function' && params instanceof FormData) {

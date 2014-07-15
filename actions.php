@@ -18,8 +18,6 @@
 require_once 'session.php';
 require_once 'db.php';
 require_once 'error.php';
-require_once 'formInput.php';
-
 
 /**
  * A function to tell us whether the given array is "associative" (has any string keys)
@@ -44,6 +42,10 @@ final class ActionError extends Exception {
  * It is NOT provided by the action functions themselves
  */
 final class Action {
+	public static function login($params, $user) {
+		return Session::login($params['email'], $params['password']);
+	}
+
 	public static function emailAvailable($params, $user) {
 		$email = $params['email'];
 		return User::checkEmailAvailable($email);
@@ -277,8 +279,7 @@ final class Action {
 	// 'event' (REQUIRED) is the Event constant that will be used on failure
 	//    TODO insert successful events here rather than sprawled around db.php?
 	// 'params' is an array of the parameters.
-	//    If one is not provided correctly (uses the rules of formInput.php's
-	//    get_form_values and get_invalid_values), an error is raised
+	//    If one is not provided correctly, an ERROR_FORM_FIELD is thrown
 	// 'isUserInput' is a boolean. TRUE returns the 'Invalid input in fields' error;
 	//    FALSE returns the 'Invalid parameter' error.
 	//    USAGE: TRUE for signup, search (user input);
@@ -292,6 +293,17 @@ final class Action {
 	//    functions, for example; also 'fn' will receive null if noSession is true and
 	//    nobody is logged in)
 	private static $action_map = array(
+		// Action:           login 
+		// Session required: none
+		// Parameters:
+		//     email: email field value
+		//     password: password field value
+		// Returns:
+		//     object: Your user object on successful login
+		//     success and error: Action status
+		'login' => array('event' => Event::SESSION_LOGIN,
+			'isUserInput' => true, 'noSession' => true,
+			'params' => array('email', 'password')),
 		// Action:           emailAvailable 
 		// Session required: none
 		// Parameters:
@@ -556,14 +568,14 @@ final class Action {
 				if ($invalid) {
 					$invalids[] = $param_key;
 				}
-			} elseif (!isset($def['optional']) || !$def['optiona']) {
+			} elseif (!isset($def['optional']) || !$def['optional']) {
 				$invalids[] = $param_key;
 			}
 		}
 		return $invalids;
 	}
 
-	public static function callAction($actionName, $input) {
+	public static function callAction($actionName, $input, $jsonOutput = false) {
 		// Check if action is known
 		if (isset(Action::$action_map[$actionName])) {
 			// get the definition structure for this action from the above structure
@@ -638,6 +650,9 @@ final class Action {
 										}
 									}, $result_obj);
 							}
+						} else {
+							// int, float, or string
+							$output['value'] = $result_obj;
 						}
 					}
 				} catch (ActionError $ex) {
@@ -659,21 +674,31 @@ final class Action {
 		}
 
 		// set the success and error properties here
-		if ($error != null) {
-			$output['success'] = false;
-			$output['error'] = $error->toArray();
+		if ($jsonOutput) {
+			if ($error != null) {
+				$output['success'] = false;
+				$output['error'] = $error->toArray();
+			} else {
+				$output['success'] = true;
+			}
+			return json_encode($output);
 		} else {
-			$output['success'] = true;
+			if ($error != null) {
+				throw $error;
+			} else {
+				return $result_obj;
+			}
 		}
-		return $output;
 	}
 }
 
-// check that action was in the request (POST or GET), but always have a value
-$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+if (isset($_SERVER["SCRIPT_FILENAME"]) && basename($_SERVER["SCRIPT_FILENAME"]) == 'actions.php') {
+	// check that action was in the request (POST or GET), but always have a value
+	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 
-$output = Action::callAction($action, $_POST);
+	$output = Action::callAction($action, $_POST, true);
 
-// output as JSON
-echo json_encode($output);
+	// output as JSON
+	echo $output;
+}
 

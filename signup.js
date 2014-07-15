@@ -9,7 +9,7 @@ $(document).ready(function () {
 		},
 		submitHandler: function(validator, form, submitButton) {
 			// Ajax post(url,data,callback function)
-			doAction('signup', $('#signupForm :input').serializeArray()
+			doAction('signup', $('#signupForm :input').serializeArray(), './actions.php'
 			).done(function (data) {
 				if (data.success) {
 					//Remove the form and display a confirmation.

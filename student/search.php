@@ -1,6 +1,6 @@
 <?php  
 require_once '../session.php';
-require_once '../formInput.php';
+require_once '../actions.php';
 require_once '../error.php';
 
 $error = null;
@@ -11,7 +11,7 @@ try {
 	$error = $ex;
 }
 
-$form_args = get_form_values(array('q','term','type'), false);
+$form_args = array('q'=>'','term'=>'','type'=>-1);//get_form_values(array('q','term','type'), false);
 
 $positions = array();
 $terms = array();
@@ -206,7 +206,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div class="form-inline" id="inputrow">
 									<div class="form-group">
 										<label class="sr-only" for="q">Search</label>
-										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=get_form_value('q', '', false)?>"/>
+										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=$form_args['q']?>"/>
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="term">Term</label>
@@ -214,7 +214,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', $currentTermID, false) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
+											<option value="<?=$term_opt->getID()?>"<?php if($form_args['term'] == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
 										<?php
 										}
 										?>
@@ -226,7 +226,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"<?php if(get_form_value('type', 0, false) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+											<option value="<?=$index?>"<?php if($form_args['type'] == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
 										<?php
 										}
 										?>

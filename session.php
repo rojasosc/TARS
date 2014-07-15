@@ -26,7 +26,7 @@ final class Session {
 				return $user_obj;
 			}
 		}
-		return false;
+		return null;
 	}
 
 

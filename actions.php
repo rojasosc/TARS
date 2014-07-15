@@ -206,6 +206,7 @@ final class Action {
 		}
 	}
 
+	// only available via running this script; not by Action::callAction
 	public static function uploadTerm($params, $user) {
 		define('CUSTOM_UPLOAD_ERR_CANT_READ', 1001);
 		$upload_error_message = function ($code) {
@@ -241,6 +242,13 @@ final class Action {
 		}
 		return null;
 	}
+
+	const VALIDATE_NOTEMPTY = 1;
+	const VALIDATE_EMAIL = 2;
+	const VALIDATE_OTHERFIELD = 3;
+	const VALIDATE_NUMERIC = 4;
+	const VALIDATE_NUMSTR = 5;
+	const VALIDATE_UPLOAD = 11;
 
 	// $action_map: this is a map of action keys to action definition structures
 	// The keys of this array must have corresponding class functions defined with the same name:
@@ -303,24 +311,24 @@ final class Action {
 		//     success and error: Action status
 		'signup' => array('event' => Event::USER_CREATE, 'noSession' => true,
 			'isUserInput' => true, 'params' => array(
-					'email' => array('type' => FORM_VALIDATE_EMAIL),
-					'emailConfirm' => array('type' => FORM_VALIDATE_OTHERFIELD,
+					'email' => array('type' => Action::VALIDATE_EMAIL),
+					'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
 						'field' => 'email'),
-					'password' => array('type' => FORM_VALIDATE_NOTEMPTY),
-					'passwordConfirm' => array('type' => FORM_VALIDATE_OTHERFIELD,
+					'password' => array('type' => Action::VALIDATE_NOTEMPTY),
+					'passwordConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
 						'field' => 'password'),
-					'firstName' => array('type' => FORM_VALIDATE_NOTEMPTY),
-					'lastName' => array('type' => FORM_VALIDATE_NOTEMPTY),
-					'mobilePhone' => array('type' => FORM_VALIDATE_NUMSTR,
+					'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
+					'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
+					'mobilePhone' => array('type' => Action::VALIDATE_NUMSTR,
 						'min_length' => 10, 'max_length' => 10),
-					'classYear' => array('type' => FORM_VALIDATE_NUMSTR,
+					'classYear' => array('type' => Action::VALIDATE_NUMSTR,
 						'min_length' => 4, 'max_length' => 4),
-					'major' => array('type' => FORM_VALIDATE_NOTEMPTY),
-					'gpa' => array('type' => FORM_VALIDATE_NUMERIC,
+					'major' => array('type' => Action::VALIDATE_NOTEMPTY),
+					'gpa' => array('type' => Action::VALIDATE_NUMERIC,
 						'min_range' => 0, 'max_range' => 4),
-					'universityID' => array('type' => FORM_VALIDATE_NUMSTR,
+					'universityID' => array('type' => Action::VALIDATE_NUMSTR,
 						'min_length' => 8, 'max_length' => 8),
-					'aboutMe' => array('type' => FORM_VALIDATE_NOTEMPTY))),
+					'aboutMe' => array('type' => Action::VALIDATE_NOTEMPTY))),
 		// Action:           search 
 		// Session required: STUDENT
 		// Parameters:
@@ -357,25 +365,25 @@ final class Action {
 		//     success and error: Action status
 		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
 			'isUserInput' => true, 'params' => array(
-				'firstName' => array('type' => FORM_VALIDATE_NOTEMPTY),
-				'lastName' => array('type' => FORM_VALIDATE_NOTEMPTY),
-				'mobilePhone' => array('type' => FORM_VALIDATE_NUMSTR,
+				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'mobilePhone' => array('type' => Action::VALIDATE_NUMSTR,
 					'optional' => true, 'min_length' => 10, 'max_length' => 10),
-				'classYear' => array('type' => FORM_VALIDATE_NUMSTR,
+				'classYear' => array('type' => Action::VALIDATE_NUMSTR,
 					'optional' => true, 'min_length' => 4, 'max_length' => 4),
-				'major' => array('type' => FORM_VALIDATE_NOTEMPTY,
+				'major' => array('type' => Action::VALIDATE_NOTEMPTY,
 					'optional' => true),
-				'gpa' => array('type' => FORM_VALIDATE_NUMERIC,
+				'gpa' => array('type' => Action::VALIDATE_NUMERIC,
 					'optional' => true, 'min_range' => 0, 'max_range' => 4),
-				'universityID' => array('type' => FORM_VALIDATE_NUMSTR,
+				'universityID' => array('type' => Action::VALIDATE_NUMSTR,
 					'optional' => true, 'min_length' => 8, 'max_length' => 8),
-				'aboutMe' => array('type' => FORM_VALIDATE_NOTEMPTY,
+				'aboutMe' => array('type' => Action::VALIDATE_NOTEMPTY,
 					'optional' => true),
-				'officePhone' => array('type' => FORM_VALIDATE_NUMSTR,
+				'officePhone' => array('type' => Action::VALIDATE_NUMSTR,
 					'optional' => true, 'min_length' => 10, 'max_length' => 10),
-				'building' => array('type' => FORM_VALIDATE_NOTEMPTY,
+				'building' => array('type' => Action::VALIDATE_NOTEMPTY,
 					'optional' => true),
-				'room' => array('type' => FORM_VALIDATE_NOTEMPTY,
+				'room' => array('type' => Action::VALIDATE_NOTEMPTY,
 					'optional' => true))),
 		// Action:           changeUserPassword
 		// Session required: logged in
@@ -385,9 +393,9 @@ final class Action {
 		//     success and error: Action status
 		'changeUserPassword' => array('event' => Event::USER_SET_PROFILE,
 			'isUserInput' => true, 'params' => array(
-					'oldPassword' => array('type' => FORM_VALIDATE_NOTEMPTY),
-					'newPassword' => array('type' => FORM_VALIDATE_NOTEMPTY),
-					'confirmPassword' => array('type' => FORM_VALIDATE_OTHERFIELD,
+					'oldPassword' => array('type' => Action::VALIDATE_NOTEMPTY),
+					'newPassword' => array('type' => Action::VALIDATE_NOTEMPTY),
+					'confirmPassword' => array('type' => Action::VALIDATE_OTHERFIELD,
 						'field' => 'newPassword'))),
 		// Action:           fetchBuildings
 		// Session required: logged in
@@ -464,9 +472,9 @@ final class Action {
 		// TODO paginate here
 		'searchForUsers' => array('event' => Event::USER_GET_PROFILE, 'userType' => STAFF,
 			'isUserInput' => true, 'params' => array(
-				'email' => FORM_VALIDATE_IGNORE,
-				'firstName' => FORM_VALIDATE_IGNORE,
-				'lastName' => FORM_VALIDATE_IGNORE)),
+				'email' => array('optional' => true),
+				'firstName' => array('optional' => true),
+				'lastName' => array('optional' => true))),
 		// Action:           uploadTerm
 		// Session required: STAFF
 		// Parameters:
@@ -475,14 +483,87 @@ final class Action {
 		//     termFile: the file data
 		// Returns:
 		//     success and error: Action status
+		// Only available via calling this script; not by Action::callAction()
 		'uploadTerm' => array('event' => Event::STAFF_TERM_IMPORT, 'userType' => STAFF,
 			'isUserInput' => true, 'params' => array(
-				'termYear' => array('type' => FORM_VALIDATE_NUMSTR,
+				'termYear' => array('type' => Action::VALIDATE_NUMSTR,
 					'min_length' => 4, 'max_length' => 4),
-				'termSemester' => FORM_VALIDATE_NOTEMPTY,
-				'termFile' => FORM_VALIDATE_UPLOAD)));
+				'termSemester' => Action::VALIDATE_NOTEMPTY,
+				'termFile' => Action::VALIDATE_UPLOAD)));
 
-	public static function callAction($actionName, $parameters) {
+	private static function validateParameters($input, $definitions) {
+		if (!is_assoc($definitions)) {
+			// if params was just a list of keys,
+			// assign them all default settings
+			$definitions = array_fill_keys($definitions,
+				array('type' => Action::VALIDATE_NOTEMPTY));
+		}
+		$invalids = array();
+		foreach ($definitions as $param_key => $def) {
+			if (array_key_exists($param_key, $input)) {
+				$value = $input[$param_key];
+				if (is_int($def)) {
+					$def = array('type' => $def);
+				} elseif (!isset($def['type'])) {
+					$def['type'] = Action::VALIDATE_NOTEMPTY;
+				}
+
+				$invalid = false;
+				switch ($def['type']) {
+				case Action::VALIDATE_NOTEMPTY:
+					$invalid = ($value === '');
+					break;
+				case Action::VALIDATE_EMAIL:
+					$invalid = filter_var($value, FILTER_VALIDATE_EMAIL) === false;
+					break;
+				case Action::VALIDATE_OTHERFIELD:
+					if (isset($def['field'])) {
+						$other_key = $def['field'];
+						if (isset($input[$other_key])) {
+							$invalid = ($input[$other_key] !== $value);
+							break;
+						}
+					}
+					$invalid = true;
+					break;
+				case Action::VALIDATE_NUMERIC:
+					if (isset($def['reject_signed']) && ($value[0] == '-' || $value[0] == '+')) {
+						$value = '';
+					}
+					if (isset($def['reject_decimal']) && strpos($value, '.') !== false) {
+						$value = '';
+					}
+					$invalid = filter_var($value, FILTER_VALIDATE_FLOAT, $def) === false;
+					break;
+				case Action::VALIDATE_NUMSTR:
+					$value = preg_replace('/([^\d]+)/', '', $value);
+					if (isset($def['min_length']) && strlen($value) < $def['min_length']) {
+						$value = '';
+					}
+					if (isset($def['max_length']) && strlen($value) > $def['max_length']) {
+						$value = '';
+					}
+					$invalid = ($value === '');
+					break;
+				case Action::VALIDATE_UPLOAD:
+					// this right here is why forms with VALIDATE_UPLOAD field
+					// cannot be called by Action::callAction(): it accesses $_FILES
+					if (!isset($_FILES[$param_key])) {
+						$invalid = true;
+					}
+					break;
+				}
+				if ($invalid) {
+					$invalids[] = $param_key;
+				}
+			} elseif (!isset($def['optional']) || !$def['optiona']) {
+				$invalids[] = $param_key;
+			}
+		}
+		return $invalids;
+	}
+
+	public static function callAction($actionName, $input) {
 		// Check if action is known
 		if (isset(Action::$action_map[$actionName])) {
 			// get the definition structure for this action from the above structure
@@ -497,6 +578,8 @@ final class Action {
 			$action_params = isset($action_def['params']) ? $action_def['params'] : array();
 			// get whether errors should be "Invalid form field" or "Invalid parameter"
 			$action_userinput = isset($action_def['isUserInput']) ? $action_def['isUserInput'] : false;
+
+			// SESSION
 			$user = null;
 			$error = null;
 			if (!$action_nosess) {
@@ -508,18 +591,15 @@ final class Action {
 					$error = $ex;
 				}
 			}
+
+			// RUN ACTION
 			if ($error == null) {
 				// if nothing went wrong (session), run the function and get results
 				try {
-					// run this action
-					if (is_assoc($action_params)) {
-						$param_names = array_keys($action_params);
-					} else {
-						$param_names = $action_params;
-					}
-					// TODO consume formInput.php into this file and fix it
-					$params = get_form_values($param_names);
-					$invalids = get_invalid_values($params, $action_params);
+
+					// VALIDATE PARAMETERS
+					$invalids = Action::validateParameters($input, $action_params);
+
 					if (count($invalids) > 0) {
 						$s = (count($invalids) == 1) ? '' : 's';
 						$i = implode(', ', $invalids);
@@ -529,9 +609,11 @@ final class Action {
 							throw new ActionError("Invalid parameter$s ($i)");
 						}
 					} else {
-						$result_obj = call_user_func(array('Action', $actionName), $params, $user);
+						// successful
+						$result_obj = call_user_func(array('Action', $actionName), $input, $user);
 					}
 
+					// GET RESULT
 					if ($result_obj !== null) {
 						if (is_bool($result_obj)) {
 							// boolean result

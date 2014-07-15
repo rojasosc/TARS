@@ -16,13 +16,12 @@ if ($error == null) {
 		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 		if ($currentTermID != null) {
 			$term = Term::getTermByID($currentTermID);
-			$sections = $professor->getSections();
+			$courses = $professor->getCourses($term);
 		}
 	} catch (PDOException $ex) {
 		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
 	}
 }
-$courses = $professor->getCourses();
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -672,13 +672,14 @@ final class Professor extends User {
 		return array_map(function ($row) { return new Section($row); }, $rows);		
 	}
 
-	public function getCourses(){
+	public function getCourses($term){
 		$sql = "SELECT DISTINCT Courses.courseID, Courses.department, Courses.courseNumber, Courses.courseTitle \n"
 		    . "FROM Courses,Sections,Teaches\n"
 		    . "WHERE Teaches.sectionID = Sections.sectionID \n"
 		    . "AND Courses.courseID = Sections.courseID\n"
-		    . "AND Teaches.professorID = :professorID";
-		$args = array(':professorID' => $this->id);
+			. "AND Teaches.professorID = :professorID\n"
+			. "AND Courses.termID = :term";
+		$args = array(':professorID' => $this->id, ':term' => $term->getID());
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows;
 

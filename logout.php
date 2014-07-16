@@ -3,10 +3,15 @@
  /*This file can be called from any page to securely end a session */
 
 require_once 'session.php';
+require_once 'actions.php';
+require_once 'error.php';
 
-Session::destroy();
+try {
+	Action::callAction('logout');
+} catch (TarsException $ex) {
+	// TODO show to user?
+}
 
-// TODO: save errors for index somehow?
 header("Location: ./");
 exit;
 

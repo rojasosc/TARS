@@ -42,27 +42,58 @@ final class ActionError extends Exception {
  * It is NOT provided by the action functions themselves
  */
 final class Action {
-	public static function login($params, $user) {
-		return Session::login($params['email'], $params['password']);
+	// To create an action, add its function to this class, then add a corresponding
+	// element to $action_map to describe how Action::callAction() has to verify parameters, error check, and event log it.
+	//
+	// Documentation for these functions is provided with the corresponding $action_map element
+	// at the bottom of this class. It's sort of like an interface (i.e. Java)
+	public static function login($params, $user, &$eventObject) {
+		$sessionUser = Session::login($params['email'], $params['password']);
+		$eventObject = $sessionUser->getID();
+		return $sessionUser;
 	}
 
-	public static function emailAvailable($params, $user) {
+	public static function logout($params, $user, &$eventObject) {
+		$delayThrow = null;
+		$sessionUser = null;
+		if (session_start()) {
+			try {
+				$sessionUser = Session::getLoggedInUser();
+			} catch (PDOException $ex) {
+				$delayThrow = $ex;
+			}
+		}
+
+		Session::destroy();
+
+		if ($sessionUser != null) {
+			$eventObject = $sessionUser->getID();
+		}
+
+		if ($delayThrow != null) {
+			throw $delayThrow;
+		}
+		return null;
+	}
+
+	public static function emailAvailable($params, $user, &$eventObject) {
 		$email = $params['email'];
 		return User::checkEmailAvailable($email);
 	}
 
-	public static function signup($params, $user) {
+	public static function signup($params, $user, &$eventObject) {
 		$studentID = Student::registerStudent(
 			$params['email'], $params['password'],
 			$params['firstName'], $params['lastName'],
 			$params['mobilePhone'], $params['classYear'],
 			$params['major'], $params['gpa'],
 			$params['universityID'], $params['aboutMe']);
+		$eventObject = $studentID;
 		return null;
 		// TODO email (probably in ::registerStudent)
 	}
 
-	public static function apply($params, $student) {
+	public static function apply($params, $student, &$eventObject) {
 		$positionID = $params['positionID'];
 		$comp = $params['compensation'];
 		$qual = $params['qualifications'];
@@ -73,11 +104,12 @@ final class Action {
 		if ($position->hasStudentApplied($student)) {
 			throw new ActionError('You have already applied for this position');
 		}
-		$student->apply($position, $comp, $qual);
+		$appID = $student->apply($position, $comp, $qual);
+		$eventObject = $appID;
 		return null;
 	}
 
-	public static function withdraw($params, $student) {
+	public static function withdraw($params, $student, &$eventObject) {
 		$positionID = $params['positionID'];
 		$position = Position::getPositionByID($positionID);
 		if ($position == null) {
@@ -86,11 +118,12 @@ final class Action {
 		if (!$position->hasStudentApplied($student)) {
 			throw new ActionError('You have not applied for that position');
 		}
+		// TODO Application object -> $eventObject
 		$student->withdraw($position);
 		return null;
 	}
 
-	public static function updateProfile($params, $user) {
+	public static function updateProfile($params, $user, &$eventObject) {
 		switch ($user->getObjectType()) {
 		case STUDENT:
 			$user->updateProfile(
@@ -106,67 +139,65 @@ final class Action {
 				$params['room']);
 			break;
 		}
+		$eventObject = $user->getID();
 		return null;
 	}
 
-	public static function changeUserPassword($params, $user) {
+	public static function changeUserPassword($params, $user, &$eventObject) {
 		$oldPassword = $params['oldPassword'];
 		$newPassword = $params['newPassword'];
 		$confirmPassword = $params['confirmPassword'];
-		if (password_verify($oldPassword, $user->getPassword())) {
-			$user->changePassword($newPassword);
-			return null;
-		} else {
-			throw 'Incorrect password';
+		if (!password_verify($oldPassword, $user->getPassword())) {
+			throw new ActionError('Incorrect password');
 		}
+		$user->changePassword($newPassword);
+		$eventObject = $user->getID();
+		return null;
 	}
 
-	public static function fetchBuildings($params, $user) {
+	public static function fetchBuildings($params, $user, &$eventObject) {
 		return Place::getAllBuildings();
 	}
 
-	public static function fetchTheRoom($params, $user) {
+	public static function fetchTheRoom($params, $user, &$eventObject) {
 		$places = Place::getPlacesByBuilding($params['building']);
 		return array_map(function ($place) {
 			return $place->getRoom();
 		}, $places);
 	}
 
-	public static function fetchUser($params, $user) {
+	public static function fetchUser($params, $user, &$eventObject) {
 		$user = User::getUserByID($params['userID'], $params['userType']);
 		if ($user == null) {
 			throw new ActionError('User not found');
-		} else {
-			return $user;
 		}
+		return $user;
 	}
 
-	public static function fetchApplication($params, $user) {
+	public static function fetchApplication($params, $user, &$eventObject) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
 		$application = Application::getApplicationByID($params['appID']);
 		if ($application == null) {
 			throw new ActionError('Application not found');
-		} else {
-			return $application;
 		}
+		return $application;
 	}
 
-	public static function fetchComments($params, $user) {
+	public static function fetchComments($params, $user, &$eventObject) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
 		$student = User::getUserByID($params['userID'], STUDENT);
 		if ($student == null) {
 			throw new ActionError('Student not found');
-		} else {
-			$comments = $student->getAllComments();
-			return $comments;
 		}
+		$comments = $student->getAllComments();
+		return $comments;
 	}
 
-	public static function setAppStatus($params, $user) {
+	public static function setAppStatus($params, $user, &$eventObject) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
@@ -174,44 +205,43 @@ final class Action {
 		$application = Application::getApplicationByID($params['appID']);
 		if ($application == null) {
 			throw new ActionError('Application not found');
-		} else {
-			if ($user->getObjectType() == PROFESSOR) {
-				$position = $application->getPosition();
-				$section = $position->getSection();
-				if (!$section->isTaughtBy($user)) {
-					throw new ActionError('Permission denied (not owner)');
-				}
-			}
-			$application->setApplicationStatus($params['decision']);
-			return null;
 		}
+		if ($user->getObjectType() == PROFESSOR) {
+			$position = $application->getPosition();
+			$section = $position->getSection();
+			if (!$section->isTaughtBy($user)) {
+				throw new ActionError('Permission denied (not owner)');
+			}
+		}
+		$application->setApplicationStatus($params['decision']);
+		$eventObject = $application->getID();
+		return null;
 	}
 
-	public static function newStudentComment($params, $user) {
+	public static function newStudentComment($params, $user, &$eventObject) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
 		$student = User::getUserByID($params['studentID'], STUDENT);
 		if ($student == null) {
 			throw new ActionError('Student not found');
-		} else {
-			$student->saveComment($params['comment'], $user, time());
-			return null;
 		}
+		$commentID = $student->saveComment($params['comment'], $user, time());
+		$eventObject = $commentID;
+		return null;
 	}
 
-	public static function searchForUsers($params, $user) {
+	public static function searchForUsers($params, $user, &$eventObject) {
 		if (is_array($params)) {
 			$usersFound = User::findUsers($params['email'],$params['firstName'],
 				$params['lastName'], -1);
 			return $usersFound;
-		} else {
-			return $params;
 		}
+		return $params;
 	}
 
 	// only available via running this script; not by Action::callAction
-	public static function uploadTerm($params, $user) {
+	public static function uploadTerm($params, $user, &$eventObject) {
 		define('CUSTOM_UPLOAD_ERR_CANT_READ', 1001);
 		$upload_error_message = function ($code) {
 			switch ($code) {
@@ -233,7 +263,7 @@ final class Action {
 		case UPLOAD_ERR_OK:
 			$lines = @file($upload['tmp_name'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 			if ($lines) {
-				Term::importTermFromCSV($params['termYear'], $params['termSemester'], $lines, $upload);
+				$termID = Term::importTermFromCSV($params['termYear'], $params['termSemester'], $lines, $upload);
 				break;
 			} else {
 				$upload['error'] = CUSTOM_UPLOAD_ERR_CANT_READ;
@@ -242,8 +272,9 @@ final class Action {
 		default:
 			throw new TarsException(Event::ERROR_FORM_UPLOAD,
 				Event::STAFF_TERM_IMPORT,
-				$upload_error_message($upload['error']));
+				array($upload_error_message($upload['error'])));
 		}
+		$eventObject = $termID;
 		return null;
 	}
 
@@ -254,6 +285,14 @@ final class Action {
 	const VALIDATE_NUMSTR = 5;
 	const VALIDATE_UPLOAD = 11;
 
+	/**
+	 * This function is not an Action.
+	 * Validates the parameters in $input according to the $definitions array.
+	 *
+	 * $input: The input, such as from $_POST, or constructed to pass to callAction.
+	 *
+	 * $definitions: This is 'params' in the $action_map
+	 */
 	private static function validateParameters($input, $definitions) {
 		if (!is_assoc($definitions)) {
 			// if params was just a list of keys,
@@ -308,15 +347,15 @@ final class Action {
 					}
 					$invalid = ($value === '');
 					break;
-				case Action::VALIDATE_UPLOAD:
-					// this right here is why forms with VALIDATE_UPLOAD field
-					// cannot be called by Action::callAction(): it accesses $_FILES
-					if (!isset($_FILES[$param_key])) {
-						$invalid = true;
-					}
-					break;
 				}
 				if ($invalid) {
+					$invalids[] = $param_key;
+				}
+			} elseif ($def ==  Action::VALIDATE_UPLOAD ||
+					(isset($def['type']) && $def['type'] == Action::VALIDATE_UPLOAD)) {
+				// this right here is why forms with VALIDATE_UPLOAD field
+				// cannot be called by Action::callAction(): it accesses $_FILES
+				if (!isset($_FILES[$param_key])) {
 					$invalids[] = $param_key;
 				}
 			} elseif (!isset($def['optional']) || !$def['optional']) {
@@ -328,11 +367,14 @@ final class Action {
 
 	// $action_map: this is a map of action keys to action definition structures
 	// The keys of this array must have corresponding class functions defined with the same name:
-	//    It takes two arguments:
+	//    It takes three arguments:
 	//        $params: The $_POST array
 	//        $user: which is currently logged in (null if nobody is).
+	//        &$eventObject: this can be set by the function to an object ID to put in the event log for this Action
 	//
 	//    Throws: PDOException when the underlying database call fails
+	//            ActionError if a custom error is generated, is passed to create a TarsException in callAction
+	//            TarsException if a structured error is generated
 	//
 	//    The return value is outputted in the format above by following these rules:
 	//        The object always contains "success" and "error" (iff success=false)
@@ -350,16 +392,42 @@ final class Action {
 	//        If the value is a string, an ERROR_FORM_FIELD is produced with the given string
 	//            USE CASE: the given positionID doesn't exist or was not provided
 	//
-	// 'event' (REQUIRED) is the Event constant that will be used on failure
-	//    TODO insert successful events here rather than sprawled around db.php?
-	// 'params' is an array of the parameters.
+	// 'event' => (REQUIRED) is the Event constant that will be used on failure
+	// 'params' => is an array of the parameters.
 	//    If one is not provided correctly, an ERROR_FORM_FIELD is thrown
-	// 'isUserInput' is a boolean. TRUE returns the 'Invalid input in fields' error;
+	//    Format:
+	//        1. array of $key => $definition pairs, giving rules for the $definition
+	//            The $definition array has the following elements:
+	//            'type' => the Action::VALIDATE_* constant that describes what the $value MUST be
+	//            VALIDATE_NOTEMPTY: Just checks that the $value is not empty-string
+	//            VALIDATE_EMAIL: Checks that the $value is a valid email address
+	//            VALIDATE_OTHERFIELD: Checks that the $value is equal to the $value of $input with key $def['field']
+	//            VALIDATE_NUMERIC: Checks that the $value is a number.
+	//                It must be >= $def['min_range'] (optional)
+	//                It must be <= $def['max_range'] (optional)
+	//                It cannot start with a '+' or '-' if $def['reject_signed'] is set
+	//                It cannot contain a '.' if $def['reject_decimal'] is set
+	//            VALIDATE_NUMSTR: Checks that the $value is a string of digits (phone, uni ID)
+	//                It must be shorter or equal to $def['min_length'] (optional)
+	//                It must be longer or equal to $def['max_length'] (optional)
+	//                It will validate while containing non-digits if $def['accept_nondigits'] is set (they will be removed before length checks)
+	//            VALIDATE_UPLOAD: Checks that the $value is a file.
+	//                This special validation checks $_FILES regardless of the contents of $input,
+	//                making it not work when you call Action::callAction() unless done from an upload
+	//            'optional' => if set, then either $value is not empty and validates using the above rules, or it is empty or not present in $input. If it is not empty and invalid, validation will fail.
+	//        2. $definition may also be the 'type' constant alone, in which case it'll be interpreted as array('type' => $validate_constant).
+	//        3. The entire array can just be an array of strings, representing all $input[$key]s as 'type' VALIDATE_NOTEMPTY with no options. The array CANNOT be associative in this case (string keys).
+	// 'eventLog' => is either 'debug' (DEFAULT): the Event will not be logged on success, or 'always': the event will be logged on success
+	// 'eventDescr' => The description to pass to the event log. One "%s" is allowed to represent the user who did the action.
+	// 'eventDescrArg' => The location to get the user who did the action argument:
+	//    'session' (DEFAULT): Uses the user who is logged in
+	//    'refparam': Uses the value of $eventObject as the user, if it is a User object
+	// 'isUserInput' => is a boolean. TRUE returns the 'Invalid input in fields' error;
 	//    FALSE returns the 'Invalid parameter' error.
 	//    USAGE: TRUE for signup, search (user input);
 	//    FALSE for apply, emailAvailable (automated input/result of button-like request)
-	// 'noSession' is a boolean. TRUE allows the action to be performed when not logged in
-	// 'userType' specifies the user type to pass to Session::start() (i.e. what user
+	// 'noSession' => is a boolean. TRUE allows the action to be performed when not logged in
+	// 'userType' => specifies the user type to pass to Session::start() (i.e. what user
 	//    type the currently logged in user MUST be), don't specify this to accept any
 	//    logged in user
 	//    (WARNING: if any logged in user is accepted, 'fn' will receive the logged in
@@ -376,8 +444,18 @@ final class Action {
 		//     object: Your user object on successful login
 		//     success and error: Action status
 		'login' => array('event' => Event::SESSION_LOGIN,
-			'isUserInput' => true, 'noSession' => true,
+			'eventLog' => 'always', 'eventDescr' => '%s logged in.',
+			'eventDescrArg' => 'refparam', 'isUserInput' => true, 'noSession' => true,
 			'params' => array('email', 'password')),
+		// Action:           logout
+		// Session required: none (handled by code)
+		// Parameters:       none
+		// Returns:
+		//     success and error: Action status
+		// Note:             This Action does not log failure due to no session
+		'logout' => array('event' => Event::SESSION_LOGOUT, 'noSession' => true,
+			'eventLog' => 'always', 'eventDescr' => '%s logged out.',
+			'eventDescrArg' => 'refparam'),
 		// Action:           emailAvailable 
 		// Session required: none
 		// Parameters:
@@ -385,7 +463,8 @@ final class Action {
 		// Returns:
 		//     valid: Whether the email can be used
 		//     success and error: Action status
-		'emailAvailable' => array('event' => Event::USER_CHECK_EMAIL,
+		'emailAvailable' => array('event' => Event::USER_IS_EMAIL_AVAIL,
+			'eventDescr' => 'A user checked for the availability of an email address.',
 			'noSession' => true, 'params' => array('email')),
 		// Action:           signup 
 		// Session required: none
@@ -396,6 +475,8 @@ final class Action {
 		// Returns:
 		//     success and error: Action status
 		'signup' => array('event' => Event::USER_CREATE, 'noSession' => true,
+			'eventLog' => 'always', 'eventDescr' => '%s created a STUDENT account.',
+			'eventDescrArg' => 'refparam',
 			'isUserInput' => true, 'params' => array(
 					'email' => array('type' => Action::VALIDATE_EMAIL),
 					'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
@@ -422,7 +503,7 @@ final class Action {
 		//     success and error: Action status
 		// TODO convert search.php search form
 		// TODO paginate here
-		'search' => array('event' => Event::STUDENT_SEARCH, 'userType' => STUDENT),
+		'search' => array('event' => Event::USER_GET_VIEW, 'userType' => STUDENT),
 		// Action:           apply
 		// Session required: STUDENT
 		// Parameters:
@@ -432,15 +513,18 @@ final class Action {
 		// Returns:
 		//     success and error: Action status
 		'apply' => array('event' => Event::STUDENT_APPLY, 'userType' => STUDENT,
+			'eventLog' => 'always', 'eventDescr' => '%s created an application.',
 			'isUserInput' => true, 'params' => array('positionID','compensation','qualifications')),
 		// Action:           withdraw
 		// Session required: STUDENT
 		// Parameters:
 		//     positionID:   Position ID
 		//     TODO support withdraw type and reason
+		//     TODO make withdraw parameter the Application ID
 		// Returns:
 		//     success and error: Action status
 		'withdraw' => array('event' => Event::STUDENT_WITHDRAW, 'userType' => STUDENT,
+			'eventLog' => 'always', 'eventDescr' => '%s withdrew an application.',
 			'isUserInput' => true, 'params' => array('positionID')),
 		// Action:           updateProfile
 		// Session required: STUDENT, PROFESSOR, STAFF
@@ -450,6 +534,7 @@ final class Action {
 		// Returns:
 		//     success and error: Action status
 		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
+			'eventLog' => 'always', 'eventDescr' => '%s updated their profile.',
 			'isUserInput' => true, 'params' => array(
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
@@ -477,7 +562,8 @@ final class Action {
 		//     oldPassword, newPassword, confirmPassword
 		// Returns:
 		//     success and error: Action status
-		'changeUserPassword' => array('event' => Event::USER_SET_PROFILE,
+		'changeUserPassword' => array('event' => Event::USER_SET_PASS,
+			'eventLog' => 'always', 'eventDescr' => '%s changed their password.',
 			'isUserInput' => true, 'params' => array(
 					'oldPassword' => array('type' => Action::VALIDATE_NOTEMPTY),
 					'newPassword' => array('type' => Action::VALIDATE_NOTEMPTY),
@@ -489,7 +575,8 @@ final class Action {
 		// Returns:
 		//     objects: array of building names
 		//     success and error: Action status
-		'fetchBuildings' => array('event' => Event::USER_GET_PROFILE),
+		'fetchBuildings' => array('event' => Event::USER_GET_OBJECT,
+			'eventDescr' => '%s retrieved buildings list.'),
 		// Action:           fetchTheRooms
 		// Session required: logged in
 		// Parameters:
@@ -497,7 +584,8 @@ final class Action {
 		// Returns:
 		//     objects: array of room numbers (or names) in this building
 		//     success and error: Action status
-		'fetchTheRoom' => array('event' => Event::USER_GET_PROFILE,
+		'fetchTheRoom' => array('event' => Event::USER_GET_OBJECT,
+			'eventDescr' => '%s retrieved building room list.',
 			'params' => array('building')),
 		// Action:           fetchUser
 		// Session required: logged in
@@ -507,7 +595,8 @@ final class Action {
 		// Returns:
 		//     object: The user's data
 		//     success and error: Action status
-		'fetchUser' => array('event' => Event::USER_GET_PROFILE,
+		'fetchUser' => array('event' => Event::USER_GET_OBJECT,
+			'eventDescr' => '%s retrieved user object.',
 			'params' => array('userID', 'userType')),
 		// Action:           fetchApplication
 		// Session required: logged in (not STUDENT)
@@ -516,7 +605,8 @@ final class Action {
 		// Returns:
 		//     object: The application data
 		//     success and error: Action status
-		'fetchApplication' => array('event' => Event::USER_GET_PROFILE,
+		'fetchApplication' => array('event' => Event::USER_GET_OBJECT,
+			'eventDescr' => '%s retrieved application object.',
 			'params' => array('appID')),
 		// Action:           fetchComments
 		// Session required: logged in (not STUDENT)
@@ -525,7 +615,8 @@ final class Action {
 		// Returns:
 		//     objects: The comments
 		//     success and error: Action status
-		'fetchComments' => array('event' => Event::USER_GET_PROFILE,
+		'fetchComments' => array('event' => Event::USER_GET_VIEW,
+			'eventDescr' => '%s retrieved comments view.',
 			'params' => array('userID')),
 		// Action:           setAppStatus
 		// Session required: logged in (not STUDENT)
@@ -535,6 +626,7 @@ final class Action {
 		// Returns:
 		//     success and error: Action status
 		'setAppStatus' => array('event' => Event::NONSTUDENT_SET_APP,
+			'eventLog' => 'always', 'eventDescr' => '%s updated the status of an application.',
 			'params' => array('appID', 'decision')),
 		// Action:           newStudentComment
 		// Session required: logged in (not STUDENT)
@@ -544,6 +636,7 @@ final class Action {
 		// Returns:
 		//     success and error: Action status
 		'newStudentComment' => array('event' => Event::NONSTUDENT_COMMENT,
+			'eventLog' => 'always', 'eventDescr' => '%s created a comment.',
 			'isUserInput' => true, 'params' => array('studentID', 'comment')),
 		// Action:           searchForUsers
 		// Session required: STAFF
@@ -556,7 +649,8 @@ final class Action {
 		//     objects: The users in this set
 		//     success and error: Action status
 		// TODO paginate here
-		'searchForUsers' => array('event' => Event::USER_GET_PROFILE, 'userType' => STAFF,
+		'searchForUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => STAFF,
+			'eventDescr' => '%s retrieved positions view.',
 			'isUserInput' => true, 'params' => array(
 				'email' => array('optional' => true),
 				'firstName' => array('optional' => true),
@@ -571,13 +665,15 @@ final class Action {
 		//     success and error: Action status
 		// Only available via calling this script; not by Action::callAction()
 		'uploadTerm' => array('event' => Event::STAFF_TERM_IMPORT, 'userType' => STAFF,
+			'eventLog' => 'always', 'eventDescr' => '%s uploaded a term.',
 			'isUserInput' => true, 'params' => array(
 				'termYear' => array('type' => Action::VALIDATE_NUMSTR,
 					'min_length' => 4, 'max_length' => 4),
 				'termSemester' => Action::VALIDATE_NOTEMPTY,
 				'termFile' => Action::VALIDATE_UPLOAD)));
+	// end Action::$action_map
 
-	public static function callAction($actionName, $input, $jsonOutput = false) {
+	public static function callAction($actionName, $input = array(), $jsonOutput = false) {
 		// Check if action is known
 		if (isset(Action::$action_map[$actionName])) {
 			// get the definition structure for this action from the above structure
@@ -592,7 +688,9 @@ final class Action {
 			$action_params = isset($action_def['params']) ? $action_def['params'] : array();
 			// get whether errors should be "Invalid form field" or "Invalid parameter"
 			$action_userinput = isset($action_def['isUserInput']) ? $action_def['isUserInput'] : false;
-
+			$action_evlog = isset($action_def['eventLog']) ? $action_def['eventLog'] : 'debug';
+			$action_evdesc = isset($action_def['eventDescr']) ? $action_def['eventDescr'] : '%s did something.';
+			$action_evdesc_arg = isset($action_def['eventDescrArg']) ? $action_def['eventDescrArg'] : 'session';
 			// SESSION
 			$user = null;
 			$error = null;
@@ -624,7 +722,8 @@ final class Action {
 						}
 					} else {
 						// successful
-						$result_obj = call_user_func(array('Action', $actionName), $input, $user);
+						$event_object = null;
+						$result_obj = Action::$actionName($input, $user, $event_object);
 					}
 
 					// GET RESULT
@@ -668,6 +767,26 @@ final class Action {
 					// non-ERROR_FORM_FIELDs thrown by Actions
 					$error = $ex;
 				}
+			}
+
+			// LOG SUCCESS
+			if ($error == null && $action_evlog == 'always') {
+				$source_user = null;
+				switch ($action_evdesc_arg) {
+				case 'refparam': $source_user = User::getUserByID($event_object); break;
+				case 'session': $source_user = $user; break;
+				//case 'return': $descrarg = $result_obj; break;
+				}
+				if ($source_user != null && $source_user instanceof User) {
+					$descrarg = $source_user->getName();
+				} else {
+					$descrarg = '(unknown user)';
+					$source_user = null; // do not give the database non-Users in creator column
+				}
+				$descr = sprintf($action_evdesc, $descrarg);
+				// insert event with this EventID, description, object,
+				// current time, current IP (default parameter), and current user object
+				Event::insertEvent($action_event, $descr, $event_object, time(), null, $source_user);
 			}
 		} else {
 			// unknown action

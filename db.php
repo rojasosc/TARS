@@ -476,9 +476,6 @@ final class Student extends User {
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::executeInsert($sql, $args);
 
-		Event::insertEvent(Event::USER_CREATE, "$firstName $lastName created a STUDENT acocunt.",
-			$userID);
-
 		return $userID;
 	}
 
@@ -517,16 +514,12 @@ final class Student extends User {
 	public function apply($position, $compensation, $qualifications) {
 		$applicationID = Application::insertApplication($position, $compensation,
 			$qualifications, PENDING, $this->id, time());
-		Event::insertEvent(Event::STUDENT_APPLY, $this->getName().' applied to a position. '.
-			'Application object created.', $applicationID);
 	}
 
 	// TODO move this to Position object
 	// TODO create notification
 	public function withdraw($position){
 		Application::setPositionStatus($this->id, $position, WITHDRAWN);
-		Event::insertEvent(Event::STUDENT_WITHDRAW, $this->getName().' withdrew an application. '.
-			'Application object updated.', null);
 	}
 	
 	public function getAllComments(){
@@ -544,9 +537,6 @@ final class Student extends User {
 
 		$commentID = Comment::insertComment($comment, $this->id, $creator->getID(), $createTime);
 
-		Event::insertEvent(Event::NONSTUDENT_COMMENT, $creator->getName().' commented on '.
-			'student '.$this->getName().'. Comment object created.', $commentID);
-
 		return $commentID;
 	}
 
@@ -563,9 +553,6 @@ final class Student extends User {
 				':classYear' => $classYear, ':major' => $major, ':gpa' => $gpa,
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::execute($sql, $args);
-
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
-			'profile data.', $this->id);
 	}
 
 	public function getMobilePhone() { return $this->mobilePhone; }
@@ -647,9 +634,6 @@ final class Professor extends User {
 			':officeID' => Place::getOrCreatePlace($building, $room),
 			':officePhone' => $officePhone);
 		Database::execute($sql, $args);
-
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
-			'profile data.', $this->id);
 	}
 
 	public function getSections() {
@@ -741,9 +725,6 @@ final class Staff extends User {
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 				':officePhone' => $officePhone);
 		Database::execute($sql, $args);
-
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
-			'profile data.', $this->id);
 	}
 
 	public function __construct($user_row, $staff_row) {
@@ -1262,8 +1243,6 @@ final class Term {
 
 			Configuration::set(Configuration::CURRENT_TERM, $termID,
 				$creator, $createTime);
-			Event::insertEvent(Event::STAFF_TERM_IMPORT, 'Imported a new '.
-				'Term. Term object created.', $termID, $createTime, null, $creator);
 		} catch (PDOException $ex) {
 			Database::rollbackTransaction();
 			throw $ex;
@@ -1386,7 +1365,7 @@ final class Term {
 				}
 			}
 		}
-		Term::importTerm($termYear, $termSemester, $courses);
+		return Term::importTerm($termYear, $termSemester, $courses);
 	}
 
 	public function __construct($row) {
@@ -1827,42 +1806,55 @@ final class Event {
 	const SERVER_DBERROR = 2;
 	const ERROR_LOGIN = 3;
 	const ERROR_PERMISSION = 4;
-	const ERROR_NOT_FOUND = 5;
-	const ERROR_FORM_FIELD = 6;
-	const ERROR_FORM_UPLOAD = 7;
-	const ERROR_CSV_PARSE = 8;
-	const ERROR_JSON_PARSE = 9;
-	const SESSION_LOGIN = 10;
-	const SESSION_LOGOUT = 11;
-	const SESSION_CONTINUE = 12;
-	const USER_CREATE = 13;
-	const USER_RESET = 14;
-	const USER_CONFIRM = 15;
-	const USER_CHECK_EMAIL = 16;
-	const USER_GET_APPLICATIONS = 17;
-	const USER_GET_POSITIONS = 18;
-	const USER_GET_SECTIONS = 19;
-	const USER_GET_STUDENTS = 20;
-	const USER_GET_PROFESSORS = 21;
-	const USER_GET_USERS = 22;
-	const USER_GET_PROFILE = 23;
-	const USER_SET_PROFILE = 24;
-	const STUDENT_APPLY = 25;
-	const STUDENT_WITHDRAW = 26;
-	const STUDENT_SEARCH = 27;
-	const NONSTUDENT_SET_APP = 28;
-	const NONSTUDENT_COMMENT = 29;
-	const SU_CREATE_USER = 30;
-	const SU_RESET_USER = 31;
-	const STAFF_TERM_IMPORT = 32;
-	const STAFF_GET_PAYROLL = 33;
-	const ADMIN_CONFIGURE = 34;
+	const ERROR_FORM_FIELD = 5;
+	const ERROR_FORM_UPLOAD = 6;
+	const SESSION_LOGIN = 7;
+	const SESSION_LOGOUT = 8;
+	const SESSION_CONTINUE = 9;
+	const USER_CREATE = 10;
+	const USER_RESET_PASS = 11;
+	const USER_CONFIRM = 12;
+	const USER_IS_EMAIL_AVAIL = 13;
+	const USER_GET_OBJECT = 14;
+	const USER_GET_VIEW = 15;
+	const USER_SET_PROFILE = 16;
+	const USER_SET_PASS = 17;
+	const STUDENT_APPLY = 18;
+	const STUDENT_CANCEL = 19;
+	const STUDENT_WITHDRAW = 20;
+	const NONSTUDENT_SET_APP = 21;
+	const NONSTUDENT_COMMENT = 22;
+	const SU_CREATE_USER = 23;
+	const SU_RESET_USER_PASS = 24;
+	const STAFF_TERM_IMPORT = 25;
+	const ADMIN_CONFIGURE = 26;
+
+	private static $eventTypeRows = null;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
 		$constants = array_flip($class->getConstants());
 
 		return $constants[$event_type];
+	}
+
+	private static function cacheEventTypeRows() {
+		if (Event::$eventTypeRows == null) {
+			$sql = 'SELECT * FROM EventTypes';
+			$rows = Database::executeGetAllRows($sql, array());
+			Event::$eventTypeRows = $rows;
+		}
+	}
+
+	public static function getEventTypeIDInDatabase($event_type) {
+		$name = Event::getEventTypeName($event_type);
+		Event::cacheEventTypeRows();
+		foreach (Event::$eventTypeRows as $row) {
+			if ($row['eventName'] == $name) {
+				return $row['eventTypeID'];
+			}
+		}
+		return null;
 	}
 
 	public static function getErrorTextFromEventType($event_type) {
@@ -1872,36 +1864,28 @@ final class Event {
 		case Event::SERVER_DBERROR:
 		case Event::ERROR_LOGIN:
 		case Event::ERROR_PERMISSION:
-		case Event::ERROR_NOT_FOUND:
 		case Event::ERROR_FORM_FIELD:
-		case Event::ERROR_FORM_UPLOAD:
-		case Event::ERROR_CSV_PARSE:
-		case Event::ERROR_JSON_PARSE: return 'Error';
+		case Event::ERROR_FORM_UPLOAD: return 'An error occurred';
 		case Event::SESSION_LOGIN: return 'Error logging in';
 		case Event::SESSION_LOGOUT: return 'Error logging out';
 		case Event::SESSION_CONTINUE: return 'Error accessing page';
 		case Event::USER_CREATE: return 'Error creating an account';
-		case Event::USER_RESET: return 'Error resetting password';
+		case Event::USER_RESET_PASS: return 'Error resetting password';
 		case Event::USER_CONFIRM: return 'Error confirming email';
-		case Event::USER_CHECK_EMAIL: return 'Error checking email availability';
-		case Event::USER_GET_APPLICATIONS: return 'Error retrieving applications';
-		case Event::USER_GET_POSITIONS: return 'Error retrieving positions';
-		case Event::USER_GET_SECTIONS: return 'Error retrieving sections';
-		case Event::USER_GET_STUDENTS: return 'Error retrieving students';
-		case Event::USER_GET_PROFESSORS: return 'Error retrieving professors';
-		case Event::USER_GET_USERS: return 'Error retrieving users';
-		case Event::USER_GET_PROFILE: return 'Error retrieving profile data';
+		case Event::USER_IS_EMAIL_AVAIL: return 'Error checking email availability';
+		case Event::USER_GET_OBJECT: return 'Error retrieving an object';
+		case Event::USER_GET_VIEW: return 'Error retrieving a view';
 		case Event::USER_SET_PROFILE: return 'Error setting profile data';
+		case Event::USER_SET_PASS: return 'Error setting password';
 		case Event::STUDENT_APPLY: return 'Error applying to position';
-		case Event::STUDENT_WITHDRAW: return 'Error withdrawing application';
-		case Event::STUDENT_SEARCH: return 'Error searching for positions';
+		case Event::STUDENT_CANCEL: return 'Error cancelling application';
+		case Event::STUDENT_WITHDRAW: return 'Error withdrawing from position';
 		case Event::NONSTUDENT_SET_APP: return 'Error setting application status';
 		case Event::NONSTUDENT_COMMENT: return 'Error creating comment';
 		case Event::SU_CREATE_USER: return 'Error creating user';
-		case Event::SU_RESET_USER: return 'Error resetting user\'s password';
-		case Event::STAFF_TERM_IMPORT: return 'Error importing term';
-		case Event::STAFF_GET_PAYROLL: return 'Error retrieving payroll data';
-		case Event::ADMIN_CONFIGURE: return 'Error setting configuration';
+		case Event::SU_RESET_USER_PASS: return 'Error resetting user password';
+		case Event::STAFF_TERM_IMPORT: return 'Error importing new term';
+		case Event::ADMIN_CONFIGURE: return 'Error setting value';
 		}
 	}
 
@@ -1939,7 +1923,7 @@ final class Event {
 		}
 
 		if ($useDB) {
-			$args = array(':etype' => $eventType, ':descr' => $descr,
+			$args = array(':etype' => Event::getEventTypeIDInDatabase($eventType), ':descr' => $descr,
 				':objectid' => $objectID, ':createtm' => date('Y-m-d H:i:s', $createTime),
 				':createip' => inet_pton($creatorIP));
 

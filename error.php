@@ -34,20 +34,11 @@ final class TarsException extends Exception {
 		case Event::ERROR_PERMISSION:
 			$message = 'Permission was denied';
 			break;
-		case Event::ERROR_NOT_FOUND:
-			$message = 'Object was not found';
-			break;
 		case Event::ERROR_FORM_FIELD:
 			$message = 'Invalid input in fields. Please fix these fields and try again';
 			break;
 		case Event::ERROR_FORM_UPLOAD:
 			$message = 'Upload of file failed';
-			break;
-		case Event::ERROR_CSV_PARSE:
-			$message = 'Parsing of CSV failed';
-			break;
-		case Event::ERROR_JSON_PARSE:
-			$message = 'Parsing of JSON failed';
 			break;
 		}
 		// exceptions in parens

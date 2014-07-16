@@ -104,18 +104,6 @@ final class Session {
 	*  Throws: PDOException if event log failed due to database error
 	**/
 	public static function destroy(){
-		// If the getLoggedInUser code throws a database error,
-		// continue destroying session and throw the exception later
-		$delay_throw = null;
-		$user_obj = null;
-		if (session_start()) {
-			try {
-				$user_obj = Session::getLoggedInUser();
-			} catch (PDOException $ex) {
-				$delay_throw = $ex;
-			}
-		}
-
 		 /**************************************
 		 *NOTE: This code was obtained directly
 		 *from the PHP5 Manual on ending sessions. 
@@ -137,15 +125,6 @@ final class Session {
 		session_destroy();
 
 		/**************************************/
-
-		if ($user_obj != null) {
-			Event::insertEvent(Event::SESSION_LOGOUT,
-				$user_obj->getName().' logged out', $user_obj->getID());
-		}
-
-		if ($delay_throw != null) {
-			throw $delay_throw;
-		}
 	}
 
 

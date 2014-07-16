@@ -1726,6 +1726,14 @@ final class Section {
 		return Database::executeGetScalar($sql, $args);	
 	}
 
+	public function isTaughtBy($professor) {
+		$sql = 'SELECT COUNT(*) FROM Teaches
+				WHERE sectionID = :section AND professorID = :professor';
+		$args = array(':section' => $this->id, ':professor' => $professor->getID());
+		$count = Database::executeGetScalar($sql, $args);
+		return $count != 0;
+	}
+
 
 	public function getID() { return $this->id; }
 	public function getCRN() { return $this->crn; }

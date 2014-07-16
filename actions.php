@@ -176,7 +176,9 @@ final class Action {
 			throw new ActionError('Application not found');
 		} else {
 			if ($user->getObjectType() == PROFESSOR) {
-				if (!$application->getPosition()->getSection()->isTaughtBy($user)) {
+				$position = $application->getPosition();
+				$section = $position->getSection();
+				if (!$section->isTaughtBy($user)) {
 					throw new ActionError('Permission denied (not owner)');
 				}
 			}

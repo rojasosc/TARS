@@ -63,6 +63,7 @@
 			case 'uploadTerm':
 				uploadTerm();
 				break;
+			//TODO: Default case?
 		}
 	}else{
 		/*TODO: Add error handling */

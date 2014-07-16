@@ -104,11 +104,24 @@ foreach ($terms as $term) {
 										$student = $assistant->getCreator();
 										$position = $assistant->getPosition();
 										$section = $position->getSection();
-									
+										$posTypeID = $position->getType();
+										$posType;
+										switch($posTypeID) {
+											case 1: $posType = "Lab TA";
+											break;
+											case 2: $posType = "Workshop Leader";
+											break;
+											case 3: $posType = "Super Leader";
+											break;
+											case 4: $posType = "Grader";
+											break;
+											default: $posType = "Invalid Position Type";
+											break;
+										}
 									?>
 									
 									<tr>
-										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $section->getCourseName() ?></td><td><?= $position->getPositionType() ?></td><td><?= $student->getClassYear() ?></td>
+										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $section->getCourseName() ?></td><td><?= $posType ?></td><td><?= $student->getClassYear() ?></td>
 										<td><?= $assistant->getCompensation() ?></td>
 									</tr>
 									<?php

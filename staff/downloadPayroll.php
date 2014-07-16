@@ -1,8 +1,19 @@
 <?php
 	require_once "../db.php";
-	$term = Term::getTermByID(CURRENT_TERM);
-	$fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.xls";
-	$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if($currentTermID) {
+			$term = Term::getTermByID($currentTermID);
+			if($term) {
+				$fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.xls";
+				$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
+			}
+		}
+	} catch (PDOException $ex) {
+		//TODO: Error Handling
+	}
+	
+	
 	header("Content-Type: application/vnd.ms-excel");
 	
 	/* Table header */

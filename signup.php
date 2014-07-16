@@ -16,13 +16,12 @@ require_once 'db.php';
 
 		<link href="css/bootstrap.min.css" rel="stylesheet"/>
 		<link rel="stylesheet" href="css/bootstrap-validator.min.css"/>
-		<link rel="stylesheet" href="css/bootstrap-select.min.css"/>
+		<!--<link rel="stylesheet" href="css/bootstrap-select.min.css"/>-->
 		<link href="signup.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="js/bootstrap-validator.min.js"></script>
-		<script src="js/bootstrap-select.min.js"></script>
+		<!--<script src="js/bootstrap-select.min.js"></script>-->
 		<script src="signup.js"></script>
-		<script src="js/tars_utilities.js"></script>
 
 	</head>
   
@@ -107,7 +106,7 @@ require_once 'db.php';
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="classYear">Class Year</label>
-										<select id="classYear" name="classYear" class="selectpicker form-control" placeholder="Class Year">
+										<select id="classYear" name="classYear" class="selectpicker form-control">
 											<option>2014</option>
 											<option>2015</option>
 											<option>2016</option>

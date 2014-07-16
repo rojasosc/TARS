@@ -1,4 +1,5 @@
 $(document).ready(function () {
+	//$('.selectpicker').selectpicker();
 	/* Attach a bootstrapValidator to the form */	
 	$('#signupForm').bootstrapValidator({
 		message: 'This value is not valid',

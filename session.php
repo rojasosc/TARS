@@ -41,8 +41,6 @@ final class Session {
 		$success = session_start(); // begin the session
 		$success = $success && session_regenerate_id(true);  // regenerate a new session id on each log in
 		if ($success) {
-			Event::insertEvent(Event::SESSION_LOGIN,
-				$user_obj->getName().' logged in', $user_obj->getID());
 			$_SESSION['userID'] = $user_obj->getID();
 		} else {
 			throw new TarsException(Event::SERVER_ERROR, Event::SESSION_LOGIN,

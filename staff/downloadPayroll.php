@@ -1,7 +1,7 @@
 <?php
 	require_once "../db.php";
 	$term = Term::getTermByID(CURRENT_TERM);
-	$fileName = "payroll-{$term->getYear()}-{$term->getSession()}.xls";
+	$fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.xls";
 	$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
 	header("Content-Type: application/vnd.ms-excel");
 	
@@ -12,7 +12,7 @@
 	foreach($assistants as $assistant){
 		$student = $assistant->getCreator();
 		$position = $assistant->getPosition();
-		$course = $position->getCourse();
+		$course = $position->getSection();
 		
 		/* Column values */
 		$universityID = $student->getUniversityID();

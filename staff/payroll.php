@@ -83,70 +83,73 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<form class="form-horizontal" method="get" action="payroll.php" id="payrollForm">
 									<legend>Select Term</legend>
 									<div class="row">
-										<div class="col-md-5">										
+										<div class="col-xs-6 col-sm-3 col-md-2">
 											<!--<label class="control-label" for="term">Term</label>-->
 											<select id="term" name="term" class="selectpicker form-control" placeholder="Term">
-<?php
-foreach ($terms as $term) {
-	$sel = ($thisTerm != null && $term->getID() == $thisTerm->getID()) ? ' selected="selected"' : '';
-	echo '<option value="'.$term->getID().'"'.$sel.'>'.$term->getName().'</option>';
-}
-?>
-											</select> <!-- End select -->										
+												<?php
+	foreach ($terms as $term) {
+		$sel = ($thisTerm != null && $term->getID() == $thisTerm->getID()) ? ' selected="selected"' : '';
+		echo '<option value="'.$term->getID().'"'.$sel.'>'.$term->getName().'</option>';
+	}
+												?>
+											</select> <!-- End select -->	
 										</div> <!-- End column -->										
-										<div class="col-md-5">
+										<div class="col-xs-6 col-sm-3 col-md-2">
 											<a class="btn btn-success btn-block" name="termSelectButton">View</a>
 										</div> <!-- End col-md-5 -->
 									</div> <!-- End row -->
 									<br>
 								</form> <!-- End term select form -->
-								<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
+							</div>
+							<div id="resultsContainer">
+								<div class="row">
+									<div class="col-xs-12">
+										<table class="table table-striped table-hover">
+											<tr>
+												<th>University ID</th>
+												<th>First Name</th>
+												<th>Last Name</th>
+												<th>Email</th>
+												<th>Course</th>
+												<th>Type</th>
+												<th>Class Year</th>
+												<th>Compensation</th>
+											</tr>
+											<?php
+	foreach($assistants as $assistant){
+		$student = $assistant->getCreator();
+		$position = $assistant->getPosition();
+		$section = $position->getSection();
+											?>
+											<tr>
+												<td><?= $student->getUniversityID() ?></td>
+												<td><?= $student->getFirstName() ?></td>
+												<td><?= $student->getLastName() ?></td>
+												<td><?= $student->getEmail() ?></td>
+												<td><?= $section->getCourseName() ?></td>
+												<td><?= $position->getTypeTitle() ?></td>
+												<td><?= $student->getClassYear() ?></td>
+												<td><?= $assistant->getCompensation() ?></td>
+											</tr>
+											<?php
+									
+	} /* Payroll closing brace */
+									
+											?>
+										</table> <!-- End Table -->	
+									</div>
+								</div> <!-- End row -->							
+							</div>	<!-- End results container -->
+							<div class="container" id="downloadContainer">
+							<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
 									<legend>Download Term</legend>
 									<div class="row">
-										<div class="col-md-10">
+										<div class="col-xs-12 col-sm-4 col-md-3">
 											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
 										</div> <!-- End col-md-3 -->
 									</div> <!-- End row --> 											
 								</form> <!-- End form -->
 							</div>
-							<div class="container" id="resultsContainer">
-								<div class="row">
-									<table class="table table-striped table-hover">
-									<tr><th>University ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Course</th><th>Type</th><th>Class Year</th><th>Compensation</th></tr>
-									<?php
-									
-									foreach($assistants as $assistant){
-										$student = $assistant->getCreator();
-										$position = $assistant->getPosition();
-										$section = $position->getSection();
-										$posTypeID = $position->getType();
-										$posType;
-										switch($posTypeID) {
-											case 1: $posType = "Lab TA";
-											break;
-											case 2: $posType = "Workshop Leader";
-											break;
-											case 3: $posType = "Super Leader";
-											break;
-											case 4: $posType = "Grader";
-											break;
-											default: $posType = "Invalid Position Type";
-											break;
-										}
-									?>
-									
-									<tr>
-										<td><?= $student->getUniversityID() ?></td> <td><?= $student->getFirstName() ?></td> <td><?= $student->getLastName() ?></td> <td><?= $student->getEmail() ?></td><td><?= $section->getCourseName() ?></td><td><?= $position->getTypeTitle() ?></td><td><?= $student->getClassYear() ?></td>
-										<td><?= $assistant->getCompensation() ?></td>
-									</tr>
-									<?php
-									
-									} /* Payroll closing brace */
-									
-									?>
-									</table> <!-- End Table -->							
-								</div> <!-- End row -->							
-							</div>	<!-- End results container -->						
 						</div> <!-- End panel-body -->
 					</div> <!-- End panel panel-success -->
 				</div>

@@ -20,7 +20,7 @@
 		$lastName = $student->getLastName();
 		$email = $student->getEmail();
 		$crn = $course->getCRN();
-		$type = $position->getPositionType();
+		$type = $position->getTypeTitle();
 		$classYear = $student->getClassYear();
 		$compensation = $assistant->getCompensation();
 		

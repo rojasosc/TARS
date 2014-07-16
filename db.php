@@ -255,24 +255,25 @@ final class Place {
 	}
 
 	private function __construct($row) {
-		$this->placeID = $row['placeID'];
+		$this->id = $row['placeID'];
 		$this->building = $row['building'];
 		$this->room = $row['room'];
 	}
 
 	public function getBuilding() { return $this->building; }
 	public function getRoom() { return $this->room; }
-	public function getPlaceID() { return $this->placeID; }
+	public function getPlaceID() { return $this->id; }
 
 	public function toArray() {
 		return array(
+			'id' => $this->id,
 			'building' => $this->building,
 			'room' => $this->room);
 	}
 
+	private $id;
 	private $building;
 	private $room;
-	private $placeID;
 }
 
 /*
@@ -576,6 +577,7 @@ final class Student extends User {
 
 	public function toArray() {
 		return array(
+			'id' => $this->id,
 			'type' => STUDENT,
 			'email' => $this->email,
 			'firstName' => $this->firstName,
@@ -699,6 +701,7 @@ final class Professor extends User {
 	public function toArray() {
 		$office = $this->getOffice();
 		return array(
+			'id' => $this->id,
 			'type' => PROFESSOR,
 			'email' => $this->email,
 			'firstName' => $this->firstName,
@@ -755,6 +758,7 @@ final class Staff extends User {
 
 	public function toArray() {
 		return array(
+			'id' => $this->id,
 			'type' => STAFF,
 			'email' => $this->email,
 			'firstName' => $this->firstName,
@@ -771,6 +775,7 @@ final class Admin extends User {
 
 	public function toArray() {
 		return array(
+			'id' => $this->id,
 			'type' => ADMIN,
 			'email' => $this->email,
 			'firstName' => $this->firstName,
@@ -1099,6 +1104,7 @@ final class Application {
 	public function toArray() {
 		$creator = $this->getCreator();
 		return array(
+			'id' => $this->id,
 			'status' => $this->appStatus,
 			'compensation' => $this->compensation,
 			'qualifications' => $this->qualifications,
@@ -1469,6 +1475,7 @@ final class Comment {
 		$creator = $this->getCreator();
 		$student = $this->getStudent();
 		return array(
+			'id' => $this->id,
 			'comment' => $this->commentText,
 			'student' => $student->toArray(),
 			'creator' => $creator->toArray(),

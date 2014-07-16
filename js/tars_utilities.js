@@ -270,14 +270,14 @@ function viewResults( users ) {
 	var size = users.length; 
 	for ( var key = 0; key < size; key++ ){
 		row[ ++j ] ="<tr><td>";
-		row[ ++j ] = users[ key ][ "firstName" ];
+		row[ ++j ] = users[ key ].firstName;
 		row[ ++j ] = "</td><td>";
-		row[ ++j ] = users[ key ][ "lastName" ];
+		row[ ++j ] = users[ key ].lastName;
 		row[ ++j ] = "</td><td>";
-		row[ ++j ] = users[ key ][ "email" ];
+		row[ ++j ] = users[ key ].email;
 		row[ ++j ] = "</td><td>";
 		row[ ++j ] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" + 
-						users[ key ][ "userID" ] + "'><span class='glyphicon glyphicon-wrench'></span></button>"
+						users[ key ].id + "'><span class='glyphicon glyphicon-wrench'></span></button>"
 		row[ ++j ] = "</td></tr>";
 		
 	}

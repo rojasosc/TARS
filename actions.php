@@ -254,6 +254,78 @@ final class Action {
 	const VALIDATE_NUMSTR = 5;
 	const VALIDATE_UPLOAD = 11;
 
+	private static function validateParameters($input, $definitions) {
+		if (!is_assoc($definitions)) {
+			// if params was just a list of keys,
+			// assign them all default settings
+			$definitions = array_fill_keys($definitions,
+				array('type' => Action::VALIDATE_NOTEMPTY));
+		}
+		$invalids = array();
+		foreach ($definitions as $param_key => $def) {
+			if (array_key_exists($param_key, $input) && ($input[$param_key] !== '')) {
+				$value = $input[$param_key];
+				if (is_int($def)) {
+					$def = array('type' => $def);
+				} elseif (!isset($def['type'])) {
+					$def['type'] = Action::VALIDATE_NOTEMPTY;
+				}
+
+				$invalid = false;
+				switch ($def['type']) {
+				case Action::VALIDATE_NOTEMPTY:
+					$invalid = ($value === '');
+					break;
+				case Action::VALIDATE_EMAIL:
+					$invalid = filter_var($value, FILTER_VALIDATE_EMAIL) === false;
+					break;
+				case Action::VALIDATE_OTHERFIELD:
+					if (isset($def['field'])) {
+						$other_key = $def['field'];
+						if (isset($input[$other_key])) {
+							$invalid = ($input[$other_key] !== $value);
+							break;
+						}
+					}
+					$invalid = true;
+					break;
+				case Action::VALIDATE_NUMERIC:
+					if (isset($def['reject_signed']) && ($value[0] == '-' || $value[0] == '+')) {
+						$value = '';
+					}
+					if (isset($def['reject_decimal']) && strpos($value, '.') !== false) {
+						$value = '';
+					}
+					$invalid = filter_var($value, FILTER_VALIDATE_FLOAT, $def) === false;
+					break;
+				case Action::VALIDATE_NUMSTR:
+					$value = preg_replace('/([^\d]+)/', '', $value);
+					if (isset($def['min_length']) && strlen($value) < $def['min_length']) {
+						$value = '';
+					}
+					if (isset($def['max_length']) && strlen($value) > $def['max_length']) {
+						$value = '';
+					}
+					$invalid = ($value === '');
+					break;
+				case Action::VALIDATE_UPLOAD:
+					// this right here is why forms with VALIDATE_UPLOAD field
+					// cannot be called by Action::callAction(): it accesses $_FILES
+					if (!isset($_FILES[$param_key])) {
+						$invalid = true;
+					}
+					break;
+				}
+				if ($invalid) {
+					$invalids[] = $param_key;
+				}
+			} elseif (!isset($def['optional']) || !$def['optional']) {
+				$invalids[] = $param_key;
+			}
+		}
+		return $invalids;
+	}
+
 	// $action_map: this is a map of action keys to action definition structures
 	// The keys of this array must have corresponding class functions defined with the same name:
 	//    It takes two arguments:
@@ -504,78 +576,6 @@ final class Action {
 					'min_length' => 4, 'max_length' => 4),
 				'termSemester' => Action::VALIDATE_NOTEMPTY,
 				'termFile' => Action::VALIDATE_UPLOAD)));
-
-	private static function validateParameters($input, $definitions) {
-		if (!is_assoc($definitions)) {
-			// if params was just a list of keys,
-			// assign them all default settings
-			$definitions = array_fill_keys($definitions,
-				array('type' => Action::VALIDATE_NOTEMPTY));
-		}
-		$invalids = array();
-		foreach ($definitions as $param_key => $def) {
-			if (array_key_exists($param_key, $input)) {
-				$value = $input[$param_key];
-				if (is_int($def)) {
-					$def = array('type' => $def);
-				} elseif (!isset($def['type'])) {
-					$def['type'] = Action::VALIDATE_NOTEMPTY;
-				}
-
-				$invalid = false;
-				switch ($def['type']) {
-				case Action::VALIDATE_NOTEMPTY:
-					$invalid = ($value === '');
-					break;
-				case Action::VALIDATE_EMAIL:
-					$invalid = filter_var($value, FILTER_VALIDATE_EMAIL) === false;
-					break;
-				case Action::VALIDATE_OTHERFIELD:
-					if (isset($def['field'])) {
-						$other_key = $def['field'];
-						if (isset($input[$other_key])) {
-							$invalid = ($input[$other_key] !== $value);
-							break;
-						}
-					}
-					$invalid = true;
-					break;
-				case Action::VALIDATE_NUMERIC:
-					if (isset($def['reject_signed']) && ($value[0] == '-' || $value[0] == '+')) {
-						$value = '';
-					}
-					if (isset($def['reject_decimal']) && strpos($value, '.') !== false) {
-						$value = '';
-					}
-					$invalid = filter_var($value, FILTER_VALIDATE_FLOAT, $def) === false;
-					break;
-				case Action::VALIDATE_NUMSTR:
-					$value = preg_replace('/([^\d]+)/', '', $value);
-					if (isset($def['min_length']) && strlen($value) < $def['min_length']) {
-						$value = '';
-					}
-					if (isset($def['max_length']) && strlen($value) > $def['max_length']) {
-						$value = '';
-					}
-					$invalid = ($value === '');
-					break;
-				case Action::VALIDATE_UPLOAD:
-					// this right here is why forms with VALIDATE_UPLOAD field
-					// cannot be called by Action::callAction(): it accesses $_FILES
-					if (!isset($_FILES[$param_key])) {
-						$invalid = true;
-					}
-					break;
-				}
-				if ($invalid) {
-					$invalids[] = $param_key;
-				}
-			} elseif (!isset($def['optional']) || !$def['optional']) {
-				$invalids[] = $param_key;
-			}
-		}
-		return $invalids;
-	}
 
 	public static function callAction($actionName, $input, $jsonOutput = false) {
 		// Check if action is known

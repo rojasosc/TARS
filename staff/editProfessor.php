@@ -1,5 +1,13 @@
 <?php
-require_once 'staffSession.php';
+require_once '../session.php';
+
+$error = null;
+$staff = null;
+try {
+	$staff = Session::start(STAFF);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,10 +104,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="row">

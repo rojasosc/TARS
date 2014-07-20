@@ -1,20 +1,30 @@
 <?php  
-require_once 'staffSession.php';
+require_once '../session.php';
+
+$error = null;
+$staff = null;
+try {
+	$staff = Session::start(STAFF);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>Edit Users</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>	
+		<script src="../js/bootstrap-select.min.js"></script>	
 		<script src="../js/tars_utilities.js"></script>
 	</head>
 	<body>
@@ -28,10 +38,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 		<!-- BEGIN Edit Profile Modal-->
@@ -77,7 +91,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="classYear">Class Year</label>
-										<select id="classYear" name="classYear" class="form-control">
+										<select id="classYear" name="classYear" class="selectpicker form-control">
 											<option>2014</option>
 											<option>2015</option>
 											<option>2016</option>
@@ -89,7 +103,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="major">Major</label>
-										<select id="major" name="major" class="form-control">
+										<select id="major" name="major" class="selectpicker form-control">
 											<option>Accounting</option>
 											<option>Computer Science</option>
 											<option>Physics</option>

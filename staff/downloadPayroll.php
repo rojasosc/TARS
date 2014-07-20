@@ -1,8 +1,19 @@
 <?php
 	require_once "../db.php";
-	$term = Term::getTermByID(CURRENT_TERM);
-	$fileName = "payroll-{$term->getYear()}-{$term->getSession()}.xls";
-	$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if($currentTermID) {
+			$term = Term::getTermByID($currentTermID);
+			if($term) {
+				$fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.xls";
+				$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
+			}
+		}
+	} catch (PDOException $ex) {
+		//TODO: Error Handling
+	}
+	
+	
 	header("Content-Type: application/vnd.ms-excel");
 	
 	/* Table header */
@@ -12,7 +23,7 @@
 	foreach($assistants as $assistant){
 		$student = $assistant->getCreator();
 		$position = $assistant->getPosition();
-		$course = $position->getCourse();
+		$course = $position->getSection();
 		
 		/* Column values */
 		$universityID = $student->getUniversityID();
@@ -20,7 +31,7 @@
 		$lastName = $student->getLastName();
 		$email = $student->getEmail();
 		$crn = $course->getCRN();
-		$type = $position->getPositionType();
+		$type = $position->getTypeTitle();
 		$classYear = $student->getClassYear();
 		$compensation = $assistant->getCompensation();
 		

@@ -1,8 +1,8 @@
 <?php
 require_once 'db.php';
-require_once 'formInput.php';
 require_once 'error.php';
 require_once 'session.php';
+require_once 'actions.php';
 
 function show_version() {
 	$version_code = trim(@file_get_contents('version.txt'));
@@ -15,49 +15,38 @@ function show_version() {
 	}
 }
 
+$email = isset($_POST['email']) ? $_POST['email'] : '';
 $error = null;
-if (isset($_POST['submit'])) {
-	$form_args = get_form_values(array('email','password'));
+if (!empty($email)) {
+	$user_obj = null;
+	try {
+		$user_obj = Action::callAction('login', $_POST);
+	} catch (TarsException $ex) {
+		$error = $ex;
+	}
 
-	if (!$form_args['email']) {
-		$error = new TarsException(Event::ERROR_FORM_FIELD,
-			Event::SESSION_LOGIN, array('email'));
-	} elseif (!$form_args['password']) {
-		$error = new TarsException(Event::ERROR_FORM_FIELD,
-			Event::SESSION_LOGIN, array('password'));
-	} else {
-		try {
-			$login_user = Session::login($form_args['email'], $form_args['password']);
-		} catch (TarsException $ex) {
-			$error = $ex;
-		} catch (PDOException $ex) {
-			$error = new TarsException(Event::SERVER_DBERROR,
-				Event::SESSION_LOGIN, $ex);
-		}
-
-		if ($login_user) {
-			/* User type */
-			$type = $login_user->getObjectType();
-			
-			if ($type == STUDENT) {
-				header('Location: student/student.php');
-				exit;
-			} elseif ($type == PROFESSOR) {
-				header('Location: professor/professor.php');
-				exit;
-			} elseif ($type == STAFF) {
-				header('Location: staff/staff.php');
-				exit;
-			} elseif ($type == ADMIN) {
-				header('Location: admin/admin.php');
-				exit;
-			} else {
-				$error = new TarsException(Event::SERVER_EXCEPTION,
-					Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
-			}
+	if ($user_obj != null) {
+		/* User type */
+		$type = $user_obj->getObjectType();
+		
+		if ($type == STUDENT) {
+			header('Location: student/student.php');
+			exit;
+		} elseif ($type == PROFESSOR) {
+			header('Location: professor/professor.php');
+			exit;
+		} elseif ($type == STAFF) {
+			header('Location: staff/staff.php');
+			exit;
+		} elseif ($type == ADMIN) {
+			header('Location: admin/admin.php');
+			exit;
 		} else {
-			$error = new TarsException(Event::ERROR_LOGIN, Event::SESSION_LOGIN);
+			$error = new TarsException(Event::SERVER_EXCEPTION,
+				Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
 		}
+	} else {
+		$error = new TarsException(Event::ERROR_LOGIN, Event::SESSION_LOGIN);
 	}
 }
 ?>
@@ -66,14 +55,14 @@ if (isset($_POST['submit'])) {
 <html lang="en">
 
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>TARS</title>
 		
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="index.css" rel="stylesheet">
+		<link href="css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="index.css" rel="stylesheet"/>
 
 	</head>
   
@@ -211,7 +200,7 @@ if (isset($_POST['submit'])) {
 							<div class="row">
 								<div class="col-md-10">
 									<label for="email" class="colorWhite">Email</label>
-									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=get_form_value('email')?>">
+									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=$email?>">
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">

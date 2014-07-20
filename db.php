@@ -205,6 +205,9 @@ final class Place {
 		$sql = 'SELECT * FROM Places WHERE placeID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Place($row);
 	}
 	/*
@@ -217,6 +220,9 @@ final class Place {
 		$sql = 'SELECT * FROM Places WHERE building = :building AND room = :room';
 		$args = array(':building' => $building, ':room' => $room);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Place($row);
 	}
 	/*
@@ -233,7 +239,7 @@ final class Place {
 		$sql = 'SELECT DISTINCT building FROM Places';
 		$args = array();
 		$rows = Database::executeGetAllRows($sql, $args);
-		return $rows;
+		return array_map(function ($row) { return $row['building']; }, $rows);
 	}
 
 	public static function getOrCreatePlace($building, $room) {
@@ -249,18 +255,25 @@ final class Place {
 	}
 
 	private function __construct($row) {
-		$this->placeID = $row['placeID'];
+		$this->id = $row['placeID'];
 		$this->building = $row['building'];
 		$this->room = $row['room'];
 	}
 
 	public function getBuilding() { return $this->building; }
 	public function getRoom() { return $this->room; }
-	public function getPlaceID() { return $this->placeID; }
+	public function getPlaceID() { return $this->id; }
 
+	public function toArray() {
+		return array(
+			'id' => $this->id,
+			'building' => $this->building,
+			'room' => $this->room);
+	}
+
+	private $id;
 	private $building;
 	private $room;
-	private $placeID;
 }
 
 /*
@@ -286,12 +299,10 @@ abstract class User {
 			$args[':type'] = $check_type;
 		}
 		$user_row = Database::executeGetRow($sql, $args);
-
-		if ($user_row) {
-			return User::getUserSubclassObject($user_row);
-		} else {
+		if ($user_row == null) {
 			return null;
 		}
+		return User::getUserSubclassObject($user_row);
 	}
 
 	/**
@@ -404,6 +415,16 @@ abstract class User {
 		$this->createTime = strtotime($user_row['createTime']);
 	}
 
+	public function changePassword($newPassword) {
+		$password_hash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+		$sql = 'UPDATE Users
+				SET password = :password
+				WHERE userID = :userID';
+		$args = array(':userID' => $this->id, ':password' => $password_hash);
+		return Database::execute($sql, $args);
+	}
+
 	public function getID() { return $this->id; }
 	public function getEmail() { return $this->email; }
 	public function getPassword() { return $this->password; }
@@ -455,9 +476,6 @@ final class Student extends User {
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::executeInsert($sql, $args);
 
-		Event::insertEvent(Event::USER_CREATE, "$firstName $lastName created a STUDENT acocunt.",
-			$userID);
-
 		return $userID;
 	}
 
@@ -491,22 +509,25 @@ final class Student extends User {
 		return Application::getApplications(null, null, $term, $status);
 	}
 	
-
-	public function apply($positionID, $compensation, $qualifications) {
-		$applicationID = Application::insertApplication($positionID, $compensation,
+	// TODO move this to Position object
+	// TODO create notification
+	public function apply($position, $compensation, $qualifications) {
+		$applicationID = Application::insertApplication($position, $compensation,
 			$qualifications, PENDING, $this->id, time());
-		Event::insertEvent(Event::STUDENT_APPLY, $this->getName().' applied to a position. '.
-			'Application object created.', $applicationID);
 	}
-	
-	public function withdraw($positionID){
-		Application::setPositionStatus($this->id, $positionID, WITHDRAWN);
-		Event::insertEvent(Event::STUDENT_WITHDRAW, $this->getName().' withdrew an application. '.
-			'Application object updated.', null);
+
+	// TODO move this to Position object
+	// TODO create notification
+	public function withdraw($position){
+		Application::setPositionStatus($this->id, $position, WITHDRAWN);
 	}
 	
 	public function getAllComments(){
-		return Comment::getAllComments($this->id);
+		$sql = 'SELECT * FROM Comments
+   				WHERE studentID = :studentID';
+		$args = array(':studentID' => $this->id);
+   		$rows = Database::executeGetAllRows($sql, $args);
+   		return array_map(function($row) { return new Comment($row); }, $rows);
 	}
 
 	public function saveComment($comment, $creator, $createTime = null) {
@@ -515,9 +536,6 @@ final class Student extends User {
 		}
 
 		$commentID = Comment::insertComment($comment, $this->id, $creator->getID(), $createTime);
-
-		Event::insertEvent(Event::NONSTUDENT_COMMENT, $creator->getName().' commented on '.
-			'student '.$this->getName().'. Comment object created.', $commentID);
 
 		return $commentID;
 	}
@@ -535,9 +553,6 @@ final class Student extends User {
 				':classYear' => $classYear, ':major' => $major, ':gpa' => $gpa,
 				':universityID' => $universityID, ':aboutMe' => $aboutMe);
 		Database::execute($sql, $args);
-
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
-			'profile data.', $this->id);
 	}
 
 	public function getMobilePhone() { return $this->mobilePhone; }
@@ -546,6 +561,21 @@ final class Student extends User {
 	public function getClassYear() { return $this->classYear; }
 	public function getAboutMe() { return $this->aboutMe; }
 	public function getUniversityID() { return $this->universityID; }
+
+	public function toArray() {
+		return array(
+			'id' => $this->id,
+			'type' => STUDENT,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
+			'mobilePhone' => $this->mobilePhone,
+			'major' => $this->major,
+			'gpa' => $this->gpa,
+			'classYear' => $this->classYear,
+			'aboutMe' => $this->aboutMe,
+			'universityID' => $this->universityID);
+	}
 
 	private $mobilePhone;
 	private $major;
@@ -591,18 +621,19 @@ final class Professor extends User {
 		return array_map(function ($row) { return new Professor($row); }, $rows );
 	}
 		
-	public function updateProfile($firstName, $lastName, $officeID, $officePhone) {
+	public function updateProfile($firstName, $lastName, $officePhone, $building, $room) {
+		$building = strtoupper($building);
+		$room = strtoupper($room);
+
 		$sql = 'UPDATE Professors
 				INNER JOIN Users ON Users.userID = Professors.userID
 				SET firstName = :firstName, lastName = :lastName,
 					officeID = :officeID, officePhone = :officePhone
 				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':officeID' => $officeID, ':officePhone' => $officePhone);
+			':officeID' => Place::getOrCreatePlace($building, $room),
+			':officePhone' => $officePhone);
 		Database::execute($sql, $args);
-
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
-			'profile data.', $this->id);
 	}
 
 	public function getSections() {
@@ -627,13 +658,14 @@ final class Professor extends User {
 		return array_map(function ($row) { return new Section($row); }, $rows);		
 	}
 
-	public function getCourses(){
+	public function getCourses($term){
 		$sql = "SELECT DISTINCT Courses.courseID, Courses.department, Courses.courseNumber, Courses.courseTitle \n"
 		    . "FROM Courses,Sections,Teaches\n"
 		    . "WHERE Teaches.sectionID = Sections.sectionID \n"
 		    . "AND Courses.courseID = Sections.courseID\n"
-		    . "AND Teaches.professorID = :professorID";
-		$args = array(':professorID' => $this->id);
+			. "AND Teaches.professorID = :professorID\n"
+			. "AND Courses.termID = :term";
+		$args = array(':professorID' => $this->id, ':term' => $term->getID());
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows;
 
@@ -649,6 +681,18 @@ final class Professor extends User {
 	
 	public function getOfficeID() { return $this->officeID; }
 	public function getOfficePhone() { return $this->officePhone; }
+
+	public function toArray() {
+		$office = $this->getOffice();
+		return array(
+			'id' => $this->id,
+			'type' => PROFESSOR,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
+			'officePhone' => $this->officePhone,
+			'office' => $office->toArray());
+	}
 
 	private $officeID;
 	private $office;
@@ -681,9 +725,6 @@ final class Staff extends User {
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
 				':officePhone' => $officePhone);
 		Database::execute($sql, $args);
-
-		Event::insertEvent(Event::USER_SET_PROFILE, "$firstName $lastName updated their ".
-			'profile data.', $this->id);
 	}
 
 	public function __construct($user_row, $staff_row) {
@@ -696,12 +737,30 @@ final class Staff extends User {
 
 	public function getOfficePhone() { return $this->officePhone; }
 
+	public function toArray() {
+		return array(
+			'id' => $this->id,
+			'type' => STAFF,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName);
+	}
+
 	private $officePhone;
 }
 
 final class Admin extends User {
 	public function __construct($user_row, $admin_row) {
 		parent::__construct($user_row);
+	}
+
+	public function toArray() {
+		return array(
+			'id' => $this->id,
+			'type' => ADMIN,
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName);
 	}
 }
 
@@ -712,6 +771,9 @@ final class Position {
 				INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
 				WHERE positionID = :id';
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Position($row);
 	}
 
@@ -861,6 +923,9 @@ final class Application {
 		$sql = 'SELECT * FROM Applications WHERE appID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Application($row);
 	}
 
@@ -961,29 +1026,22 @@ final class Application {
 		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
 
-	public static function insertApplication($positionID, $comp, $qual, $status, $creatorID, $createTime) {
+	public static function insertApplication($position, $comp, $qual, $status, $creatorID, $createTime) {
 		$sql = 'INSERT INTO Applications
 				(positionID, compensation, appStatus, qualifications, creatorID, createTime) VALUES
 				(:position, :comp, :status, :qual, :creator, :createTime)';
-		$args = array(':position' => $positionID, ':comp' => $comp, ':status' => $status,
+		$args = array(':position' => $position->getID(), ':comp' => $comp, ':status' => $status,
 			':qual' => $qual, ':creator' => $creatorID,
 			':createTime' => date('Y-m-d H:i:s', $createTime));
 		return Database::executeInsert($sql, $args);
 	}
 
-	public static function setPositionStatus($studentID, $positionID, $status) {
+	public static function setPositionStatus($studentID, $position, $status) {
 		$sql = 'UPDATE Applications
 				SET appStatus = :status
 				WHERE creatorID = :student_id AND positionID = :position_id';
 		$args = array(':status' => $status,	':student_id' => $studentID,
-			':position_id' => $positionID);
-		Database::execute($sql, $args);
-	}
-
-	public static function setApplicationStatus($application, $decision){
-		$sql = "UPDATE Applications SET appStatus = :decision 
-		WHERE appID = :appID";
-		$args = array(':appID' => $application->getID(), ':decision' => $decision);
+			':position_id' => $position->getID());
 		Database::execute($sql, $args);
 	}
 
@@ -1017,6 +1075,24 @@ final class Application {
 	}
 	public function getCreateTime() { return $this->createTime; }
 
+	public function setApplicationStatus($decision){
+		$sql = "UPDATE Applications SET appStatus = :decision 
+				WHERE appID = :appID";
+		$args = array(':appID' => $this->id, ':decision' => $decision);
+		return Database::execute($sql, $args);
+	}
+
+	public function toArray() {
+		$creator = $this->getCreator();
+		return array(
+			'id' => $this->id,
+			'status' => $this->appStatus,
+			'compensation' => $this->compensation,
+			'qualifications' => $this->qualifications,
+			'creator' => $creator->toArray(),
+			'createTime' => date('g:i:sa \o\n Y/m/d', $this->createTime));
+	}
+
 	private $id;
 	private $position;
 	private $positionID;
@@ -1035,6 +1111,9 @@ final class Term {
 				WHERE termID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Term($row);
 	}
 
@@ -1164,8 +1243,6 @@ final class Term {
 
 			Configuration::set(Configuration::CURRENT_TERM, $termID,
 				$creator, $createTime);
-			Event::insertEvent(Event::STAFF_TERM_IMPORT, 'Imported a new '.
-				'Term. Term object created.', $termID, $createTime, null, $creator);
 		} catch (PDOException $ex) {
 			Database::rollbackTransaction();
 			throw $ex;
@@ -1288,7 +1365,7 @@ final class Term {
 				}
 			}
 		}
-		Term::importTerm($termYear, $termSemester, $courses);
+		return Term::importTerm($termYear, $termSemester, $courses);
 	}
 
 	public function __construct($row) {
@@ -1333,15 +1410,10 @@ final class Comment {
 		$sql = "SELECT * FROM Comments WHERE commentID = :commentID";
 		$args = array('commentID' => $commentID);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Comment($row);
-	}
-	
-	public static function getAllComments($studentID){
-		$sql = 'SELECT * FROM Comments
-   				WHERE studentID = :studentID';
-		$args = array(':studentID' => $studentID);
-   		$rows = Database::executeGetAllRows($sql, $args);
-   		return array_map(function($row) { return new Comment($row); }, $rows);
 	}
 	
 	public static function insertComment($comment, $studentID, $creatorID, $createTime) {
@@ -1356,14 +1428,20 @@ final class Comment {
 		$this->id = $row['commentID'];
 		$this->commentText = $row['commentText'];
 		$this->studentID = $row['studentID'];
+		$this->student = null;
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
-		$this->createTime = $row['createTime'];
+		$this->createTime = strtotime($row['createTime']);
 	}
 	
 	public function getID(){ return $this->id; }
 	public function getComment(){ return $this->commentText; }
-	public function getStudentID(){ return $this->studentID; }
+	public function getStudent(){
+		if ($this->student == null) {
+			$this->student = User::getUserByID($this->studentID, STUDENT);
+		}
+		return $this->student;
+	}
 	public function getCreator() {
 		if ($this->creator == null) {
 			$this->creator = User::getUserByID($this->creatorID);
@@ -1371,10 +1449,22 @@ final class Comment {
 		return $this->creator;
 	}
 	public function getCreateTime() { return $this->createTime; }
+
+	public function toArray() {
+		$creator = $this->getCreator();
+		$student = $this->getStudent();
+		return array(
+			'id' => $this->id,
+			'comment' => $this->commentText,
+			'student' => $student->toArray(),
+			'creator' => $creator->toArray(),
+			'createTime' => date('g:i:sa \o\n Y/m/d', $this->createTime));
+	}
 	
 	private $id;
 	private $commentText;
 	private $studentID;
+	private $student;
 	private $creatorID;
 	private $creator;
 	private $createTime;
@@ -1387,6 +1477,9 @@ final class SectionSession {
 				WHERE sessionID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new SectionSession($row);
 	}
 
@@ -1472,6 +1565,9 @@ final class Section {
 				WHERE sectionID = :id';
 		$args = array(':id' => $id);
 		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
 		return new Section($row);
 	}
 
@@ -1616,6 +1712,14 @@ final class Section {
 		return Database::executeGetScalar($sql, $args);	
 	}
 
+	public function isTaughtBy($professor) {
+		$sql = 'SELECT COUNT(*) FROM Teaches
+				WHERE sectionID = :section AND professorID = :professor';
+		$args = array(':section' => $this->id, ':professor' => $professor->getID());
+		$count = Database::executeGetScalar($sql, $args);
+		return $count != 0;
+	}
+
 
 	public function getID() { return $this->id; }
 	public function getCRN() { return $this->crn; }
@@ -1702,42 +1806,55 @@ final class Event {
 	const SERVER_DBERROR = 2;
 	const ERROR_LOGIN = 3;
 	const ERROR_PERMISSION = 4;
-	const ERROR_NOT_FOUND = 5;
-	const ERROR_FORM_FIELD = 6;
-	const ERROR_FORM_UPLOAD = 7;
-	const ERROR_CSV_PARSE = 8;
-	const ERROR_JSON_PARSE = 9;
-	const SESSION_LOGIN = 10;
-	const SESSION_LOGOUT = 11;
-	const SESSION_CONTINUE = 12;
-	const USER_CREATE = 13;
-	const USER_RESET = 14;
-	const USER_CONFIRM = 15;
-	const USER_CHECK_EMAIL = 16;
-	const USER_GET_APPLICATIONS = 17;
-	const USER_GET_POSITIONS = 18;
-	const USER_GET_SECTIONS = 19;
-	const USER_GET_STUDENTS = 20;
-	const USER_GET_PROFESSORS = 21;
-	const USER_GET_USERS = 22;
-	const USER_GET_PROFILE = 23;
-	const USER_SET_PROFILE = 24;
-	const STUDENT_APPLY = 25;
-	const STUDENT_WITHDRAW = 26;
-	const STUDENT_SEARCH = 27;
-	const NONSTUDENT_SET_APP = 28;
-	const NONSTUDENT_COMMENT = 29;
-	const SU_CREATE_USER = 30;
-	const SU_RESET_USER = 31;
-	const STAFF_TERM_IMPORT = 32;
-	const STAFF_GET_PAYROLL = 33;
-	const ADMIN_CONFIGURE = 34;
+	const ERROR_FORM_FIELD = 5;
+	const ERROR_FORM_UPLOAD = 6;
+	const SESSION_LOGIN = 7;
+	const SESSION_LOGOUT = 8;
+	const SESSION_CONTINUE = 9;
+	const USER_CREATE = 10;
+	const USER_RESET_PASS = 11;
+	const USER_CONFIRM = 12;
+	const USER_IS_EMAIL_AVAIL = 13;
+	const USER_GET_OBJECT = 14;
+	const USER_GET_VIEW = 15;
+	const USER_SET_PROFILE = 16;
+	const USER_SET_PASS = 17;
+	const STUDENT_APPLY = 18;
+	const STUDENT_CANCEL = 19;
+	const STUDENT_WITHDRAW = 20;
+	const NONSTUDENT_SET_APP = 21;
+	const NONSTUDENT_COMMENT = 22;
+	const SU_CREATE_USER = 23;
+	const SU_RESET_USER_PASS = 24;
+	const STAFF_TERM_IMPORT = 25;
+	const ADMIN_CONFIGURE = 26;
+
+	private static $eventTypeRows = null;
 
 	public static function getEventTypeName($event_type) {
 		$class = new ReflectionClass(__CLASS__);
 		$constants = array_flip($class->getConstants());
 
 		return $constants[$event_type];
+	}
+
+	private static function cacheEventTypeRows() {
+		if (Event::$eventTypeRows == null) {
+			$sql = 'SELECT * FROM EventTypes';
+			$rows = Database::executeGetAllRows($sql, array());
+			Event::$eventTypeRows = $rows;
+		}
+	}
+
+	public static function getEventTypeIDInDatabase($event_type) {
+		$name = Event::getEventTypeName($event_type);
+		Event::cacheEventTypeRows();
+		foreach (Event::$eventTypeRows as $row) {
+			if ($row['eventName'] == $name) {
+				return $row['eventTypeID'];
+			}
+		}
+		return null;
 	}
 
 	public static function getErrorTextFromEventType($event_type) {
@@ -1747,36 +1864,28 @@ final class Event {
 		case Event::SERVER_DBERROR:
 		case Event::ERROR_LOGIN:
 		case Event::ERROR_PERMISSION:
-		case Event::ERROR_NOT_FOUND:
 		case Event::ERROR_FORM_FIELD:
-		case Event::ERROR_FORM_UPLOAD:
-		case Event::ERROR_CSV_PARSE:
-		case Event::ERROR_JSON_PARSE: return 'Error';
+		case Event::ERROR_FORM_UPLOAD: return 'An error occurred';
 		case Event::SESSION_LOGIN: return 'Error logging in';
 		case Event::SESSION_LOGOUT: return 'Error logging out';
 		case Event::SESSION_CONTINUE: return 'Error accessing page';
 		case Event::USER_CREATE: return 'Error creating an account';
-		case Event::USER_RESET: return 'Error resetting password';
+		case Event::USER_RESET_PASS: return 'Error resetting password';
 		case Event::USER_CONFIRM: return 'Error confirming email';
-		case Event::USER_CHECK_EMAIL: return 'Error checking email availability';
-		case Event::USER_GET_APPLICATIONS: return 'Error retrieving applications';
-		case Event::USER_GET_POSITIONS: return 'Error retrieving positions';
-		case Event::USER_GET_SECTIONS: return 'Error retrieving sections';
-		case Event::USER_GET_STUDENTS: return 'Error retrieving students';
-		case Event::USER_GET_PROFESSORS: return 'Error retrieving professors';
-		case Event::USER_GET_USERS: return 'Error retrieving users';
-		case Event::USER_GET_PROFILE: return 'Error retrieving profile data';
+		case Event::USER_IS_EMAIL_AVAIL: return 'Error checking email availability';
+		case Event::USER_GET_OBJECT: return 'Error retrieving an object';
+		case Event::USER_GET_VIEW: return 'Error retrieving a view';
 		case Event::USER_SET_PROFILE: return 'Error setting profile data';
+		case Event::USER_SET_PASS: return 'Error setting password';
 		case Event::STUDENT_APPLY: return 'Error applying to position';
-		case Event::STUDENT_WITHDRAW: return 'Error withdrawing application';
-		case Event::STUDENT_SEARCH: return 'Error searching for positions';
+		case Event::STUDENT_CANCEL: return 'Error cancelling application';
+		case Event::STUDENT_WITHDRAW: return 'Error withdrawing from position';
 		case Event::NONSTUDENT_SET_APP: return 'Error setting application status';
 		case Event::NONSTUDENT_COMMENT: return 'Error creating comment';
 		case Event::SU_CREATE_USER: return 'Error creating user';
-		case Event::SU_RESET_USER: return 'Error resetting user\'s password';
-		case Event::STAFF_TERM_IMPORT: return 'Error importing term';
-		case Event::STAFF_GET_PAYROLL: return 'Error retrieving payroll data';
-		case Event::ADMIN_CONFIGURE: return 'Error setting configuration';
+		case Event::SU_RESET_USER_PASS: return 'Error resetting user password';
+		case Event::STAFF_TERM_IMPORT: return 'Error importing new term';
+		case Event::ADMIN_CONFIGURE: return 'Error setting value';
 		}
 	}
 
@@ -1814,7 +1923,7 @@ final class Event {
 		}
 
 		if ($useDB) {
-			$args = array(':etype' => $eventType, ':descr' => $descr,
+			$args = array(':etype' => Event::getEventTypeIDInDatabase($eventType), ':descr' => $descr,
 				':objectid' => $objectID, ':createtm' => date('Y-m-d H:i:s', $createTime),
 				':createip' => inet_pton($creatorIP));
 

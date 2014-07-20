@@ -1,19 +1,27 @@
 <?php  
-require_once 'studentSession.php';
+require_once '../session.php';
+
+$error = null;
+$student = null;
+try {
+	$student = Session::start(STUDENT);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>TARS</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="student.css" rel="stylesheet"/>
 
 	</head>
   
@@ -29,10 +37,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) { //Display any errors
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="panel panel-primary">

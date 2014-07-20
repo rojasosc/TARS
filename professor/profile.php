@@ -1,6 +1,15 @@
 <?php
-require_once 'professorSession.php';
-if ($professor) {
+require_once '../session.php';
+
+$error = null;
+$professor = null;
+try {
+	$professor = Session::start(PROFESSOR);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
+
+if ($professor != null) {
 	$office = $professor->getOffice();
 }
 ?>
@@ -8,18 +17,20 @@ if ($professor) {
 <html lang="en">
 
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>My Profile</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../css/bootstrap-validator.min.css" rel="stylesheet" />
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet" />
 		<link href="professor.css" rel="stylesheet" />
-		<link href="../bootstrapValidator.min.css" rel="stylesheet" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="../bootstrapValidator.min.js"></script>		
+		<script src="../js/bootstrap-validator.min.js"></script>		
+		<script src="../js/bootstrap-select.min.js"></script>		
 		<script src="../js/tars_utilities.js"></script>
 	</head>
   
@@ -35,13 +46,13 @@ if ($professor) {
 				<div class="modal-body">
 					<form class="edit-profile-form" data-usertype="<?= PROFESSOR ?>">
 						<div class="row">
-							<div class="col-xs-4">				
+							<div class="col-xs-6">				
 								<div class="form-group"> 				
 									<label class="control-label" for="firstName">First Name</label>
 										<input id="firstName" type="text" class="form-control" name="firstName">																					
 								</div> <!-- End form-group -->											
 							</div> <!-- End column -->
-								<div class="col-xs-4">
+								<div class="col-xs-6">
 									<div class="form-group">
 										<label class="control-label" for="firstName">Last Name</label>
 											<input id="lastName" type="text" class="form-control" name="lastName">													
@@ -49,7 +60,7 @@ if ($professor) {
 								</div>	<!-- End column -->						
 						</div> <!-- End row -->
 						<div class="row">
-							<div class="col-xs-8">
+							<div class="col-xs-12">
 								<div class="form-group">
 									<label class="control-label" for="email">Email</label>
 									<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
@@ -58,26 +69,29 @@ if ($professor) {
 						</div> <!-- End row -->
 						<legend>Office</legend>
 						<div class="row">
-							<div class="col-xs-4">
+							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="building">Building</label>
-									<select name="building" class="form-control buildings" id="buildings">
+									<select name="building" class="selectpicker form-control buildings" id="buildings">
 									</select> <!-- End select -->										
 								</div> <!-- End form-group -->
 							</div> <!-- End column -->
-							<div class="col-xs-4">
+							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="room">Room</label>
-									<select name="room" class="form-control rooms" id="rooms">
+									<select name="room" class="selectpicker form-control rooms" id="rooms">
 									</select> <!-- End select -->										
 								</div> <!-- End form-group -->
-							</div> <!-- End column -->							
+							</div> <!-- End column -->
 						</div> <!-- End Row -->	
 						<div class="row">
-							<div class="col-xs-4">
+							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="homePhone">Office Phone</label>
-									<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
+									<div class="input-group">
+										<span class="input-group-addon">+1</span>
+										<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone" maxlength="14" />
+									</div>
 								</div> <!-- End form-group -->
 							</div> <!-- End column -->						
 						</div> <!-- End row -->							
@@ -154,11 +168,15 @@ require 'header.php';
 
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
-// only possible error is SESSION_CONTINUE
 if ($error != null) {
 	echo $error->toHTML();
-} else {
+}
+?>
+				</div>
+<?php
+if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="container">				
 					<div class="row">

@@ -26,7 +26,7 @@ final class Session {
 				return $user_obj;
 			}
 		}
-		return false;
+		return null;
 	}
 
 
@@ -41,13 +41,37 @@ final class Session {
 		$success = session_start(); // begin the session
 		$success = $success && session_regenerate_id(true);  // regenerate a new session id on each log in
 		if ($success) {
-			Event::insertEvent(Event::SESSION_LOGIN,
-				$user_obj->getName().' logged in', $user_obj->getID());
 			$_SESSION['userID'] = $user_obj->getID();
 		} else {
 			throw new TarsException(Event::SERVER_ERROR, Event::SESSION_LOGIN,
 				new Exception('Session create failed'));
 		}
+	}
+
+	/* Function Session::continue($user_type)
+	 * Purpose: Continue an existing session on this page.
+	 *			If one does not exist, a TarsException is thrown.
+	 * Returns: The User object who is currently logged in.
+	 * Throws:  TarsException on failure. Catch this and show this sanely, please!
+	 */
+	public static function start($user_type = -1) {
+		$success = session_start();
+		$user = null;
+		if (!$success) { //If the session failed to start, throw an exception and log the error
+			throw new TarsException(Event::SERVER_EXCEPTION, Event::SESSION_CONTINUE,
+				new Exception('Session continue failed'));
+		} else {
+			try { //If the session managed to start...
+				$user = Session::getLoggedInUser($user_type); //Find out who logged in
+			} catch (PDOException $ex) { //Catch any PDO exceptions and log them
+				throw new TarsException(Event::SERVER_DBERROR, Event::SESSION_CONTINUE, $ex);
+			}
+		}
+		if ($user == null) { //If the logged user is not a student
+			throw new TarsException(Event::ERROR_PERMISSION, Event::SESSION_CONTINUE,
+				array('user not logged in'));
+		}
+		return $user;
 	}
 
 	/* Function Session::getLoggedInUserID()
@@ -60,7 +84,7 @@ final class Session {
 
 	/* Function Session::getLoggedInUser(optional $expect_type)
 	*  Purpose: Gets the currently logged in User object of their subtype.
-	*  Returns: The user, or false if no session or session != $expect_type (if present)
+	*  Returns: The user, or null if no session or session != $expect_type (if present)
 	*  Throws: PDOException if getUserByID failed due to database error
 	**/
 	public static function getLoggedInUser($expect_type = -1) {
@@ -78,18 +102,6 @@ final class Session {
 	*  Throws: PDOException if event log failed due to database error
 	**/
 	public static function destroy(){
-		// If the getLoggedInUser code throws a database error,
-		// continue destroying session and throw the exception later
-		$delay_throw = null;
-		$user_obj = null;
-		if (session_start()) {
-			try {
-				$user_obj = Session::getLoggedInUser();
-			} catch (PDOException $ex) {
-				$delay_throw = $ex;
-			}
-		}
-
 		 /**************************************
 		 *NOTE: This code was obtained directly
 		 *from the PHP5 Manual on ending sessions. 
@@ -111,15 +123,6 @@ final class Session {
 		session_destroy();
 
 		/**************************************/
-
-		if ($user_obj != null) {
-			Event::insertEvent(Event::SESSION_LOGOUT,
-				$user_obj->getName().' logged out', $user_obj->getID());
-		}
-
-		if ($delay_throw != null) {
-			throw $delay_throw;
-		}
 	}
 
 

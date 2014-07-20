@@ -33,6 +33,7 @@ $(document).ready(function() {
 	/*
 	 * Processes a release request on a position already held by the student without page redirect
 	 * TODO: SEND AN EMAIL NOTIFCATION TO STAFF AND PROFESSOR
+	 * TODO: ^ this is done server-side, :)
 	 * Mechanism:
 	 * Fetches URL of the page that is going to process the request
 	 * Fetches the student's reasons for releasing themselves from the position
@@ -42,33 +43,20 @@ $(document).ready(function() {
 	 */
     $('#releaseModal').on('submit', '#releaseForm', function(event) {
 		event.preventDefault();
-        alert('Email notification should be sent to the staff and professor');
-		var url = $('#releaseForm').attr('action');
-		var reasons = $('releaseReasons').val();
-		studentID = $('#studentID').val();
-		$.ajax({
-			type: 'POST',
-			url: url,
-			data: {
-				positionID: positionID,
-				studentID: studentID,
-				type: 'release',
-				reasons: reasons
-			},
-			dataType: 'json',
-			success: function(data) {
+		doAction('withdraw', {positionID: positionID
+		}).done(function(data) {
+			if (data.success) {
 				releaseModalBody.html('<p>You have been withdrawn from this position.</p>');
 				releaseModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="releaseOK">OK</button>');
 				curPos.hide(800);
 				curPos = null;
 				positionID = null;
 				studentID = null;
-			},
-			error: function(jsXHR, textStatus, errorThrown) {
-				alert('AJAX ERROR! We need a better error handling system.');
-				releaseModalFooter.append('<div class="error"><p><b>' + textStatus + '</b></p><br>' +
-									  '<p>' + errorThrown + '</p></div>');
+			} else {
+				showError(data.error, $('#relAlertHolder'));
 			}
+		}).fail(function(jqXHR, textStatus, errorMessage) {
+			showError({message: errorMessage}, $('#relAlertHolder'));
 		});
 	});
 	/*
@@ -76,28 +64,20 @@ $(document).ready(function() {
 	 */
 	$('#withdrawModal').on('submit', '#withdrawForm', function(event) {
 		event.preventDefault();
-		alert('Email notification should be sent to the staff and professor');
-		var url = $('#withdrawForm').attr('action');
-		studentID = $('#studentID').val();
-		$.ajax({
-			type: 'POST',
-			url: url,
-			data: {
-				positionID: positionID,
-				studentID: studentID,
-				type: 'withdraw'
-			},
-			dataType: 'json',
-			success: function(data) {
-				withdrawModalBody.html('<p>Your application has been withdrawn.</p>');
+		doAction('withdraw', {positionID: positionID
+		}).done(function(data) {
+			if (data.success) {
+				withdrawModalBody.html('<p>Your application has been cancelled.</p>');
 				withdrawModalFooter.html('<button type="button" class="btn btn-success" data-dismiss="modal" id="withdrawOK">OK</button>');
 				curPos.hide(800);
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert('AJAX ERROR! We need a better error handling system.');
-				withdrawModalFooter.append('<div class="error"><p><b>' + textStatus + '</b></p><br>' +
-									  '<p>' + errorThrown + '</p></div>');
+				curPos = null;
+				positionID = null;
+				studentID = null;
+			} else {
+				showError(data.error, $('#wAlertHolder'));
 			}
+		}).fail(function(jqXHR, textStatus, errorMessage) {
+			showError({message: errorMessage}, $('#wAlertHolder'));
 		});
     });
 	/*

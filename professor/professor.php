@@ -1,5 +1,13 @@
 <?php
-require_once 'professorSession.php';
+require_once '../session.php';
+
+$error = null;
+$professor = null;
+try {
+	$professor = Session::start(PROFESSOR);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 
 $term = null;
 $pendingApps = 0;
@@ -20,12 +28,12 @@ $unfilledPositions = false; /*TODO: Check for the existence of vacant positions 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">		
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>Home</title>		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="professor.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="professor.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 	</head> 
@@ -38,10 +46,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="container">

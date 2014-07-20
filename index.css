@@ -61,13 +61,12 @@ body {
     margin-top: 90px;
 }
 #login {
-    background-color: #000000;
+    background-color: rgba(0, 0, 0, 0.8);
     margin: auto;
     margin-bottom: 25px;
     width: 500px;
     padding: 50px;
     border-radius: 25px;
-    opacity: .8;
     z-index: 0;
 }
 .center {

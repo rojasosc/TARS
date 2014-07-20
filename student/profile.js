@@ -8,98 +8,106 @@ $(document).ready(function() {
             validating: 'glyphicon glyphicon-refresh'
         },
         submitHandler: function(validator, form, submitButton) {
-            var url = $('#profile').attr('action');
-            var data = $('#profile :input').serializeArray();
-            $.post(url, data, function(data) {
-                //TODO: Replace alert mechanism with Bootstrap Alert
-                alert('Your profile has been successfully updated!');
-				window.location.replace("profile.php");
-            });
+			doAction('updateProfile', $('#profile :input').serializeArray()
+			).done(function (data) {
+				if (data.success) {
+					showAlert({message: 'Your profile has been updated.'}, $('#alertHolder'), 'success');
+				} else {
+					showError(data.error, $('#alertHolder'));
+				}
+			}).fail(function (jqXHR, textStatus, errorMessage) {
+				showError({message: errorMessage}, $('#alertHolder'));
+			});
         },
-        fields: {
-            firstName: {
-                message: 'Invalid first name',
-                validators: {
-                    notEmpty: {
-                        message: 'Your first name is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 1,
-                        message: 'Your first name must have at least one character'
-                    },
-                    regexp: {
-                        regexp: /^[\D\s]+$/,
-                        message: 'Your first name can only consist of English alphabet letters'
-                    }
-                }
-            },
-            lastName: {
-                message: 'Invalid last name',
-                validators: {
-                    notEmpty: {
-                        message: 'Your last name is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 1,
-                        message: 'Your last name must have at least one character'
-                    },
-                    regexp: {
-                        regexp: /^[\D\s]+$/,
-                        message: 'Your last name can only consist of English alphabet letters'
-                    }
-                }
-            },
-            mobilePhone: {
-                message: 'Invalid phone number',
-                validators: {
-                    notEmpty: {
-                        message: 'Your phone number is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 10,
-                        max: 11,
-                        message: 'Your phone number must include at least the area code in addition to the 7 standard digits'
-                    },
-                    regexp: {
-                        regexp: /^[0-9]+$/,
-                        message: 'Your phone number can only contain numbers'
-                    }
-                }
-            },
-            classYear: {
-                message: 'Invalid class year',
-                validators: {
-                    notEmpty: {
-                        message: 'Your class year is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 4,
-                        max: 4,
-                        message: 'Your class year must be exactly 4 digits'
-                    },
-                    regexp: {
-                        regexp: /^[0-9]+$/,
-                        message: 'Your class year can contain only numbers'
-                    }
-                }
-            },
-            gpa: {
-                message: 'Invalid GPA',
-                validators: {
-                    notEmpty: {
-                        message: 'Your GPA is required and cannot be empty'
-                    },
-                    stringLength: {
-                        min: 5,
-                        max: 5,
-                        message: 'Your GPA must have the following format: \'A.BCD\''
-                    },
-                    regexp: {
-                        regexp: /^[0-4][.][0-9]{3}$/,
-                        message: 'Your GPA must be a valid decimal number with 3 digits of precision'
-                    }
-                }
-            }
+		fields: {
+			firstName: {
+				message: 'Your first name is not valid',
+				validators: {
+					notEmpty: {
+						message: 'Your first name is required and cannot be empty'
+					},
+					stringLength: {
+						min: 1,
+						message: 'Your first name must have at least one character'
+					},
+					regexp: {
+						regexp: /^[\D\s]+$/,
+						message: 'Your first name can only consist of alphabetical characters'
+					}
+				}
+			},
+			lastName: {
+				message: 'Your last name is not valid',
+				validators: {
+					notEmpty: {
+						message: 'Your last name is required and cannot be empty'
+					},
+					stringLength: {
+						min: 1,
+						message: 'Your last name must have at least one character'
+					},
+					regexp: {
+						regexp: /^[\D\s]+$/,
+						message: 'Your last name can only consist of alphabetical characters'
+					}
+				}
+			},
+			mobilePhone: {
+				message: 'Your phone number is not valid',
+				validators: {
+					notEmpty: {
+						message: 'Your phone number is required and cannot be empty'
+					},
+					phone: {
+						country: 'US',
+						message: 'Your phone number must be valid and include the area code'
+					}
+				}
+			},
+			gpa: {
+				message: 'Your GPA is not valid',
+				validators: {
+					notEmpty: {
+						message: 'Your GPA is required and cannot be empty'
+					},
+					between: {
+						min: 0,
+						max: 4,
+						inclusive: false,
+						message: 'Your GPA must be a decimal value from 0.000 to 4.000'
+					},
+					stringLength: {
+						min: 1,
+						max: 5,
+						message: 'Your GPA will not be stored so precisely'
+					}
+				}
+			},
+			universityID: {
+				message: 'Your University ID is not valid',
+				validators: {
+					notEmpty: {
+						message: 'Your University ID is required and cannot be empty'
+					},
+					stringLength: {
+						min: 8,
+						max: 8,
+						message: 'Your University ID must be 8 digits long'
+					},
+					regexp: {
+						regexp: /^[0-9]+$/,
+						message: 'Your University ID can only consist of numerical digits'
+					}
+				}
+			},
+			aboutMe: {
+				message: 'Your qualifications field is not valid',
+				validators: {
+					notEmpty: {
+						message: 'Your qualifications are required and cannot be empty'
+					}
+				}
+			}
         } //END fields
     });
     //Prevent page redirection

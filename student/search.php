@@ -1,9 +1,17 @@
 <?php  
-require_once 'studentSession.php';
-require_once '../formInput.php';
+require_once '../session.php';
+require_once '../actions.php';
 require_once '../error.php';
 
-$form_args = get_form_values(array('q','term','type'), false);
+$error = null;
+$student = null;
+try {
+	$student = Session::start(STUDENT);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
+
+$form_args = array('q'=>'','term'=>'','type'=>-1);//get_form_values(array('q','term','type'), false);
 
 $positions = array();
 $terms = array();
@@ -45,22 +53,28 @@ if ($error == null) {
 <html lang="en">
 
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>TARS</title>
 		
 		<!-- BEGIN CSS -->
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="student.css" rel="stylesheet">
-		<link href="search.css" rel="stylesheet">
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="student.css" rel="stylesheet"/>
+		<link href="search.css" rel="stylesheet"/>
 		<!-- END CSS -->
 		
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<<<<<<< HEAD
+=======
+		<script src="../js/bootstrap-select.min.js"></script>
+>>>>>>> origin/stage
 		<script src="../js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="search.js"></script>
+		<script src="search.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 		<!-- END Scripts -->
 	</head>
   
@@ -134,12 +148,12 @@ if ($error == null) {
 					<div class="modal-body">
 						<div id="jobDetails">
 						</div>
-						<form role="form" method="post" id="application" action="appProcess.php">
+						<form role="form" method="post" id="application" action="#">
 							<div class="row" id="appAlertHolder"></div>
 							<div class="row">
 								<div class="col-xs-5 col-xs-offset-1">
 									<label for="compensation">Compensation</label>
-									<select name="compensation" class="form-control" id="compensation">
+									<select name="compensation" class="selectpicker form-control" id="compensation">
 										<option value="pay">Pay</option>
 										<option value="credit">Credit</option>
 									</select>
@@ -173,10 +187,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<!-- BEGIN Position Search -->
@@ -191,15 +209,15 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div class="form-inline" id="inputrow">
 									<div class="form-group">
 										<label class="sr-only" for="q">Search</label>
-										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=get_form_value('q', '', false)?>"/>
+										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=$form_args['q']?>"/>
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="term">Term</label>
-										<select class="form-control" id="term" name="term">
+										<select class="selectpicker form-control" id="term" name="term">
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"<?php if(get_form_value('term', $currentTermID, false) == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
+											<option value="<?=$term_opt->getID()?>"<?php if($form_args['term'] == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
 										<?php
 										}
 										?>
@@ -207,11 +225,11 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="type">Type</label>
-										<select id="type" name="type" class="form-control">
+										<select id="type" name="type" class="selectpicker form-control">
 										<?php
 										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"<?php if(get_form_value('type', 0, false) == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+											<option value="<?=$index?>"<?php if($form_args['type'] == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
 										<?php
 										}
 										?>

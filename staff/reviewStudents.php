@@ -1,20 +1,42 @@
 <?php  
-require_once 'staffSession.php';
+require_once '../session.php';
+
+$error = null;
+$staff = null;
+try {
+	$staff = Session::start(STAFF);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
+
+$term = null;
+if ($error == null) {
+	try {
+		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+		if ($currentTermID != null) {
+			$term = Term::getTermByID($currentTermID);
+		}
+	} catch (PDOException $ex) {
+		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
+	}
+}
 ?>
 
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>Student Verification</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="../js/bootstrap-select.min.js"></script>
 		<script src="comments.js"></script>
 		<script src="../js/tars_utilities.js"></script>
 	</head>
@@ -145,10 +167,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="panel panel-primary">
@@ -162,7 +188,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							?>
 									<div class="row">
 										<div class="col-xs-6">
-											<div class="alert alert-danger" role="alert">
+											<div class="alert alert-info" role="alert">
 												<p>There are currently no available applications for this term.</p>
 											</div>											
 										</div> <!-- End column -->

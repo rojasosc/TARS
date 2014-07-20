@@ -1,25 +1,34 @@
 <?php
-require_once 'staffSession.php';
+require_once '../session.php';
+
+$error = null;
+$staff = null;
+try {
+	$staff = Session::start(STAFF);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
 		<title>Create Account</title>
 		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="staff.css" rel="stylesheet">
-		<!--<link href="newTerm.css" rel="stylesheet">-->
-		<link rel="stylesheet" href="../bootstrapValidator.min.css"/>
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="staff.css" rel="stylesheet"/>
+		<link href="../css/bootstrap-validator.min.css" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script rel="text/javascript" src="../bootstrapValidator.min.js"></script>
-		<script src="createProfessor.js"></script>
+		<script src="../js/bootstrap-validator.min.js"></script>
+		<script src="../js/bootstrap-select.min.js"></script>
 		<script src="../js/tars_utilities.js"></script>
+		<script src="createProfessor.js"></script>
 
 	</head>
 	<body>
@@ -34,10 +43,14 @@ require 'header.php';
 
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="container" id="formBox">
@@ -82,20 +95,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
-														<label class="control-label" for="password">Create Password</label>
-														<input type="password" class="form-control" name="password" placeholder="Create Password"/>					
-													</div> <!-- End form-group -->							
-												</div> <!-- End column -->
-												<div class="col-md-4">
-													<div class="form-group">
-														<label class="control-label" for="passwordConfirm">Confirm Password</label>
-														<input type="password" class="form-control" name="passwordConfirm" placeholder="Confirm Password"/>					
-													</div> <!-- End form-group -->						
-												</div>							
-											</div> <!-- End row -->	
-											<div class="row">
-												<div class="col-md-4">
-													<div class="form-group">
 														<label class="control-label" for="homePhone">Office Phone</label>
 														<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
 													</div> <!-- End form-group -->
@@ -112,14 +111,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="building">Building</label>
-														<select name="building" class="form-control buildings" id="buildings">
+														<select name="building" class="selectpicker form-control buildings" id="buildings">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="room">Room</label>
-														<select name="room" class="form-control rooms" id="rooms">
+														<select name="room" class="selectpicker form-control rooms" id="rooms">
 														</select> <!-- End select -->										
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->

@@ -35,40 +35,32 @@ INSERT INTO `PositionTypes` (`positionName`, `positionTitle`, `responsibilities`
 ('grader', 'Grader', 'g respons.', 'g times', 'g comp.');
 
 INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
-('SERVER_EXCEPTION', 'crit', 'EventType'), -- 1
-('SERVER_DBERROR', 'crit', 'EventType'), -- 2
-('ERROR_LOGIN', 'error', 'EventType'), -- 3
-('ERROR_PERMISSION', 'error', 'EventType'), -- 4
-('ERROR_NOT_FOUND', 'error', 'EventType'), -- 5
-('ERROR_FORM_FIELD', 'error', 'EventType'), -- 6
-('ERROR_FORM_UPLOAD', 'error', 'EventType'), -- 7
-('ERROR_CSV_PARSE', 'error', 'EventType'), -- 8
-('ERROR_JSON_PARSE', 'error', 'EventType'), -- 9
-('SESSION_LOGIN', 'info', 'User'), -- 10
-('SESSION_LOGOUT', 'info', 'User'), -- 11
-('SESSION_CONTINUE', 'debug', NULL), -- 12
-('USER_CREATE', 'info', 'User'), -- 13
-('USER_RESET', 'info', 'User'), -- 14
-('USER_CONFIRM', 'info', 'User'), -- 15
-('USER_CHECK_EMAIL', 'debug', NULL), -- 16
-('USER_GET_APPS', 'debug', NULL), -- 17
-('USER_GET_POSITIONS', 'debug', NULL), -- 18
-('USER_GET_SECTIONS', 'debug', NULL), -- 19
-('USER_GET_STUDENTS', 'debug', NULL), -- 20
-('USER_GET_PROFESSORS', 'debug', NULL), -- 21
-('USER_GET_USERS', 'debug', NULL), -- 22
-('USER_GET_PROFILE', 'debug', NULL), -- 23
-('USER_SET_PROFILE', 'info', 'User'), -- 24
-('STUDENT_APPLY', 'info', 'Application'), -- 25
-('STUDENT_WITHDRAW', 'info', 'Application'), -- 26
-('STUDENT_SEARCH', 'debug', NULL), -- 27
-('NONSTUDENT_SET_APP', 'info', 'Application'), -- 28
-('NONSTUDENT_COMMENT', 'info', 'Comment'), -- 29
-('SU_CREATE_USER', 'info', 'User'), -- 30
-('SU_RESET_USER', 'info', 'User'), -- 31
-('STAFF_TERM_IMPORT', 'info', 'Term'), -- 32
-('STAFF_GET_PAYROLL', 'debug', NULL), -- 33
-('ADMIN_CONFIGURE', 'info', 'Configurable'); -- 34
+('SERVER_EXCEPTION', 'crit', 'EventType'),
+('SERVER_DBERROR', 'crit', 'EventType'),
+('ERROR_LOGIN', 'error', 'EventType'),
+('ERROR_PERMISSION', 'error', 'EventType'),
+('ERROR_FORM_FIELD', 'error', 'EventType'),
+('ERROR_FORM_UPLOAD', 'error', 'EventType'),
+('SESSION_LOGIN', 'info', 'User'),
+('SESSION_LOGOUT', 'info', 'User'),
+('SESSION_CONTINUE', 'debug', NULL),
+('USER_CREATE', 'info', 'User'),
+('USER_RESET_PASS', 'info', 'User'),
+('USER_CONFIRM', 'info', 'User'),
+('USER_IS_EMAIL_AVAIL', 'debug', NULL),
+('USER_GET_OBJECT', 'debug', NULL),
+('USER_GET_VIEW', 'debug', NULL),
+('USER_SET_PROFILE', 'info', 'User'),
+('USER_SET_PASS', 'info', 'User'),
+('STUDENT_APPLY', 'info', 'Application'),
+('STUDENT_CANCEL', 'info', 'Application'),
+('STUDENT_WITHDRAW', 'info', 'Application'),
+('NONSTUDENT_SET_APP', 'info', 'Application'),
+('NONSTUDENT_COMMENT', 'info', 'Comment'),
+('SU_CREATE_USER', 'info', 'User'),
+('SU_RESET_USER_PASS', 'info', 'User'),
+('STAFF_TERM_IMPORT', 'info', 'Term'),
+('ADMIN_CONFIGURE', 'info', 'Configurable');
 
 INSERT INTO `NotificationTemplates`
 (`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES

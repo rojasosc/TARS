@@ -1,6 +1,13 @@
 <?php
-//ini_set("display_errors",1);
-require_once 'professorSession.php';	
+require_once '../session.php';
+
+$error = null;
+$professor = null;
+try {
+	$professor = Session::start(PROFESSOR);
+} catch (TarsException $ex) {
+	$error = $ex;
+}
 
 $term = null;
 $sections = array();
@@ -9,24 +16,27 @@ if ($error == null) {
 		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 		if ($currentTermID != null) {
 			$term = Term::getTermByID($currentTermID);
-			$sections = $professor->getSections();
+			$courses = $professor->getCourses($term);
 		}
 	} catch (PDOException $ex) {
 		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_SECTIONS, $ex);
 	}
 }
-$courses = $professor->getCourses();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">		
-		<title>My Applicants</title>		
-		<link href="../css/bootstrap.min.css" rel="stylesheet">
-		<link href="professor.css" rel="stylesheet">
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>My Applicants</title>
+
+		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
+		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="professor.css" rel="stylesheet"/>
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/bootstrap-select.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="comments.js"></script>
 		<script src="../js/tars_utilities.js"></script>
@@ -92,10 +102,14 @@ require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
+				<div id="alertHolder">
 <?php
 if ($error != null) {
 	echo $error->toHTML();
 }
+?>
+				</div>
+<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="row">
@@ -170,6 +184,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													<legend><?= ucfirst($section->getSectionType()) ?></legend>	
 														
 															<?php
+																$location = '';
 																foreach($sessions as $session){
 																	$days = $session->getWeekDays();
 																	$time = $session->getStartTime() . "-" . $session->getEndTime();
@@ -192,7 +207,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 														<?php
 															if(!$applications){
 														?>
-															<div class="alert alert-danger" role="alert">
+															<div class="alert alert-info" role="alert">
 																<p>There are currently no available applications for this section.</p>
 															</div>
 															
@@ -266,7 +281,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 														
 														<?php
 														/* Table entry closing brace */
-														$tableEntry++;
 														}
 
 														?>

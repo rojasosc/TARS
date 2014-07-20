@@ -9,7 +9,7 @@
  * - SERVER_DBERROR (SQL/database error)
  * - ERROR_LOGIN ("The email or password you entered is incorrect")
  * - ERROR_PERMISSION ("Permission was denied")
- * - ERROR_FORM_FIELD ("Fields have invalid input")
+ * - ERROR_FORM_FIELD ("Fields have invalid input", also usable for generic user input error)
  *
  * Constructor syntax: new TarsException($class, $action, $more_data)
  *
@@ -34,28 +34,25 @@ final class TarsException extends Exception {
 		case Event::ERROR_PERMISSION:
 			$message = 'Permission was denied';
 			break;
-		case Event::ERROR_NOT_FOUND:
-			$message = 'Object was not found';
-			break;
 		case Event::ERROR_FORM_FIELD:
-			$message = 'Fields have invalid input. Please fill in these fields and try again';
+			$message = 'Invalid input in fields. Please fix these fields and try again';
 			break;
 		case Event::ERROR_FORM_UPLOAD:
 			$message = 'Upload of file failed';
 			break;
-		case Event::ERROR_CSV_PARSE:
-			$message = 'Parsing of CSV failed';
-			break;
-		case Event::ERROR_JSON_PARSE:
-			$message = 'Parsing of JSON failed';
-			break;
 		}
+		// exceptions in parens
 		if (is_subclass_of($more_data, 'Exception')) {
 			$message .= " ({$more_data->getMessage()})";
 		}
+		// arrays show in parens (USE CASE: list of fields not filled in)
 		if (is_array($more_data)) {
 			$parr = implode(', ', $more_data);
 			$message .= " ($parr)";
+		}
+		// string replaces message (USE CASE: ERROR_FORM_FIELD with better reason field)
+		if (is_string($more_data)) {
+			$message = $more_data;
 		}
 		return "$message.";
 	}

@@ -110,18 +110,6 @@ th,td {
 	
 }
 
-#payrollContainer{	
-	float:left;
-	width: 25%;
-	padding: 10px;
-}
-
-#resultsContainer{
-	float:right;
-	width: 75%;
-
-}
-
 #termContainer {
 	padding: 25px;
 	margin-bottom: 20px;

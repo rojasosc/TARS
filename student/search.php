@@ -5,6 +5,7 @@ require_once '../error.php';
 
 $error = null;
 $student = null;
+
 try {
 	$student = Session::start(STUDENT);
 } catch (TarsException $ex) {

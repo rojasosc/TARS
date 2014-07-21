@@ -46,7 +46,8 @@ final class Student extends User {
 	}
 		
 	public function getApplications($term, $status) {
-		return Application::getApplications(null, null, $term, $status);
+		$id = parent::getID();
+		return Application::getApplications($id, null, null, $term, $status);
 	}
 	
 	// TODO move this to Position object

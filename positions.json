@@ -1,0 +1,570 @@
+{
+	"termYear": 2014,
+	"termSemester": "fall",
+	"defaultEmailDomain": "cs.rochester.edu",
+	"courses": [
+		{
+			"crn": 29944,
+			"dep": "CSC",
+			"number": 108,
+			"title": "Computer Applications",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Rolando",
+					"lname": "Raqueno",
+					"email": "raqueno@"
+				}
+			],
+			"sessions": [
+				{
+					"weekdays": "TR",
+		            "begin": "16:50",
+		            "end": "18:05",
+		            "building": "GRGEN",
+		            "room": "101"
+				}
+			],
+			"positions": [
+				{
+					"type": "Super Leader",
+					"count": 1
+				},
+				{
+					"type": "Workshop Leader",
+					"count": 9
+				},
+				{
+					"type": "Grader",
+					"count": 2
+				}
+			]
+		},
+		{
+			"crn": 29966,
+			"dep": "CSC",
+			"number": 108,
+			"title": "Computer Applications - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Rolando",
+					"lname": "Raqueno",
+					"email": "raqueno@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "18:15",
+	                "end": "19:30",
+	                "building": "HARK",
+	                "room": "114"
+        		}
+    		],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2
+
+				}
+			]			
+		},
+		{
+			"crn": 29979,
+			"dep": "CSC",
+			"number": 108,
+			"title": "Computer Applications - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Rolando",
+					"lname": "Raqueno",
+					"email": "raqueno@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "MW",
+	                "begin": "15:25",
+	                "end": "16:40",
+	                "building": "HARK",
+	                "room": "114"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2				
+				}
+			]			
+		},
+		{
+			"crn": 29998,
+			"dep": "CSC",
+			"number": 161,
+			"title": "The Art of Programming",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Andrea",
+					"lname": "Cogliati",
+					"email": "cogliati@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "18:15",
+	                "end": "19:30",
+	                "building": "B&L",
+	                "room": "109"
+				}
+			],
+			"positions": [
+				{
+					"type": "Super Leader",
+					"count": 1
+				},
+				{
+					"type": "Workshop Leader",
+					"count": 9
+				},			
+				{
+					"type": "Grader",
+					"count": 2				
+				}
+			]			
+		},
+		{
+			"crn": 30008,
+			"dep": "CSC",
+			"number": "161",
+			"title": "The Art of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Andrea",
+					"lname": "Cogliati",
+					"email": "cogliati@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "MW",
+	                "begin": "12:30",
+	                "end": "13:45",
+	                "building": "GAVET",
+	                "room": "244"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2				
+				}
+			]			
+		},	
+		{
+			"crn": 30013,
+			"dep": "CSC",
+			"number": 161,
+			"title": "The Art of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Andrea",
+					"lname": "Cogliati",
+					"email": "cogliati@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "14:00",
+	                "end": "15:15",
+	                "building": "HARK",
+	                "room": "114"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2				
+				}
+			]			
+		},
+		{
+			"crn": 30024,
+			"dep": "CSC",
+			"number": 161,
+			"title": "The Art of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Andrea",
+					"lname": "Cogliati",
+					"email": "cogliati@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "MW",
+	                "begin": "18:25",
+	                "end": "19:30",
+	                "building": "GAVET",
+	                "room": "114"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 30105,
+			"dep": "CSC",
+			"number": 171,
+			"title": "The Science of Programming",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Ted",
+					"lname": "Pawlicki",
+					"email": "pawlicki@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "WF",
+	                "begin": "10:25",
+	                "end": "11:40",
+	                "building": "HOYT",
+	                "room": "AUD"
+				}
+			],
+			"positions": [
+				{
+					"type": "Super Leader",
+					"count": 1
+				},
+				{
+					"type": "Workshop Leader",
+					"count": 9
+				},			
+				{
+					"type": "Grader",
+					"count": 2				
+				}
+			]		
+		},
+		{
+			"crn": 30120,
+			"dep": "CSC",
+			"number": 171,
+			"title": "The Science of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Ted",
+					"lname": "Pawlicki",
+					"email": "pawlicki@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "11:05",
+	                "end": "12:20",
+	                "building": "GAVET",
+	                "room": "244"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 30136,
+			"dep": "CSC",
+			"number": 171,
+			"title": "The Science of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Ted",
+					"lname": "Pawlicki",
+					"email": "pawlicki@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "18:15",
+	                "end": "19:30",
+	                "building": "GAVET",
+	                "room": "244"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 30225,
+			"dep": "CSC",
+			"number": 171,
+			"title": "The Science of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Ted",
+					"lname": "Pawlicki",
+					"email": "pawlicki@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "12:30",
+	                "end": "13:45",
+	                "building": "GAVET",
+	                "room": "244"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 30233,
+			"dep": "CSC",
+			"number": 171,
+			"title": "The Science of Programming - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Ted",
+					"lname": "Pawlicki",
+					"email": "pawlicki@"
+				}
+			],
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "16:50",
+	                "end": "18:05",
+	                "building": "GAVET",
+	                "room": "244"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 30279,
+			"dep": "CSC",
+			"number": 172,
+			"title": "The Science of Data Structures",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "J",
+					"lname": "Koomen",
+					"email": "koomen@"
+				}
+			], 
+			"sessions": [
+				{
+	                "weekdays": "WF",
+	                "begin": "10:25",
+	                "end": "11:40",
+	                "building": "GAVET",
+	                "room": "202"
+				}
+			],
+			"positions": [
+				{
+					"type": "Super Leader",
+					"count": 1
+				},
+				{
+					"type": "Workshop Leader",
+					"count": 9
+				},			
+				{
+					"type": "Grader",
+					"count": 2				
+				}
+			]		
+		},
+		{
+			"crn": 30282,
+			"dep": "CSC",
+			"number": 172,
+			"title": "The Science of Data Structures - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Chris",
+					"lname": "Brown",
+					"email": "brown@"
+				}
+			], 
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "9:40",
+	                "end": "10:55",
+	                "building": "HYLYAN",
+	                "room": "303"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 30298,
+			"dep": "CSC",
+			"number": 172,
+			"title": "The Science of Data Structures - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Chris",
+					"lname": "Brown",
+					"email": "brown@"
+				}
+			], 
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "9:40",
+	                "end": "10:55",
+	                "building": "GRGEN",
+	                "room": "102"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 75141,
+			"dep": "CSC",
+			"number": 172,
+			"title": "The Science of Data Structures - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Chris",
+					"lname": "Brown",
+					"email": "brown@"
+				}
+			], 
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "15:25",
+	                "end": "16:40",
+	                "building": "MEL",
+	                "room": "210"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 75153,
+			"dep": "CSC",
+			"number": 172,
+			"title": "The Science of Data Structures - Lab",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Chris",
+					"lname": "Brown",
+					"email": "brown@"
+				}
+			], 
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "12:30",
+	                "end": "13:45",
+	                "building": "MEL",
+	                "room": "210"
+				}
+			],
+			"positions": [
+				{
+					"type": "Lab TA",
+					"count": 2					
+				}
+			]			
+		},
+		{
+			"crn": 77914,
+			"dep": "CSC",
+			"number": "172H",
+			"title": "The Science of Data Structures Honors",
+			"website": "http://www.cs.rochester.edu",
+			"instructors": [
+				{
+					"fname": "Chris",
+					"lname": "Brown",
+					"email": "brown@"
+				}
+			], 
+			"sessions": [
+				{
+	                "weekdays": "TR",
+	                "begin": "10:25",
+	                "end": "11:40",
+	                "building": "LCHAS",
+	                "room": "181"
+				}
+			],
+			"positions": [
+				{
+					"type": "Super Leader",
+					"count": 1
+				},
+				{
+					"type": "Workshop Leader",
+					"count": 9
+				},			
+				{
+					"type": "Grader",
+					"count": 2				
+				}
+			]			
+		}																											
+	]
+}

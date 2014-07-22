@@ -15,10 +15,12 @@ final class Section {
 
 	// TODO: outdated
 	public static function getAllSections() {
-		$sql = "Select * from Sections";
+		$sql = "Select * from Sections
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID";
 		$args = array();
 		$rows = Database::executeGetAllRows($sql,$args);
-		return $rows; 
+		
+		return array_map(function($row) {return new Section($row);}, $rows); 
 	}
 
 	public static function getOrCreateCourse($termID, $department, $courseNumber, $courseTitle) {

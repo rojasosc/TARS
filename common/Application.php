@@ -98,7 +98,7 @@ final class Application {
 	 */
 	public static function getApplicationCount($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
 		list($sql, $args) = Application::generateGetApplicationsRequest(
-			$course, $professor, $term, $status, $compensation, true);
+			null, $course, $professor, $term, $status, $compensation, true);
 		return Database::executeGetScalar($sql, $args);
 	}
 

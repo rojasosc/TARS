@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	$('.selectpicker').selectpicker();
-
 	window.STUDENT = 0;
 	window.PROFESSOR = 1;
 	window.STAFF = 2;
@@ -456,7 +454,6 @@ function prepareBuildingsDropdown() {
 				$buildingsDropdown.append( "<option>" + buildings[i] + "</option>" );
 			}
 			$buildingsDropdown.trigger( "change" );
-			$buildingsDropdown.selectpicker('refresh');
 		} else {
 			showError(data.error, $('#alertHolder'));
 		}
@@ -476,7 +473,6 @@ function prepareRoomsDropdown() {
 					$roomsDropdown.append( '<option>' + rooms[i] + '</option>' );
 				}
 				$roomsDropdown.trigger( "change" );
-				$roomsDropdown.selectpicker('refresh');
 			} else {
 				showError(data.error, $('#alertHolder'));
 			}
@@ -498,7 +494,6 @@ function prepareCoursesDropdown() {
 			$coursesDropdown.append( "<option>" + courses[i][ "courseTitle" ] + "</option>" );
 		}
 		$coursesDropdown.trigger( "change" );
-		$coursesDropdown.selectpicker('refresh');
 	 });
 
 }
@@ -517,13 +512,11 @@ function prepareProfessorsDropdown() {
 			$professorsDropdown.append( "<option>" + professors[i].firstName + " " + professors[i].lastName + "</option>" );
 		}
 		$professorsDropdown.trigger('change');
-		$professorsDropdown.selectpicker('refresh');
 	 });
 
 }
 
 function clearDropdown( $dropdown ){
 	$dropdown.find( "option" ).remove();
-	$dropdown.selectpicker('refresh');
 	
 }

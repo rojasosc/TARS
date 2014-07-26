@@ -28,12 +28,18 @@ function is_assoc(array $array) {
 }
 
 final class ActionError extends Exception {
-	public function __construct($msg) {
+	public function __construct($msg, $extra_params = array()) {
 		parent::__construct($msg);
+
+		$this->extra_params = $extra_params;
 	}
 
-	private $msg;
+	public function getExtraParameters() { return $this->extra_params; }
+
+	private $extra_params;
 }
+
+
 
 /**
  * Actions can be called remotely via requesting this script
@@ -47,13 +53,27 @@ final class Action {
 	//
 	// Documentation for these functions is provided with the corresponding $action_map element
 	// at the bottom of this class. It's sort of like an interface (i.e. Java)
-	public static function login($params, $user, &$eventObject) {
+	public static function login($params, $user, &$eventObjectID) {
 		$sessionUser = Session::login($params['email'], $params['password']);
-		$eventObject = $sessionUser->getID();
+		if ($sessionUser == null) {
+			throw new ActionError('The email or password you entered is incorrect');
+		}
+		if (!$sessionUser->isEmailConfirmed() || $sessionUser->getPassword() == null) {
+			$token = ResetToken::getTokenByAction('signup', $sessionUser->getID());
+			$extra = array('allowResendNotif' => true, 'token' => $token,
+				'userID' => $sessionUser->getID());
+			if ($token != null) {
+				$tokenAction = ResetToken::getActionByToken($token);
+				$extra['notifID'] = $tokenAction->getCallbackNotifID();
+			}
+			throw new ActionError('Your email has not been confirmed yet', $extra);
+		}
+		Session::create($sessionUser);
+		$eventObjectID = $sessionUser->getID();
 		return $sessionUser;
 	}
 
-	public static function logout($params, $user, &$eventObject) {
+	public static function logout($params, $user, &$eventObjectID) {
 		$delayThrow = null;
 		$sessionUser = null;
 		if (session_start()) {
@@ -67,7 +87,7 @@ final class Action {
 		Session::destroy();
 
 		if ($sessionUser != null) {
-			$eventObject = $sessionUser->getID();
+			$eventObjectID = $sessionUser->getID();
 		}
 
 		if ($delayThrow != null) {
@@ -76,24 +96,109 @@ final class Action {
 		return null;
 	}
 
-	public static function emailAvailable($params, $user, &$eventObject) {
+	public static function emailAvailable($params, $user, &$eventObjectID) {
 		$email = $params['email'];
 		return User::checkEmailAvailable($email);
 	}
 
-	public static function signup($params, $user, &$eventObject) {
+	public static function signup($params, $user, &$eventObjectID) {
 		$studentID = Student::registerStudent(
 			$params['email'], $params['password'],
 			$params['firstName'], $params['lastName'],
 			$params['mobilePhone'], $params['classYear'],
 			$params['major'], $params['gpa'],
 			$params['universityID'], $params['aboutMe']);
-		$eventObject = $studentID;
+
+		$time = time();
+		// TODO: use constants or something for the below text
+		$notifID = Notification::insertNotification($studentID, true, false,
+			'Confirm Your Email', null,
+			"You have successfully created a new student account on the TA Reporting System using this email address. Click the following link to confirm your email address:\r\n\r\n:link\r\n\r\nYou may then login using this account and search for positions to apply for. Thank you for using TARS.",
+			$time);
+		$signupToken = ResetToken::generateToken('signup', $studentID, $time, null, $notifID);
+
+		$notif = Notification::getNotificationByID($notifID);
+		$notif->sendEmail(array(':link' => Email::getLink($signupToken)), Event::USER_CREATE);
+
+		$eventObjectID = $studentID;
 		return null;
-		// TODO email (probably in ::registerStudent)
 	}
 
-	public static function apply($params, $student, &$eventObject) {
+	public static function applyToken($params, $user, &$eventObjectID) {
+		$tokenAction = ResetToken::applyToken($params['token']);
+		if ($tokenAction == null) {
+			throw new ActionError('Invalid token');
+		}
+		$user = $tokenAction->getCreator();
+		if ($user != null) {
+			$eventObjectID = $user->getID();
+			$result = array();
+			switch ($tokenAction->getAction()) {
+			case 'signup':
+				// confirm the user's email address
+				$user->confirmEmail();
+				$result['alert'] = array('class' => 'success', 'title' => 'Success',
+					'message' => 'Your email address has been confirmed. Continue by logging in');
+				break;
+
+			case 'reset':
+				// reset the user's password, ask for new password on index.php alternate form
+				$newToken = ResetToken::generateToken('resetCallback', $user->getID(), time());
+				$result['resetCallback'] = ResetToken::encodeToken($newToken);
+				$result['alert'] = array('class' => 'warning', 'title' => 'Success',
+					'message' => 'You must set a new password to continue');
+				break;
+
+			case 'resetCallback':
+				// result of the created reset form must be handled with a token,
+				// otherwise the server cannot verify that the reset was done by the same user
+				// in the form created in applyToken "reset" above
+				if (!isset($params['password']) || empty($params['password'])) {
+					throw new ActionError('Missing parameter (password)');
+				}
+
+				$user->changePassword($params['password']);
+				$result['alert'] = array('class' => 'success', 'title' => 'Success',
+					'message' => 'Your password has been set. Continue by logging in');
+				break;
+
+			case 'resend':
+				// call into the Notifications object to create a new email
+				// identical to the last with a different :link token
+				// store callback token
+				$cbToken = $tokenAction->getCallbackToken();
+				$cbNotifID = $tokenAction->getCallbackNotifID();
+				$cbNotif = Notification::getNotificationByID($cbNotifID);
+				if ($cbToken == null || $cbNotif == null) {
+					throw new ActionError('Malformed token data');
+				}
+
+				$newToken = ResetToken::generateToken('resendCallback', $user->getID(), time(), $cbToken, $cbNotifID);
+				$cbNotif->sendEmail(array(':link' => Email::getLink($newToken)), Event::USER_APPLY_TOKEN);
+				$result['alert'] = array('class' => 'warning', 'title' => 'Success',
+					'message' => 'The email has been resent to the associated address');
+				break;
+
+			case 'resendCallback':
+				// when a succesful resent email callback happens, act on referenced token
+				$cbToken = $tokenAction->getCallbackToken();
+				if ($cbToken == null) {
+					throw new ActionError('Malformed token data');
+				}
+
+				$params['token'] = ResetToken::encodeToken($cbToken);
+				$result2 = Action::applyToken($params, $user, $eventObjectID);
+				$result['alert'] = $result2['alert'];
+				break;
+			}
+
+			return $result;
+		} else {
+			throw new ActionError('User not found');
+		}
+	}
+
+	public static function apply($params, $student, &$eventObjectID) {
 		$positionID = $params['positionID'];
 		$comp = $params['compensation'];
 		$qual = $params['qualifications'];
@@ -105,11 +210,11 @@ final class Action {
 			throw new ActionError('You have already applied for this position');
 		}
 		$appID = $student->apply($position, $comp, $qual);
-		$eventObject = $appID;
+		$eventObjectID = $appID;
 		return null;
 	}
 
-	public static function withdraw($params, $student, &$eventObject) {
+	public static function withdraw($params, $student, &$eventObjectID) {
 		$positionID = $params['positionID'];
 		$position = Position::getPositionByID($positionID);
 		if ($position == null) {
@@ -118,12 +223,12 @@ final class Action {
 		if (!$position->hasStudentApplied($student)) {
 			throw new ActionError('You have not applied for that position');
 		}
-		// TODO Application object -> $eventObject
+		// TODO Application object -> $eventObjectID
 		$student->withdraw($position);
 		return null;
 	}
 
-	public static function updateProfile($params, $user, &$eventObject) {
+	public static function updateProfile($params, $user, &$eventObjectID) {
 		switch ($user->getObjectType()) {
 		case STUDENT:
 			$user->updateProfile(
@@ -139,11 +244,11 @@ final class Action {
 				$params['room']);
 			break;
 		}
-		$eventObject = $user->getID();
+		$eventObjectID = $user->getID();
 		return null;
 	}
 
-	public static function changeUserPassword($params, $user, &$eventObject) {
+	public static function changeUserPassword($params, $user, &$eventObjectID) {
 		$oldPassword = $params['oldPassword'];
 		$newPassword = $params['newPassword'];
 		$confirmPassword = $params['confirmPassword'];
@@ -151,22 +256,22 @@ final class Action {
 			throw new ActionError('Incorrect password');
 		}
 		$user->changePassword($newPassword);
-		$eventObject = $user->getID();
+		$eventObjectID = $user->getID();
 		return null;
 	}
 
-	public static function fetchBuildings($params, $user, &$eventObject) {
+	public static function fetchBuildings($params, $user, &$eventObjectID) {
 		return Place::getAllBuildings();
 	}
 
-	public static function fetchTheRoom($params, $user, &$eventObject) {
+	public static function fetchTheRoom($params, $user, &$eventObjectID) {
 		$places = Place::getPlacesByBuilding($params['building']);
 		return array_map(function ($place) {
 			return $place->getRoom();
 		}, $places);
 	}
 
-	public static function fetchUser($params, $user, &$eventObject) {
+	public static function fetchUser($params, $user, &$eventObjectID) {
 		$user = User::getUserByID($params['userID'], $params['userType']);
 		if ($user == null) {
 			throw new ActionError('User not found');
@@ -174,7 +279,7 @@ final class Action {
 		return $user;
 	}
 
-	public static function fetchApplication($params, $user, &$eventObject) {
+	public static function fetchApplication($params, $user, &$eventObjectID) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
@@ -185,7 +290,7 @@ final class Action {
 		return $application;
 	}
 
-	public static function fetchComments($params, $user, &$eventObject) {
+	public static function fetchComments($params, $user, &$eventObjectID) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
@@ -197,7 +302,7 @@ final class Action {
 		return $comments;
 	}
 
-	public static function setAppStatus($params, $user, &$eventObject) {
+	public static function setAppStatus($params, $user, &$eventObjectID) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
@@ -214,11 +319,11 @@ final class Action {
 			}
 		}
 		$application->setApplicationStatus($params['decision']);
-		$eventObject = $application->getID();
+		$eventObjectID = $application->getID();
 		return null;
 	}
 
-	public static function newStudentComment($params, $user, &$eventObject) {
+	public static function newStudentComment($params, $user, &$eventObjectID) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
@@ -227,11 +332,11 @@ final class Action {
 			throw new ActionError('Student not found');
 		}
 		$commentID = $student->saveComment($params['comment'], $user, time());
-		$eventObject = $commentID;
+		$eventObjectID = $commentID;
 		return null;
 	}
 
-	public static function searchForUsers($params, $user, &$eventObject) {
+	public static function searchForUsers($params, $user, &$eventObjectID) {
 		if (is_array($params)) {
 			$usersFound = User::findUsers($params['email'],$params['firstName'],
 				$params['lastName'], -1);
@@ -241,7 +346,7 @@ final class Action {
 	}
 
 	// only available via running this script; not by Action::callAction
-	public static function uploadTerm($params, $user, &$eventObject) {
+	public static function uploadTerm($params, $user, &$eventObjectID) {
 		define('CUSTOM_UPLOAD_ERR_CANT_READ', 1001);
 		$upload_error_message = function ($code) {
 			switch ($code) {
@@ -274,7 +379,7 @@ final class Action {
 				Event::STAFF_TERM_IMPORT,
 				array($upload_error_message($upload['error'])));
 		}
-		$eventObject = $termID;
+		$eventObjectID = $termID;
 		return null;
 	}
 
@@ -370,7 +475,7 @@ final class Action {
 	//    It takes three arguments:
 	//        $params: The $_POST array
 	//        $user: which is currently logged in (null if nobody is).
-	//        &$eventObject: this can be set by the function to an object ID to put in the event log for this Action
+	//        &$eventObjectID: this can be set by the function to an object ID to put in the event log for this Action
 	//
 	//    Throws: PDOException when the underlying database call fails
 	//            ActionError if a custom error is generated, is passed to create a TarsException in callAction
@@ -421,7 +526,7 @@ final class Action {
 	// 'eventDescr' => The description to pass to the event log. One "%s" is allowed to represent the user who did the action.
 	// 'eventDescrArg' => The location to get the user who did the action argument:
 	//    'session' (DEFAULT): Uses the user who is logged in
-	//    'refparam': Uses the value of $eventObject as the user, if it is a User object
+	//    'refparam': Uses the value of $eventObjectID as the user, if it is a User object
 	// 'isUserInput' => is a boolean. TRUE returns the 'Invalid input in fields' error;
 	//    FALSE returns the 'Invalid parameter' error.
 	//    USAGE: TRUE for signup, search (user input);
@@ -478,24 +583,34 @@ final class Action {
 			'eventLog' => 'always', 'eventDescr' => '%s created a STUDENT account.',
 			'eventDescrArg' => 'refparam',
 			'isUserInput' => true, 'params' => array(
-					'email' => array('type' => Action::VALIDATE_EMAIL),
-					'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
-						'field' => 'email'),
-					'password' => array('type' => Action::VALIDATE_NOTEMPTY),
-					'passwordConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
-						'field' => 'password'),
-					'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
-					'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
-					'mobilePhone' => array('type' => Action::VALIDATE_NUMSTR,
-						'min_length' => 10, 'max_length' => 10),
-					'classYear' => array('type' => Action::VALIDATE_NUMSTR,
-						'min_length' => 4, 'max_length' => 4),
-					'major' => array('type' => Action::VALIDATE_NOTEMPTY),
-					'gpa' => array('type' => Action::VALIDATE_NUMERIC,
-						'min_range' => 0, 'max_range' => 4),
-					'universityID' => array('type' => Action::VALIDATE_NUMSTR,
-						'min_length' => 8, 'max_length' => 8),
-					'aboutMe' => array('type' => Action::VALIDATE_NOTEMPTY))),
+				'email' => array('type' => Action::VALIDATE_EMAIL),
+				'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
+					'field' => 'email'),
+				'password' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'passwordConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
+					'field' => 'password'),
+				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'mobilePhone' => array('type' => Action::VALIDATE_NUMSTR,
+					'min_length' => 10, 'max_length' => 10),
+				'classYear' => array('type' => Action::VALIDATE_NUMSTR,
+					'min_length' => 4, 'max_length' => 4),
+				'major' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'gpa' => array('type' => Action::VALIDATE_NUMERIC,
+					'min_range' => 0, 'max_range' => 4),
+				'universityID' => array('type' => Action::VALIDATE_NUMSTR,
+					'min_length' => 8, 'max_length' => 8),
+				'aboutMe' => array('type' => Action::VALIDATE_NOTEMPTY))),
+		// Action:           applyToken
+		// Session required: none
+		// Parameters:
+		//     token:        The token used to identify the request
+		// Returns:
+		//     success and error: Action status
+		'applyToken' => array('event' => Event::USER_APPLY_TOKEN,
+			'noSession' => true, 'eventLog' => 'always',
+			'eventDescr' => '%s applied a token to confirm email/reset password.',
+			'eventDescrArg' => 'refparam', 'params' => array('token')),
 		// Action:           search 
 		// Session required: STUDENT
 		// Parameters:
@@ -673,7 +788,7 @@ final class Action {
 				'termFile' => Action::VALIDATE_UPLOAD)));
 	// end Action::$action_map
 
-	public static function callAction($actionName, $input = array(), $jsonOutput = false) {
+	public static function callAction($actionName, $input = array()) {
 		// Check if action is known
 		if (isset(Action::$action_map[$actionName])) {
 			// get the definition structure for this action from the above structure
@@ -691,6 +806,10 @@ final class Action {
 			$action_evlog = isset($action_def['eventLog']) ? $action_def['eventLog'] : 'debug';
 			$action_evdesc = isset($action_def['eventDescr']) ? $action_def['eventDescr'] : '%s did something.';
 			$action_evdesc_arg = isset($action_def['eventDescrArg']) ? $action_def['eventDescrArg'] : 'session';
+
+			// BEGIN TRANSACTION
+			Database::beginTransaction();
+
 			// SESSION
 			$user = null;
 			$error = null;
@@ -705,9 +824,9 @@ final class Action {
 			}
 
 			// RUN ACTION
-			if ($error == null) {
+			try {
 				// if nothing went wrong (session), run the function and get results
-				try {
+				if ($error == null) {
 
 					// VALIDATE PARAMETERS
 					$invalids = Action::validateParameters($input, $action_params);
@@ -756,37 +875,67 @@ final class Action {
 							$output['value'] = $result_obj;
 						}
 					}
-				} catch (ActionError $ex) {
-					// ERROR_FORM_FIELD with replacement message
-					$error = new TarsException(Event::ERROR_FORM_FIELD,
-						$action_event, $ex->getMessage());
-				} catch (PDOException $ex) {
-					// SERVER_DBERROR
-					$error = new TarsException(Event::SERVER_DBERROR, $action_event, $ex);
-				} catch (TarsException $ex) {
-					// non-ERROR_FORM_FIELDs thrown by Actions
-					$error = $ex;
 				}
+			} catch (ActionError $ex) {
+				// ERROR_FORM_FIELD with replacement message
+				Database::rollbackTransaction();
+				$error = new TarsException(Event::ERROR_FORM_FIELD,
+					$action_event, $ex->getMessage());
+				$extra = $ex->getExtraParameters();
+				if (isset($extra['allowResendNotif']) && $extra['allowResendNotif']) {
+					$userID = $extra['userID'];
+					$token = $extra['token'];
+					if (isset($extra['notifID'])) {
+						$notifID = $extra['notifID'];
+						
+						try {
+							$newToken = ResetToken::generateToken('resend',
+								$userID, time(), $token, $notifID);
+							$enc_token = ResetToken::encodeToken($newToken);
+							$output['token'] = $enc_token;
+						} catch (PDOException $pdoex) {
+							// SERVER_DBERROR
+							$error = new TarsException(Event::SERVER_DBERROR, $action_event, $pdoex);
+						}
+					}
+				}
+			} catch (PDOException $ex) {
+				// SERVER_DBERROR
+				Database::rollbackTransaction();
+				$error = new TarsException(Event::SERVER_DBERROR, $action_event, $ex);
+			} catch (TarsException $ex) {
+				// non-ERROR_FORM_FIELDs thrown by Actions
+				// Transaction rolled back by TarsException
+				$error = $ex;
 			}
 
-			// LOG SUCCESS
-			if ($error == null && $action_evlog == 'always') {
-				$source_user = null;
-				switch ($action_evdesc_arg) {
-				case 'refparam': $source_user = User::getUserByID($event_object); break;
-				case 'session': $source_user = $user; break;
-				//case 'return': $descrarg = $result_obj; break;
+			// LOG EVENT SUCCESS
+			try {
+				if ($error == null && $action_evlog == 'always') {
+					$source_user = Action::getUserByType($action_evdesc_arg, $event_object, $user);
+					if ($source_user != null && $source_user instanceof User) {
+						$descrarg = $source_user->getName();
+					} else {
+						$descrarg = '(unknown user)';
+						$source_user = null; // do not give the database non-Users in creator column
+					}
+					$descr = sprintf($action_evdesc, $descrarg);
+					// insert event with this EventID, description, object,
+					// current time, current IP (default parameter), and current user object
+					Event::insertEvent($action_event, $descr, $event_object, time(), null, $source_user);
 				}
-				if ($source_user != null && $source_user instanceof User) {
-					$descrarg = $source_user->getName();
-				} else {
-					$descrarg = '(unknown user)';
-					$source_user = null; // do not give the database non-Users in creator column
-				}
-				$descr = sprintf($action_evdesc, $descrarg);
-				// insert event with this EventID, description, object,
-				// current time, current IP (default parameter), and current user object
-				Event::insertEvent($action_event, $descr, $event_object, time(), null, $source_user);
+
+			} catch (PDOException $ex) {
+				Database::rollbackTransaction();
+				$error = new TarsException(Event::SERVER_DBERROR, $action_event, $ex);
+			} catch (TarsException $ex) {
+				// Transaction rolled back by TarsException
+				$error = $ex;
+			}
+
+			// COMMIT TRANSACTION
+			if ($error == null) {
+				Database::commitTransaction();
 			}
 		} else {
 			// unknown action
@@ -795,21 +944,26 @@ final class Action {
 		}
 
 		// set the success and error properties here
-		if ($jsonOutput) {
-			if ($error != null) {
-				$output['success'] = false;
-				$output['error'] = $error->toArray();
-			} else {
-				$output['success'] = true;
-			}
-			return json_encode($output);
+		if ($error != null) {
+			$output['success'] = false;
+			$output['error'] = $error->toArray();
 		} else {
-			if ($error != null) {
-				throw $error;
-			} else {
-				return $result_obj;
-			}
+			$output['success'] = true;
 		}
+		return $output;
+	}
+
+	private static function getUserByType($type, $refparam, $session) {
+		switch ($type) {
+		case 'refparam':
+			return User::getUserByID($refparam);
+		case 'session':
+			if ($session instanceof User) {
+				return $session;
+			}
+			break;
+		}
+		return null;
 	}
 }
 
@@ -820,6 +974,6 @@ if (isset($_SERVER["SCRIPT_FILENAME"]) && basename($_SERVER["SCRIPT_FILENAME"]) 
 	$output = Action::callAction($action, $_POST, true);
 
 	// output as JSON
-	echo $output;
+	echo json_encode($output);
 }
 

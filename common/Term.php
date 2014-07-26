@@ -105,8 +105,6 @@ final class Term {
 			$creator = Session::getLoggedInUser(STAFF);
 			$createTime = time();
 
-			Database::beginTransaction();
-
 			$termID = Term::insertTerm($termYear, strtolower($termSemester), $creator, $createTime);
 			foreach ($json_object as $course) {
 				foreach ($course['sections'] as $section) {
@@ -140,10 +138,8 @@ final class Term {
 			Configuration::set(Configuration::CURRENT_TERM, $termID,
 				$creator, $createTime);
 		} catch (PDOException $ex) {
-			Database::rollbackTransaction();
 			throw $ex;
 		}
-		Database::commitTransaction();
 		return $termID;
 	}
 
@@ -301,4 +297,3 @@ final class Term {
 	private $createTime;
 }
 
-?>

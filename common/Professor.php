@@ -114,4 +114,3 @@ final class Professor extends User {
 	private $officePhone;
 }
 
-?>

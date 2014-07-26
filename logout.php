@@ -6,11 +6,8 @@ require_once 'session.php';
 require_once 'actions.php';
 require_once 'error.php';
 
-try {
-	Action::callAction('logout');
-} catch (TarsException $ex) {
-	// TODO show to user?
-}
+Action::callAction('logout');
+// TODO return['error'] show to user?
 
 header("Location: ./");
 exit;

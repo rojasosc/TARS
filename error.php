@@ -84,6 +84,10 @@ final class TarsException extends Exception {
 		// create an Event for this
 		try {
 			$useDB = Database::isConnected();
+			// cancel pending transaction
+			if ($useDB && Database::inTransaction()) {
+				Database::rollbackTransaction();
+			}
 			// log the event
 			Event::insertEventGeneral($this->class, $this->title.': '.
 				$this->message, $this->action, null, null, null, $useDB);
@@ -100,8 +104,12 @@ final class TarsException extends Exception {
 	 * Returns the error as a Bootstrap component to be dropped into the page.
 	 */
 	public function toHTML() {
+		return TarsException::makeAlert($this->title, $this->message, 'danger');
+	}
 
-		return '<div class="alert alert-danger" role="alert"><strong>'.htmlentities($this->title).'!</strong> '.htmlentities($this->message).'</div';
+	public static function makeAlert($title, $message, $alert_level) {
+
+		return '<div class="alert alert-'.$alert_level.'" role="alert"><strong>'.$title.'!</strong> '.$message.'</div';
 	}
 
 	/*

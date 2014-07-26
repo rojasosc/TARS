@@ -46,8 +46,7 @@ final class Student extends User {
 	}
 		
 	public function getApplications($term, $status) {
-		$id = parent::getID();
-		return Application::getApplications($id, null, null, $term, $status);
+		return Application::getApplications(null, null, $term, $status);
 	}
 	
 	// TODO move this to Position object
@@ -126,4 +125,3 @@ final class Student extends User {
 	private $universityID;
 }
 
-?>

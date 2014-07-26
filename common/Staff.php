@@ -50,4 +50,3 @@ final class Staff extends User {
 	private $officePhone;
 }
 
-?>

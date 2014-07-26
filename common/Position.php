@@ -153,4 +153,3 @@ final class Position {
 	private $createTime;
 }
 
-?>

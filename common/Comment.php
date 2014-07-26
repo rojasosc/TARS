@@ -65,4 +65,3 @@ final class Comment {
 	private $createTime;
 }
 
-?>

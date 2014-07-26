@@ -50,7 +50,7 @@ final class Event {
 	const SESSION_CONTINUE = 9;
 	const USER_CREATE = 10;
 	const USER_RESET_PASS = 11;
-	const USER_CONFIRM = 12;
+	const USER_APPLY_TOKEN = 12;
 	const USER_IS_EMAIL_AVAIL = 13;
 	const USER_GET_OBJECT = 14;
 	const USER_GET_VIEW = 15;
@@ -108,7 +108,7 @@ final class Event {
 		case Event::SESSION_CONTINUE: return 'Error accessing page';
 		case Event::USER_CREATE: return 'Error creating an account';
 		case Event::USER_RESET_PASS: return 'Error resetting password';
-		case Event::USER_CONFIRM: return 'Error confirming email';
+		case Event::USER_APPLY_TOKEN: return 'Error applying a token';
 		case Event::USER_IS_EMAIL_AVAIL: return 'Error checking email availability';
 		case Event::USER_GET_OBJECT: return 'Error retrieving an object';
 		case Event::USER_GET_VIEW: return 'Error retrieving a view';
@@ -198,4 +198,3 @@ final class Event {
 	}
 }
 
-?>

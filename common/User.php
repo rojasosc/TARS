@@ -29,6 +29,20 @@ abstract class User {
 		return User::getUserSubclassObject($user_row);
 	}
 
+	public static function getUserByResetToken($token) {
+		if ($token != null) {
+			$sql = 'SELECT * FROM Users WHERE resetToken = :token';
+			$args = array(':token' => $token);
+			$row = Database::executeGetRow($sql, $args);
+			if ($row == null) {
+				return null;
+			}
+			return User::getUserSubclassObject($row);
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * User::getUserByEmail($email, [$type])
 	 *
@@ -109,10 +123,12 @@ abstract class User {
 		$sql = 'INSERT INTO Users
 				(email, emailVerified, password, passwordReset,
 				firstName, lastName, createTime, type) VALUES
-				(:email, :eVer, :password, :pRes, :firstName, :lastName, :ctime, :type)';
-		$args = array(':email' => $email, ':eVer' => 0, ':password' => $password,
-				':pRes' => 0, ':firstName' => $firstName, ':lastName' => $lastName,
-				':ctime' => date('Y-m-d H:i:s'), ':type' => $type);
+				(:email, :emailVerified, :password, :passwordReset,
+				:firstName, :lastName, :createTime, :type)';
+		$args = array(':email' => $email, ':emailVerified' => 0,
+				':password' => $password, ':passwordReset' => 0,
+				':firstName' => $firstName, ':lastName' => $lastName,
+				':createTime' => date('Y-m-d H:i:s'), ':type' => $type);
 		return Database::executeInsert($sql, $args);
 	}
 
@@ -131,6 +147,7 @@ abstract class User {
 		$this->id = $user_row['userID'];
 		$this->email = $user_row['email'];
 		$this->password = $user_row['password'];
+		$this->emailConfirmed = $user_row['emailVerified'];
 		$this->otype = $user_row['type'];
 		$this->firstName = $user_row['firstName'];
 		$this->lastName = $user_row['lastName'];
@@ -149,9 +166,18 @@ abstract class User {
 		return Database::execute($sql, $args);
 	}
 
+	public function confirmEmail() {
+		$sql = 'UPDATE Users
+				SET emailVerified = 1
+				WHERE userID = :id';
+		$args = array(':id' => $this->id);
+		return Database::execute($sql, $args);
+	}
+
 	public function getID() { return $this->id; }
 	public function getEmail() { return $this->email; }
 	public function getPassword() { return $this->password; }
+	public function isEmailConfirmed() { return $this->emailConfirmed; }
 	public function getObjectType() { return $this->otype; }
 	public function getFirstName() { return $this->firstName; }
 	public function getLastName() { return $this->lastName; }
@@ -176,6 +202,7 @@ abstract class User {
 	protected $id;
 	protected $email;
 	protected $password;
+	protected $emailConfirmed;
 	protected $otype;
 	protected $firstName;
 	protected $lastName;
@@ -184,4 +211,3 @@ abstract class User {
 	protected $createTime;
 }
 
-?>

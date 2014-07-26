@@ -12,15 +12,11 @@ final class Application {
 		return new Application($row);
 	}
 
-	private static function generateGetApplicationsRequest($studentID, $section, $professor, $term, $status, $compensation, $is_count) {
+	private static function generateGetApplicationsRequest($section, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
 		$sql_ij_t = false;
 		$sql_ij_teaches = '';
 		$args = array();
-		if ($studentID != null) {
-			$sql_where .= 'Applications.creatorID = :studentID AND ';
-			$args[':studentID'] = $studentID;
-		}
 		if ($section != null) {
 			$sql_where .= 'Positions.sectionID = :section AND ';
 			$args[':section'] = $section->getID();
@@ -98,7 +94,7 @@ final class Application {
 	 */
 	public static function getApplicationCount($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
 		list($sql, $args) = Application::generateGetApplicationsRequest(
-			null, $course, $professor, $term, $status, $compensation, true);
+			$course, $professor, $term, $status, $compensation, true);
 		return Database::executeGetScalar($sql, $args);
 	}
 
@@ -106,9 +102,9 @@ final class Application {
 	 * General purpose function to get application objects.
 	 *
 	 */
-	public static function getApplications($studentID, $course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+	public static function getApplications($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
 		list($sql, $args) = Application::generateGetApplicationsRequest(
-			$studentID, $course, $professor, $term, $status, $compensation, false);
+			$course, $professor, $term, $status, $compensation, false);
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Application($row); }, $rows);
 	}
@@ -191,4 +187,3 @@ final class Application {
 	private $createTime;
 }
 
-?>

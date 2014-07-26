@@ -15,38 +15,41 @@ function show_version() {
 	}
 }
 
-$email = isset($_POST['email']) ? $_POST['email'] : '';
 $error = null;
-if (!empty($email)) {
-	$user_obj = null;
-	try {
-		$user_obj = Action::callAction('login', $_POST);
-	} catch (TarsException $ex) {
-		$error = $ex;
-	}
+$output = null;
+session_start();
+if (isset($_SESSION['tokenResult'])) {
+	$output = $_SESSION['tokenResult'];
+	unset($_SESSION['tokenResult']);
+}
 
-	if ($user_obj != null) {
-		/* User type */
-		$type = $user_obj->getObjectType();
-		
-		if ($type == STUDENT) {
-			header('Location: student/student.php');
-			exit;
-		} elseif ($type == PROFESSOR) {
-			header('Location: professor/professor.php');
-			exit;
-		} elseif ($type == STAFF) {
-			header('Location: staff/staff.php');
-			exit;
-		} elseif ($type == ADMIN) {
-			header('Location: admin/admin.php');
-			exit;
-		} else {
-			$error = new TarsException(Event::SERVER_EXCEPTION,
-				Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
+$email = isset($_POST['email']) ? $_POST['email'] : '';
+if ($output == null && $error == null) {
+	if (!empty($email)) {
+		$output = Action::callAction('login', $_POST);
+
+		if (isset($output['object'])) {
+			$user_obj = $output['object'];
+			/* User type */
+			$type = $user_obj['type'];
+			
+			if ($type == STUDENT) {
+				header('Location: student/student.php');
+				exit;
+			} elseif ($type == PROFESSOR) {
+				header('Location: professor/professor.php');
+				exit;
+			} elseif ($type == STAFF) {
+				header('Location: staff/staff.php');
+				exit;
+			} elseif ($type == ADMIN) {
+				header('Location: admin/admin.php');
+				exit;
+			} else {
+				$error = new TarsException(Event::SERVER_EXCEPTION,
+					Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
+			}
 		}
-	} else {
-		$error = new TarsException(Event::ERROR_LOGIN, Event::SESSION_LOGIN);
 	}
 }
 ?>
@@ -195,7 +198,23 @@ if (!empty($email)) {
 				<div id="login">
 					<form action="index.php" method="post">
 						<fieldset>
-							<?php if ($error != null) { echo $error->toHtml(); } ?>
+							<?php
+if ($output != null) {
+	if ($output['success']) {
+		if (isset($output['object'])) {
+			$alert = $output['object'];
+			echo TarsException::makeAlert($alert['title'],
+				$alert['message'].'.', $alert['class']);
+		}
+	} elseif (isset($output['token'])) {
+		$tokenLink = Email::getLink(ResetToken::decodeToken($output['token']));
+		$tokenLinkText = ' <a class="alert-link" href="'.$tokenLink.'">Click here</a> to resend the email.';
+		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'].$tokenLinkText, 'warning');
+	} else {
+		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'], 'danger');
+	}
+}
+							?>
 							<h2 class="center colorWhite">TARS Sign In</h2>
 							<div class="row">
 								<div class="col-md-10">

@@ -15,12 +15,10 @@ final class Section {
 
 	// TODO: outdated
 	public static function getAllSections() {
-		$sql = "Select * from Sections
-				INNER JOIN Courses ON Courses.courseID = Sections.courseID";
+		$sql = "Select * from Sections";
 		$args = array();
 		$rows = Database::executeGetAllRows($sql,$args);
-		
-		return array_map(function($row) {return new Section($row);}, $rows); 
+		return $rows; 
 	}
 
 	public static function getOrCreateCourse($termID, $department, $courseNumber, $courseTitle) {
@@ -70,15 +68,14 @@ final class Section {
 	}
 
 	// TODO: outdated
-	public function getSectionProfessors(){
+	public static function getSectionProfessors($sectionTitle){
 		$sql = 'SELECT firstName,lastName 
-			FROM Users,Professors,Teaches,Sections,Courses
+			FROM Users,Professors,Teaches,Sections
 			WHERE Users.userID = Professors.userID 
 			AND Professors.userID = Teaches.professorID
 			AND Sections.sectionID = Teaches.sectionID
-			AND Courses.courseID = Sections.courseID
-			AND Courses.courseTitle = :courseTitle ';
-		$args = array(':courseTitle' => $this->getCourseTitle());
+			AND Sections.sectionTitle = :sectionTitle ';
+		$args = array(':sectionTitle' => $sectionTitle);
 		$rows = Database::executeGetAllRows($sql,$args);
 		return $rows;
 
@@ -208,4 +205,3 @@ final class Section {
 	private $createTime;
 }
 
-?>

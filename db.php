@@ -17,6 +17,7 @@ require_once 'common/SectionSession.php';
 require_once 'common/Section.php';
 require_once 'common/Event.php';
 require_once 'common/Configuration.php';
+require_once 'email.php';
 
 /*******************************************
 *TARS- Teacher Assistant Registration System
@@ -204,6 +205,14 @@ final class Database {
 	 */
 	public static function commitTransaction() {
 		return Database::$db_conn->commit();
+	}
+
+	/**
+	 * Database::inTransaction()
+	 * Purpose: Checks if a PDO transaction is began and not committed
+	 */
+	public static function inTransaction() {
+		return Database::$db_conn->inTransaction();
 	}
 }
 

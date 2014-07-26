@@ -32,6 +32,7 @@ DROP TABLE IF EXISTS Courses;
 DROP TABLE IF EXISTS Sections;
 DROP TABLE IF EXISTS Terms;
 DROP TABLE IF EXISTS TermSemesters;
+DROP TABLE IF EXISTS ResetTokens;
 DROP TABLE IF EXISTS Staff;
 DROP TABLE IF EXISTS Professors;
 DROP TABLE IF EXISTS Students;
@@ -39,7 +40,8 @@ DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS Place; -- old name
 DROP TABLE IF EXISTS Places;
 DROP TABLE IF EXISTS Events;
-DROP TABLE IF EXISTS NotificationTemplates;
+DROP TABLE IF EXISTS Notifications;
+DROP TABLE IF EXISTS NotificationTemplates; -- old table
 DROP TABLE IF EXISTS EventTypes;
 DROP TABLE IF EXISTS Configurations;
 SET FOREIGN_KEY_CHECKS=1;
@@ -73,8 +75,6 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `emailVerified` boolean NOT NULL,
   `password` varchar(255) NULL,
   `passwordReset` boolean NOT NULL,
-  `resetToken` bigint(20) NULL,
-  `resetTime` timestamp NULL,
   `firstName` varchar(40) NOT NULL,
   `lastName` varchar(40) NOT NULL,
   `creatorID` bigint(20) NULL,
@@ -85,7 +85,6 @@ CREATE TABLE IF NOT EXISTS `Users` (
   UNIQUE KEY (`email`),
   KEY (`firstName`),
   KEY (`lastName`),
-  KEY (`resetToken`),
   FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
@@ -107,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `Students` (
   `universityID` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -123,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `Professors` (
   `officePhone` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`),
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE,
   FOREIGN KEY (`officeID`) REFERENCES `Places` (`placeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -139,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `Staff` (
   `officePhone` bigint(20) NOT NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`)
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -354,7 +353,7 @@ CREATE TABLE IF NOT EXISTS `Teaches` (
 
   PRIMARY KEY (`teachID`),
   FOREIGN KEY (`sectionID`) REFERENCES `Sections` (`sectionID`),
-  FOREIGN KEY (`professorID`) REFERENCES `Professors` (`userID`)
+  FOREIGN KEY (`professorID`) REFERENCES `Professors` (`userID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -377,22 +376,46 @@ CREATE TABLE IF NOT EXISTS `EventTypes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Table structure for table `EventSubscriberTemplates`
+-- Table structure for table `Notifications`
 --
--- Secondary, enumeration additional data (should not change often)
+-- Primary, created to represent notifications for users' home pages/to send emails
 --
-CREATE TABLE IF NOT EXISTS `NotificationTemplates` (
-  `eventSTID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `eventTypeID` bigint(20) NOT NULL,
-  `notifyTarget` enum('self','target','professors','staff','admins') NOT NULL,
-  `notifyMode` enum('email','home','both') NOT NULL,
-  `subject` varchar(64) NOT NULL,
-  `template` text NOT NULL,
+CREATE TABLE IF NOT EXISTS `Notifications` (
+  `notifID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `showOnHome` boolean NOT NULL,
+  `sendToEmail` boolean NOT NULL,
+  `subject` varchar(80) NOT NULL,
+  `notifText` text NULL,
+  `emailTemplate` text NULL,
+  `creatorID` bigint(20) NOT NULL,
+  `createTime` timestamp NOT NULL,
 
-  PRIMARY KEY (`eventSTID`),
-  FOREIGN KEY (`eventTypeID`) REFERENCES `EventTypes` (`eventTypeID`)
+  PRIMARY KEY (`notifID`),
+  FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-  
+
+--
+-- Table structure for table `ResetTokens`
+--
+-- Represents user reset tokens
+--
+-- Secondary, created when a user needs to do an action that sends a callback
+--
+CREATE TABLE IF NOT EXISTS `ResetTokens` (
+  `token` bigint(20) NOT NULL,
+  `action` enum('signup','reset','resetCallback','resend','resendCallback') NOT NULL,
+  `callbackToken` bigint(20) NULL,
+  `callbackNotif` bigint(20) NULL,
+  `timeoutTime` timestamp NULL,
+  `creatorID` bigint(20) NOT NULL,
+  `createTime` timestamp NOT NULL,
+
+  PRIMARY KEY (`token`),
+  KEY (`action`, `creatorID`),
+  FOREIGN KEY (`callbackToken`) REFERENCES `ResetTokens` (`token`) ON DELETE CASCADE,
+  FOREIGN KEY (`callbackNotif`) REFERENCES `Notifications` (`notifID`) ON DELETE CASCADE,
+  FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
 -- Table structure for table `Events`
@@ -412,7 +435,7 @@ CREATE TABLE IF NOT EXISTS `Events` (
 
   PRIMARY KEY (`eventID`),
   FOREIGN KEY (`eventTypeID`) REFERENCES `EventTypes` (`eventTypeID`),
-  FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`)
+  FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

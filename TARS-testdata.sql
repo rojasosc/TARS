@@ -16,7 +16,7 @@ TRUNCATE TABLE Students;
 TRUNCATE TABLE Users;
 TRUNCATE TABLE Places;
 TRUNCATE TABLE Events;
-TRUNCATE TABLE NotificationTemplates;
+TRUNCATE TABLE Notifications;
 TRUNCATE TABLE EventTypes;
 TRUNCATE TABLE Configurations;
 SET FOREIGN_KEY_CHECKS=1;
@@ -46,7 +46,7 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SESSION_CONTINUE', 'debug', NULL),
 ('USER_CREATE', 'info', 'User'),
 ('USER_RESET_PASS', 'info', 'User'),
-('USER_CONFIRM', 'info', 'User'),
+('USER_APPLY_TOKEN', 'info', 'User'),
 ('USER_IS_EMAIL_AVAIL', 'debug', NULL),
 ('USER_GET_OBJECT', 'debug', NULL),
 ('USER_GET_VIEW', 'debug', NULL),
@@ -61,40 +61,6 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SU_RESET_USER_PASS', 'info', 'User'),
 ('STAFF_TERM_IMPORT', 'info', 'Term'),
 ('ADMIN_CONFIGURE', 'info', 'Configurable');
-
-INSERT INTO `NotificationTemplates`
-(`eventTypeID`, `notifyTarget`, `notifyMode`, `subject`, `template`) VALUES
--- USER_CREATE:
--- email confirm token
-(8, 'self', 'email', 'Account Signup', 'You have successfully created a student TARS account with this email address. Click the following link to confirm it belongs to you: %L'),
--- USER_RESET:
--- email reset token
-(9, 'self', 'email', 'Account Password Reset', 'You have requested to reset your current password. Click the following link to continue: %L'),
--- STUDENT_APPLY:
--- a student creates Application object
-(12, 'self', 'email', 'Student Application Create', 'You have applied to position %O. Please await decision.'),
-(12, 'professors', 'home', 'Student Application Create', '%C has applied to position %O. You may choose to accept or reject their application here: %L'),
--- STUDENT_CANCEL:
--- a student cancels an Application object (before response)
-(13, 'self', 'email', 'Student Application Cancel', 'You have cancelled your application to position %O.'),
-(13, 'professors', 'home', 'Student Application Cancel', '%C has cancelled their application to position %O.'),
--- STUDENT_WITHDRAW:
--- a student withdraws an Application object (after accept)
-(14, 'self', 'email', 'Student Application Withdraw', 'You have withdrawn your accepted application to position %O.'),
-(14, 'professors', 'both', 'Student Application Withdraw', '%C has withdrawn their accepted application to position %O.'),
-(14, 'staff', 'both', 'Student Application Withdraw', '%C has withdrawn their accepted application to position %O.'),
--- PROFESSOR_ACCEPT:
--- a professor accepts a student application
-(15, 'target', 'both', 'Student Application Accepted', 'You have been accepted to the position of %O.'),
--- PROFESSOR_REJECT:
--- a professor rejects a student application
--- no notify
--- STAFF_CREATE_PROF:
--- email confirm token
-(18, 'target', 'email', 'Account Signup', 'An administrator has created a TARS account for this email address. Click the following link to confirm it belongs to you and set a password: %L'),
--- STAFF_RESET_PROF:
--- email reset token
-(9, 'target', 'email', 'Account Password Reset', 'An administrator has reset your account password. Click the following link to continue: %L');
 
 -- default configuration state
 INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `domain`, `enableLogin`, `currentTerm`) VALUES

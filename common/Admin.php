@@ -1,5 +1,5 @@
 <?php
-	
+
 final class Admin extends User {
 	public function __construct($user_row, $admin_row) {
 		parent::__construct($user_row);
@@ -15,4 +15,3 @@ final class Admin extends User {
 	}
 }
 
-?>

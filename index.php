@@ -18,37 +18,35 @@ function show_version() {
 $error = null;
 $output = null;
 session_start();
-if (isset($_SESSION['tokenResult'])) {
-	$output = $_SESSION['tokenResult'];
-	unset($_SESSION['tokenResult']);
+if (isset($_SESSION['callbackResult'])) {
+	$output = $_SESSION['callbackResult'];
+	unset($_SESSION['callbackResult']);
 }
 
 $email = isset($_POST['email']) ? $_POST['email'] : '';
-if ($output == null && $error == null) {
-	if (!empty($email)) {
-		$output = Action::callAction('login', $_POST);
+if ($output == null && $error == null && !empty($email)) {
+	$output = Action::callAction('login', $_POST);
 
-		if (isset($output['object'])) {
-			$user_obj = $output['object'];
-			/* User type */
-			$type = $user_obj['type'];
-			
-			if ($type == STUDENT) {
-				header('Location: student/student.php');
-				exit;
-			} elseif ($type == PROFESSOR) {
-				header('Location: professor/professor.php');
-				exit;
-			} elseif ($type == STAFF) {
-				header('Location: staff/staff.php');
-				exit;
-			} elseif ($type == ADMIN) {
-				header('Location: admin/admin.php');
-				exit;
-			} else {
-				$error = new TarsException(Event::SERVER_EXCEPTION,
-					Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
-			}
+	if (isset($output['object'])) {
+		$user_obj = $output['object'];
+		/* User type */
+		$type = $user_obj['type'];
+		
+		if ($type == STUDENT) {
+			header('Location: student/student.php');
+			exit;
+		} elseif ($type == PROFESSOR) {
+			header('Location: professor/professor.php');
+			exit;
+		} elseif ($type == STAFF) {
+			header('Location: staff/staff.php');
+			exit;
+		} elseif ($type == ADMIN) {
+			header('Location: admin/admin.php');
+			exit;
+		} else {
+			$error = new TarsException(Event::SERVER_EXCEPTION,
+				Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
 		}
 	}
 }
@@ -84,9 +82,9 @@ if ($output == null && $error == null) {
 						<form action="passrecov.php" method="post" id="passrecov">
 							<fieldset>
 								<div class="row">
-									<div class="col-xs-6">
+									<div class="col-xs-12">
 										<label for="passrecovemail">Email</label>
-										<input type="email" id="passrecovemail" name="passrecov" class="form-control" size="64"/>
+										<input type="email" id="passrecovemail" name="email" class="form-control" size="64"/>
 									</div>
 								</div>
 							</fieldset>
@@ -196,15 +194,23 @@ if ($output == null && $error == null) {
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div id="login">
-					<form action="index.php" method="post">
-						<fieldset>
-							<?php
+					<div id="alertHolder">
+<?php
+$formMode = 'index';
+$token = '';
 if ($output != null) {
 	if ($output['success']) {
 		if (isset($output['object'])) {
-			$alert = $output['object'];
-			echo TarsException::makeAlert($alert['title'],
-				$alert['message'].'.', $alert['class']);
+			if (isset($output['object']['alert'])) {
+				$alert = $output['object']['alert'];
+				echo TarsException::makeAlert($alert['title'],
+					$alert['message'].'.', $alert['class']);
+			}
+			if (isset($output['object']['resetCallback'])) {
+				$formMode = 'setpass';
+				$token = $output['object']['resetCallback'];
+				$userName = $output['object']['userName'];
+			}
 		}
 	} elseif (isset($output['token'])) {
 		$tokenLink = Email::getLink(ResetToken::decodeToken($output['token']));
@@ -214,16 +220,22 @@ if ($output != null) {
 		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'], 'danger');
 	}
 }
-							?>
+?>
+					</div>
+<?php
+if ($formMode == 'index') {
+?>
+					<form action="index.php" method="post">
+						<fieldset>
 							<h2 class="center colorWhite">TARS Sign In</h2>
 							<div class="row">
-								<div class="col-md-10">
+								<div class="col-md-12">
 									<label for="email" class="colorWhite">Email</label>
 									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=$email?>">
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
-								<div class="col-md-10">
+								<div class="col-md-12">
 									<label for="password" class="colorWhite">Password</label>
 									<input type="password" id="password" name="password" class="form-control" place-holder="">
 								</div> <!-- End column -->
@@ -263,6 +275,41 @@ if ($output != null) {
 							</div> <!-- End row -->
 						</fieldset> <!-- End fieldset -->
 					</form> <!-- End form -->
+<?php
+} elseif ($formMode == 'setpass') {
+?>
+					<form action="token.php?token=<?=$token?>" method="post">
+						<fieldset>
+						<h2 class="center colorWhite"><?=$userName?> Password Reset</h2>
+							<div class="row">
+								<div class="col-md-12">
+									<label for="password" class="colorWhite">Password</label>
+									<input type="password" id="password" name="password" class="form-control" place-holder="">
+								</div> <!-- End column -->
+							</div> <!-- End row -->	
+							<div class="row">
+								<div class="col-md-12">
+									<label for="password" class="colorWhite">Confirm Password</label>
+									<input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control" place-holder="">
+								</div> <!-- End column -->
+							</div> <!-- End row -->	
+							<br>
+							<div class="row">
+								<div class="col-md-6">
+									<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-hand-right"></span> Set Password</button>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<br>
+							<div class="row">
+								<div class="col-xs-12 versionData">
+									<?php show_version(); ?>
+								</div>
+							</div> <!-- End row -->
+						</fieldset> <!-- End fieldset -->
+					</form> <!-- End form -->
+<?php
+}
+?>
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

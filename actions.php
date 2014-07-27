@@ -145,6 +145,7 @@ final class Action {
 				// reset the user's password, ask for new password on index.php alternate form
 				$newToken = ResetToken::generateToken('resetCallback', $user->getID(), time());
 				$result['resetCallback'] = ResetToken::encodeToken($newToken);
+				$result['userName'] = $user->getFILName();
 				$result['alert'] = array('class' => 'warning', 'title' => 'Success',
 					'message' => 'You must set a new password to continue');
 				break;
@@ -196,6 +197,31 @@ final class Action {
 		} else {
 			throw new ActionError('User not found');
 		}
+	}
+
+	public static function passRecov($params, $user, &$eventObjectID) {
+		$email = $params['email'];
+		$user = User::getUserByEmail($email);
+		if ($user == null) {
+			// it will appear in the event log as (email: $email) did this,
+			// pointing to NULL, so we know what was typed in
+			$eventObjectID = $email; 
+			return null;
+		}
+
+		$time = time();
+		// TODO: use constants or something for the below text
+		$notifID = Notification::insertNotification($user->getID(), true, false,
+			'Set Your Password', null,
+			"A password reset was requested for your TA management system account. Click the following link to set a password:\r\n\r\n:link\r\n\r\nLogging in with your old password will cancel this request.",
+			$time);
+		$resetToken = ResetToken::generateToken('reset', $user->getID(), $time, null, $notifID);
+
+		$notif = Notification::getNotificationByID($notifID);
+		$notif->sendEmail(array(':link' => Email::getLink($resetToken)), Event::USER_RESET_PASS);
+
+		$eventObjectID = $user->getID();
+		return null;
 	}
 
 	public static function apply($params, $student, &$eventObjectID) {
@@ -606,11 +632,23 @@ final class Action {
 		// Parameters:
 		//     token:        The token used to identify the request
 		// Returns:
+		//     object: An alert with a title, message, and class
 		//     success and error: Action status
 		'applyToken' => array('event' => Event::USER_APPLY_TOKEN,
 			'noSession' => true, 'eventLog' => 'always',
 			'eventDescr' => '%s applied a token to confirm email/reset password.',
 			'eventDescrArg' => 'refparam', 'params' => array('token')),
+		// Action:           passRecov
+		// Session required: none
+		// Parameters:
+		//     email:        The email to send a reset token for
+		// Returns:
+		//     object: An alert with a title, message, and class (will succeed even if the user doesn't exist, just no email will be sent)
+		//     success and error: Action status
+		'passRecov' => array('event' => Event::USER_RESET_PASS,
+			'noSession' => true, 'eventLog' => 'always',
+			'eventDescr' => '%s requested a password reset.',
+			'eventDescrArg' => 'refparam', 'params' => array('email')),
 		// Action:           search 
 		// Session required: STUDENT
 		// Parameters:
@@ -915,8 +953,11 @@ final class Action {
 					$source_user = Action::getUserByType($action_evdesc_arg, $event_object, $user);
 					if ($source_user != null && $source_user instanceof User) {
 						$descrarg = $source_user->getName();
+					} elseif (is_string($source_user)) {
+						$descrarg = "(email: $source_user)";
+						$source_user = null;
 					} else {
-						$descrarg = '(unknown user)';
+						$descrarg = '(anonymous)';
 						$source_user = null; // do not give the database non-Users in creator column
 					}
 					$descr = sprintf($action_evdesc, $descrarg);
@@ -956,7 +997,11 @@ final class Action {
 	private static function getUserByType($type, $refparam, $session) {
 		switch ($type) {
 		case 'refparam':
-			return User::getUserByID($refparam);
+			if (is_numeric($refparam)) {
+				return User::getUserByID($refparam);
+			} else {
+				return $refparam;
+			}
 		case 'session':
 			if ($session instanceof User) {
 				return $session;

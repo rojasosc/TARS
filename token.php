@@ -1,7 +1,11 @@
 <?php
+
 require_once 'actions.php';
+
 $output = Action::callAction('applyToken', $_REQUEST);
+
 session_start();
-$_SESSION['tokenResult'] = $output;
+$_SESSION['callbackResult'] = $output;
+
 Header('Location: index.php');
 

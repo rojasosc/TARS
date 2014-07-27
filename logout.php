@@ -10,5 +10,4 @@ Action::callAction('logout');
 // TODO return['error'] show to user?
 
 header("Location: ./");
-exit;
 

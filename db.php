@@ -17,6 +17,8 @@ require_once 'common/SectionSession.php';
 require_once 'common/Section.php';
 require_once 'common/Event.php';
 require_once 'common/Configuration.php';
+require_once 'common/Notification.php';
+require_once 'common/ResetToken.php';
 require_once 'email.php';
 
 /*******************************************

@@ -167,7 +167,7 @@ function createProfessor(){
 		lastName: $("[name='lastName']",$professorForm).val(),
 		email: $("[name='email']",$professorForm).val(),
 		password: $("[name='password']",$professorForm).val(),
-		mobilePhone: $("[name='mobilePhone']",$professorForm).val(),
+		officePhone: $("[name='officePhone']",$professorForm).val(),
 		building: $("[name='building']",$professorForm).val(),
 		room: $("[name='room']",$professorForm).val(),
 		action: action

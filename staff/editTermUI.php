@@ -27,6 +27,7 @@ try {
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="editTermUI.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->
@@ -53,15 +54,16 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="panel-heading">
 						<h1 class="panel-title">Fall 2014</h1>
 					</div>
-					<?php
+					<div class="panel-body">
+						<?php
 	foreach($sections as $section) {
-		//TODO: INSTRUCTOR, TA COUNTS
+		//TODO: TA COUNTS
 		$sessions = $section->getAllSessions();
 		$sessions = SectionSession::combineSessions($sessions)[0];
 		$profs = $section->getSectionProfessors();
-	//	print_r($section);
-	//	print_r($sessions);
-		print_r($profs);
+		//	print_r($section);
+		//	print_r($sessions);
+		//	print_r($profs);
 		if($profs[0]['firstName'] === $profs[1]['firstName'] && $profs[0]['lastName'] === $profs[1]['lastName']) {
 			$profName = $profs[0]['firstName'].' '.$profs[0]['lastName'];
 		} else {
@@ -69,13 +71,12 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		}
 		
 		if($sessions != null) {
-					?>
-					<div class="panel-body">
+						?>
 						<div class="panel panel-info coursePanel">
 							<div class="panel-heading">
 								<h2 class="panel-title" data-toggle="collapse" data-target="#<?=$section->getCRN()?>Panel"><?='['.$section->getSectionType().'] '.$section->getCourseDepartment().' '.$section->getCourseNumber()?><span class="hidden-xs"><?=': '.$section->getCourseTitle()?></span></h2>
 							</div>
-							<div class="panel-collapse collapse in" id="<?=$section->getCRN()?>Panel">
+							<div class="panel-collapse collapse in sectionPanel" id="<?=$section->getCRN()?>Panel">
 								<div class="panel-body" >
 									<div class="container-fluid">
 										<form role="form" action="#" method="post" id="csc171">
@@ -108,7 +109,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													Start: <input type="text" class="form-control startTime" value="<?=$sessions->getStartTime()?>"/>
 												</div>
 												<div class="col-xs-4 col-sm-2">
-													End: <input type="text" class="form-control endTime" value="<?=$sessions->getEndTime()?>"/>
+													End: <input type="text" class="form-control endTime" value="<?=$sessions->getEndTime()?>"/>	
 												</div>
 											</div>
 											<div class="row">
@@ -139,21 +140,25 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								</div>
 							</div>
 						</div>
-					</div>
-					<?php
+						<?php
 		} else {
-			?>
-					<div class="alert alert-danger">
-						<strong>SESSION MISSING FOR <?='['.$section->getSectionType().'] '.$section->getCourseDepartment().' '.$section->getCourseNumber()?><span class="hidden-xs"><?=': '.$section->getCourseTitle()?></strong>
-					</div>
-					<?php
+						?>
+						<div class="alert alert-danger">
+							<strong>SESSION MISSING FOR <?='['.$section->getSectionType().'] '.$section->getCourseDepartment().' '.$section->getCourseNumber()?><span class="hidden-xs"><?=': '.$section->getCourseTitle()?></span></strong>
+						</div>
+						<?php
 		}
 	}
-					?>
+						?>
+					</div>
+					<div class="panel-footer">
+						<!-- TODO: Add functionality -->
+						<button type="submit" class="btn btn-success btn-lg">Save All</button>
+					</div>
 				</div>
-<?php
+				<?php
 }
-?>
+				?>
 			</div>
 			<!-- END Page Content --> 
 	    

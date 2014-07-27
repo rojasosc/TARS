@@ -6,6 +6,31 @@ CHANGELOG
 
 ================================
 ********************************
+Publish v0.7.0
+********************************
+================================
+Date: ?? 28 July, 2014 ??
+
+===General===
+Added Notification support
+Added sending emails as Notifications can be set to be sent to owner
+Added Email verification using Notifications
+Added Email password reset functionality using Notifications
+Implemented Create User functionality for Staff to create Professors
+
+================================
+********************************
+Publish v0.6.0
+********************************
+================================
+Date: 21 July, 2014
+
+===General===
+Standardized the remote-call (AJAX) API as "Actions", which should greatly improve stability as well as make Error event logging more inclusive
+Logins and logouts internally use Actions
+
+================================
+********************************
 Publish v0.5.0
 ********************************
 ================================

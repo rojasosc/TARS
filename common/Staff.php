@@ -1,18 +1,15 @@
 <?php
 
 final class Staff extends User {
-	public static function registerStaff($email, $password, $firstName, $lastName,
-		$officePhone, $mobilePhone) {
+	public static function registerStaff($email, $firstName, $lastName) {
 
-		$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, STAFF);
+		$userID = parent::insertUser($email, null, $firstName, $lastName, STAFF);
 
 		$sql = 'INSERT INTO Staff
 				(userID, officePhone, mobilePhone) VALUES
 				(:id, :officePhone, :mobilePhone)';
 		$args = array(':id' => $userID,
-				':officePhone' => $officePhone, ':mobilePhone' => $mobilePhone);
+				':officePhone' => null, ':mobilePhone' => null);
 		Database::executeInsert($sql, $args);
 		return $userID;
 	}

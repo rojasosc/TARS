@@ -362,6 +362,30 @@ final class Action {
 		return null;
 	}
 
+	public static function createUser($params, $user, &$eventObjectID) {
+		if ($user->getObjectType() != STAFF) {
+			throw new ActionError('Permission denied (not staff)');
+		}
+		
+		$userID = Professor::registerProfessor(
+			$params['email'], $params['firstName'], $params['lastName'],
+			$officePhone, PROFESSOR);
+
+		$time = time();
+		// TODO: use constants or something for the below text
+		$notifID = Notification::insertNotification($studentID, true, false,
+			'Confirm Your Email', null,
+			"An administrator has created a new professor account on the TA Reporting System using this email address. Click the following link to confirm your email address and set your password:\r\n\r\n:link\r\n\r\nYou may then login using this account to confirm TA applicants. Thank you for using TARS.",
+			$time);
+		$signupToken = ResetToken::generateToken('reset', $userID, $time, null, $notifID);
+
+		$notif = Notification::getNotificationByID($notifID);
+		$notif->sendEmail(array(':link' => Email::getLink($signupToken)), Event::USER_CREATE);
+
+		$eventObjectID = $userID;
+		return null;
+	}
+
 	public static function searchForUsers($params, $user, &$eventObjectID) {
 		if (is_array($params)) {
 			$usersFound = User::findUsers($params['email'],$params['firstName'],
@@ -791,6 +815,28 @@ final class Action {
 		'newStudentComment' => array('event' => Event::NONSTUDENT_COMMENT,
 			'eventLog' => 'always', 'eventDescr' => '%s created a comment.',
 			'isUserInput' => true, 'params' => array('studentID', 'comment')),
+		// Action:           createUser
+		// Session required: logged in (not STUDENT)
+		// Parameters:
+		//     type: the given user type is checked or permission denied is thrown
+		//     firstName, lastName, email, emailConfirm, officePhone, building, room
+		// Returns:
+		//     success and error: Action status
+		'createUser' => array('event' => Event::SU_CREATE_USER,
+			'eventLog' => 'always', 'eventDescr' => '%s created a new user.',
+			'isUserInput' => true, 'params' => array(
+				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'email' => array('type' => Action::VALIDATE_EMAIL),
+				'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
+					'field' => 'email'),
+				'type' => array('type' => Action::VALIDATE_NUMERIC),
+				'officePhone' => array('type' => Action::VALIDATE_NUMSTR,
+					'optional' => true, 'min_length' => 10, 'max_length' => 10),
+				'building' => array('type' => Action::VALIDATE_NOTEMPTY,
+					'optional' => true),
+				'room' => array('type' => Action::VALIDATE_NOTEMPTY,
+					'optional' => true))),
 		// Action:           searchForUsers
 		// Session required: STAFF
 		// Parameters:

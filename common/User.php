@@ -119,14 +119,15 @@ abstract class User {
 		return array_map(function ($row) { return User::getUserSubclassObject($row); }, $rows);
 	}
 
-	public static function insertUserSelfCreated($email, $password, $firstName, $lastName, $type) {
+	public static function insertUser($email, $password, $firstName, $lastName, $type) {
+		$reset = ($password == null);
 		$sql = 'INSERT INTO Users
 				(email, emailVerified, password, passwordReset,
 				firstName, lastName, createTime, type) VALUES
 				(:email, :emailVerified, :password, :passwordReset,
 				:firstName, :lastName, :createTime, :type)';
-		$args = array(':email' => $email, ':emailVerified' => 0,
-				':password' => $password, ':passwordReset' => 0,
+		$args = array(':email' => $email, ':emailVerified' => !$reset,
+				':password' => $password, ':passwordReset' => $reset,
 				':firstName' => $firstName, ':lastName' => $lastName,
 				':createTime' => date('Y-m-d H:i:s'), ':type' => $type);
 		return Database::executeInsert($sql, $args);

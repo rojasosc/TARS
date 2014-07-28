@@ -1,12 +1,10 @@
 <?php
 
 final class Professor extends User {
-	public static function registerProfessor($email, $password, $firstName, $lastName,
+	public static function registerProfessor($email, $firstName, $lastName,
 		$officeID, $officePhone) {
 
-		$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, PROFESSOR);
+		$userID = parent::insertUser($email, null, $firstName, $lastName, PROFESSOR);
 
 		$sql = 'INSERT INTO Professors
 				(userID, officeID, officePhone) VALUES

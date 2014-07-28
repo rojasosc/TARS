@@ -6,7 +6,7 @@ final class Student extends User {
 
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-		$userID = parent::insertUserSelfCreated($email, $password_hash, $firstName, $lastName, STUDENT);
+		$userID = parent::insertUser($email, $password_hash, $firstName, $lastName, STUDENT);
 
 		$sql = 'INSERT INTO Students
 				(userID, mobilePhone, classYear, major, gpa, universityID, aboutMe) VALUES

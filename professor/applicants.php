@@ -10,6 +10,7 @@ try {
 }
 
 $term = null;
+$courses = array();
 $sections = array();
 if ($error == null) {
 	try {
@@ -136,7 +137,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								$applications = array();
 								try {
 									/* applications for this particular section */
-									$applications = Application::getApplications(null, $section, $professor, $term, PENDING);
+									$applications = Application::findApplications(null, $section, $professor, $term, PENDING);
 								} catch (PDOException $ex) {
 									$error = new TarsException(Event::SERVER_DBERROR,
 										Event::USER_GET_APPLICATIONS, $ex);

@@ -45,8 +45,8 @@ final class Student extends User {
 		Database::execute($sql,$args);
 	}
 		
-	public function getApplications($term, $status) {
-		return Application::getApplications(null, null, $term, $status);
+	public function findApplications($term, $status) {
+		return Application::findApplications($this, null, null, $term, $status);
 	}
 	
 	// TODO move this to Position object

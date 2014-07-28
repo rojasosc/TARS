@@ -20,8 +20,8 @@ if ($error == null) { //Error checking
 			$term = Term::getTermByID($currentTermID);
 		}
 
-		$positions = $student->getApplications($term, APPROVED);
-		$currentApps = $student->getApplications($term, PENDING);
+		$positions = $student->findApplications($term, APPROVED);
+		$currentApps = $student->findApplications($term, PENDING);
 	} catch (PDOException $ex) {
 		$error = new TarsException(Event::SERVER_DBERROR,
 			Event::USER_GET_POSITIONS, $ex);

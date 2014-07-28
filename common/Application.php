@@ -12,7 +12,7 @@ final class Application {
 		return new Application($row);
 	}
 
-	private static function generateGetApplicationsRequest($section, $professor, $term, $status, $compensation, $is_count) {
+	private static function findApplicationsGeneral($student, $section, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
 		$sql_ij_t = false;
 		$sql_ij_teaches = '';
@@ -20,6 +20,10 @@ final class Application {
 		if ($section != null) {
 			$sql_where .= 'Positions.sectionID = :section AND ';
 			$args[':section'] = $section->getID();
+		}
+		if ($student != null) {
+			$sql_where .= 'Applications.creatorID = :student AND ';
+			$args[':student'] = $student->getID();
 		}
 		if ($professor != null) {
 			$sql_where .= 'Teaches.professorID = :professor AND ';
@@ -92,9 +96,9 @@ final class Application {
 	 * General purpose function to get application object count.
 	 *
 	 */
-	public static function getApplicationCount($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
-		list($sql, $args) = Application::generateGetApplicationsRequest(
-			$course, $professor, $term, $status, $compensation, true);
+	public static function findApplicationCount($section = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+		list($sql, $args) = Application::findApplicationsGeneral(
+			$student, $section, $professor, $term, $status, $compensation, true);
 		return Database::executeGetScalar($sql, $args);
 	}
 
@@ -102,9 +106,9 @@ final class Application {
 	 * General purpose function to get application objects.
 	 *
 	 */
-	public static function getApplications($course = null, $professor = null, $term = null, $status = -1, $compensation = null) {
-		list($sql, $args) = Application::generateGetApplicationsRequest(
-			$course, $professor, $term, $status, $compensation, false);
+	public static function findApplications($student = null, $section = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+		list($sql, $args) = Application::findApplicationsGeneral(
+			$student, $section, $professor, $term, $status, $compensation, false);
 		$rows = Database::executeGetAllRows($sql, $args);
 		return array_map(function ($row) { return new Application($row); }, $rows);
 	}

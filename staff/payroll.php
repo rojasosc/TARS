@@ -27,7 +27,7 @@ if ($error == null) {
 				$thisTerm = Term::getTermByID($thisTermID);
 			}
 		}
-		$assistants = Application::getApplications(null, null, $thisTerm, APPROVED, 'pay');
+		$assistants = Application::findApplications(null, null, null, $thisTerm, APPROVED, 'pay');
 	} catch (PDOException $ex) {
 		$error = new TarsException(Event::SERVER_DBERROR, Event::STAFF_GET_PAYROLL, $ex);
 	}

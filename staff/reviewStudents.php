@@ -183,7 +183,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					</div> <!-- End panel-heading -->
 					<div class="panel-body">
 							<?php
-								$applications = Application::getApplications(null,null,$term,PENDING);
+								$applications = Application::findApplications(null, null, null, $term, PENDING);
 								if(!$applications){
 							?>
 									<div class="row">

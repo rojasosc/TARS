@@ -6,7 +6,7 @@
 			$term = Term::getTermByID($currentTermID);
 			if($term) {
 				$fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.xls";
-				$assistants = Application::getApplications(null, null, $term, APPROVED, 'pay');
+				$assistants = Application::findApplications(null, null, null, $term, APPROVED, 'pay');
 			}
 		}
 	} catch (PDOException $ex) {

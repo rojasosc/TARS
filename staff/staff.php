@@ -16,7 +16,7 @@ if ($error == null) {
 		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
 		if ($currentTermID != null) {
 			$term = Term::getTermByID($currentTermID);
-			$totalUnverified = Application::getApplicationCount(null, null, $term, PENDING);
+			$totalUnverified = Application::findApplicationCount(null, null, null, $term, PENDING);
 		}
 	} catch (PDOException $ex) {
 		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_APPLICATIONS, $ex);

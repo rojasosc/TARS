@@ -96,7 +96,7 @@ final class Application {
 	 * General purpose function to get application object count.
 	 *
 	 */
-	public static function findApplicationCount($section = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+	public static function findApplicationCount($student = null, $section = null, $professor = null, $term = null, $status = -1, $compensation = null) {
 		list($sql, $args) = Application::findApplicationsGeneral(
 			$student, $section, $professor, $term, $status, $compensation, true);
 		return Database::executeGetScalar($sql, $args);

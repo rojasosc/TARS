@@ -17,7 +17,7 @@ if ($error != null) {
 		if ($currentTermID != null) {
 			$term = Term::getTermByID($currentTermID);
 			/* Obtain the number of pending applications */
-			$pendingApps = Application::getApplicationCount(null, $professor, $term, PENDING);
+			$pendingApps = Application::findApplicationCount(null, null, $professor, $term, PENDING);
 		}
 	} catch (PDOException $ex) {
 		$error = new TarsException(Event::SERVER_DBERROR, Event::USER_GET_APPLICATIONS, $ex);

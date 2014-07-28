@@ -455,7 +455,8 @@ CREATE TABLE IF NOT EXISTS `Configurations` (
 
   `logDebug` boolean NOT NULL,
   `adminCreated` boolean NOT NULL,
-  `domain` varchar(64) NOT NULL,
+  `emailDomain` varchar(64) NOT NULL,
+  `emailLinkBase` varchar(128) NOT NULL,
   `enableLogin` boolean NOT NULL,
   `currentTerm` bigint(20) NULL,
 

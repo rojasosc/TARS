@@ -63,8 +63,8 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('ADMIN_CONFIGURE', 'info', 'Configurable');
 
 -- default configuration state
-INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `domain`, `enableLogin`, `currentTerm`) VALUES
-(NULL, '2014-01-01 00:00:00', 1, 1, 'cs.rochester.edu', 1, NULL);
+INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `emailDomain`, `emailLinkBase`, `enableLogin`, `currentTerm`) VALUES
+(NULL, '2014-01-01 00:00:00', 1, 1, 'cs.rochester.edu', 'http://www.cs.rochester.edu/TARS/', 1, NULL);
 
 -- DATA FOR TESTING ONLY:
 -- test place objects, for professor offices

@@ -5,8 +5,6 @@ final class Email {
 	private static $template_body = "Hello :filname,\r\n\r\n:text\r\n\r\nRegards,\r\nTA Reporting System\r\nUniversity of Rochester\r\n\r\nIf you did not request or expect this email be sent to you, you may safely ignore it.";
 	private static $template_mailname = 'TARS';
 	private static $template_mailfrom = 'no-reply';
-	private static $template_maildomain = 'natembook.com';
-	private static $template_linkbase = 'http://www.natembook.com/tars/';
 
 	public static function send($targetUser, $subjectV, $bodyT, $eventType, $extraParams = array()) {
 		if ($targetUser == null) {
@@ -32,7 +30,7 @@ final class Email {
 		$sendmailArgs = array(
 			':mname' => Email::$template_mailname,
 			':mfrom' => Email::$template_mailfrom,
-			':mdom' => Email::$template_maildomain);
+			':mdom' => Configuration::get(Configuration::EMAIL_DOMAIN));
 		$sendmailCLI = Template::evaluate('-f :mfrom@:mdom -F ":mname"', $sendmailArgs);
 		mail($mailTo, $mailSubject, $mailBody, '', $sendmailCLI);
 	}
@@ -51,7 +49,8 @@ final class Email {
 		} else {
 			$enc_token = '';
 		}
-		return Email::$template_linkbase.'token.php?token='.$enc_token;
+		$link_base = Configuration::get(Configuration::EMAIL_LINK_BASE);
+		return $link_base.'token.php?token='.$enc_token;
 	}
 }
 

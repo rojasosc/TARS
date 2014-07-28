@@ -1,11 +1,12 @@
 <?php
 
 final class Configuration {
-	const LOG_DEBUG = 'logDebug';
-	const ADMIN_CREATED = 'adminCreated';
-	const DOMAIN = 'domain';
-	const ENABLE_LOGIN = 'enableLogin';
+	const LOG_DEBUG = 'logDebug'; // TODO unused
+	const ADMIN_CREATED = 'adminCreated'; // TODO unused
+	const ENABLE_LOGIN = 'enableLogin'; // TODO unused
 	const CURRENT_TERM = 'currentTerm';
+	const EMAIL_DOMAIN = 'emailDomain';
+	const EMAIL_LINK_BASE = 'emailLinkBase';
 	const CONFIG_LAST_ID = 'configID';
 	const CONFIG_LAST_UPDATOR = 'creatorID';
 	const CONFIG_LAST_UPDATETIME = 'createTime';

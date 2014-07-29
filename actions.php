@@ -102,12 +102,17 @@ final class Action {
 	}
 
 	public static function signup($params, $user, &$eventObjectID) {
+		$email = $params['email']; $password = $params['password'];
+		$firstName = $params['firstName']; $lastName = $params['lastName'];
+		// filter non-digits
+		$mobilePhone = preg_replace('/([^\d]+)/', '', $params['mobilePhone']);
+		$classYear = $params['classYear'];
+		$major = $params['major']; $gpa = $params['gpa'];
+		$universityID = $params['universityID']; $aboutMe = $params['aboutMe'];
+
 		$studentID = Student::registerStudent(
-			$params['email'], $params['password'],
-			$params['firstName'], $params['lastName'],
-			$params['mobilePhone'], $params['classYear'],
-			$params['major'], $params['gpa'],
-			$params['universityID'], $params['aboutMe']);
+			$email, $password, $firstName, $lastName,
+			$mobilePhone, $classYear, $major, $gpa, $universityID, $aboutMe);
 
 		$time = time();
 		// TODO: use constants or something for the below text
@@ -257,16 +262,20 @@ final class Action {
 	public static function updateProfile($params, $user, &$eventObjectID) {
 		switch ($user->getObjectType()) {
 		case STUDENT:
+			// filter non-digits
+			$mobilePhone = preg_replace('/([^\d]+)/', '', $params['mobilePhone']);
 			$user->updateProfile(
 				$params['firstName'], $params['lastName'],
-				$params['mobilePhone'], $params['classYear'],
+				$mobilePhone, $params['classYear'],
 				$params['major'], $params['gpa'],
 				$params['universityID'], $params['aboutMe']);
 			break;
 		case PROFESSOR:
+			// filter non-digits
+			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
 			$user->updateProfile(
 				$params['firstName'], $params['lastName'],
-				$params['officePhone'], $params['building'],
+				$officePhone, $params['building'],
 				$params['room']);
 			break;
 		}
@@ -367,6 +376,12 @@ final class Action {
 			throw new ActionError('Permission denied (not staff)');
 		}
 		
+		// filter non-digits
+		if (isset($params['officePhone'])) {
+			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
+		} else {
+			$officePhone = null;
+		}
 		$userID = Professor::registerProfessor(
 			$params['email'], $params['firstName'], $params['lastName'],
 			$officePhone, PROFESSOR);

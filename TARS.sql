@@ -118,8 +118,8 @@ CREATE TABLE IF NOT EXISTS `Students` (
 --
 CREATE TABLE IF NOT EXISTS `Professors` (
   `userID` bigint(20) NOT NULL,
-  `officeID` bigint(20) NOT NULL,
-  `officePhone` bigint(20) NOT NULL,
+  `officeID` bigint(20) NULL,
+  `officePhone` bigint(20) NULL,
 
   PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE,

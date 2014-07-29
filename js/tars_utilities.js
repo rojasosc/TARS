@@ -44,67 +44,51 @@ $(document).ready(function() {
 	if( $( ".password-modal" ).length ){
 		$passwordModal = $( ".password-modal" );
 		$passwordForm = $( ".change-password-form");
-		$( ".change-password" ).click( function(){
-		//TODO: Attach a submit handler to process password change.
-		$passwordForm.bootstrapValidator({
-			message: 'This value is not valid',
-			feedbackIcons: {
-				valid: 'glyphicon glyphicon-ok',
-				invalid: 'glyphicon glyphicon-remove',
-				validating: 'glyphicon glyphicon-refresh'
-			},
-			fields: {
-				oldPassword: {
-					message: 'Your password is not valid',
-					validators: {
-						notEmpty: {
-							message: 'Your old password is required and can\'t be empty'
-						},
-						stringLength: {
-							min: 6,
-							max: 20,
-							message: 'Your old password must be between 6 and 20 characters long'
-						},
-						regexp: {
-							regexp: /^[a-zA-Z0-9]+$/,
-							message: 'Your old password can only consist of alphabetical and numerical characters'
+		$( ".change-password" ).click(function () {
+			$passwordForm.bootstrapValidator({
+				message: 'This value is not valid',
+				feedbackIcons: {
+					valid: 'glyphicon glyphicon-ok',
+					invalid: 'glyphicon glyphicon-remove',
+					validating: 'glyphicon glyphicon-refresh'
+				},
+				fields: {
+					oldPassword: {
+						validators: {
+							notEmpty: {
+								message: 'You must confirm your old password'
+							}
+						}
+					},			
+					newPassword: {
+						message: 'Your password is not valid',
+						validators: {
+							notEmpty: {
+								message: 'Your password is required and cannot be empty'
+							},
+							stringLength: {
+								min: 6,
+								max: 20,
+								message: 'Your password must be between 6 and 20 characters long'
+							}
+						}
+					},	 
+					confirmPassword: {
+						validators: {
+							notEmpty: {
+								message: 'Passwords do not match'
+							},
+							identical: {
+								field: 'newPassword',
+								message: 'Passwords do not match'
+
+							}
 						}
 					}
-				},			
-				newPassword: {
-					message: 'Your password is not valid',
-					validators: {
-						notEmpty: {
-							message: 'Your new password is required and can\'t be empty'
-						},
-						stringLength: {
-							min: 6,
-							max: 20,
-							message: 'Your new password must be between 6 and 20 characters long'
-						},
-						regexp: {
-							regexp: /^[a-zA-Z0-9]+$/,
-							message: 'Your new password can only consist of alphabetical and numerical characters'
-						}
-					}
-				},	 
-				confirmPassword: {
-					message: 'Your password is not valid',
-					validators: {
-						notEmpty: {
-							message: 'Your new password is required and can\'t be empty'
-						},
-						identical: {
-							field: 'newPassword',
-							message: 'Passwords don\'t match'
-							
-						}
-					}
-				}
-		} /* close fields */		
-	});			
+				} /* close fields */		
+			}); 
 			viewPasswordForm( $(this).data( "userid" ), $passwordForm.data( "usertype" ) );
-		}); 
+		});
 	}
 
 	if( $( ".comments-modal").length ){

@@ -4,12 +4,28 @@ require_once 'error.php';
 require_once 'session.php';
 require_once 'actions.php';
 
+function strip_excess_git_tags($tags) {
+	$tags = explode(',', trim($tags, ' ()'));
+	$stripped = array();
+	foreach ($tags as $tag) {
+		if (trim($tag) != 'HEAD' && strpos($tag, '/') === false) {
+			$stripped[] = trim($tag);
+		}
+	}
+	return implode(', ', $stripped);
+}
+
 function show_version() {
 	$version_code = trim(@file_get_contents('version.txt'));
 	//$git_revision = array(getcwd());
-	@exec('git log -1 --format="%h%d %ci"', $git_revision);
-	if (count($git_revision) >= 1) {
-		echo "$version_code: {$git_revision[0]}";
+	@exec('git log -1 --format="%h"', $git_h);
+	@exec('git log -1 --format="%d"', $git_d);
+	@exec('git log -1 --format="%ci"', $git_ci);
+	if (count($git_h) && count($git_d) && count($git_ci)) {
+		$git_h = $git_h[0];
+		$git_d = strip_excess_git_tags($git_d[0]);
+		$git_ci = $git_ci[0];
+		echo "$version_code: $git_h ($git_d) $git_ci";
 	} else {
 		echo $version_code;
 	}

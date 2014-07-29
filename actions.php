@@ -272,7 +272,11 @@ final class Action {
 			break;
 		case PROFESSOR:
 			// filter non-digits
-			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
+			if (empty($params['officePhone'])) {
+				$officePhone = null;
+			} else {
+				$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
+			}
 			$user->updateProfile(
 				$params['firstName'], $params['lastName'],
 				$officePhone, $params['building'],
@@ -377,10 +381,10 @@ final class Action {
 		}
 		
 		// filter non-digits
-		if (isset($params['officePhone'])) {
-			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
-		} else {
+		if (empty($params['officePhone'])) {
 			$officePhone = null;
+		} else {
+			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
 		}
 		$userID = Professor::registerProfessor(
 			$params['email'], $params['firstName'], $params['lastName'],

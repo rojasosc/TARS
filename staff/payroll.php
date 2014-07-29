@@ -145,7 +145,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<legend>Download Term</legend>
 									<div class="row">
 										<div class="col-xs-12 col-sm-4 col-md-3">
-											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download XLS File</a>
+											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download File</a>
 										</div> <!-- End col-md-3 -->
 									</div> <!-- End row --> 											
 								</form> <!-- End form -->

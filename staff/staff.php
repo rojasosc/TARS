@@ -85,7 +85,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										</div> <!-- End row -->
 										<div class="row">
 											<div class="col-xs-12">
-													<div class="alert alert-success" role="alert">
+													<div class="alert alert-info" role="alert">
 															There are currently no notifications to display.
 													</div> <!-- End alert alert-danger -->
 											</div> <!-- End column -->									

@@ -327,7 +327,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 																	}else{
 
 																?>
-																		<div class="alert alert-danger" role="alert">
+																		<div class="alert alert-info" role="alert">
 																			All <strong><?= $totalBar['title']?></strong> Positions are unfilled!
 																		</div>
 																<?php

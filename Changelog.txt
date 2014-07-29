@@ -6,16 +6,46 @@ CHANGELOG
 
 ================================
 ********************************
+Publish v0.7.2
+********************************
+================================
+Date: 29 July, 2014
+
+===General===
+Bugfix release
+Fixed entering phone numbers with separators:
+	All phone numbers will be displayed like: ###-###-####
+	Users may enter any non-digit separators and they will be stripped in the database
+Fixed upload term error
+Errors that occur with an open modal are displayed in the modal
+Fixed possible bugs with staff creating comments due to outdated code
+
+================================
+********************************
+Publish v0.7.1
+********************************
+================================
+Date: 28 July, 2014
+
+===General===
+Actual v0.7 push (fix git issues)
+
+================================
+********************************
 Publish v0.7.0
 ********************************
 ================================
-Date: ?? 28 July, 2014 ??
+Date: 28 July, 2014
 
 ===General===
 Added Notification support
 Added sending emails as Notifications can be set to be sent to owner
 Added Email verification using Notifications
 Added Email password reset functionality using Notifications
+Fixed login PHP errors
+Fixed payroll PHP errors
+
+===Staff===
 Implemented Create User functionality for Staff to create Professors
 
 ================================

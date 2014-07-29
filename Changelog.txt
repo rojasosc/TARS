@@ -18,7 +18,10 @@ Fixed entering phone numbers with separators:
 	Users may enter any non-digit separators and they will be stripped in the database
 Fixed upload term error
 Errors that occur with an open modal are displayed in the modal
+
+===Staff===
 Fixed possible bugs with staff creating comments due to outdated code
+Use CSV format correctly for payroll output (NOTE: TEST ON MAC)
 
 ================================
 ********************************

@@ -96,6 +96,7 @@ final class Student extends User {
 	}
 
 	public function getMobilePhone() { return $this->mobilePhone; }
+	public function getMobilePhoneDisplay() { return User::formatPhone($this->mobilePhone);	}
 	public function getMajor() { return $this->major; }
 	public function getGPA() { return $this->gpa; }
 	public function getClassYear() { return $this->classYear; }
@@ -109,7 +110,7 @@ final class Student extends User {
 			'email' => $this->email,
 			'firstName' => $this->firstName,
 			'lastName' => $this->lastName,
-			'mobilePhone' => $this->mobilePhone,
+			'mobilePhone' => $this->getMobilePhoneDisplay(),
 			'major' => $this->major,
 			'gpa' => $this->gpa,
 			'classYear' => $this->classYear,

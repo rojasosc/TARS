@@ -94,6 +94,7 @@ final class Professor extends User {
 	
 	public function getOfficeID() { return $this->officeID; }
 	public function getOfficePhone() { return $this->officePhone; }
+	public function getOfficePhoneDisplay() { return User::formatPhone($this->officePhone); }
 
 	public function toArray() {
 		$office = $this->getOffice();
@@ -103,7 +104,7 @@ final class Professor extends User {
 			'email' => $this->email,
 			'firstName' => $this->firstName,
 			'lastName' => $this->lastName,
-			'officePhone' => $this->officePhone,
+			'officePhone' => $this->getOfficePhoneDisplay(),
 			'office' => $office->toArray());
 	}
 

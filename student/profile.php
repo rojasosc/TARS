@@ -93,7 +93,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<label for="mobilePhone">Mobile Phone</label>
 											<div class="input-group">
 												<span class="input-group-addon">+1</span>
-												<input class="form-control" type="tel" id="mobilePhone" name="mobilePhone" size="30" value="<?=$student->getMobilePhone()?>" maxlength="14" />
+												<input class="form-control" type="tel" id="mobilePhone" name="mobilePhone" size="30" value="<?=$student->getMobilePhoneDisplay()?>" maxlength="14" />
 											</div>
 										</div>
 									</div>

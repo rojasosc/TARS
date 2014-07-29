@@ -144,6 +144,20 @@ abstract class User {
 		}
 	}
 
+	public static function formatPhone($number) {
+		if (empty($number)) {
+			return '';
+		} elseif (strlen($number) == 7) {
+			return substr($number, 0, 3).'-'.substr($number, 3);
+		} elseif (strlen($number) == 10) {
+			return substr($number, 0, 3).'-'.substr($number, 3, 3).'-'.substr($number, 6);
+		} elseif (strlen($number) == 11) {
+			return '+'.$number[0].'-'.substr($number, 1, 3).'-'.substr($number, 4, 3).'-'.substr($number, 7);
+		} else {
+			return $number;
+		}
+	}
+
 	protected function __construct($user_row) {
 		$this->id = $user_row['userID'];
 		$this->email = $user_row['email'];

@@ -218,7 +218,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<br>
 									<div class="row">
 										<div class="col-xs-4">
-										Office Phone: <?= $professor->getOfficePhone() ?>
+										Office Phone: <?= $professor->getOfficePhoneDisplay() ?>
 										</div> 
 									</div>
 									<br>

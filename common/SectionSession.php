@@ -1,6 +1,16 @@
 <?php
 
 final class SectionSession {
+	// TODO remove this if we do dynamic time/place fields
+	// i.e. fields that are created when staff wants to add a Session to a Section
+	// This just generates a "fake" Session to fill in default values when
+	// no Sessione exists for a Section.
+	public static function emptySession() {
+		return new SectionSession(array('sessionID' => null, 'sectionID' => null,
+		'weekday' => '', 'startTime' => '00:00', 'endTime' => '00:00', 'placeID' => null,
+		'building' => '', 'room' => ''));
+	}
+
 	public static function getSessionByID($id) {
 		$sql = 'SELECT * FROM Sessions
 				INNER JOIN Places ON Places.placeID = Sessions.placeID

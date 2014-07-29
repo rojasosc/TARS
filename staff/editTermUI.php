@@ -59,18 +59,20 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 	foreach($sections as $section) {
 		//TODO: TA COUNTS
 		$sessions = $section->getAllSessions();
-		$sessions = SectionSession::combineSessions($sessions)[0];
-		$profs = $section->getSectionProfessors();
+		$sessions = SectionSession::combineSessions($sessions);
+		$profs = $section->getAllProfessors();
 		//	print_r($section);
 		//	print_r($sessions);
 		//	print_r($profs);
-		if($profs[0]['firstName'] === $profs[1]['firstName'] && $profs[0]['lastName'] === $profs[1]['lastName']) {
-			$profName = $profs[0]['firstName'].' '.$profs[0]['lastName'];
-		} else {
-			$profName = $profs[0]['firstName'].' '.$profs[0]['lastName'].', '.$profs[1]['firstName'].' '.$profs[1]['lastName'];
-		}
+		// TODO normalize (multiple professors here would require string parsing to find separate email addresses)
+		$profName = implode(', ', array_map(function ($prof) { return $prof->getEmail(); }, $profs));
 		
-		if($sessions != null) {
+		// TODO normalize (multiple sessions at different times cannot be put)
+		if(count($sessions) != 0) {
+			$session = $sessions[0];
+		} else {
+			$session = SectionSession::emptySession();
+		}
 						?>
 						<div class="panel panel-info coursePanel">
 							<div class="panel-heading">
@@ -92,10 +94,10 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													Course Title: <input type="text" class="form-control courseTitle" value="<?=$section->getCourseTitle()?>"/>
 												</div>
 												<div class="col-xs-6 col-sm-2">
-													Building: <input type="text" class="form-control building" value="<?=$sessions->getPlaceBuilding()?>"/>
+													Building: <input type="text" class="form-control building" value="<?=$session->getPlaceBuilding()?>"/>
 												</div>
 												<div class="col-xs-6 col-sm-2">
-													Room: <input type="text" class="form-control room" value="<?=$sessions->getPlaceRoom()?>"/>
+													Room: <input type="text" class="form-control room" value="<?=$session->getPlaceRoom()?>"/>
 												</div>
 											</div>
 											<div class="row">
@@ -103,13 +105,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													Instructor: <input type="text" class="form-control instructor" value="<?=$profName?>"/>
 												</div>
 												<div class="col-xs-4 col-sm-2">
-													Day: <input type="text" class="form-control day" value="<?=$sessions->getWeekdays()?>"/>
+													Day: <input type="text" class="form-control day" value="<?=$session->getWeekdays()?>"/>
 												</div>
 												<div class="col-xs-4 col-sm-2">
-													Start: <input type="text" class="form-control startTime" value="<?=$sessions->getStartTime()?>"/>
+													Start: <input type="text" class="form-control startTime" value="<?=$session->getStartTime()?>"/>
 												</div>
 												<div class="col-xs-4 col-sm-2">
-													End: <input type="text" class="form-control endTime" value="<?=$sessions->getEndTime()?>"/>	
+													End: <input type="text" class="form-control endTime" value="<?=$session->getEndTime()?>"/>	
 												</div>
 											</div>
 											<div class="row">
@@ -141,13 +143,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							</div>
 						</div>
 						<?php
-		} else {
-						?>
-						<div class="alert alert-danger">
-							<strong>SESSION MISSING FOR <?='['.$section->getSectionType().'] '.$section->getCourseDepartment().' '.$section->getCourseNumber()?><span class="hidden-xs"><?=': '.$section->getCourseTitle()?></span></strong>
-						</div>
-						<?php
-		}
 	}
 						?>
 					</div>

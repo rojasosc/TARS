@@ -68,21 +68,6 @@ final class Section {
 		return $teachesID;
 	}
 
-	// TODO: outdated
-	public function getSectionProfessors(){
-		$sql = 'SELECT firstName,lastName 
-			FROM Users,Professors,Teaches,Sections,Courses
-			WHERE Users.userID = Professors.userID 
-			AND Professors.userID = Teaches.professorID
-			AND Sections.sectionID = Teaches.sectionID
-			AND Courses.courseID = Sections.courseID
-			AND Courses.courseTitle = :courseTitle ';
-		$args = array(':courseTitle' => $this->getCourseTitle());
-		$rows = Database::executeGetAllRows($sql,$args);
-		return $rows;
-
-	}
-
 	public function __construct($row) {
 		$this->id = $row['sectionID'];
 		$this->crn = $row['crn'];

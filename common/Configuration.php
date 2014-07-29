@@ -43,8 +43,8 @@ final class Configuration {
 			return null;
 		}
 		$sql = 'INSERT INTO Configurations
-			(logDebug, adminCreated, domain, enableLogin, currentTerm, creatorID, createTime) VALUES
-			(:logDebug, :adminCreated, :domain, :enableLogin, :currentTerm, :creatorID, :createTime)';
+			(logDebug, adminCreated, enableLogin, currentTerm, emailDomain, emailLinkBase, creatorID, createTime) VALUES
+			(:logDebug, :adminCreated, :enableLogin, :currentTerm, :emailDomain, :emailLinkBase, :creatorID, :createTime)';
 		$args = array();
 		foreach (Configuration::$cachedConfig as $curKey => $curVal) {
 			$args[":$curKey"] = $curVal;

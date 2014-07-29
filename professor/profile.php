@@ -44,6 +44,7 @@ if ($professor != null) {
 					<h1 class="modal-title" id="modalHeader"></h1>
 				</div> <!-- End modal-header -->
 				<div class="modal-body">
+					<div id="editProfileAlertHolder"></div>
 					<form class="edit-profile-form" data-usertype="<?= PROFESSOR ?>">
 						<div class="row">
 							<div class="col-xs-6">				
@@ -116,6 +117,7 @@ if ($professor != null) {
 					<small>To change your password, provide the following information, and click Continue.</small>
 				</div> <!-- End modal-header -->
 				<div class="modal-body">
+					<div id="editPasswordAlertHolder"></div>
 					<form class="change-password-form" data-usertype="<?= PROFESSOR ?>">
 						<div class="row">
 							<div class="col-xs-8">

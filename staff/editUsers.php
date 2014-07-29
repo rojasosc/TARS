@@ -57,6 +57,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<h1 class="modal-title" id="modalHeader"></h1>
 					</div> 
 					<div class="modal-body">
+						<div id="editProfileAlertHolder"></div>
 						<form class="edit-profile-form" data-usertype="<?= STUDENT ?>">
 							<div class="row">
 								<div class="col-md-4">				

@@ -196,10 +196,10 @@ function injectQualifications() {
 		if (data.success) {
 			$qualifications.html(data.object.qualifications);
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#profileAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#profileAlertHolder'));
 	});
 }
 
@@ -218,10 +218,10 @@ function viewUserComments() {
 				$commentsBlock.html("There are no reviews available for this student.");
 			}
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#commentsAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#commentsAlertHolder'));
 	});
 	$commentsModal.bind("hidden.bs.modal", function() { $commentsBlock.html(""); });
 }
@@ -281,10 +281,10 @@ function viewUserProfile() {
 		if (data.success) {
 			prepareStudentModal(data.object, $(this).data('usertype'));
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#profileAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#profileAlertHolder'));
 	});
 }
 
@@ -305,10 +305,10 @@ function viewPasswordForm( userID, userType ){
 		if (data.success) {
 			preparePasswordForm(data.object, userType);
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#editPasswordAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#editPasswordAlertHolder'));
 	});
 }
 
@@ -318,10 +318,10 @@ function viewUserForm( userID, userType ) {
 		if (data.success) {
 			prepareUserForm(data.object, userType);
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#editProfileAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#editProfileAlertHolder'));
 	});
 }
 
@@ -376,10 +376,10 @@ function changeUserPassword(){
 			$passwordModal.modal('hide');
 			showAlert({message:'Your password has been changed.'}, $('#alertHolder'),	'success');
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#editPasswordAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#editPasswordAlertHolder'));
 	});
 }
 
@@ -422,13 +422,14 @@ function updateUserProfile() {
 			$userModal.modal('hide');
 			showAlert({message:'Your profile has been updated.'}, $('#alertHolder'), 'success');
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#editProfileAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#editProfileAlertHolder'));
 	});
 }
 
+// TODO allow custom user input for these dropdowns!
 function prepareBuildingsDropdown() { 
 	doAction('fetchBuildings', {})
 	.done(function (data) {
@@ -446,6 +447,7 @@ function prepareBuildingsDropdown() {
 	});
 }
 
+// TODO allow custom user input for these dropdowns!
 function prepareRoomsDropdown() {
 	clearDropdown( $roomsDropdown );
 	if ($(this).val() != '') {

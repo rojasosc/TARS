@@ -51,6 +51,7 @@ if ($error == null) {
 						<h4 class="modal-title" id="studentModalTitle"></h4>
 					</div>
 					<div class="modal-body">			
+						<div id="profileAlertHolder"></div>
 						<h3>Personal Information</h3>
 						<div class="container">
 							<p id="studentMajor"></p>
@@ -82,6 +83,7 @@ if ($error == null) {
 						<small> For example, describe this assistant's productivity, enthusiasm, punctuality, initiative, or dependability.</small>
 					</div> <!-- End modal-header -->
 					<div class="modal-body">
+						<div id="createCommentAlertHolder"></div>
 						<form action="professorCommands.php" method="post" id="commentForm" class="form-horizontal">
 							<fieldset>
 								<div class="row">
@@ -109,7 +111,9 @@ if ($error == null) {
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h1 class="modal-title">Reviews</h1>
 					</div> <!-- End modal-header -->
-					<div class="modal-body comments-block">
+					<div class="modal-body">
+						<div id="commentsAlertHolder"></div>
+						<div class="comments-block"></div>
 					</div> <!-- End modal-body -->
 					<div class="modal-footer">
 						<button class="btn btn-danger" data-dismiss="modal">Close</button>

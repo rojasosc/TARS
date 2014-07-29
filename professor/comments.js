@@ -20,10 +20,10 @@ function submitComment(){
 			$commentModal.modal('hide');
 			showAlert({message: 'Comment created.'}, $('#alertHolder'), 'success');
 		} else {
-			showError(data.error, $('#alertHolder'));
+			showError(data.error, $('#createCommentAlertHolder'));
 		}
 	}).fail(function (jqXHR, textStatus, errorMessage) {
-		showError({message: errorMessage}, $('#alertHolder'));
+		showError({message: errorMessage}, $('#createCommentAlertHolder'));
 	});
 }
 

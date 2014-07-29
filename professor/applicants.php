@@ -52,6 +52,7 @@ if ($error == null) {
 						<h2 class="modal-title" id="studentModalTitle"></h2>
 					</div>
 					<div class="modal-body">
+						<div id="profileAlertHolder"></div>
 						<h3>Qualifications</h3>
 						<div class="container qualifications">
 						</div> <!-- End container -->									
@@ -83,7 +84,9 @@ if ($error == null) {
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h1 class="modal-title">Reviews</h1>
 					</div> <!-- End modal-header -->
-					<div class="modal-body comments-block">
+					<div class="modal-body">
+						<div id="commentsAlertHolder"></div>
+						<div class="comments-block"></div>
 					</div> <!-- End modal-body -->
 					<div class="modal-footer">
 						<button class="btn btn-danger" data-dismiss="modal">Close</button>

@@ -49,6 +49,9 @@ final class Place {
 	}
 
 	public static function getOrCreatePlace($building, $room) {
+		if ($building == null || $room == null) {
+			return null;
+		}
 		$args = array(':building' => $building, ':room' => $room);
 		$sql = 'SELECT placeID FROM Places WHERE building = :building AND room = :room';
 		$rowID = Database::executeGetScalar($sql, $args);

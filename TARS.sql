@@ -135,10 +135,12 @@ CREATE TABLE IF NOT EXISTS `Professors` (
 --
 CREATE TABLE IF NOT EXISTS `Staff` (
   `userID` bigint(20) NOT NULL,
-  `officePhone` bigint(20) NOT NULL,
+  `officeID` bigint(20) NULL,
+  `officePhone` bigint(20) NULL,
 
   PRIMARY KEY (`userID`),
   FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE
+  FOREIGN KEY (`officeID`) REFERENCES `Places` (`placeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

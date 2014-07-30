@@ -271,20 +271,27 @@ final class Action {
 				$params['universityID'], $params['aboutMe']);
 			break;
 		case PROFESSOR:
+		case STAFF:
 			// filter non-digits
 			if (empty($params['officePhone'])) {
 				$officePhone = null;
 			} else {
 				$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
 			}
+			if (empty($params['building']) || empty($params['room'])) {
+				$officeBuilding = null;
+				$officeRoom = null;
+			} else {
+				$officeBuilding = strtoupper($params['building']);
+				$officeRoom = strtoupper($params['room']);
+			}
 			$user->updateProfile(
 				$params['firstName'], $params['lastName'],
-				$officePhone, $params['building'],
-				$params['room']);
+				$officePhone, $officeBuilding, $officeRoom);
 			break;
 		}
 		$eventObjectID = $user->getID();
-		return null;
+		return $user;
 	}
 
 	public static function changeUserPassword($params, $user, &$eventObjectID) {
@@ -728,6 +735,7 @@ final class Action {
 		//     firstName, lastName, mobilePhone, classYear, major,
 		//     gpa, universityID, aboutMe, officePhone, officeBuilding, officeRoom
 		// Returns:
+		//     object:       The new user object
 		//     success and error: Action status
 		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
 			'eventLog' => 'always', 'eventDescr' => '%s updated their profile.',

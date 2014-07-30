@@ -98,9 +98,10 @@ $(document).ready(function() {
 	}
 
 	if( $( ".buildings" ).length ){
-		$buildingsDropdown = $( ".buildings" );
+		$buildingsData = $( ".buildings" );
+		$buildingsInput = $( "[name='building']" );
 		$roomsDropdown = $( ".rooms" );
-		$buildingsDropdown.change( prepareRoomsDropdown );
+		$buildingsInput.change( prepareRoomsDropdown );
 		prepareBuildingsDropdown();
 		
 	}
@@ -333,33 +334,31 @@ function preparePasswordForm( user, userType ){
 
 function prepareUserForm( $user, userType ) {
 	window.$user = $user;
+	$( "#modalHeader" ).html( $user.firstName + " " + $user.lastName );
+	$( "[name='firstName']", $editProfileForm ).val( $user[ "firstName" ] );
+	$( "[name='lastName']", $editProfileForm).val( $user[ "lastName" ] );
+	$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
 	switch( userType ){
 	case STUDENT:
-		$( "#modalHeader" ).html( $user[ "firstName" ] + " " + $user[ "lastName" ] );
-		$( "[name='firstName']", $editProfileForm ).val( $user[ "firstName" ] );
-		$( "[name='lastName']", $editProfileForm).val( $user[ "lastName" ] );
-		$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
-		$( "[name='mobilePhone']", $editProfileForm).val( $user[ "mobilePhone" ] );
-		$( "[name='classYear']", $editProfileForm).val( $user[ "classYear" ] );
-		$( "[name='major']", $editProfileForm).val( $user[ "major" ] );
-		$( "[name='gpa']", $editProfileForm).val( $user[ "gpa" ] );
-		$( "[name='universityID']", $editProfileForm).val( $user[ "universityID" ] );
-		$( "[name='aboutMe']", $editProfileForm).val( $user[ "aboutMe" ] );
+		$( "[name='mobilePhone']", $editProfileForm).val( $user.mobilePhone );
+		$( "[name='classYear']", $editProfileForm).val( $user.classYear );
+		$( "[name='major']", $editProfileForm).val( $user.major );
+		$( "[name='gpa']", $editProfileForm).val( $user.gpa );
+		$( "[name='universityID']", $editProfileForm).val( $user.universityID );
+		$( "[name='aboutMe']", $editProfileForm).val( $user.aboutMe );
 		break;
 	case PROFESSOR:
-		$( "#modalHeader" ).html( $user[ "firstName" ] + " " + $user[ "lastName" ] );	
-		$( "[name='firstName']", $editProfileForm).val( $user[ "firstName" ] );
-		$( "[name='lastName']", $editProfileForm).val( $user[ "lastName" ] );
-		$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
-		$( "[name='officePhone']", $editProfileForm).val( $user[ "officePhone" ] );
-		$( "[name='building']", $editProfileForm).val( $user[ "office" ][ "building" ] );
-		$( "[name='room']", $editProfileForm).val( $user[ "office" ][ "room" ] );		
-		break;
 	case STAFF:
-		action = "TODO";
+		if ($user.officePhone != null) {
+			$( "[name='officePhone']", $editProfileForm).val( $user.officePhone );
+		}
+		if ($user.office != null) {
+			$( "[name='building']", $editProfileForm).val( $user.office.building );
+			$( "[name='room']", $editProfileForm).val( $user.office.room );
+		}
 		break;
 	case ADMIN:
-		action = "TODO";
+		// I doubt admins have extra properties
 		break; 
 	}
 	$( "[type='submit']" ).click( updateUserProfile );
@@ -385,11 +384,11 @@ function changeUserPassword(){
 
 function updateUserProfile() {
 	var action = "";
-	var data = {};
-	switch($user[ "type" ]){
+	var input = {};
+	switch($user.type){
 	case STUDENT:
 		/* Select the input fields in the context of the update form. */
-		data = {
+		input = {
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
 			mobilePhone: $( "[name='mobilePhone']", $editProfileForm ).val(),
@@ -401,8 +400,9 @@ function updateUserProfile() {
 		}
 		break;
 	case PROFESSOR:
+	case STAFF:
 		/* Select the input fields in the context of the update form. */
-		data = {
+		input = {
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
 			officePhone: $( "[name='officePhone']", $editProfileForm ).val(),
@@ -410,16 +410,15 @@ function updateUserProfile() {
 			room: $( "[name='room']", $editProfileForm ).val(),
 		}
 		break;
-	case STAFF:
-		break;
 	case ADMIN:
 		break; 
 	}
 
-	doAction('updateProfile', data)
+	doAction('updateProfile', input)
 	.done(function(data) {
 		if (data.success) {
 			$userModal.modal('hide');
+			updateUserProfileCard(data.object, $user.type);
 			showAlert({message:'Your profile has been updated.'}, $('#alertHolder'), 'success');
 		} else {
 			showError(data.error, $('#editProfileAlertHolder'));
@@ -429,16 +428,28 @@ function updateUserProfile() {
 	});
 }
 
-// TODO allow custom user input for these dropdowns!
+function updateUserProfileCard(data, userType) {
+	// iterate through the properties of data
+	//console.log(data);
+	for (key in data) {
+		//console.log(key);
+		if (data[key] == null) {
+			$('#cur-' + key).text('');
+		} else {
+			$('#cur-' + key).text(data[key]);
+		}
+	}
+}
+
 function prepareBuildingsDropdown() { 
 	doAction('fetchBuildings', {})
 	.done(function (data) {
 		if (data.success) {
 			var buildings = data.objects;
 			for( var i = 0; i < buildings.length; i++ ){
-				$buildingsDropdown.append( "<option>" + buildings[i] + "</option>" );
+				$buildingsData.append( "<option>" + buildings[i] + "</option>" );
 			}
-			$buildingsDropdown.trigger( "change" );
+			$buildingsInput.trigger( "change" );
 		} else {
 			showError(data.error, $('#alertHolder'));
 		}
@@ -447,7 +458,6 @@ function prepareBuildingsDropdown() {
 	});
 }
 
-// TODO allow custom user input for these dropdowns!
 function prepareRoomsDropdown() {
 	clearDropdown( $roomsDropdown );
 	if ($(this).val() != '') {

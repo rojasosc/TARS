@@ -98,6 +98,9 @@ final class Professor extends User {
 
 	public function toArray() {
 		$office = $this->getOffice();
+		if ($office != null) {
+			$office = $office->toArray();
+		}
 		return array(
 			'id' => $this->id,
 			'type' => PROFESSOR,

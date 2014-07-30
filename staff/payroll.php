@@ -140,17 +140,17 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									</div>
 								</div> <!-- End row -->							
 							</div>	<!-- End results container -->
-							<div class="container" id="downloadContainer">
-							<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
-									<legend>Download Term</legend>
-									<div class="row">
-										<div class="col-xs-12 col-sm-4 col-md-3">
-											<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download File</a>
-										</div> <!-- End col-md-3 -->
-									</div> <!-- End row --> 											
-								</form> <!-- End form -->
-							</div>
 						</div> <!-- End panel-body -->
+						<div class="container panel-footer" id="downloadContainer">
+							<form class="form-horizontal" method="post" action="fetchPayroll.php" id="payrollForm">
+								<legend>Download Term</legend>
+								<div class="row">
+									<div class="col-xs-12 col-sm-4 col-md-3">
+										<a class="btn btn-success btn-block" href="downloadPayroll.php" name="xlsButton"><span class="glyphicon glyphicon-download"></span> Download File</a>
+									</div> <!-- End col-md-3 -->
+								</div> <!-- End row --> 											
+							</form> <!-- End form -->
+						</div> <!-- End panel-footer -->
 					</div> <!-- End panel panel-success -->
 				</div>
 <?php

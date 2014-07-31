@@ -260,11 +260,13 @@ final class Action {
 	}
 
 	public static function updateProfile($params, $user, &$eventObjectID) {
-		switch ($user->getObjectType()) {
+		//Incase staff is updating a user's profile. 
+		$userToUpdate = User::getUserByID($params['userID']);
+		switch ($userToUpdate->getObjectType()) {
 		case STUDENT:
 			// filter non-digits
 			$mobilePhone = preg_replace('/([^\d]+)/', '', $params['mobilePhone']);
-			$user->updateProfile(
+			$userToUpdate->updateProfile(
 				$params['firstName'], $params['lastName'],
 				$mobilePhone, $params['classYear'],
 				$params['major'], $params['gpa'],
@@ -285,7 +287,7 @@ final class Action {
 				$officeBuilding = strtoupper($params['building']);
 				$officeRoom = strtoupper($params['room']);
 			}
-			$user->updateProfile(
+			$userToUpdate->updateProfile(
 				$params['firstName'], $params['lastName'],
 				$officePhone, $officeBuilding, $officeRoom);
 			break;
@@ -318,7 +320,7 @@ final class Action {
 	}
 
 	public static function fetchUser($params, $user, &$eventObjectID) {
-		$user = User::getUserByID($params['userID'], $params['userType']);
+		$user = User::getUserByID($params['userID']);
 		if ($user == null) {
 			throw new ActionError('User not found');
 		}
@@ -415,7 +417,7 @@ final class Action {
 	public static function searchForUsers($params, $user, &$eventObjectID) {
 		if (is_array($params)) {
 			$usersFound = User::findUsers($params['email'],$params['firstName'],
-				$params['lastName'], -1);
+				$params['lastName'], $params['userType']);
 			return $usersFound;
 		}
 		return $params;

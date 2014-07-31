@@ -58,7 +58,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					</div> 
 					<div class="modal-body">
 						<div id="editProfileAlertHolder"></div>
-						<form class="edit-profile-form" data-usertype="<?= STUDENT ?>">
+						<form class="edit-profile-form" id="profileForm<?= STUDENT ?>" data-usertype="<?= STUDENT ?>">
 							<div class="row">
 								<div class="col-md-4">				
 									<div class="form-group"> 				
@@ -117,13 +117,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="GPA">GPA</label>
+										<label class="control-label" for="gpa">GPA</label>
 										<input id="gpa" type="text" class="form-control" name="gpa" placeholder="GPA">
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->
 								<div class="col-md-4">
 									<div class="form-group">
-										<label class="control-label" for="GPA">University Student ID</label>
+										<label class="control-label" for="universityID">University Student ID</label>
 										<input id="universityID" type="text" class="form-control" name="universityID" placeholder="University Student ID">
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->																	
@@ -132,15 +132,67 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div class="col-md-8">
 									<label class="control-label" for="aboutMe">About Me</label>
 									<textarea id="aboutMe" class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."></textarea>
+								</div> <!-- End column -->
 							</div> <!-- End row -->					
-						</form> <!-- End form -->					
+						</form> <!-- End form -->
+						<form class="edit-profile-form" id="profileForm<?= PROFESSOR ?>" data-usertype="<?= PROFESSOR ?>">
+							<div class="row">
+								<div class="col-xs-6">				
+									<div class="form-group"> 				
+										<label class="control-label" for="firstName">First Name</label>
+											<input id="firstName" type="text" class="form-control" name="firstName">																					
+									</div> <!-- End form-group -->											
+								</div> <!-- End column -->
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label class="control-label" for="lastName">Last Name</label>
+											<input id="lastName" type="text" class="form-control" name="lastName">													
+									</div> <!-- End form-group -->
+								</div>	<!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label class="control-label" for="email">Email</label>
+										<input id="email" type="email" class="form-control" disabled="disabled" name="email">
+									</div> <!-- End form-group -->
+								</div>	<!-- End column -->
+							</div> <!-- End row -->
+							<legend>Office</legend>
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label class="control-label" for="building">Building</label>
+										<input type="text" list="buildings-list" id="building" name="building" class="form-control">
+										<datalist id="buildings-list" class="buildings"></datalist>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label class="control-label" for="room">Room</label>
+										<input type="text" list="rooms-list" id="room" name="room" class="form-control">
+										<datalist id="rooms-list" class="rooms"></datalist>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+							</div> <!-- End Row -->
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label class="control-label" for="officePhone">Office Phone</label>
+										<div class="input-group">
+											<span class="input-group-addon">+1</span>
+											<input type="tel" class="form-control"id="officePhone" name="officePhone" placeholder="Office Phone" maxlength="14" />
+										</div>
+									</div> <!-- End form-group -->
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+						</form> <!-- End form -->													
 					</div> <!-- End modal-body -->
-				</div> <!-- End modal-content -->
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 						<button type="submit"  name="updateButton" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
-					</div>
-				</div>
+					</div>					
+				</div> <!-- End modal-content -->
 			</div>
 		</div>
 		<!-- END Edit Profile Modal-->   
@@ -151,7 +203,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							</div> <!-- End panel-heading -->
 
 								<div class="panel-body">
-										<form class="form-horizontal search-users-form"  role="form" data-usertype="<?= STUDENT ?>">
+										<form class="form-horizontal search-users-form"  role="form">
 											<div class="row">
 												<div class="col-xs-3">
 													<label class="control-label" for="emailSearch">Email</label>
@@ -166,15 +218,15 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													<input id="lastName" type="text" class="form-control" name="lastName" placeholder="Last Name">
 												</div> <!-- End column -->												
 											</div> <!-- End row -->
-											<br>
+											<br/>
 											<div class="row">
 												<div class="col-xs-3">
 													<div class="btn-group" data-toggle="buttons">
 														  <label class="btn btn-primary active">
-														    	<input type="checkbox" checked> Students
+														    	<input type="radio" value="<?= STUDENT ?>" name="userType" checked> Students
 														  </label>
 														  <label class="btn btn-primary">
-														   		<input type="checkbox"> Professors
+														   		<input type="radio" value="<?= PROFESSOR ?>" name="userType"> Professors
 														  </label>
 													</div>																
 												</div> <!-- End column -->
@@ -183,7 +235,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												</div> <!-- End column -->																					
 											</div> <!-- End row -->
 										</form> <!-- End form -->
-										<br>
+										<br/>
 										<div class="row">
 											<div class="col-md-12">
 												<table class="table table-striped table-hover user-search-table">

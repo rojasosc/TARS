@@ -10,9 +10,10 @@ $(document).ready(function() {
 		$userSearchForm.submit( function() { return false; });	
 		$userSearchButton = $( "[type='submit']", $userSearchForm );
 		$userSearchButton.click(function() { 
-			searchUsers( $userSearchForm.data( "usertype" ) );
+			searchUsers();
 		});
 	}
+
 
 	if( $( ".user-search-table" ).length ){
 		$results = $( ".user-search-table" );
@@ -22,11 +23,10 @@ $(document).ready(function() {
 	if( $( ".profile-modal" ).length ){
 		$userModal = $( ".profile-modal" );
 		if( $( ".edit-profile-form" ).length ){
-			$editProfileForm = $( ".edit-profile-form" );
-			$editProfileForm.submit(function() { return false; });
+			
 			//In case the button is not in a table
 			$( ".edit-profile" ).click(function() { 
-				viewUserForm( $(this).data( "userid" ), $editProfileForm.data( "usertype" ) );
+				viewUserForm( $(this).data( "userid" ), $(this).data("usertype"));
 
 			})
 		}
@@ -226,15 +226,15 @@ function viewUserComments() {
 	});
 	$commentsModal.bind("hidden.bs.modal", function() { $commentsBlock.html(""); });
 }
-function searchUsers( userType ) {
+function searchUsers() {
 	doAction('searchForUsers', {
 		firstName: $( "[name='firstName']", $userSearchForm ).val(),
 		lastName: $( "[name='lastName']", $userSearchForm).val(),
 		email: $( "[name='emailSearch']", $userSearchForm).val(),
-		userTypes: Math.pow(2,STUDENT)+Math.pow(2,1+ PROFESSOR)
+		userType: $( "input[type='radio']:checked", $userSearchForm).val()
 	}).done(function (data) {
 		if (data.success) {
-			viewResults(data.objects);
+			viewResults(data.objects, $( "input[type='radio']:checked", $userSearchForm).val());
 		} else {
 			showError(data.error, $('#alertHolder'));
 		}
@@ -243,7 +243,8 @@ function searchUsers( userType ) {
 	});
 }
 
-function viewResults( users ) {
+function viewResults( users, userType ) {
+	var userType = parseInt(userType);
 	/* Clear any existing results */
 	$results.hide();
 	$results.find( "tbody" ).remove();
@@ -260,7 +261,7 @@ function viewResults( users ) {
 		row[ ++j ] = users[ key ].email;
 		row[ ++j ] = "</td><td>";
 		row[ ++j ] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" + 
-						users[ key ].id + "'><span class='glyphicon glyphicon-wrench'></span></button>"
+						users[ key ].id + "' data-usertype='" + userType +"'><span class='glyphicon glyphicon-wrench'></span></button>"
 		row[ ++j ] = "</td></tr>";
 		
 	}
@@ -269,7 +270,7 @@ function viewResults( users ) {
 	$results.append( row.join('') );
 	$results.show();
 	$( ".edit-profile" ).click(function() {
-		viewUserForm( $(this).data( "userid" ),$editProfileForm.data( "usertype" ) );
+		viewUserForm( $(this).data( "userid" ), userType );
 	});
 
 }
@@ -304,7 +305,7 @@ function viewPasswordForm( userID, userType ){
 	doAction('fetchUser', {userID: userID, userType: userType})
 	.done(function (data) {
 		if (data.success) {
-			preparePasswordForm(data.object, userType);
+			preparePasswordForm(data.object);
 		} else {
 			showError(data.error, $('#editPasswordAlertHolder'));
 		}
@@ -314,6 +315,16 @@ function viewPasswordForm( userID, userType ){
 }
 
 function viewUserForm( userID, userType ) {
+	var userType = parseInt(userType);
+	switch( userType ){
+		case STUDENT:
+			$editProfileForm = $( "#profileForm0" );
+		break;
+		case PROFESSOR:
+			$editProfileForm = $( "#profileForm1" );
+		break;
+	}
+	$editProfileForm.submit(function() { return false; });
 	doAction('fetchUser', {userID: userID, userType: userType})
 	.done(function (data) {
 		if (data.success) {
@@ -326,7 +337,7 @@ function viewUserForm( userID, userType ) {
 	});
 }
 
-function preparePasswordForm( user, userType ){
+function preparePasswordForm( user ){
 	$( "[name='email']", $passwordForm).val( user.email );
 	$( "[type='submit']" ).click( changeUserPassword );
 	$passwordModal.modal( "show" );	
@@ -340,6 +351,8 @@ function prepareUserForm( $user, userType ) {
 	$( "[name='email']", $editProfileForm).val( $user[ "email" ] );
 	switch( userType ){
 	case STUDENT:
+		$( "#profileForm1" ).hide();
+		$( "#profileForm0" ).show();
 		$( "[name='mobilePhone']", $editProfileForm).val( $user.mobilePhone );
 		$( "[name='classYear']", $editProfileForm).val( $user.classYear );
 		$( "[name='major']", $editProfileForm).val( $user.major );
@@ -348,7 +361,19 @@ function prepareUserForm( $user, userType ) {
 		$( "[name='aboutMe']", $editProfileForm).val( $user.aboutMe );
 		break;
 	case PROFESSOR:
+		$( "#profileForm0" ).hide();
+		$( "#profileForm1" ).show();
+		if ($user.officePhone != null) {
+			$( "[name='officePhone']", $editProfileForm).val( $user.officePhone );
+		}
+		if ($user.office != null) {
+			$( "[name='building']", $editProfileForm).val( $user.office.building );
+			$( "[name='room']", $editProfileForm).val( $user.office.room );
+		}
+		break;	
 	case STAFF:
+		$( "#profileForm0" ).hide();
+		$( "#profileForm1" ).show();			
 		if ($user.officePhone != null) {
 			$( "[name='officePhone']", $editProfileForm).val( $user.officePhone );
 		}
@@ -360,6 +385,8 @@ function prepareUserForm( $user, userType ) {
 	case ADMIN:
 		// I doubt admins have extra properties
 		break; 
+	default:
+		break;
 	}
 	$( "[type='submit']" ).click( updateUserProfile );
 	$userModal.modal( "show" );
@@ -389,6 +416,7 @@ function updateUserProfile() {
 	case STUDENT:
 		/* Select the input fields in the context of the update form. */
 		input = {
+			userID: $user.id,
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
 			mobilePhone: $( "[name='mobilePhone']", $editProfileForm ).val(),
@@ -396,18 +424,19 @@ function updateUserProfile() {
 			major: $( "[name='major']", $editProfileForm ).val(),
 			gpa: $( "[name='gpa']", $editProfileForm ).val(),
 			universityID: $( "[name='universityID']", $editProfileForm ).val(),
-			aboutMe: $( "[name='aboutMe']", $editProfileForm ).val(),
+			aboutMe: $( "[name='aboutMe']", $editProfileForm ).val()
 		}
 		break;
 	case PROFESSOR:
 	case STAFF:
 		/* Select the input fields in the context of the update form. */
 		input = {
+			userID: $user.id,
 			firstName: $( "[name='firstName']", $editProfileForm ).val(),
 			lastName: $( "[name='lastName']", $editProfileForm ).val(),
 			officePhone: $( "[name='officePhone']", $editProfileForm ).val(),
 			building: $( "[name='building']", $editProfileForm ).val(),
-			room: $( "[name='room']", $editProfileForm ).val(),
+			room: $( "[name='room']", $editProfileForm ).val()
 		}
 		break;
 	case ADMIN:

@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `Staff` (
   `officePhone` bigint(20) NULL,
 
   PRIMARY KEY (`userID`),
-  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE
+  FOREIGN KEY (`userID`) REFERENCES `Users` (`userID`) ON DELETE CASCADE,
   FOREIGN KEY (`officeID`) REFERENCES `Places` (`placeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

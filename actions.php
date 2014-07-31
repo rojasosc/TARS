@@ -371,7 +371,7 @@ final class Action {
 		return null;
 	}
 
-	public static function newStudentComment($params, $user, &$eventObjectID) {
+	public static function createComment($params, $user, &$eventObjectID) {
 		if ($user->getObjectType() == STUDENT) {
 			throw new ActionError('Permission denied (student)');
 		}
@@ -838,14 +838,14 @@ final class Action {
 		'setAppStatus' => array('event' => Event::NONSTUDENT_SET_APP,
 			'eventLog' => 'always', 'eventDescr' => '%s updated the status of an application.',
 			'params' => array('appID', 'decision')),
-		// Action:           newStudentComment
+		// Action:           createComment
 		// Session required: logged in (not STUDENT)
 		// Parameters:
 		//     studentID: referred-to student
 		//     comment: comment text
 		// Returns:
 		//     success and error: Action status
-		'newStudentComment' => array('event' => Event::NONSTUDENT_COMMENT,
+		'createComment' => array('event' => Event::NONSTUDENT_COMMENT,
 			'eventLog' => 'always', 'eventDescr' => '%s created a comment.',
 			'isUserInput' => true, 'params' => array('studentID', 'comment')),
 		// Action:           createUser

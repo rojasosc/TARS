@@ -10,20 +10,21 @@ $(document).ready(function () {
 });
 
 function submitComment(){
-	var url = $commentForm.attr('action');
-	var action = 'newStudentComment';
-	var data = {
-		/*TODO: Support a subject line. */
+	doAction('createComment', {
 		studentID: studentID,
-		commenterID: commenterID,
 		comment: $("[name='commentText']").val(),
-		action: action
-	}
-	studentID = null;
-	commenterID = null;
-	$.post(url,data,function () { });
-	clearCommentForm();
-	$commentModal.modal('hide');
+		/*TODO: Support a subject line? */
+	}).done(function (data) {
+		if (data.success) {
+			clearCommentForm();
+			$commentModal.modal('hide');
+			showAlert({message: 'Comment created.'}, $('#alertHolder'), 'success');
+		} else {
+			showError(data.error, $('#createCommentAlertHolder'));
+		}
+	}).fail(function (jqXHR, textStatus, errorMessage) {
+		showError({message: errorMessage}, $('#createCommentAlertHolder'));
+	});
 }
 
 function prepareCommentModal(){

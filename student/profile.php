@@ -1,6 +1,5 @@
-<?php  
+<?php
 require_once '../session.php';
-require_once '../error.php';
 
 $error = null;
 $student = null;
@@ -10,8 +9,27 @@ try {
 	$error = $ex;
 }
 
-?>
+function generate_year_options($start_offset, $end_offset) {
+	$current_year = intval(date('Y'));
+	$output = array();
+	for ($i = $current_year + $start_offset; $i <= $current_year + $end_offset; $i++) {
+		$output[] = "<option>$i</output>";
+	}
+	return implode('',$output);
+}
 
+function generate_major_options() {
+	// TODO XXX put in the database?
+	$values = array('CSC' => 'Computer Science', 'PHY' => 'Physics',
+		'MTH' => 'Mathematics', 'ECO' => 'Economics', 'ECE' => 'Electrical & Computer Engineering');
+	$output = array();
+	foreach ($values as $short => $name) {
+		$name = htmlentities($name);
+		$output[] = "<option value=\"$name\">$short</output>";
+	}
+	return implode('',$output);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,34 +38,170 @@ try {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
-		<title>TARS</title>
-		<!-- BEGIN CSS -->
-		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
-		<link href="../css/bootstrap-validator.min.css" rel="stylesheet"/>
-		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
-		<link href="student.css" rel="stylesheet"/>
-		<!-- END CSS -->
-		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="../js/bootstrap.min.js"></script>
-		<script src="../js/bootstrap-validator.min.js"></script>
-		<script src="../js/bootstrap-select.min.js"></script>
-		<script src="../js/tars_utilities.js"></script>
-		<script src="profile.js"></script>
-		<!-- END Scripts -->
+		<title>My Profile</title>
 		
-	</head>
-  
-	<body>
+		<link href="../css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../css/bootstrap-validator.min.css" rel="stylesheet" />
+	<link href="../css/bootstrap-select.min.css" rel="stylesheet" />
+	<link href="student.css" rel="stylesheet" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/bootstrap-validator.min.js"></script>		
+	<script src="../js/bootstrap-select.min.js"></script>		
+	<script src="../js/tars_utilities.js"></script>
+</head>
 
+<body>
+<!-- BEGIN Edit Profile Modal-->
+<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h1 class="modal-title" id="modalHeader"></h1>
+			</div> <!-- End modal-header -->
+			<div class="modal-body">
+				<div id="editProfileAlertHolder"></div>
+				<form class="edit-profile-form" data-usertype="<?= STUDENT ?>">
+						<div class="row">
+							<div class="col-xs-6">				
+								<div class="form-group"> 				
+									<label class="control-label" for="firstName">First Name</label>
+										<input id="firstName" type="text" class="form-control" name="firstName">																					
+								</div> <!-- End form-group -->											
+							</div> <!-- End column -->
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label class="control-label" for="lastName">Last Name</label>
+											<input id="lastName" type="text" class="form-control" name="lastName">													
+									</div> <!-- End form-group -->							
+								</div>	<!-- End column -->						
+						</div> <!-- End row -->
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="email">Email</label>
+									<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
+								</div> <!-- End form-group -->							
+							</div>	<!-- End column -->						
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="mobilePhone">Mobile Phone</label>
+									<div class="input-group">
+										<span class="input-group-addon">+1</span>
+										<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="Mobile Phone" maxlength="14" />
+									</div>
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+						<legend>Academic Information</legend>
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="classYear">Class Year</label>
+									<input type="text" list="years-list" id="classYear" name="classYear" class="form-control">
+									<datalist id="years-list"><?= generate_year_options(0, 5) ?></datalist>
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="major">Major</label>
+									<input type="text" list="majors-list" id="major" name="major" class="form-control">
+									<datalist id="majors-list"><?= generate_major_options() ?></datalist>
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->
+						</div> <!-- End Row -->
+						<br />
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="gpa">Cumulative GPA</label>
+									<input type="text" id="gpa" name="gpa" class="form-control" maxlength="5">
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="universityID">University Student ID</label>
+									<input type="text" id="universityID" name="universityID" class="form-control" maxlength="8">
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->
+						</div> <!-- End Row -->
+						<br />
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<label class="control-label" for="aboutMe">Qualifications and TA-ing History</label>
+									<textarea id="aboutMe" name="aboutMe" class="form-control"></textarea>
+								</div> <!-- End form-group -->
+							</div> <!-- End column -->
+						</div> <!-- End Row -->
+					</form> <!-- End form -->
+				</div> <!-- End modal-body -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
+				</div> <!-- End modal-footer -->			
+			</div> <!-- End modal-content -->
+		</div> <!-- End modal dialog -->
+	</div> <!-- End modal fade -->
+	<!-- END Edit Profile Modal-->
+
+	<!-- BEGIN Change Password Modal-->
+	<div class="modal fade password-modal" id="password-modal" tabindex="-1" role="dialog" aria-labelledby="passwordMdalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h1 class="modal-title">Change password</h1>
+					<small>To change your password, provide the following information, and click Continue.</small>
+				</div> <!-- End modal-header -->
+				<div class="modal-body">
+					<div id="editPasswordAlertHolder"></div>
+					<form class="change-password-form" data-usertype="<?= STUDENT ?>">
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="email">Email</label>
+									<input type="email" class="form-control" disabled="disabled" id="email" name="email">					
+								</div> <!-- End form-group -->							
+							</div>	<!-- End column -->						
+							<div class="col-xs-6">
+								<label class="control-label" for="oldPassword">Old Password</label>
+								<input type="password" class="form-control" id="oldPassword" name="oldPassword">	
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+						<div class="row">
+							<div class="col-xs-6">
+								<label class="control-label" for="newPassword">New Password</label>
+								<input type="password" class="form-control" id="newPassword" name="newPassword">	
+							</div> <!-- End column -->
+							<div class="col-xs-6">
+								<label class="control-label" for="confirmPassword">Confirm New Password</label>
+								<input type="password" class="form-control" id="confirmPassword" name="confirmPassword">	
+							</div> <!-- End column -->
+						</div> <!-- End row -->													
+					</form> <!-- End form -->					
+				</div> <!-- End modal-body -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
+				</div> <!-- End modal-footer -->			
+			</div> <!-- End modal-content -->
+		</div> <!-- End modal dialog -->
+	</div> <!-- End modal fade -->
+	<!-- END Change Password Modal-->  	
+
+		
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
+			
 <?php
-// Display header for Home
+// Display header for Profile
 $header_active = 'profile';
 require 'header.php';
 ?>
+
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div id="alertHolder">
@@ -60,85 +214,72 @@ if ($error != null) {
 <?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h1 class="panel-title">Edit Profile</h1>
-					</div>
-					<div class="panel-body">
-						<div class="container-fluid display-area">
-							<form role="form" action="profileProcess.php" method="post" id="profile">
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="firstName">First Name</label>
-											<input class="form-control" type="text" id="firstName" name="firstName" size="30" value="<?=$student->getFirstName()?>" />
+				<div class="container">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h4 class="panel-title panelHeader">Profile</h4>
+						</div> <!-- End panel-body -->
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-xs-8">
+									<legend>Personal Details</legend>
+									<div class="row">
+										<div class="col-xs-6">
+										First Name: <strong id="cur-firstName"><?= $student->getFirstName() ?></strong>
+										</div> <!-- End column -->
+										<div class="col-xs-6">
+										Last Name: <strong id="cur-lastName"><?= $student->getLastName() ?></strong>
+										</div> <!-- End column -->						
+									</div> <!-- End row -->
+									<br>
+									<div class="row">
+										<div class="col-xs-6">
+										Email: <strong id="cur-email"><?= $student->getEmail() ?></strong>
+										</div> <!-- End column -->
+										<div class="col-xs-6">
+										Mobile Phone: <strong id="cur-mobilePhone"><?= $student->getMobilePhoneDisplay() ?></strong>
 										</div>
 									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="lastName">Last Name</label>
-											<input class="form-control" type="text" id="lastName" name="lastName" size="30" value="<?=$student->getLastName()?>" />
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="email">Email</label>
-											<input class="form-control" readonly="readonly" type="email" id="email" name="email" size="30" value="<?=$student->getEmail()?>" />
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="mobilePhone">Mobile Phone</label>
-											<div class="input-group">
-												<span class="input-group-addon">+1</span>
-												<input class="form-control" type="tel" id="mobilePhone" name="mobilePhone" size="30" value="<?=$student->getMobilePhoneDisplay()?>" maxlength="14" />
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="classYear">Class Year</label>
-											<input class="form-control" type="text" id="classYear" name="classYear" size="30" value="<?=$student->getClassYear()?>" />
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="major">Major</label>
-											<input class="form-control" type="text" id="major" name="major" size="30" value="<?=$student->getMajor()?>" />
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="gpa">Cumulative GPA</label>
-											<input class="form-control" type="text" id="gpa" name="gpa" size="30" value="<?=$student->getGPA()?>" maxlength="5" />
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="universityID">University Student ID</label>
-											<input class="form-control" type="text" id="universityID" name="universityID" size="30" value="<?=$student->getUniversityID()?>" maxlength="8" />
-										</div>
-									</div>
-								</div>
-								<div class="row col-sm-12">
-									<div class="form-group">
-										<label for="aboutMe">Qualifications and TA-ing History</label>
-										<textarea class="form-control" rows="10" cols="100" id="aboutMe" name="aboutMe" form="profile"><?=$student->getAboutMe()?></textarea>
-									</div>
-								</div>
-								<div class="row">
-									<button class="btn btn-primary btn-lg" id="submitButton" name="submitButton" type="submit">Save</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
+									<br>
+									<legend>Academic Information</legend>
+									<div class="row">
+										<div class="col-xs-6">
+										Class Year: <strong id="cur-classYear"><?= $student->getClassYear() ?></strong>
+										</div> <!-- End column -->
+										<div class="col-xs-6">
+										Major: <strong id="cur-major"><?= $student->getMajor() ?></strong>
+										</div> <!-- End column -->	
+									</div> <!-- End row -->
+									<br>
+									<div class="row">
+										<div class="col-xs-6">
+										Cumulative GPA: <strong id="cur-classYear"><?= $student->getGPA() ?></strong>
+										</div> <!-- End column -->
+										<div class="col-xs-6">
+										University Student ID: <strong id="cur-universityID"><?= $student->getUniversityID() ?></strong>
+										</div> <!-- End column -->	
+									</div> <!-- End row -->
+									<br>
+									<div class="row">
+										<div class="col-xs-12">
+										Qualifications and TA-ing History:<p><strong style="white-space: pre" id="cur-aboutMe"><?= $student->getAboutMe() ?></strong></p>
+										</div> <!-- End column -->
+									</div> <!-- End row -->
+								</div> <!-- End column -->
+							</div>	<!-- End Row -->
+						</div> <!-- End panel-body -->
+						<div class="panel-footer">
+							<div class="row">
+								<div class="col-xs-3">
+									<button data-target="#profile-modal" data-toggle="modal" data-userid="<?= $student->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+								</div> <!-- End column -->
+								<div class="col-xs-3">
+									<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $student->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+						</div> <!-- End panel-footer -->
+					</div> <!-- End panel panel-primary -->
+				</div> <!-- End container -->
 <?php
 }
 ?>

@@ -1,8 +1,26 @@
 <?php
-
 require_once 'db.php';
 
+function generate_year_options($start_offset, $end_offset) {
+	$current_year = intval(date('Y'));
+	$output = array();
+	for ($i = $current_year + $start_offset; $i <= $current_year + $end_offset; $i++) {
+		$output[] = "<option>$i</output>";
+	}
+	return implode('',$output);
+}
 
+function generate_major_options() {
+	// TODO XXX put in the database?
+	$values = array('CSC' => 'Computer Science', 'PHY' => 'Physics',
+		'MTH' => 'Mathematics', 'ECO' => 'Economics', 'ECE' => 'Electrical & Computer Engineering');
+	$output = array();
+	foreach ($values as $short => $name) {
+		$name = htmlentities($name);
+		$output[] = "<option value=\"$name\">$short</output>";
+	}
+	return implode('',$output);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,8 +53,8 @@ require_once 'db.php';
 			<!-- BEGIN Page Header -->
 			<div id="header">
 
-			</div>		
-			<!--END Page Header -->	  
+			</div>
+			<!--END Page Header -->
 	  
 			<!-- BEGIN Page Content -->
 			
@@ -54,43 +72,43 @@ require_once 'db.php';
 									<div class="form-group">
 										<label class="control-label" for="firstName">First Name</label>
 										<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" />
-									</div> <!-- End form-group -->							
+									</div> <!-- End form-group -->
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="lastName">Last Name</label>
 										<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" />
-									</div> <!-- End form-group -->							
-								</div>							
+									</div> <!-- End form-group -->
+								</div>
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="email">Email</label>
 										<input type="email" class="form-control" id="email" name="email" data-bv-remote-name="email" placeholder="Email" />
-									</div> <!-- End form-group -->							
+									</div> <!-- End form-group -->
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="emailConfirm">Re-type Email</label>
 										<input type="email" class="form-control" id="emailConfirm" name="emailConfirm" autocomplete="off" placeholder="Confirm Email" />
-									</div> <!-- End form-group -->							
-								</div>							
+									</div> <!-- End form-group -->
+								</div>
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="password">Password</label>
 										<input type="password" class="form-control" id="password" name="password" placeholder="Create Password" />
-									</div> <!-- End form-group -->							
+									</div> <!-- End form-group -->
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="passwordConfirm">Re-type Password</label>
 										<input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" autocomplete="off" placeholder="Confirm Password" />
-									</div> <!-- End form-group -->						
-								</div>							
-							</div> <!-- End row -->	
+									</div> <!-- End form-group -->
+								</div>
+							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
@@ -100,49 +118,39 @@ require_once 'db.php';
 											<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="ex. 555 555 5555" maxlength="14" />
 										</div>
 									</div> <!-- End form-group -->
-								</div> <!-- End column -->								
+								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<legend>Academic Information</legend>
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="classYear">Class Year</label>
-										<select id="classYear" name="classYear" class="selectpicker form-control">
-											<option>2014</option>
-											<option>2015</option>
-											<option>2016</option>
-											<option>2017</option>
-											<option>2018</option>
-										</select> <!-- End select -->										
+										<input type="text" list="years-list" id="classYear" name="classYear" class="form-control">
+										<datalist id="years-list"><?= generate_year_options(0, 5) ?></datalist>
 									</div> <!-- End form-group -->
 								</div> <!-- End column -->
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="major">Major</label>
-										<select id="major" name="major" class="selectpicker form-control" placeholder="Major">
-											<option>Accounting</option>
-											<option>Computer Science</option>
-											<option>Physics</option>
-											<option>Mathematics</option>
-											<option>Economics</option>
-										</select> <!-- End select -->										
+										<input type="text" list="majors-list" id="major" name="major" class="form-control">
+										<datalist id="majors-list"><?= generate_major_options() ?></datalist>
 									</div> <!-- End form-group -->
-								</div> <!-- End column -->							
-							</div> <!-- End Row -->	
+								</div> <!-- End column -->
+							</div> <!-- End Row -->
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="gpa">Cumulative GPA</label>
 										<input type="text" class="form-control" id="gpa" name="gpa" placeholder="ex. 3.500" maxlength="5" />
 									</div> <!-- End form-group -->
-								</div> <!-- End column -->								
+								</div> <!-- End column -->
 								<div class="col-md-4">
 									<div class="form-group">
 										<label class="control-label" for="universityID">University Student ID</label>
 										<input type="text" class="form-control" id="universityID" name="universityID" placeholder="ex. 27400000" maxlength="8" />
 									</div> <!-- End form-group -->
-								</div> <!-- End column -->								
-							</div> <!-- End row -->	
+								</div> <!-- End column -->
+							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-8">
 									<div class="form-group">
@@ -159,9 +167,9 @@ require_once 'db.php';
 								<div class="col-md-3">
 									<a type="button" class="btn btn-danger btn-block" href="index.php">Cancel</a>
 								</div>
-							</div> <!-- End row -->								
+							</div> <!-- End row -->
 						</form>
-					</div> <!-- End jumbotron -->			
+					</div> <!-- End jumbotron -->
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 

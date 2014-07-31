@@ -55,53 +55,53 @@ if ($professor != null) {
 							</div> <!-- End column -->
 								<div class="col-xs-6">
 									<div class="form-group">
-										<label class="control-label" for="firstName">Last Name</label>
+										<label class="control-label" for="lastName">Last Name</label>
 											<input id="lastName" type="text" class="form-control" name="lastName">													
-									</div> <!-- End form-group -->							
-								</div>	<!-- End column -->						
+									</div> <!-- End form-group -->
+								</div>	<!-- End column -->
 						</div> <!-- End row -->
 						<div class="row">
-							<div class="col-xs-12">
+							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="email">Email</label>
-									<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
-								</div> <!-- End form-group -->							
-							</div>	<!-- End column -->						
+									<input id="email" type="email" class="form-control" disabled="disabled" name="email">
+								</div> <!-- End form-group -->
+							</div>	<!-- End column -->
 						</div> <!-- End row -->
 						<legend>Office</legend>
 						<div class="row">
 							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="building">Building</label>
-									<select name="building" class="selectpicker form-control buildings" id="buildings">
-									</select> <!-- End select -->										
+									<input type="text" list="buildings-list" id="building" name="building" class="form-control">
+									<datalist id="buildings-list" class="buildings"></datalist>
 								</div> <!-- End form-group -->
 							</div> <!-- End column -->
 							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="room">Room</label>
-									<select name="room" class="selectpicker form-control rooms" id="rooms">
-									</select> <!-- End select -->										
+									<input type="text" list="rooms-list" id="room" name="room" class="form-control">
+									<datalist id="rooms-list" class="rooms"></datalist>
 								</div> <!-- End form-group -->
 							</div> <!-- End column -->
-						</div> <!-- End Row -->	
+						</div> <!-- End Row -->
 						<div class="row">
 							<div class="col-xs-6">
 								<div class="form-group">
-									<label class="control-label" for="homePhone">Office Phone</label>
+									<label class="control-label" for="officePhone">Office Phone</label>
 									<div class="input-group">
 										<span class="input-group-addon">+1</span>
-										<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone" maxlength="14" />
+										<input type="tel" class="form-control"id="officePhone" name="officePhone" placeholder="Office Phone" maxlength="14" />
 									</div>
 								</div> <!-- End form-group -->
-							</div> <!-- End column -->						
-						</div> <!-- End row -->							
-					</form> <!-- End form -->					
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+					</form> <!-- End form -->
 				</div> <!-- End modal-body -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Update</button>
-				</div> <!-- End modal-footer -->			
+				</div> <!-- End modal-footer -->
 			</div> <!-- End modal-content -->
 		</div> <!-- End modal dialog -->
 	</div> <!-- End modal fade -->
@@ -120,42 +120,37 @@ if ($professor != null) {
 					<div id="editPasswordAlertHolder"></div>
 					<form class="change-password-form" data-usertype="<?= PROFESSOR ?>">
 						<div class="row">
-							<div class="col-xs-8">
+							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="email">Email</label>
-									<input type="email" class="form-control" disabled="disabled" name="email">					
-								</div> <!-- End form-group -->							
-							</div>	<!-- End column -->						
-						</div> <!-- End row -->
-						<br>
-						<div class="row">
-								<div class="col-xs-8">
-										<label class="control-label" for="oldPassword">Old Password</label>
-										<input type="password" class="form-control" name="oldPassword">	
-								</div> <!-- End column -->
+									<input type="email" class="form-control" disabled="disabled" id="email" name="email">
+								</div> <!-- End form-group -->
+							</div>	<!-- End column -->
+							<div class="col-xs-6">
+								<label class="control-label" for="oldPassword">Old Password</label>
+								<input type="password" class="form-control" id="oldPassword" name="oldPassword">
+							</div> <!-- End column -->
 						</div> <!-- End row -->
 						<div class="row">
-								<div class="col-xs-8">
-										<label class="control-label" for="newPassword">New Password</label>
-										<input type="password" class="form-control" name="newPassword">	
-								</div> <!-- End column -->
-						</div> <!-- End row -->	
-						<div class="row">
-								<div class="col-xs-8">
-										<label class="control-label" for="confirmPassword">Confirm New Password</label>
-										<input type="password" class="form-control" name="confirmPassword">	
-								</div> <!-- End column -->
-						</div> <!-- End row -->													
-					</form> <!-- End form -->					
+							<div class="col-xs-6">
+								<label class="control-label" for="newPassword">New Password</label>
+								<input type="password" class="form-control" id="newPassword" name="newPassword">
+							</div> <!-- End column -->
+							<div class="col-xs-6">
+								<label class="control-label" for="confirmPassword">Confirm New Password</label>
+								<input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+					</form> <!-- End form -->
 				</div> <!-- End modal-body -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
-				</div> <!-- End modal-footer -->			
+				</div> <!-- End modal-footer -->
 			</div> <!-- End modal-content -->
 		</div> <!-- End modal dialog -->
 	</div> <!-- End modal fade -->
-	<!-- END Change Password Modal-->  	
+	<!-- END Change Password Modal-->
 
 		
 		<!-- BEGIN page-wrapper -->
@@ -180,65 +175,60 @@ if ($error != null) {
 <?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
-				<div class="container">				
-					<div class="row">
-						<h1 class="panelHeader">My Profile</h1>
-					</div> <!-- End row -->				
-				</div> <!-- End container -->
 				<div class="container">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
+							<h4 class="panel-title panelHeader">Profile</h4>
 						</div> <!-- End panel-body -->
 						<div class="panel-body">
 							<div class="row">
 								<div class="col-xs-8">
 									<legend>Personal Details</legend>
 									<div class="row">
-										<div class="col-xs-4">
-										First Name: <?= $professor->getFirstName() ?>
+										<div class="col-xs-6">
+										First Name: <strong id="cur-firstName"><?= $professor->getFirstName() ?></strong>
 										</div> <!-- End column -->
-										<div class="col-xs-4">
-										Last Name: <?= $professor->getLastName() ?>
+										<div class="col-xs-6">
+										Last Name: <strong id="cur-lastName"><?= $professor->getLastName() ?></strong>
 										</div> <!-- End column -->						
 									</div> <!-- End row -->
 									<br>
 									<div class="row">
-										<div class="col-xs-4">
-										Email: 	<?= $professor->getEmail() ?>
+										<div class="col-xs-6">
+										Email: <strong id="cur-email"><?= $professor->getEmail() ?></strong>
 										</div> <!-- End column -->
 									</div> <!-- End row -->
 									<br>
 									<legend>Office</legend>
 									<div class="row">
-										<div class="col-xs-4">
-										Building: <?= $office->getBuilding() ?>	
+										<div class="col-xs-6">
+										Building: <strong id="cur-building"><?php if ($office != null) { echo $office->getBuilding(); } ?></strong>
 										</div> <!-- End column -->
-										<div class="col-xs-4">
-										Room: <?= $office->getRoom() ?>	
+										<div class="col-xs-6">
+										Room: <strong id="cur-room"><?php if ($office != null) { echo $office->getRoom(); } ?></strong>
 										</div> <!-- End column -->	
 									</div> <!-- End row -->
 									<br>
 									<div class="row">
-										<div class="col-xs-4">
-										Office Phone: <?= $professor->getOfficePhoneDisplay() ?>
+										<div class="col-xs-6">
+										Office Phone: <strong id="cur-officePhone"><?= $professor->getOfficePhoneDisplay() ?></strong>
 										</div> 
 									</div>
-									<br>
-									<div class="row">
-										<div class="col-xs-3">
-											<button data-target="#profile-modal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
-										</div> <!-- End column -->										
-										<div class="col-xs-3">
-											<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
-										</div> <!-- End column -->
-									</div> <!-- End row --> 
-								</div> <!-- End column -->						
+								</div> <!-- End column -->
 							</div>	<!-- End Row -->
 						</div> <!-- End panel-body -->
 						<div class="panel-footer">
+							<div class="row">
+								<div class="col-xs-3">
+									<button data-target="#profile-modal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+								</div> <!-- End column -->
+								<div class="col-xs-3">
+									<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $professor->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
+								</div> <!-- End column -->
+							</div> <!-- End row -->
 						</div> <!-- End panel-footer -->
 					</div> <!-- End panel panel-primary -->
-				</div> <!-- End container -->	
+				</div> <!-- End container -->
 <?php
 }
 ?>

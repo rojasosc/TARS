@@ -81,7 +81,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<div class="panel-collapse collapse in sectionPanel" id="<?=$section->getCRN()?>Panel">
 								<div class="panel-body" >
 									<div class="container-fluid">
-										<form role="form" action="#" method="post" id="csc171">
+										<form role="form" action="#" method="post" id="<?=$section->getCRN()?>Form" data-sectionType="<?=$section->getSectionType()?>">
 											<div class="row">
 												<h3>Course Info</h3><br />
 												<div class="col-xs-6 col-sm-2">
@@ -117,9 +117,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<h3>TA Counts</h3><br />
 												<div class="col-xs-2">
-													Lecture: <input type="text" class="form-control lecTACount" value="2"/>
-												</div>
-												<div class="col-xs-2">
 													Lab: <input type="text" class="form-control labTACount" value="6"/>
 												</div>
 												<div class="col-xs-2">
@@ -127,6 +124,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												</div>
 												<div class="col-xs-2">
 													Super <span class="hidden-xs hidden-sm">Leader</span>: <input type="text" class="form-control slTACount" value="1"/>
+												</div>
+												<div class="col-xs-2">
+													Lecture: <input type="text" class="form-control lecTACount" value="2"/>
 												</div>
 												<div class="col-xs-2">
 													Grader: <input type="text" class="form-control graderCount" value="5"/>
@@ -163,6 +163,5 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

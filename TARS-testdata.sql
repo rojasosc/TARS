@@ -87,7 +87,7 @@ INSERT INTO `Users` (`email`, `emailVerified`, `password`, `passwordReset`, `fir
 ('lane@cs.rochester.edu', 1, '$2y$10$db.fWC.VtOiYlVOe.OVVrOjUL1bpxVH9RzROE2trkqAaGCrZJNfme', 0, 'Lane', 'Hemaspaandra', 2, '2014-01-01 00:00:00', 1),
 ('scott@cs.rochester.edu', 1, '$2y$10$w1ZOnPXxdDtUUmxuDWewt.WSnkDOJqeLwLzlexzm0oGQFRwwVYcLO', 0, 'Michael', 'Scott', 2, '2014-01-01 00:00:00', 1),
 ('rraqueno@cs.rochester.edu', 0, NULL, 1, 'Rolando', 'Raqueñ', 2, '2014-01-01 00:00:00',1 ),
-('cogliati@cs.rochester.edu', 0, NULL, 1, 'A', 'Cogliati', 2, '2014-01-01 00:00:00', 1),
+('andrea.cogliati@rochester.edu', 0, NULL, 1, 'Andrea', 'Cogliati', 2, '2014-01-01 00:00:00', 1),
 ('koomen@cs.rochester.edu', 0, NULL, 1, 'Hans', 'Koomen', 2, '2014-01-01 00:00:00', 1),
 ('pg@cs.rochester.edu', 0, NULL, 1, 'Phillip', 'Guo', 2, '2014-01-01 00:00:00', 1),
 ('mehoque@cs.rochester.edu', 0, NULL, 1, 'Ehson', 'Hoque', 2, '2014-01-01 00:00:00', 1),

@@ -120,7 +120,7 @@ final class Section {
 	}
 	
 	public function getTotalPositionsByType($professor, $type){
-		$sql = 'SELECT COUNT(*) FROM Positions
+		$sql = 'SELECT maximumAccepted FROM Positions
 					INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
 					INNER JOIN Teaches ON Teaches.sectionID = Sections.sectionID
 				WHERE Positions.sectionID = :section_id AND professorID = :prof_id AND

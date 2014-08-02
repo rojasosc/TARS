@@ -395,15 +395,19 @@ final class Action {
 		} else {
 			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
 		}
+		//TODO: If we don't have dropdowns then we can guarantee that we will find a placeID
+		//We can display an error message to the user, but that won't be very helpful unless 
+		//we allow a blank/null value for building or room. 
+		$place = Place::getPlaceByBuildingAndRoom($params['building'], $params['room']);
 		$userID = Professor::registerProfessor(
 			$params['email'], $params['firstName'], $params['lastName'],
-			$officePhone, PROFESSOR);
+			$place->getPlaceID(), $officePhone);
 
 		$time = time();
 		// TODO: use constants or something for the below text
-		$notifID = Notification::insertNotification($studentID, true, false,
+		$notifID = Notification::insertNotification($userID, true, false,
 			'Confirm Your Email', null,
-			"An administrator has created a new professor account on the TA Reporting System using this email address. Click the following link to confirm your email address and set your password:\r\n\r\n:link\r\n\r\nYou may then login using this account to confirm TA applicants. Thank you for using TARS.",
+			"An administrator has created a new professor account on the TA Registration System (TARS) using this email address. Click the following link to confirm your email address and set your password:\r\n\r\n:link\r\n\r\nYou may then login using this account to confirm TA applicants. Thank you for using TARS.",
 			$time);
 		$signupToken = ResetToken::generateToken('reset', $userID, $time, null, $notifID);
 

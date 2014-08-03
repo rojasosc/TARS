@@ -86,8 +86,8 @@ INSERT INTO `Users` (`email`, `emailVerified`, `password`, `passwordReset`, `fir
 ('martin@cs.rochester.edu', 1, '$2y$10$OgCgpj81LO5tP4RDTM5g9ONfBGu8EK9dcowOx4dgTehN.HNfKShCe', 0, 'Nathaniel', 'Martin', 2, '2014-01-01 00:00:00', 1),
 ('lane@cs.rochester.edu', 1, '$2y$10$db.fWC.VtOiYlVOe.OVVrOjUL1bpxVH9RzROE2trkqAaGCrZJNfme', 0, 'Lane', 'Hemaspaandra', 2, '2014-01-01 00:00:00', 1),
 ('scott@cs.rochester.edu', 1, '$2y$10$w1ZOnPXxdDtUUmxuDWewt.WSnkDOJqeLwLzlexzm0oGQFRwwVYcLO', 0, 'Michael', 'Scott', 2, '2014-01-01 00:00:00', 1),
-('rraqueno@cs.rochester.edu', 0, NULL, 1, 'Rolando', 'Raqueñ', 2, '2014-01-01 00:00:00',1 ),
-('andrea.cogliati@cs.rochester.edu', 0, NULL, 1, 'Andrea', 'Cogliati', 2, '2014-01-01 00:00:00', 1),
+('rraqueno@cs.rochester.edu', 0, NULL, 1, 'Rolando', 'Raqueño', 2, '2014-01-01 00:00:00',1 ),
+('andrea.cogliati@rochester.edu', 0, NULL, 1, 'Andrea', 'Cogliati', 2, '2014-01-01 00:00:00', 1),
 ('koomen@cs.rochester.edu', 0, NULL, 1, 'Hans', 'Koomen', 2, '2014-01-01 00:00:00', 1),
 ('pg@cs.rochester.edu', 0, NULL, 1, 'Phillip', 'Guo', 2, '2014-01-01 00:00:00', 1),
 ('mehoque@cs.rochester.edu', 0, NULL, 1, 'Ehson', 'Hoque', 2, '2014-01-01 00:00:00', 1),
@@ -106,7 +106,8 @@ INSERT INTO `Places` (`building`, `room`) VALUES
 ('CSB', '720'),
 ('CSB', '702'),
 ('CSB', '710'),
-('CSB', '620');
+('CSB', '620'),
+('CSB', '601');
 
 INSERT INTO `Professors` (`userID`, `officeID`, `officePhone`) VALUES
 (3, 1, 5852711111),
@@ -120,7 +121,8 @@ INSERT INTO `Professors` (`userID`, `officeID`, `officePhone`) VALUES
 (20, 9, 5852711111),
 (21, 10, 5852711111),
 (22, 10, 5852711111),
-(23, 11, 5852711111);
+(23, 11, 5852711111),
+(24, 12, 5852711111);
 
 INSERT INTO `Staff` (`userID`, `officePhone`) VALUES
 (2, 5752711111);

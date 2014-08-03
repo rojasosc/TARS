@@ -159,14 +159,16 @@ function handlePagination(pg, listDOM) {
 	}
 	//console.log(pg);
 	var pages = [];
-	if (pg.index > 1) {
-		pages.push({target: 1, title: 'First Page', text: '&laquo;', active: false});
-	}
-	for (var i = Math.max(1, pg.index - 5); i <= Math.min($pgTotal, pg.index + 5); i++) {
-		pages.push({target: i, title: 'Page ' + i.toString(), text: i.toString(), active: i == pg.index});
-	}
-	if (pg.index < $pgTotal) {
-		pages.push({target: $pgTotal, title: 'Last Page', text: '&raquo;', active: false});
+	if ($pgTotal > 1) {
+		if (pg.index > 1) {
+			pages.push({target: 1, title: 'First Page', text: '&laquo;', active: false});
+		}
+		for (var i = Math.max(1, pg.index - 5); i <= Math.min($pgTotal, pg.index + 5); i++) {
+			pages.push({target: i, title: 'Page ' + i.toString(), text: i.toString(), active: i == pg.index});
+		}
+		if (pg.index < $pgTotal) {
+			pages.push({target: $pgTotal, title: 'Last Page', text: '&raquo;', active: false});
+		}
 	}
 
 	var html = '';

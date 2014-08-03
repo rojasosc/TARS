@@ -137,6 +137,7 @@ final class Position {
 		return $this->creator;
 	}
 	public function getCreateTime() { return $this->createTime; }
+	public function getMaximumAccepted() { return $this->maximumAccepted; }
 
 	private $id;
 	private $sectionID;

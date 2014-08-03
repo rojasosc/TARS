@@ -12,6 +12,19 @@ final class Application {
 		return new Application($row);
 	}
 
+	public static function getApplicationToPositionByStudent($position, $student) {
+		$sql = 'SELECT * FROM Applications
+				WHERE positionID = :position AND creatorID = :student
+				ORDER BY createTime DESC
+				LIMIT 1';
+		$args = array(':position' => $position->getID(), ':student' => $student->getID());
+		$row = Database::executeGetRow($sql, $args);
+		if ($row == null) {
+			return null;
+		}
+		return new Application($row);
+	}
+
 	private static function findApplicationsGeneral($student, $section, $professor, $term, $status, $compensation, $is_count) {
 		$sql_where = '';
 		$sql_ij_t = false;
@@ -123,15 +136,6 @@ final class Application {
 		return Database::executeInsert($sql, $args);
 	}
 
-	public static function setPositionStatus($studentID, $position, $status) {
-		$sql = 'UPDATE Applications
-				SET appStatus = :status
-				WHERE creatorID = :student_id AND positionID = :position_id';
-		$args = array(':status' => $status,	':student_id' => $studentID,
-			':position_id' => $position->getID());
-		Database::execute($sql, $args);
-	}
-
 	public function __construct($row) {
 		$this->id = $row['appID'];
 		$this->positionID = $row['positionID'];
@@ -169,15 +173,17 @@ final class Application {
 		return Database::execute($sql, $args);
 	}
 
-	public function toArray() {
-		$creator = $this->getCreator();
-		return array(
-			'id' => $this->id,
-			'status' => $this->appStatus,
+	public function toArray($showEvent = true) {
+		$data = array(
+			'id' => intval($this->id),
+			'status' => intval($this->appStatus),
 			'compensation' => $this->compensation,
-			'qualifications' => $this->qualifications,
-			'creator' => $creator->toArray(),
-			'createTime' => date('g:i:sa \o\n Y/m/d', $this->createTime));
+			'qualifications' => $this->qualifications);
+		if ($showEvent) {
+			$data['creator'] = $this->getCreator()->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+		}
+		return $data;
 	}
 
 	private $id;

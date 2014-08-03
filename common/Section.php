@@ -178,6 +178,30 @@ final class Section {
 	}
 	public function getCreateTime() { return $this->createTime; }
 
+	public function toArray($showEvent = false) {
+		$data = array(
+			'id' => intval($this->id),
+			'crn' => intval($this->crn),
+			'type' => $this->sectionType,
+			'course' => array(
+				'id' => intval($this->courseID),
+				'department' => $this->courseDepartment,
+				'number' => $this->courseNumber,
+				'title' => $this->courseTitle,
+				'term' => $this->getCourseTerm()->toArray($showEvent)),
+			'instructors' => array_map(function ($prof) {
+				return $prof->toArray(false);
+			}, $this->getAllProfessors()),
+			'sessions' => array_map(function ($sess) {
+				return $sess->toArray();
+			}, SectionSession::combineSessions($this->getAllSessions())));
+		if ($showEvent) {
+			$data['creator'] = $this->getCreator()->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+		}
+		return $data;
+	}
+
 	private $id;
 	private $crn;
 	private $sectionType;

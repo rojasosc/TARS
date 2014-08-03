@@ -45,7 +45,7 @@ const ADMIN = 3;
 
 /*Application Statuses*/
 const PENDING = 0;
-const STAFF_VERIFIED = 1;
+const CANCELLED = 1;
 const REJECTED = 2;
 const APPROVED = 3;
 const WITHDRAWN = 4;
@@ -145,6 +145,80 @@ final class Database {
 
 		/* fetch result: return array of all rows */
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * Database::executeGetPage($sql, $args, $pgArgs, $row2objFn)
+	 * Purpose: Runs a prepared statement with the given SQL statement and arguments.
+	 *          Gets a current page view of the selected rows.
+	 *			To use this function you:
+	 *			* DO NOT use an ORDER BY clause
+	 *			* DO NOT use a LIMIT clause
+	 *			* pass in $pgArgs with the following arguments (all arguments are OPTIONAL):
+	 *				$pgArgs['length'] = page length (defaults to 15)
+	 *				$pgArgs['index'] = page number/index (defaults to the first page, 1)
+	 *				$pgArgs['getTotal'] = boolean telling this function to return pg.
+	 *				$pgArgs['order'] = an array of column names to be passed to the ORDER BY statement (non-alphanumeric elements are ignored)
+	 *			* may get $pgArgs directly from $_POST data, since the arguments are validated here
+	 * Returns: The objects requested in a numeric array 'objects', and a 'pg' associative array in the resulting array
+	 *			describing the page returned:
+	 *				$return['pg']['index'] = actual page number (>= 1)
+	 *				$return['pg']['length'] = actual page length (>= 1), as found in the used LIMIT statement
+	 *				$return['pg']['offset'] = actual page start offset, as found in the used LIMIT statement
+	 *				$return['pg']['getTotal'] = boolean specifying whether 'total' value is present
+	 *				$return['pg']['totalRows'] = total number of objects (only present if requested)
+	 *				$return['pg']['total'] = total number of pages (only present if requested)
+	 *				$return['pg']['order'] = an array of column names that were ordered by, as found in the used ORDER BY statement
+	 * Throws:  A PDOException if prepare() or execute() fail (SQL syntax or database error).
+	 */
+	public static function executeGetPage($sql, $args, $pgArgs = array(), $row2objFn = null) {
+		if ($row2objFn == null) {
+			$row2objFn = function ($ident) { return $ident; };
+		}
+		$pg = array();
+		$pg['length'] = isset($pgArgs['length']) ? intval($pgArgs['length']) : 0;
+		if ($pg['length'] <= 0) { $pg['length'] = 15; } // default page length
+		$pg['index'] = isset($pgArgs['index']) ? intval($pgArgs['index']) : 1;
+		if ($pg['index'] < 1) { $pg['index'] = 1; } // positive page number
+		$pg['offset'] = ($pg['index'] - 1) * $pg['length'];
+
+		// intentional '==', we accept any non-zero, non-false value as true:
+		$pg['getTotal'] = isset($pgArgs['getTotal']) ? $pgArgs['getTotal'] == true : false;
+
+		if ($pg['getTotal']) {
+			$sql_total = "SELECT COUNT(*) FROM ($sql) AS SUBQ";
+			$pg['totalRows'] = intval(Database::executeGetScalar($sql_total, $args));
+			$pg['total'] = floor(($pg['totalRows'] - 1) / $pg['length']) + 1;
+		}
+
+		$pg['order'] = array();
+		if (isset($pgArgs['order']) && is_array($pgArgs['order'])) {
+		foreach ($pgArgs['order'] as $obColumn) {
+			if (is_string($obColumn) && ctype_alnum($obColumn)) {
+				$pg['order'][] = "$obColumn DESC";
+			}
+		}
+		}
+
+		// only accept ORDER BY column names that contain only alphanumeric characters
+		// if they weren't valid column names, let a PDOException handle it
+		// otherwise, we cannot risk SQL injection via the ORDER BY clause
+		$sql_order = 'ORDER BY ' . implode(',', $pg['order']);
+		if (count($pg['order']) == 0) { $sql_order = ''; }
+
+		// the values of $pg[length] and $pg[offset] can only contain INTEGER (intval cast)
+		// values at this point in the code, we cannot risk SQL injection via the LIMIT clause
+		$sql_limit = "LIMIT $pg[length] OFFSET $pg[offset]";
+
+		$sql_c = "$sql $sql_order $sql_limit";
+
+		$rows = Database::executeGetAllRows($sql_c, $args);
+		if ($rows === false) {
+			return null;
+		}
+		return array(
+			'objects' => array_map($row2objFn, $rows),
+			'pg' => $pg);
 	}
 
 	/**

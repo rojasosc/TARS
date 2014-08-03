@@ -287,6 +287,18 @@ final class Term {
 		return ucfirst($this->semester).' '.$this->year;
 	}
 
+	public function toArray($showEvent = false) {
+		$data = array(
+			'id' => intval($this->id),
+			'year' => intval($this->year),
+			'semester' => $this->semester);
+		if ($showEvent) {
+			$data['creator'] = $this->getCreator()->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+		}
+		return $data;
+	}
+
 	private $id;
 	private $year;
 	private $semester;

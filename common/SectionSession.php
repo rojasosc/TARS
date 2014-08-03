@@ -88,6 +88,16 @@ final class SectionSession {
 		return "{$this->weekdays} {$this->startTime} - {$this->endTime} in {$this->placeBuilding} {$this->placeRoom}";
 	}
 
+	public function toArray() {
+		return array(
+			'id' => intval($this->id),
+			'weekdays' => $this->weekdays,
+			'startTime' => $this->startTime,
+			'endTime' => $this->endTime,
+			'building' => $this->placeBuilding,
+			'room' => $this->placeRoom);
+	}
+
 	private $id;
 	private $sectionID;
 	private $section;

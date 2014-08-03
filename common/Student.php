@@ -18,13 +18,6 @@ final class Student extends User {
 
 		return $userID;
 	}
-
-	public static function getStudentsToReview(){
-		$sql = 'SELECT userID FROM Students';
-		$args = array();
-		$rows = Database::executeGetAllRows($sql,$args);
-		return array_map(function ($row) { return User::getUserByID($row['userID']);}, $rows);
-	}
 	
 	public function __construct($user_row, $student_row) {
 		parent::__construct($user_row);
@@ -38,12 +31,6 @@ final class Student extends User {
 			$this->aboutMe = $student_row['aboutMe'];
 		}
 	}
-
-	public function setStudentStatus($userID,$status){
-		$sql = "UPDATE Students SET status = :status WHERE userID = :userID";
-		$args = array(':status' => $status,':userID' => $userID);
-		Database::execute($sql,$args);
-	}
 		
 	public function findApplications($term, $status) {
 		return Application::findApplications($this, null, null, $term, $status);
@@ -51,16 +38,6 @@ final class Student extends User {
 	
 	// TODO move this to Position object
 	// TODO create notification
-	public function apply($position, $compensation, $qualifications) {
-		$applicationID = Application::insertApplication($position, $compensation,
-			$qualifications, PENDING, $this->id, time());
-	}
-
-	// TODO move this to Position object
-	// TODO create notification
-	public function withdraw($position){
-		Application::setPositionStatus($this->id, $position, WITHDRAWN);
-	}
 	
 	public function getAllComments(){
 		$sql = 'SELECT * FROM Comments
@@ -103,19 +80,16 @@ final class Student extends User {
 	public function getAboutMe() { return $this->aboutMe; }
 	public function getUniversityID() { return $this->universityID; }
 
-	public function toArray() {
-		return array(
-			'id' => $this->id,
-			'type' => STUDENT,
-			'email' => $this->email,
-			'firstName' => $this->firstName,
-			'lastName' => $this->lastName,
+	public function toArray($showEvent = false) {
+		$parent = parent::toArray($showEvent);
+		$subclass = array(
 			'mobilePhone' => $this->getMobilePhoneDisplay(),
 			'major' => $this->major,
-			'gpa' => $this->gpa,
-			'classYear' => $this->classYear,
+			'gpa' => floatval($this->gpa),
+			'classYear' => intval($this->classYear),
 			'aboutMe' => $this->aboutMe,
 			'universityID' => $this->universityID);
+		return array_merge($parent, $subclass);
 	}
 
 	private $mobilePhone;

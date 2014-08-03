@@ -45,15 +45,17 @@ final class Comment {
 	}
 	public function getCreateTime() { return $this->createTime; }
 
-	public function toArray() {
-		$creator = $this->getCreator();
-		$student = $this->getStudent();
-		return array(
-			'id' => $this->id,
+	public function toArray($showEvent = true) {
+		$data = array(
+			'id' => intval($this->id),
 			'comment' => $this->commentText,
-			'student' => $student->toArray(),
-			'creator' => $creator->toArray(),
-			'createTime' => date('g:i:sa \o\n Y/m/d', $this->createTime));
+			'student' => $this->getStudent()->toArray(false)
+		);
+		if ($showEvent) {
+			$data['creator'] = $this->getCreator()->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+		}
+		return $data;
 	}
 	
 	private $id;

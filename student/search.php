@@ -5,47 +5,25 @@ require_once '../error.php';
 
 $error = null;
 $student = null;
-
+$terms = array();
+$currentTermID = null;
+$positionTypes = array();
 try {
 	$student = Session::start(STUDENT);
+	// get all terms for the dropdown
+	$terms = Term::getAllTerms();
+	// get App CURRENT_TERM value
+	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+
+	// get all the position types for the dropdown
+	$positionTypes = Position::getAllPositionTypes(true);
+	// add the "Any" type with value="0"
+	$positionTypes[0] = 'Any Position Type';
+	ksort($positionTypes);
 } catch (TarsException $ex) {
 	$error = $ex;
-}
-
-$form_args = array('q'=>'','term'=>'','type'=>-1);//get_form_values(array('q','term','type'), false);
-
-$positions = array();
-$terms = array();
-$positionTypes = array();
-$currentTermID = null;
-if ($error == null) {
-	try {
-		// get App CURRENT_TERM value
-		$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
-		// get all terms for the dropdown
-		$terms = Term::getAllTerms();
-
-		// get all the position types for the dropdown
-		$positionTypes = Position::getAllPositionTypes(true);
-		// add the "Any" type with value="0"
-		$positionTypes[0] = 'Any Position Type';
-		ksort($positionTypes);
-
-		// get currently selected term, defaulting to CURRENT_TERM on not set
-		if (!$form_args['term']) {
-			$form_args['term'] = $currentTermID;
-		}
-		// get currently selected position, defaulting to "Any"
-		if (!$form_args['type']) {
-			$form_args['type'] = 0;
-		}
-
-		// find positions that match the fields
-		$positions = Position::findPositions(
-			$form_args['q'], $form_args['term'], $form_args['type'], $student->getID());
-	} catch (PDOException $ex) {
-		$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
-	}
+} catch (PDOException $ex) {
+	$error = new TarsException(Event::SERVER_DBERROR, Event::STUDENT_SEARCH, $ex);
 }
 
 ?>
@@ -71,8 +49,8 @@ if ($error == null) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap-select.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="search.js"></script>
 		<script src="../js/tars_utilities.js"></script>
+		<script src="search.js"></script>
 		<!-- END Scripts -->
 	</head>
   
@@ -207,7 +185,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div class="form-inline" id="inputrow">
 									<div class="form-group">
 										<label class="sr-only" for="q">Search</label>
-										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value="<?=$form_args['q']?>"/>
+										<input type="text" id="q" name="q" class="form-control" placeholder="Search..." value=""/>
 									</div>
 									<div class="form-group">
 										<label class="sr-only" for="term">Term</label>
@@ -215,7 +193,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"<?php if($form_args['term'] == $term_opt->getID()){?> selected="selected"<?php }?>><?=$term_opt->getName()?></option>
+											<option value="<?=$term_opt->getID()?>"><?=$term_opt->getName()?></option>
 										<?php
 										}
 										?>
@@ -227,7 +205,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"<?php if($form_args['type'] == $index){?> selected="selected"<?php }?>><?=$type_opt?></option>
+											<option value="<?=$index?>"><?=$type_opt?></option>
 										<?php
 										}
 										?>
@@ -241,21 +219,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							<!-- BEGIN Search Results -->
 							<div id="search-results">
 								<!-- BEGIN Pagination -->
-								<ul class="pagination">
-									<li><a href="#">&laquo;</a></li>
-									<?php
-										$positionCount = count($positions);
-										$rpp = 10;
-										$pageCountFloat = $positionCount / $rpp;
-										$pages = ceil($pageCountFloat);
-										$currentPage = 1;
-										for($i= 1; $i <= $pages; $i++){?>
-											<li <?php if($currentPage == $i){?> class="active" <?php }?>><a href="#"><?=$i?></a></li>
-									<?php
-										}
-									?>
-									<li><a href="#">&raquo;</a></li>
-								</ul>
+								<ul class="pagination"></ul>
 								<!-- END Pagination -->
 								<!-- BEGIN Results Table -->
 								<table class="table table-striped">
@@ -272,79 +236,12 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<th></th>
 										</tr>
 									</thead>
-									<tbody>
-									<?php
-										if($positions != false) {
-											foreach($positions as $position) {
-												$section = $position->getSection();
-												$professors = $section->getAllProfessors();
-												$professor = count($professors) > 0 ? implode(', ',
-												array_map(function ($prof) {
-													return $prof->getFILName();
-												}, $professors)) : 'TBA';
-												$sessions = $section->getAllSessions();
-												$days = "";
-												$time = "TBA";
-												$place = "TBA";
-												foreach($sessions as $session) {
-													$days .= $session->getWeekdays();
-													$time = $session->getStartTime()." - ".$session->getEndTime();
-													$place = $session->getPlaceBuilding()." ".$session->getPlaceRoom();
-												}
-												if($days == "") {$days="TBA";}
-									?>
-											<tr>
-												<td class="positionID hidden"><?=$position->getID()?></td>
-												<td class="courseName"><?=$section->getCourseName()?></td>
-												<td class="courseTitle hidden-xs hidden-sm"><?=$section->getCourseTitle()?></td>
-												<td class="instructor"><?=$professor?></td>
-												<td class="posType"><?=$position->getTypeTitle()?></td>
-												<td class="days"><?=$days?></td>
-												<td class="time"><?=$time?></td>
-												<td class="place"><?=$place?></td>
-												<td>
-<?php
-												if ($position->hasStudentApplied($student)) {
-?>
-													<button class="btn btn-default applyButton" disabled="disabled">Applied</button>
-<?php
-												} else {
-?>
-													<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>
-<?php
-												}
-?>
-												</td>
-											</tr>
-									<?php
-											}
-										} else {
-									?>
-											<tr>
-												<td colspan="7">No results</td>
-											</tr>
-									<?php
-										}
-?>
+									<tbody id="results">
 									</tbody>
 								</table>
 								<!-- END Results Table -->
 								<!-- BEGIN Pagination -->
-								<ul class="pagination">
-									<li><a href="#">&laquo;</a></li>
-									<?php
-										$positionCount = count($positions);
-										$rpp = 10;
-										$pageCountFloat = $positionCount / $rpp;
-										$pages = ceil($pageCountFloat);
-										$currentPage = 1;
-										for($i= 1; $i <= $pages; $i++){?>
-											<li <?php if($currentPage == $i){?> class="active" <?php }?>><a href="#"><?=$i?></a></li>
-									<?php
-										}
-									?>
-									<li><a href="#">&raquo;</a></li>
-								</ul>
+								<ul class="pagination"></ul>
 								<!-- END Pagination -->
 							</div>
 							<!-- END Search Results -->

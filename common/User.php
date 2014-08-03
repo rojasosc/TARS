@@ -214,6 +214,22 @@ abstract class User {
 		return $this->firstName.' '.$this->lastName;
 	}
 
+	public function toArray($showEvent = false) {
+		$data = array(
+			'id' => intval($this->id),
+			'type' => intval($this->otype),
+			'email' => $this->email,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
+			'filName' => $this->getFILName());
+		if ($showEvent) {
+			$creator = $this->getCreator();
+			$data['creator'] = $creator == null ? null : $creator->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+		}
+		return $data;
+	}
+
 	protected $id;
 	protected $email;
 	protected $password;

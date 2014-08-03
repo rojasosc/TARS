@@ -117,8 +117,68 @@ $(document).ready(function() {
 		$( ".decision" ).click(submitDecision);
 	}
 
+	if ($( ".pagination" ).length) {
+		$( ".pagination").on('click', 'a', function (event) {
+			event.preventDefault();
+			if (!$(this).parent().hasClass('active')) {
+				data = $pgData;
+				data.pgIndex = $(this).data('target');
+				data.pgLength = 15; // XXX here is the number of rows per page requested
+				data.pgGetTotal = false;
+				doAction($pgAction, data).done($pgAjaxDone).fail($pgAjaxFail);
+			}
+		});
+	}
 
 });
+
+function doPaginatedAction(action, data, ajaxDone, ajaxFail) {
+	var sameQuery = true;
+	if (typeof $pgData != 'undefined') {
+		for (var key in data) {
+			if ($pgData[key] != data[key]) {
+				sameQuery = false;
+			}
+		}
+	} else {
+		sameQuery = false;
+	}
+	$pgAction = action;
+	$pgData = data;
+	$pgAjaxDone = ajaxDone;
+	$pgAjaxFail = ajaxFail;
+	data.pgIndex = 1;
+	data.pgLength = 15; // XXX: here is the number of rows per page requested
+	data.pgGetTotal = !sameQuery;
+	doAction($pgAction, data).done(ajaxDone).fail(ajaxFail);
+}
+
+function handlePagination(pg, listDOM) {
+	if (pg.getTotal) {
+		$pgTotal = pg.total;
+	}
+	//console.log(pg);
+	var pages = [];
+	if (pg.index > 1) {
+		pages.push({target: 1, title: 'First Page', text: '&laquo;', active: false});
+	}
+	for (var i = Math.max(1, pg.index - 5); i <= Math.min($pgTotal, pg.index + 5); i++) {
+		pages.push({target: i, title: 'Page ' + i.toString(), text: i.toString(), active: i == pg.index});
+	}
+	if (pg.index < $pgTotal) {
+		pages.push({target: $pgTotal, title: 'Last Page', text: '&raquo;', active: false});
+	}
+
+	var html = '';
+	for (var idx in pages) {
+		var active = '';
+		if (pages[idx].active) {
+			active = ' class="active"';
+		}
+		html += '<li' + active + '><a href="#" title="' + pages[idx].title + '" data-target="' + pages[idx].target + '">' + pages[idx].text + '</a></li>';
+	}
+	listDOM.html(html);
+}
 
 function doAction(action, params, altUrl) {
 	var url = actionsUrl;
@@ -490,7 +550,7 @@ function prepareBuildingsDropdown() {
 function prepareRoomsDropdown() {
 	clearDropdown( $roomsDropdown );
 	if ($(this).val() != '') {
-		doAction('fetchTheRoom', {building: $(this).val()})
+		doAction('fetchRooms', {building: $(this).val()})
 		.done(function ( data ) {
 			if (data.success) {
 				var rooms = data.objects;

@@ -5,13 +5,8 @@ final class Admin extends User {
 		parent::__construct($user_row);
 	}
 
-	public function toArray() {
-		return array(
-			'id' => $this->id,
-			'type' => ADMIN,
-			'email' => $this->email,
-			'firstName' => $this->firstName,
-			'lastName' => $this->lastName);
+	public function toArray($showEvent = false) {
+		return parent::toArray($showEvent);
 	}
 }
 

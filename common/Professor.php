@@ -96,18 +96,14 @@ final class Professor extends User {
 	public function getOfficePhone() { return $this->officePhone; }
 	public function getOfficePhoneDisplay() { return User::formatPhone($this->officePhone); }
 
-	public function toArray() {
+	public function toArray($showEvent = false) {
 		$office = $this->getOffice();
-		return array(
-			'id' => $this->id,
-			'type' => PROFESSOR,
-			'email' => $this->email,
-			'firstName' => $this->firstName,
-			'lastName' => $this->lastName,
-			'officePhone' => $this->getOfficePhoneDisplay(),
+		$parent = parent::toArray($showEvent);
+		$subclass = array(
+			'officePhone' => $this->officePhone == null ? null : $this->getOfficePhoneDisplay(),
 			'building' => $office == null ? null : $office->getBuilding(),
-			'room' => $office == null ? null : $office->getRoom(),
-			'office' => $office == null ? null : $office->toArray());
+			'room' => $office == null ? null : $office->getRoom());
+		return array_merge($parent, $subclass);
 	}
 
 	private $officeID;

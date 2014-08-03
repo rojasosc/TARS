@@ -44,24 +44,24 @@ final class Position {
 		return $positionID;
 	}
 
-	public static function findPositions($search_field, $term = null, $position_type = null, $studentID) {
-		$sql = 'SELECT 
-					positionID, Positions.sectionID, maximumAccepted,
-					Positions.positionTypeID, positionName, positionTitle,
-					responsibilities, times, compensation,
-					department, courseNumber, courseTitle, termID,
-					Positions.creatorID, Positions.createTime,
-					GROUP_CONCAT(DISTINCT Users.firstName SEPARATOR \' \') AS fnList,
-					GROUP_CONCAT(DISTINCT Users.lastName SEPARATOR \' \') AS lnList
-				FROM Positions
-				INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
-				INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
-				INNER JOIN Courses ON Sections.courseID = Courses.courseID
-				LEFT JOIN Teaches ON Teaches.sectionID = Sections.sectionID
-				LEFT JOIN Users ON Users.userID = Teaches.professorID
-				GROUP BY positionID HAVING ';
+	public static function findPositions($search_field, $termID, $positionTypeID, $pg) {
+		// the primary query:
+		$sql = 'SELECT
+				positionID, Positions.sectionID, maximumAccepted,
+				Positions.positionTypeID, positionName, positionTitle,
+				responsibilities, times, compensation,
+				department, courseNumber, courseTitle, termID,
+				Positions.creatorID, Positions.createTime,
+				GROUP_CONCAT(DISTINCT Users.firstName SEPARATOR \' \') AS fnList,
+				GROUP_CONCAT(DISTINCT Users.lastName SEPARATOR \' \') AS lnList
+			FROM Positions 
+			INNER JOIN PositionTypes ON PositionTypes.positionTypeID = Positions.positionTypeID
+			INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
+			INNER JOIN Courses ON Sections.courseID = Courses.courseID
+			LEFT JOIN Teaches ON Teaches.sectionID = Sections.sectionID
+			LEFT JOIN Users ON Users.userID = Teaches.professorID
+			GROUP BY positionID HAVING ';
 		$args = array();
-		$sql_having = '';
 		if (!empty($search_field)) {
 			$i = 1;
 			foreach (explode(' ', $search_field) as $word) {
@@ -75,22 +75,17 @@ final class Position {
 				$i++;
 			}
 		}
-		if ($term != null) {
+		if ($termID != null) {
 			$sql .= 'termID = :term AND ';
-			$args[':term'] = $term;
+			$args[':term'] = $termID;
 		}
-		if ($position_type != null && $position_type > 0) {
+		if ($positionTypeID != null && $positionTypeID > 0) {
 			$sql .= 'Positions.positionTypeID = :posType AND ';
-			$args[':posType'] = $position_type;
+			$args[':posType'] = $positionTypeID;
 		}
-		$sql .= "1
-			ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC";
-			
-		//echo '<pre>';
-		//print_r($args);
-		//exit($sql);
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Position($row); }, $rows);
+		$sql .= '1'; // end primary query part
+
+		return Database::executeGetPage($sql, $args, $pg, function ($row) { return new Position($row); });
 	}
 	
 
@@ -110,11 +105,8 @@ final class Position {
 		$this->createTime = strtotime($row['createTime']);
 	}
 
-	public function hasStudentApplied($student) {
-		$sql = 'SELECT COUNT(*)	FROM Applications
-				WHERE positionID = :position AND creatorID = :student';
-		$args = array(':position' => $this->id, ':student' => $student->getID());
-		return Database::executeGetScalar($sql, $args) != 0;
+	public function getLatestApplication($student) {
+		return Application::getApplicationToPositionByStudent($this, $student);
 	}
 
 	public function getID() { return $this->id; }
@@ -138,6 +130,28 @@ final class Position {
 	}
 	public function getCreateTime() { return $this->createTime; }
 	public function getMaximumAccepted() { return $this->maximumAccepted; }
+
+	public function apply($student, $compensation, $qualifications) {
+		$applicationID = Application::insertApplication($this, $compensation,
+			$qualifications, PENDING, $student->getID(), time());
+		// TODO invoke notification
+	}
+
+	public function toArray($showEvent = false) {
+		$data = array(
+			'id' => intval($this->id),
+			'max' => intval($this->maximumAccepted),
+			'type' => array(
+				'id' => intval($this->type),
+				'name' => $this->typeName,
+				'title' => $this->typeTitle),
+			'section' => $this->getSection()->toArray(false));
+		if ($showEvent) {
+			$data['creator'] = $this->getCreator()->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+		}
+		return $data;
+	}
 
 	private $id;
 	private $sectionID;

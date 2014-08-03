@@ -229,6 +229,47 @@ final class Action {
 		return null;
 	}
 
+	public static function fetchPositions($params, $student, &$eventObjectID) {
+		$q = isset($params['q']) ? $params['q'] : '';
+		$termID = $params['termID'];
+		$typeID = $params['typeID'];
+		$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
+		$pg = array(
+			'index' => $params['pgIndex'],
+			'length' => $params['pgLength'],
+			'getTotal' => $getTotal);
+
+		$positions_page = Position::findPositions($q, $termID, $typeID, $pg);
+		// unlike other ExecuteGetPage() calls, we are retrieving the array version of 'objects' now
+		// so that we can add the 'disableApplyText' key-value pair, specifically for student searching for positions
+		$assoc_positions = array();
+		foreach ($positions_page['objects'] as $position) {
+			$application = $position->getLatestApplication($student);
+			$appStatus = null;
+			if ($application != null) {
+				$appStatus = $application->getStatus();
+			}
+			$pos = $position->toArray();
+			switch ($appStatus) {
+			case null:
+			case CANCELLED:
+				$pos['disableApplyText'] = '';
+				break;
+			case PENDING:
+			case REJECTED:
+				$pos['disableApplyText'] = 'Applied';
+				break;
+			case APPROVED:
+			case WITHDRAWN:
+				$pos['disableApplyText'] = 'Approved';
+				break;
+			}
+			$assoc_positions[] = $pos;
+		}
+		$positions_page['objects'] = $assoc_positions;
+		return $positions_page;
+	}
+
 	public static function apply($params, $student, &$eventObjectID) {
 		$positionID = $params['positionID'];
 		$comp = $params['compensation'];
@@ -237,10 +278,23 @@ final class Action {
 		if ($position == null) {
 			throw new ActionError('Position not found');
 		}
-		if ($position->hasStudentApplied($student)) {
+		$application = $position->getLatestApplication($student);
+		$appStatus = null;
+		if ($application != null) {
+			$appStatus = $application->getStatus();
+		}
+		switch ($appStatus) {
+		case null:
+		case CANCELLED:
+			// counts as not applied
+			break;
+		case PENDING:
+		case REJECTED:
+		case APPROVED:
+		case WITHDRAWN:
 			throw new ActionError('You have already applied for this position');
 		}
-		$appID = $student->apply($position, $comp, $qual);
+		$appID = $position->apply($student, $comp, $qual);
 		$eventObjectID = $appID;
 		return null;
 	}
@@ -251,11 +305,28 @@ final class Action {
 		if ($position == null) {
 			throw new ActionError('Position not found');
 		}
-		if (!$position->hasStudentApplied($student)) {
-			throw new ActionError('You have not applied for that position');
+		$application = $position->getLatestApplication($student);
+		$appStatus = null;
+		if ($application != null) {
+			$appStatus = $application->getStatus();
 		}
-		// TODO Application object -> $eventObjectID
-		$student->withdraw($position);
+		switch ($appStatus) {
+		case null:
+		case CANCELLED:
+			throw new ActionError('You have not applied for that position');
+			break;
+		case PENDING:
+		case REJECTED:
+			// change to CANCELLED
+			$application->setApplicationStatus(CANCELLED);
+			break;
+		case APPROVED:
+		case WITHDRAWN:
+			// change to WITHDRAWN
+			$application->setApplicationStatus(WITHDRAWN);
+			break;
+		}
+		$eventObjectID = $application->getID();
 		return null;
 	}
 
@@ -312,7 +383,7 @@ final class Action {
 		return Place::getAllBuildings();
 	}
 
-	public static function fetchTheRoom($params, $user, &$eventObjectID) {
+	public static function fetchRooms($params, $user, &$eventObjectID) {
 		$places = Place::getPlacesByBuilding($params['building']);
 		return array_map(function ($place) {
 			return $place->getRoom();
@@ -571,11 +642,11 @@ final class Action {
 	//            EXAMPLE USE CASES: emailAvailable
 	//        If the value is an object, the object contains "object": object->toArray()
 	//            The object MUST have a toArray() function. 
-	//            EXAMPLE USE CASES: fetchStudent, fetchProfessor
+	//            EXAMPLE USE CASES: fetchUser
 	//        If the value is an array, the object contains "objects": array
 	//            Assumes the array only contains objects
 	//            The objects MUST have a toArray() function.
-	//            EXAMPLE USE CASES: searchApplication, searchPosition
+	//            EXAMPLE USE CASES: fetchApplications, fetchPositions, fetchUsers, fetchBuildings, fetchRooms
 	//        If the value is a string, an ERROR_FORM_FIELD is produced with the given string
 	//            USE CASE: the given positionID doesn't exist or was not provided
 	//
@@ -705,14 +776,29 @@ final class Action {
 			'noSession' => true, 'eventLog' => 'always',
 			'eventDescr' => '%s requested a password reset.',
 			'eventDescrArg' => 'refparam', 'params' => array('email')),
-		// Action:           search 
+		// Action:           fetchPositions
 		// Session required: STUDENT
 		// Parameters:
+		//     q: Plain text query string
+		//     termID: Term ID of search
+		//     typeID: Position Type ID
+		//     pgIndex: Page number (if not specified or <= 0, assume 1)
+		//     pgLength: Page length
+		//     pgGetTotal: Boolean specifying whether to calculate the total number of pages for the query
 		// Returns:
+		//     objects: Returned positions
+		//     pg.index: Actual page index
+		//     pg.total: Total number of pages (if requested)
 		//     success and error: Action status
-		// TODO convert search.php search form
-		// TODO paginate here
-		'search' => array('event' => Event::USER_GET_VIEW, 'userType' => STUDENT),
+		'fetchPositions' => array('event' => Event::USER_GET_VIEW, 'userType' => STUDENT,
+			'eventDescr' => '%s searched for positions.',
+			'params' => array(
+				'q' => array('type'=>Action::VALIDATE_NOTEMPTY,'optional'=>true),
+				'termID' => array('type'=>Action::VALIDATE_NUMERIC),
+				'typeID' => array('type'=>Action::VALIDATE_NUMERIC),
+				'pgIndex' => array('type'=>Action::VALIDATE_NUMERIC),
+				'pgLength' => array('type'=>Action::VALIDATE_NUMERIC),
+				'pgGetTotal' => array('type'=>Action::VALIDATE_NOTEMPTY,'optional'=>true))),
 		// Action:           apply
 		// Session required: STUDENT
 		// Parameters:
@@ -787,14 +873,14 @@ final class Action {
 		//     success and error: Action status
 		'fetchBuildings' => array('event' => Event::USER_GET_OBJECT,
 			'eventDescr' => '%s retrieved buildings list.'),
-		// Action:           fetchTheRooms
+		// Action:           fetchRooms
 		// Session required: logged in
 		// Parameters:
 		//     building: name of building to look in
 		// Returns:
 		//     objects: array of room numbers (or names) in this building
 		//     success and error: Action status
-		'fetchTheRoom' => array('event' => Event::USER_GET_OBJECT,
+		'fetchRooms' => array('event' => Event::USER_GET_OBJECT,
 			'eventDescr' => '%s retrieved building room list.',
 			'params' => array('building')),
 		// Action:           fetchUser
@@ -971,6 +1057,13 @@ final class Action {
 							// object result
 							$output['object'] = $result_obj->toArray();
 						} elseif (is_array($result_obj)) {
+							// paginated result: move 'pg' and 'objects' up one level
+							if (isset($result_obj['pg'])) {
+								$output['pg'] = $result_obj['pg'];
+							}
+							if (isset($result_obj['objects'])) {
+								$result_obj = $result_obj['objects'];
+							}
 							// object-array result
 							if (is_assoc($result_obj)) {
 								// object result (as array)

@@ -116,7 +116,6 @@ final class Position {
 		}
 		return $this->section;
 	}
-	public function getMaximumAccepted() { return $this->maximumAccepted; }
 	public function getType() { return $this->type; }
 	public function getTypeName() { return $this->typeName; }
 	public function getTypeTitle() { return $this->typeTitle; }

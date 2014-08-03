@@ -105,32 +105,30 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="building">Building</label>
-														<select name="building" class="selectpicker form-control buildings" id="buildings">
-														</select> <!-- End select -->										
+														<input type="text" list="buildings-list" id="building" name="building" class="form-control">
+														<datalist id="buildings-list" class="buildings"></datalist>
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="room">Room</label>
-														<select name="room" class="selectpicker form-control rooms" id="rooms">
-														</select> <!-- End select -->										
+														<input type="text" list="rooms-list" id="room" name="room" class="form-control">
+														<datalist id="rooms-list" class="rooms"></datalist>
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
-												
-											</div> <!-- End Row -->												
-											<br>
-											<div class="row">
-												<div class="col-md-3">
-													<button type = "submit"  name="submitButton" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Create Account</button>
-												</div> <!-- End column -->
-											</div> <!-- End row -->	
+											</div> <!-- End row -->
 										</fieldset> <!-- End fieldset -->
 									</form> <!-- End form-horizontal -->
 								</div> <!-- End panel-body -->
 							</div> <!-- End panel panel-collapse -->
-								<div class="panel-footer" id="professorPanelFooter">
-									
-								</div> <!-- End panel-footer -->	
+							<div class="panel-footer" id="professorPanelFooter">
+								<div class="row">
+									<div class="col-md-3">
+										<button type="submit" name="submitButton" form="professorForm" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Create Account</button>
+									</div> <!-- End column -->
+								</div> <!-- End row -->	
+						
+							</div> <!-- End panel-footer -->	
 						</div> <!-- End panel panel-success -->						
 				</div> <!-- End container -->
 <?php

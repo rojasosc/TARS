@@ -972,7 +972,10 @@ final class Action {
 			'isUserInput' => true, 'params' => array(
 				'email' => array('optional' => true),
 				'firstName' => array('optional' => true),
-				'lastName' => array('optional' => true))),
+				'lastName' => array('optional' => true),
+				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
 		// Action:           uploadTerm
 		// Session required: STAFF
 		// Parameters:

@@ -94,7 +94,7 @@ abstract class User {
 		return null;
 	}
 
-	public static function findUsers($email, $firstName, $lastName, $check_type = -1) {
+	public static function findUsers($email, $firstName, $lastName, $check_type = -1, $pg) {
 		$sql = 'SELECT * FROM Users
 				WHERE ';
 		$args = array();
@@ -115,8 +115,7 @@ abstract class User {
 			$args[':type'] = $check_type;
 		}
 		$sql .= '1 ORDER BY lastName DESC, firstName DESC';
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return User::getUserSubclassObject($row); }, $rows);
+		return Database::executeGetPage($sql, $args, $pg, function($row) {return User::getUserSubclassObject($row);});
 	}
 
 	public static function insertUser($email, $password, $firstName, $lastName, $type) {

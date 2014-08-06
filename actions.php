@@ -491,8 +491,13 @@ final class Action {
 
 	public static function searchForUsers($params, $user, &$eventObjectID) {
 		if (is_array($params)) {
+			//The array $params should contain: email, firstName, lastName, pgIndex, pgLength, pgGetTotal
+			$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
+			$pg = array('index' => $params['pgIndex'],
+					   'length' => $params['pgLength'],
+					   'getTotal' => $getTotal);
 			$usersFound = User::findUsers($params['email'],$params['firstName'],
-				$params['lastName'], $params['userType']);
+				$params['lastName'], $params['userType'], $pg);
 			return $usersFound;
 		}
 		return $params;
@@ -969,7 +974,8 @@ final class Action {
 		// TODO paginate here
 		'searchForUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => STAFF,
 			'eventDescr' => '%s retrieved positions view.',
-			'isUserInput' => true, 'params' => array(
+			'isUserInput' => true,
+			'params' => array(
 				'email' => array('optional' => true),
 				'firstName' => array('optional' => true),
 				'lastName' => array('optional' => true),

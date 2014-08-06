@@ -150,7 +150,7 @@ function doPaginatedAction(action, data, ajaxDone, ajaxFail) {
     $pgAjaxDone = ajaxDone;
     $pgAjaxFail = ajaxFail;
     data.pgIndex = 1;
-    data.pgLength = 3; // XXX: here is the number of rows per page requested
+    data.pgLength = 15; // XXX: here is the number of rows per page requested
     data.pgGetTotal = !sameQuery;
     doAction($pgAction, data).done(ajaxDone).fail(ajaxFail);
 }
@@ -325,23 +325,17 @@ function searchUsers() {
         email: $("[name='emailSearch']", $userSearchForm).val(),
         userType: $("input[type='radio']:checked", $userSearchForm).val()
     };
-    alert(input['firstName'] + input['lastName'] + input['email'] + input['userType']);
     doPaginatedAction('searchForUsers', input,
         function(data) {
             if (data.success) {
-                alert("data success");
                 if (data.pg) {
-                    alert('data.pged');
                     handlePagination(data.pg, $('.pagination'));
-                    alert(data.pg);
                 }
                 if (data.objects) {
-                    alert('data.objectsed');
                     if (data.objects.length == 0) {
                         $('thead tr').hide();
                         $('#results').html('<em>No results</em');
                     } else {
-                        alert('gotta deal with results');
                         viewResults(data.objects, $("input[type='radio']:checked", $userSearchForm).val());
                     }
                 }

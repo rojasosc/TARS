@@ -70,7 +70,7 @@ $(document).ready(function() {
                     }
 
                     if (data.objects) {
-                        if (data.objects.length == 0) {
+                        if (data.objects.length === 0) {
                             $('thead tr').hide();
                             $('#results').html('<em>No results</em>');
                         } else {
@@ -103,7 +103,7 @@ $(document).ready(function() {
                                 posRow += '<td>' + sessionT + '</td>';
                                 posRow += '<td>' + sessionP + '</td>';
                                 posRow += '<td>';
-                                if (position.disableApplyText == '') {
+                                if (position.disableApplyText === '') {
                                     posRow += '<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>';
                                 } else {
                                     posRow += '<button class="btn btn-default" disabled="disabled">' + position.disableApplyText + '</button>';

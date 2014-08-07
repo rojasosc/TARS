@@ -30,7 +30,7 @@ $(document).ready(function() {
             $(".edit-profile").click(function() {
                 viewUserForm($(this).data("userid"), $(this).data("usertype"));
 
-            })
+            });
         }
 
         if ($(".profile").length) {
@@ -95,7 +95,7 @@ $(document).ready(function() {
 
     if ($(".comments-modal").length) {
         $commentsModal = $(".comments-modal");
-        $commentsBlock = $(".comments-block")
+        $commentsBlock = $(".comments-block");
         $(".comments").click(viewUserComments);
     }
 
@@ -236,9 +236,6 @@ function showError(errorObj, element) {
 function showAlert(alertObj, element, level) {
     if (!('title' in alertObj)) {
         switch (level) {
-            default: alertObj.title = 'Notice';
-            level = 'info';
-            break;
             case 'success':
                 alertObj.title = 'Success';
                 break;
@@ -248,6 +245,9 @@ function showAlert(alertObj, element, level) {
             case 'danger':
                 alertObj.title = 'An error occured';
                 break;
+            default: alertObj.title = 'Notice';
+                level = 'info';
+                break;                
         }
     }
     element.hide();
@@ -301,7 +301,7 @@ function viewUserComments() {
                 $comment = comments[i];
                 $commentsBlock.append("<p class='commentDate'>" + $comment.createTime + "</p><blockquote><p class='commentContent'>" +
                     $comment.comment + "</p><footer>" + $comment.creator.firstName + ' ' + $comment.creator.lastName + "</footer></blockquote></div><!-- End column --></div> <!-- End row --><br>");
-            };
+            }
             if (!comments.length) {
                 $commentsBlock.html("There are no reviews available for this student.");
             }
@@ -332,7 +332,7 @@ function searchUsers() {
                     handlePagination(data.pg, $('.pagination'));
                 }
                 if (data.objects) {
-                    if (data.objects.length == 0) {
+                    if (data.objects.length === 0) {
                         $('thead tr').hide();
                         $('#results').html('<em>No results</em');
                     } else {
@@ -351,7 +351,7 @@ function searchUsers() {
 }
 
 function viewResults(users, userType) {
-    var userType = parseInt(userType);
+    var userType = parseInt(userType,10);
     /* Clear any existing results */
     $results.hide();
     $results.find("tbody").remove();
@@ -415,8 +415,7 @@ function viewPasswordForm(userID, userType) {
     doAction('fetchUser', {
         userID: userID,
         userType: userType
-    })
-        .done(function(data) {
+    }).done(function(data) {
             if (data.success) {
                 preparePasswordForm(data.object);
             } else {
@@ -430,7 +429,7 @@ function viewPasswordForm(userID, userType) {
 }
 
 function viewUserForm(userID, userType) {
-    var userType = parseInt(userType);
+    var userType = parseInt(userType, 10);
     switch (userType) {
         case STUDENT:
             $editProfileForm = $("#profileForm0");
@@ -445,8 +444,7 @@ function viewUserForm(userID, userType) {
     doAction('fetchUser', {
         userID: userID,
         userType: userType
-    })
-        .done(function(data) {
+    }).done(function(data) {
             if (data.success) {
                 prepareUserForm(data.object, userType);
             } else {
@@ -485,10 +483,10 @@ function prepareUserForm($user, userType) {
         case PROFESSOR:
             $("#profileForm0").hide();
             $("#profileForm1").show();
-            if ($user.officePhone != null) {
+            if ($user.officePhone !== null) {
                 $("[name='officePhone']", $editProfileForm).val($user.officePhone);
             }
-            if ($user.office != null) {
+            if ($user.office !== null) {
                 $("[name='building']", $editProfileForm).val($user.office.building);
                 $("[name='room']", $editProfileForm).val($user.office.room);
             }
@@ -496,10 +494,10 @@ function prepareUserForm($user, userType) {
         case STAFF:
             $("#profileForm0").hide();
             $("#profileForm1").show();
-            if ($user.officePhone != null) {
+            if ($user.officePhone !== null) {
                 $("[name='officePhone']", $editProfileForm).val($user.officePhone);
             }
-            if ($user.office != null) {
+            if ($user.office !== null) {
                 $("[name='building']", $editProfileForm).val($user.office.building);
                 $("[name='room']", $editProfileForm).val($user.office.room);
             }
@@ -569,8 +567,7 @@ function updateUserProfile() {
             break;
     }
 
-    doAction('updateProfile', input)
-        .done(function(data) {
+    doAction('updateProfile', input).done(function(data) {
             if (data.success) {
                 $userModal.modal('hide');
                 updateUserProfileCard(data.object, $user.type);
@@ -592,7 +589,7 @@ function updateUserProfileCard(data, userType) {
     //console.log(data);
     for (key in data) {
         //console.log(key);
-        if (data[key] == null) {
+        if (data[key] === null) {
             $('#cur-' + key).text('');
         } else {
             $('#cur-' + key).text(data[key]);
@@ -601,8 +598,7 @@ function updateUserProfileCard(data, userType) {
 }
 
 function prepareBuildingsDropdown() {
-    doAction('fetchBuildings', {})
-        .done(function(data) {
+    doAction('fetchBuildings', {}).done(function(data) {
             if (data.success) {
                 var buildings = data.objects;
                 for (var i = 0; i < buildings.length; i++) {
@@ -621,11 +617,10 @@ function prepareBuildingsDropdown() {
 
 function prepareRoomsDropdown() {
     clearDropdown($roomsDropdown);
-    if ($(this).val() != '') {
+    if ($(this).val() !== '') {
         doAction('fetchRooms', {
             building: $(this).val()
-        })
-            .done(function(data) {
+        }).done(function(data) {
                 if (data.success) {
                     var rooms = data.objects;
                     for (var i = 0; i < rooms.length; i++) {

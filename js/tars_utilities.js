@@ -150,7 +150,7 @@ function doPaginatedAction(action, data, ajaxDone, ajaxFail) {
     $pgAjaxDone = ajaxDone;
     $pgAjaxFail = ajaxFail;
     data.pgIndex = 1;
-    data.pgLength = 15; // XXX: here is the number of rows per page requested
+    data.pgLength = 5; // XXX: here is the number of rows per page requested
     data.pgGetTotal = !sameQuery;
     doAction($pgAction, data).done(ajaxDone).fail(ajaxFail);
 }

@@ -29,7 +29,7 @@ if ($error == null) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		
-		<title>Student Verification</title>
+		<title>Review Students</title>
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
@@ -74,7 +74,7 @@ if ($error == null) {
 		</div> <!-- End modal fade -->
 		<!-- End Profile Modal -->
 
-		 <!-- BEGIN Comment Modal-->
+		<!-- BEGIN Comment Modal-->
 		<div class="modal fade comments-modal" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -94,7 +94,7 @@ if ($error == null) {
 		</div> <!-- End modal fade -->	
 		<!-- END Comment Modal-->
 			
-			<!-- Begin Email Modal -->
+		<!-- Begin Email Modal -->
 		<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -122,15 +122,15 @@ if ($error == null) {
 								</fieldset>				
 							</form> <!-- End form -->
 						</div> <!-- End container -->
-					<div class="modal-footer">
-						<button type="button" data-dismiss="modal" class="btn btn-danger">Close</button> <!-- close modal -->
-					</div>	<!-- End modal footer -->
+						<div class="modal-footer">
+							<button type="button" data-dismiss="modal" class="btn btn-danger">Close</button> <!-- close modal -->
+						</div>	<!-- End modal footer -->
 					</div> <!-- End modal body -->
 				</div> <!-- End modal-content -->
 			</div> <!--End modal-dialog-->
 		</div> <!-- End modal fade -->  
-		 <!-- End Email Modal -->			
-		 <!-- BEGIN Comment Modal-->
+		<!-- End Email Modal -->			
+		<!-- BEGIN Comment Modal-->
 		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -164,109 +164,105 @@ if ($error == null) {
 		<!-- BEGIN page-wrapper -->
             
 		<div id="page-wrapper">
-<?php
+			<?php
 // Display header for Manage
 $header_active = 'manage';
 require 'header.php';
-?>
+			?>
 			<!-- BEGIN Page Content -->
 			<div id="content">
 				<div id="alertHolder">
-<?php
+					<?php
 if ($error != null) {
 	echo $error->toHTML();
 }
-?>
+					?>
 				</div>
-<?php
+				<?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
-?>
+				?>
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h4 class="panel-title panelHeader">Applications</h4>
 					</div> <!-- End panel-heading -->
 					<div class="panel-body">
+						<?php
+	$applications = Application::findApplications(null, null, null, $term, PENDING);
+	if(!$applications){
+						?>
+						<div class="row">
+							<div class="col-xs-6">
+								<div class="alert alert-info" role="alert">
+									<p>There are currently no available applications for this term.</p>
+								</div>											
+							</div> <!-- End column -->
+						</div> <!-- End row -->
+						<?php		
+	}else{
+						?>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>University ID</th>
+									<th>Email</th>
+									<th>Type</th>
+									<th>Application</th>
+									<th>Reviews</th>
+								</tr>
+							</thead>
 							<?php
-								$applications = Application::findApplications(null, null, null, $term, PENDING);
-								if(!$applications){
+		/* Insert each application */
+		foreach($applications as $application){
+			$student = $application->getCreator();
+			$position = $application->getPosition();
+			$profileID = "myProfile" . $student->getID();
 							?>
-									<div class="row">
-										<div class="col-xs-6">
-											<div class="alert alert-info" role="alert">
-												<p>There are currently no available applications for this term.</p>
-											</div>											
-										</div> <!-- End column -->
-									</div> <!-- End row -->
-							<?php		
-								}else{
+							<tr>
+								<td>
+									<div class="dropdown actions">
+										<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
+											<?= $student->getFirstName() . " " . $student->getLastName()?>
+											<span class="caret"></span>
+										</a>
+										<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
+											<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
+											<li role="presentation"><a data-toggle="modal" role="menuitem" tabindex="-1" data-target="#emailModal">Send Email</a></li>
+										</ul>
+									</div>
+								</td>
+								<td>
+									<?= $student->getUniversityID() ?>
+								</td>
+								<td>
+									<?= $student->getEmail() ?>
+								</td> 
+								<td>
+									<?= $position->getTypeTitle() ?>
+								</td>
+								<td>
+									<button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
+										<span class="glyphicon glyphicon-file"></span>
+									</button>
+								</td>
+								<td>
+									<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
+										<span class="glyphicon glyphicon-comment"></span>
+									</button>
+								</td>
+							</tr> 												
+							<?php
+		}
 							?>
-
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Name</th>
-												<th>University ID</th>
-												<th>Email</th>
-												<th>Type</th>
-												<th>Application</th>
-												<th>Reviews</th>
-											</tr>
-										</thead>
-										<?php
-
-										/* Insert each application */
-										foreach($applications as $application){
-											$student = $application->getCreator();
-											$position = $application->getPosition();
-											$profileID = "myProfile" . $student->getID();
-
-										?>
-										<tr>
-														<td>
-															<div class="dropdown actions">
-																<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
-																<?= $student->getFirstName() . " " . $student->getLastName()?>
-																<span class="caret"></span>
-																</a>
-																<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
-																	<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
-																	<li role="presentation"><a data-toggle="modal" role="menuitem" tabindex="-1" data-target="#emailModal">Send Email</a></li>
-																</ul>
-															</div>
-														</td>
-											<td>
-												<?= $student->getUniversityID() ?>
-											</td>
-											<td>
-												<?= $student->getEmail() ?>
-											</td> 
-											<td>
-												<?= $position->getTypeTitle() ?>
-											</td>
-											<td>
-												<button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
-													<span class="glyphicon glyphicon-file"></span>
-												</button>
-											</td>
-											<td>
-												<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
-													<span class="glyphicon glyphicon-comment"></span>
-												</button>
-											</td>
-										</tr> 												
-											
-											<?php
-											}
-											?>
-									</table> <!-- End table -->
-							<?php		
-								}
-							?>
+						</table> <!-- End table -->
+						<?php		
+	}
+						?>
 					</div> <!-- End panel-body -->
 				</div> <!-- End panel panel-primary -->
-<?php
+				<?php
 }
-?>
+				?>
 				<!-- END Course Panels -->
 			</div>
 			

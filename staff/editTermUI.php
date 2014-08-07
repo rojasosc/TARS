@@ -57,7 +57,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="panel-body">
 						<?php
 	foreach($sections as $section) {
-		//TODO: TA COUNTS
+		//TODO: TA COUNTS, which can be done using Section::getTotalPositionsByType($profobj, $sectionID)
 		$sessions = $section->getAllSessions();
 		$sessions = SectionSession::combineSessions($sessions);
 		$profs = $section->getAllProfessors();

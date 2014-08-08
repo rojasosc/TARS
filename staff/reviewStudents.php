@@ -186,6 +186,38 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<h4 class="panel-title panelHeader">Applications</h4>
 					</div> <!-- End panel-heading -->
 					<div class="panel-body">
+						<form class="form-horizontal filter-applications-form" role="form" id="filterApplicationsForm">
+							<fieldset>
+								<legend>Filter by:</legend>
+								<div class="row">
+									<div class="col-xs-6 col-sm-4 col-md-3">
+										<label class="control-label" for="courseFilter">Course:</label>
+										<input id="courseFilter" name="courseFilter" type="text" class="form-control" placeholder="e.g. CSC171, CSC172">
+									</div>
+									<div class="col-xs-6 col-sm-4 col-md-3">
+										<label class="control-label" for="professorFilter">Professor:</label>
+										<input id="professorFilter" name="professorFilter" type="text" class="form-control" placeholder="e.g. Ted Pawlicki, Ted, Pawlicki">
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-xs-12 col-sm-6 col-md-4">
+										<div class="btn-group" data-toggle="buttons">
+											<label class="btn btn-primary active">
+												<input type="radio" value="all" name="all" checked> All
+											</label>
+											<label class="btn btn-primary">
+												<input type="radio" value="reviewed" name="reviewed"> Reviewed
+											</label>
+											<label class="btn btn-primary">
+												<input type="radio" value="not-reviewed" name="notReviewed"> Not Reviewed
+											</label>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+						<hr />
 						<?php
 	$applications = Application::findApplications(null, null, null, $term, PENDING);
 	if(!$applications){
@@ -200,6 +232,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<?php		
 	}else{
 						?>
+						<ul class="pagination"></ul>
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -255,6 +288,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		}
 							?>
 						</table> <!-- End table -->
+						<ul class="pagination"></ul>
 						<?php		
 	}
 						?>

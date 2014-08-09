@@ -321,7 +321,10 @@ function searchUsers() {
 		firstName: $("[name='fN']", $userSearchForm).val(),
 		lastName: $("[name='lN']", $userSearchForm).val(),
 		email: $("[name='emailSearch']", $userSearchForm).val(),
-		userType: $("input[type='radio']:checked", $userSearchForm).val()
+		userType: $("input[type='radio']:checked", $userSearchForm).val(),
+		pgIndex: 1,
+		pgLength: 15,
+		pgGetTotal: true
 	};
 	doPaginatedAction('searchForUsers', input,
 		function(data) {
@@ -368,8 +371,8 @@ function viewResults(users, userType) {
 		row[++j] = users[key].email;
 		row[++j] = "</td><td>";
 		row[++j] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" +
-			users[key].id + "' data-usertype='" + userType + "'><span class='glyphicon glyphicon-wrench'></span></button>"
-			row[++j] = "</td></tr>";
+					users[key].id + "' data-usertype='" + userType + "'><span class='glyphicon glyphicon-wrench'></span></button>";
+		row[++j] = "</td></tr>";
 
 	}
 

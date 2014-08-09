@@ -45,7 +45,7 @@ if ($staff != null) {
 				</div> <!-- End modal-header -->
 				<div class="modal-body">
 					<div id="editProfileAlertHolder"></div>
-					<form class="edit-profile-form" data-usertype="<?= STAFF ?>">
+					<form class="edit-profile-form" id="profileForm<?= STAFF ?>" data-usertype="<?= STAFF ?>">
 						<div class="row">
 							<div class="col-xs-6">				
 								<div class="form-group"> 				
@@ -220,7 +220,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<div class="panel-footer">
 							<div class="row">
 								<div class="col-xs-3">
-									<button data-target="#profile-modal" data-toggle="modal" data-userid="<?= $staff->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+									<button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= STAFF ?>" data-userid="<?= $staff->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
 								</div> <!-- End column -->
 								<div class="col-xs-3">
 									<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $staff->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>

@@ -531,16 +531,9 @@ function viewPasswordForm(userID, userType) {
 
 function viewUserForm(userID, userType) {
 	var userType = parseInt(userType, 10);
-	switch (userType) {
-		case STUDENT:
-			$editProfileForm = $("#profileForm0");
-			break;
-		case PROFESSOR:
-			$editProfileForm = $("#profileForm1");
-			break;
-	}
-	$editProfileForm.submit(function() {
-		return false;
+	$editProfileForm = $("#profileForm" + userType);
+	$editProfileForm.submit(function(event) {
+		event.preventDefault();
 	});
 	doAction('fetchUser', {
 		userID: userID,
@@ -588,8 +581,8 @@ function prepareUserForm($user, userType) {
 				$("[name='officePhone']", $editProfileForm).val($user.officePhone);
 			}
 			if ($user.office !== null) {
-				$("[name='building']", $editProfileForm).val($user.office.building);
-				$("[name='room']", $editProfileForm).val($user.office.room);
+				$("[name='building']", $editProfileForm).val($user.building);
+				$("[name='room']", $editProfileForm).val($user.room);
 			}
 			break;
 		case STAFF:
@@ -599,8 +592,8 @@ function prepareUserForm($user, userType) {
 				$("[name='officePhone']", $editProfileForm).val($user.officePhone);
 			}
 			if ($user.office !== null) {
-				$("[name='building']", $editProfileForm).val($user.office.building);
-				$("[name='room']", $editProfileForm).val($user.office.room);
+				$("[name='building']", $editProfileForm).val($user.building);
+				$("[name='room']", $editProfileForm).val($user.room);
 			}
 			break;
 		case ADMIN:

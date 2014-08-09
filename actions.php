@@ -331,8 +331,18 @@ final class Action {
 	}
 
 	public static function updateProfile($params, $user, &$eventObjectID) {
-		//Incase staff is updating a user's profile. 
-		$userToUpdate = User::getUserByID($params['userID']);
+		//Incase staff is updating a user's profile.
+		if (isset($params['userID'])) {
+			$userToUpdate = User::getUserByID($params['userID']);
+		} else {
+			$userToUpdate = $user;
+		}
+		if ($userToUpdate == null) {
+			throw new ActionError('User not found');
+		}
+		if ($user->getObjectType() != STAFF && $user->getID() != $userToUpdate->getID()) {
+			throw new ActionError('Permission denied');
+		}
 		switch ($userToUpdate->getObjectType()) {
 		case STUDENT:
 			// filter non-digits
@@ -364,7 +374,8 @@ final class Action {
 			break;
 		}
 		$eventObjectID = $user->getID();
-		return $user;
+		// re-retrieve user object since ->updateProfile doesn't update the fields
+		return User::getUserByID($userToUpdate->getID());
 	}
 
 	public static function changeUserPassword($params, $user, &$eventObjectID) {
@@ -842,14 +853,18 @@ final class Action {
 		// Action:           updateProfile
 		// Session required: STUDENT, PROFESSOR, STAFF
 		// Parameters:       all user fields (varies with session user type)
+		//     userID:       If provided, we are updating this profile, not self
 		//     firstName, lastName, mobilePhone, classYear, major,
 		//     gpa, universityID, aboutMe, officePhone, officeBuilding, officeRoom
 		// Returns:
 		//     object:       The new user object
 		//     success and error: Action status
 		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
-			'eventLog' => 'always', 'eventDescr' => '%s updated their profile.',
+			'eventLog' => 'always', 'eventDescr' => 'Profile of %s was updated.',
+			'eventDescrArg' => 'refparam',
 			'isUserInput' => true, 'params' => array(
+				'userID' => array('type' => Action::VALIDATE_NUMERIC,
+					'optional' => true),
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'mobilePhone' => array('type' => Action::VALIDATE_NUMSTR,

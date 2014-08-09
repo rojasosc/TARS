@@ -7,13 +7,11 @@ $(document).ready(function() {
 
 	if ($(".search-users-form").length) {
 		$userSearchForm = $(".search-users-form");
-		$userSearchForm.submit(function() {
-			return false;
-		});
-		$userSearchButton = $("[type='submit']", $userSearchForm);
-		$userSearchButton.click(function() {
+		$userSearchForm.on('submit', function(event) {
+			event.preventDefault();
 			searchUsers();
 		});
+		$userSearchForm.trigger('submit');
 	}
 
 
@@ -326,28 +324,29 @@ function searchUsers() {
 		userType: $("input[type='radio']:checked", $userSearchForm).val()
 	};
 	doPaginatedAction('searchForUsers', input,
-			function(data) {
-				if (data.success) {
-					if (data.pg) {
-						handlePagination(data.pg, $('.pagination'));
-					}
-					if (data.objects) {
-						if (data.objects.length === 0) {
-							$('thead tr').hide();
-							$('#results').html('<em>No results</em');
-						} else {
-							viewResults(data.objects, $("input[type='radio']:checked", $userSearchForm).val());
-						}
-					}
-				} else {
-					showError(data.error, $('#alertHolder'));
+		function(data) {
+			if (data.success) {
+				if (data.pg) {
+					handlePagination(data.pg, $('.pagination'));
 				}
-			},
-			function(jqXHR, textStatus, errorMessage) {
-				showError({
-					message: errorMessage
-				}, $('#alertHolder'));
-			});
+				if (data.objects) {
+					if (data.objects.length === 0) {
+						$('thead tr').hide();
+						$results.find('tbody').html('<em>No results</em');
+					} else {
+						$('thead tr').show();
+						viewResults(data.objects, $("input[type='radio']:checked", $userSearchForm).val());
+					}
+				}
+			} else {
+				showError(data.error, $('#alertHolder'));
+			}
+		},
+		function(jqXHR, textStatus, errorMessage) {
+			showError({
+				message: errorMessage
+			}, $('#alertHolder'));
+		});
 }
 
 function viewResults(users, userType) {

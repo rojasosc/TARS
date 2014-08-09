@@ -202,7 +202,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<h1 class="panel-title">Edit Users</h1>
 					</div> <!-- End panel-heading -->
 					<div class="panel-body">
-						<form class="form-horizontal search-users-form"  role="form" id="userSearchForm">
+						<form class="form-horizontal search-users-form" novalidate="novalidate" role="form" id="userSearchForm">
 							<div class="row">
 								<div class="col-xs-3">
 									<label class="control-label" for="emailSearch">Email</label>
@@ -241,7 +241,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<!-- End Pagination -->
 						<div class="row">
 							<div class="col-md-12">
-								<table class="table table-striped table-hover user-search-table">
+								<table class="table table-striped user-search-table">
 									<thead>
 										<tr>
 											<th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th>

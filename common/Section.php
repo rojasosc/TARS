@@ -21,6 +21,42 @@ final class Section {
 		$rows = Database::executeGetAllRows($sql,$args);
 		return array_map(function($row) {return new Section($row);}, $rows); 
 	}
+	
+	public static function fetchSections($crn, $course, $type, $status, $pg) {
+		$sql = "SELECT
+				sectionID, Sections.courseID, crn, type, status, termID, department, courseNumber, courseTitle
+				FROM Sections
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID
+				WHERE ";
+		$args = array();
+		if(!empty($crn)) {
+			$sql .= "INSTR(crn, :crn) AND ";
+			$args[':crn'] = $crn;
+		}
+		if(!empty($course)) {
+			$i = 1;
+			foreach (explode(' ', $course) as $word) {
+				$sql .= "(department = :word$i OR
+					courseNumber = :word$i OR
+					INSTR(courseTitle, :word$i) OR
+					CONCAT(department, courseNumber) = :word$i) AND ";
+				$ars[":word$i"] = $word;
+				$i++;
+			}
+		}
+		if(!empty($type)) {
+			$sql .= "type = :type AND ";
+			$args[':type'] = $type;
+		}
+		if(!empty($status) && $status !== 'all') {
+			$sql .= "status = :status AND ";
+			$args[':status'] = $status;
+		}
+		$sql .= "1";
+		
+		return Database::executeGetPage($sql, $args, $pg, function ($row) {
+			return new Section($row); });
+	}
 
 	public static function getOrCreateCourse($termID, $department, $courseNumber, $courseTitle) {
 		$args = array(':term'=>$termID, ':department'=>$department, ':number'=>$courseNumber);
@@ -78,6 +114,7 @@ final class Section {
 		$this->courseTitle = $row['courseTitle'];
 		$this->courseTermID = $row['termID'];
 		$this->courseTerm = null;
+		$this->status = $row['status'];
 		$this->creatorID = $row['creatorID'];
 		$this->creator = null;
 		$this->createTime = strtotime($row['createTime']);
@@ -169,7 +206,9 @@ final class Section {
 	public function getCourseFullName() {
 		return $this->courseDepartment . $this->courseNumber . ' ' . $this->getCourseTerm()->getName();
 	}
-
+	public function getStatus() {
+		return $this->status;
+	}
 	public function getCreator() {
 		if ($this->creator == null) {
 			$this->creator = User::getUserByID($this->creatorID);

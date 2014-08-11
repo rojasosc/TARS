@@ -502,6 +502,19 @@ final class Action {
 		}
 		return $params;
 	}
+	
+	public static function fetchSections($params, $user, &$eventObjectID) {
+		if(is_array($params)) {
+			//The array $params should contain: crn, course, type, status, pgIndex, pgLength, pgGetTotal
+			$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
+			$pg = array('index' => $params['pgIndex'],
+					   'length' => $params['pgLength'],
+					   'getTotal' => $getTotal);
+			$sectionsFound = Section::fetchSections($params['crn'], $params['course'], $params['type'], $params['status'], $pg);
+			return $sectionsFound;
+		}
+		return $params;
+	}
 
 	// only available via running this script; not by Action::callAction
 	public static function uploadTerm($params, $user, &$eventObjectID) {
@@ -998,7 +1011,30 @@ final class Action {
 				'termYear' => array('type' => Action::VALIDATE_NUMSTR,
 					'min_length' => 4, 'max_length' => 4),
 				'termSemester' => Action::VALIDATE_NOTEMPTY,
-				'termFile' => Action::VALIDATE_UPLOAD)));
+				'termFile' => Action::VALIDATE_UPLOAD)),
+		// Action:			fetchSections
+		// Session required: STAFF
+		// Parameters:
+		//		crn: CRN field
+		//		course: course field
+		//		type: type field
+		// 		status: status radio buttons
+		// Returns:
+		//		success and error: Action status
+		'fetchSections' => array(
+			'event' => Event::USER_GET_OBJECT,
+			'userType' => STAFF,
+			'eventDescr' => '%s retrieved sections view.',
+			'isUserInput' => true,
+			'params' => array(
+				'crn' => array('optional' => true),
+				'course' => array('optional' => true),
+				'type' => array('optional' => true),
+				'status' => array('optional' => true),
+				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true)))
+		);
 	// end Action::$action_map
 
 	public static function callAction($actionName, $input = array()) {

@@ -214,6 +214,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											</label>
 										</div>
 									</div>
+									<div class="col-xs-3"></div>
 								</div>
 							</fieldset>
 						</form>

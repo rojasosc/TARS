@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+//CONDEMNED. I THINK. MAYBE NOT.
     $('.coursePanel').on('hidden.bs.collapse', function() {
         var sectionTitle = $(this).find('h2');
         var sectionTitleHTML = sectionTitle.html();
@@ -15,7 +15,7 @@ $(document).ready(function() {
 		var sectionCourseNumber = sectionForm.find('.courseNum').val();
 		var sectionLabTACount = sectionForm.find('.labTACount').val();
 		var sectionWSTACount = sectionForm.find('.wsTACount').val();
-		var sectionSLTACount = sectionForm.find('.slTACount').val();
+		var sectionSLTACount = sectionForm.find('.wsslCount').val();
 		var sectionLecTACount = sectionForm.find('.lecTACount').val();
 		var sectionGraderCount = sectionForm.find('.graderCount').val();
 		//FIND A BETTER WAY TO DISPLAY THIS

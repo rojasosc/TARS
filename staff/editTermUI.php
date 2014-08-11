@@ -9,7 +9,9 @@ try {
 } catch (TarsException $ex) {
 	$error = $ex;
 }
-
+//TODO: Display everything via tables, be sure to include hidden data in each row.
+//TODO: Create a modal for editing purposes
+//TODO: Functional paginated search [Do this one first, lelz]
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +29,7 @@ try {
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+		<script src="../js/tars_utilities.js"></script>
 		<script type="text/javascript" src="editTermUI.js"></script>
 	</head>
 	<body>
@@ -50,20 +53,107 @@ if ($error != null) {
 <?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
+				<div class="alert alert-warning hidden-lg" role="alert">
+					<p>
+						<strong>Warning!</strong> This page is meant only to be viewed on a computer screen.
+					</p>
+				</div>
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h1 class="panel-title">Fall 2014</h1>
+						<h1 class="panel-title">Edit Term</h1>
 					</div>
 					<div class="panel-body">
+						<form class="form-horizontal fetch-sections-form" role="form" id="fetchSectionsForm">
+							<fieldset>
+								<legend>Filter by:</legend>
+								<div class="row">
+									<div class="col-xs-6 col-sm-4 col-md-3">
+										<label class="control-label" for="CRNFilter">CRN:</label>
+										<input id="CRNFilter" name="CRNFilter" type="text" class="form-control" placeholder="e.g. 12345">
+									</div>
+									<div class="col-xs-6 col-sm-4 col-md-3">
+										<label class="control-label" for="courseFilter">Course:</label>
+										<input id="courseFilter" name="courseFilter" type="text" class="form-control" placeholder="e.g. CSC 171">
+									</div>
+									<div class="col-xs-6 col-sm-4 col-md-3">
+										<label class="control-label" for="typeFilter">Type: </label>
+										<input id="typeFilter" name="typeFilter" type="text" class="form-control" placeholder="e.g. lab, lecture">
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-xs-12 col-sm-6 col-md-4">
+										<div class="btn-group" data-toggle="buttons">
+											<label class="btn btn-primary active">
+												<input type="radio" value="all" name="all" checked> All
+											</label>
+											<label class="btn btn-primary">
+												<input type="radio" value="ok" name="ok"> OK
+											</label>
+											<label class="btn btn-primary">
+												<input type="radio" value="not-ok" name="notOk"> Not OK
+											</label>
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+								</div>
+								</div>
+							</fieldset>
+						</form>
+						<hr />
+						<ul class="pagination">
+						</ul>
+						<table class="table table-striped table-condensed">
+							<thead>
+								<tr>
+									<th>Course</th>
+									<th>Type</th>
+									<th>CRN</th>
+									<th>Day</th>
+									<th>Time</th>
+									<th>Place</th>
+									<th>Lab TAs</th>
+									<th>WS Leaders</th>
+									<th>Super Leaders</th>
+									<th>Lec TAs</th>
+									<th>Graders</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody id="results">
+							</tbody>
+						</table>
+						<ul class="pagination">
+						</ul>
 						<?php
 	foreach($sections as $section) {
-		//TODO: TA COUNTS, which can be done using Section::getTotalPositionsByType($profobj, $sectionID)
 		$sessions = $section->getAllSessions();
 		$sessions = SectionSession::combineSessions($sessions);
 		$profs = $section->getAllProfessors();
 		//	print_r($section);
 		//	print_r($sessions);
 		//	print_r($profs);
+		$labTACount = $section->getTotalPositionsByType($profs[0], 1);
+		if(!$labTACount) {
+			$labTACount = 0;
+		}
+		$wsTACount = $section->getTotalPositionsByType($profs[0], 2);
+		if(!$wsTACount) {
+			$wsTACount = 0;
+		}
+		$wsslCount = $section->getTotalPositionsByType($profs[0], 3);
+		if(!$wsslCount) {
+			$wsslCount = 0;
+		}
+		$lecTACount = $section->getTotalPositionsByType($profs[0], 5);
+		if(!$lecTACount) {
+			$lecTACount = 0;
+		}
+		$graderCount = $section->getTotalPositionsByType($profs[0], 4);
+		if(!$graderCount) {
+			$graderCount = 0;
+		}
 		// TODO normalize (multiple professors here would require string parsing to find separate email addresses)
 		$profName = implode(', ', array_map(function ($prof) { return $prof->getEmail(); }, $profs));
 		
@@ -74,6 +164,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			$session = SectionSession::emptySession();
 		}
 						?>
+						
 						<div class="panel panel-info coursePanel">
 							<div class="panel-heading">
 								<h2 class="panel-title" data-toggle="collapse" data-target="#<?=$section->getCRN()?>Panel"><?='['.$section->getSectionType().'] '.$section->getCourseDepartment().' '.$section->getCourseNumber()?><span class="hidden-xs"><?=': '.$section->getCourseTitle()?></span></h2>
@@ -117,19 +208,19 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 											<div class="row">
 												<h3>TA Counts</h3><br />
 												<div class="col-xs-2">
-													Lab: <input type="text" class="form-control labTACount" value="6"/>
+													Lab: <input type="text" class="form-control labTACount" value="<?=$labTACount?>"/>
 												</div>
 												<div class="col-xs-2">
-													W<span class="hidden-xs hidden-sm">o</span>rksh<span class="hidden-xs hidden-sm">o</span>p: <input type="text" class="form-control wsTACount" value="15"/>
+													W<span class="hidden-xs hidden-sm">o</span>rksh<span class="hidden-xs hidden-sm">o</span>p: <input type="text" class="form-control wsTACount" value="<?=$wsTACount?>"/>
 												</div>
 												<div class="col-xs-2">
-													Super <span class="hidden-xs hidden-sm">Leader</span>: <input type="text" class="form-control slTACount" value="1"/>
+													Super <span class="hidden-xs hidden-sm">Leader</span>: <input type="text" class="form-control wsslCount" value="<?=$wsslCount?>"/>
 												</div>
 												<div class="col-xs-2">
-													Lecture: <input type="text" class="form-control lecTACount" value="2"/>
+													Lecture: <input type="text" class="form-control lecTACount" value="<?=$lecTACount?>"/>
 												</div>
 												<div class="col-xs-2">
-													Grader: <input type="text" class="form-control graderCount" value="5"/>
+													Grader: <input type="text" class="form-control graderCount" value="<?=$graderCount?>"/>
 												</div>
 											</div> <br/>
 											<div class="row">
@@ -145,10 +236,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<?php
 	}
 						?>
-					</div>
-					<div class="panel-footer">
-						<!-- TODO: Add functionality -->
-						<button type="submit" class="btn btn-success btn-lg">Save All</button>
 					</div>
 				</div>
 				<?php

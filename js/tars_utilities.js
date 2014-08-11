@@ -49,8 +49,8 @@ $(document).ready(function() {
 				message: 'This value is not valid',
 				feedbackIcons: {
 					valid: 'glyphicon glyphicon-ok',
-				invalid: 'glyphicon glyphicon-remove',
-				validating: 'glyphicon glyphicon-refresh'
+					invalid: 'glyphicon glyphicon-remove',
+					validating: 'glyphicon glyphicon-refresh'
 				},
 				fields: {
 					oldPassword: {
@@ -60,31 +60,30 @@ $(document).ready(function() {
 							}
 						}
 					},
-				newPassword: {
-					message: 'Your password is not valid',
-				validators: {
-					notEmpty: {
-						message: 'Your password is required and cannot be empty'
+					newPassword: {
+						message: 'Your password is not valid',
+						validators: {
+							notEmpty: {
+								message: 'Your password is required and cannot be empty'
+							},
+							stringLength: {
+								min: 6,
+								max: 20,
+								message: 'Your password must be between 6 and 20 characters long'
+							}
+						}
 					},
-					stringLength: {
-						min: 6,
-						max: 20,
-						message: 'Your password must be between 6 and 20 characters long'
-					}
-				}
-				},
-				confirmPassword: {
-					validators: {
-						notEmpty: {
-							message: 'Passwords do not match'
-						},
-						identical: {
-							field: 'newPassword',
-							message: 'Passwords do not match'
-
+					confirmPassword: {
+						validators: {
+							notEmpty: {
+								message: 'Passwords do not match'
+							},
+							identical: {
+								field: 'newPassword',
+								message: 'Passwords do not match'
+							}
 						}
 					}
-				}
 				} /* close fields */
 			});
 			viewPasswordForm($(this).data("userid"), $passwordForm.data("usertype"));
@@ -127,6 +126,106 @@ $(document).ready(function() {
 				data.pgGetTotal = false;
 				doAction($pgAction, data).done($pgAjaxDone).fail($pgAjaxFail);
 			}
+		});
+	}
+	
+	if($(".fetch-sections-form").length) {
+		$filterSectionsForm = $('.fetch-sections-form');
+		$filterSectionsForm.on('submit', function(event) {
+			
+			event.preventDefault();
+			var input = {
+				crn: $("[name='CRNFilter']", $filterSectionsForm).val(),
+				course: $("[name='courseFilter']", $filterSectionsForm).val(),
+				type: $("[name='typeFilter']", $filterSectionsForm).val(),
+				status: $("input[type='radio']:checked", $filterSectionsForm).val()
+			};
+			doPaginatedAction('fetchSections', input, function(data) {
+				if(data.success) {
+					if(data.pg) {
+						handlePagination(data.pg, $('.pagination'));
+					}
+					if(data.objects) {
+						if(data.objects.length == 0) {
+							$('thead tr').hide();
+							$('#results').html('<em>No results</em>');
+						} else {
+					//		alert(JSON.stringify(data.objects));
+							$('thead tr').show();
+							var html = [];
+							for (var key in data.objects) {
+								var section = data.objects[key];
+								var courseNum = 'TBD';
+								var title = 'TBD';
+								var type = 'TBD';
+								var crn = 'TBD';
+								var day = 'TBD';
+								var startTime = 'TBD';
+								var endTime = 'TBD'
+								var building = 'TBD';
+								var room = 'TBD';
+								var labTA = 'TBD';
+								var WSL = 'TBD';
+								var WSSL = 'TBD';
+								var lecTA = 'TBD';
+								var grader = 'TBD';
+								var instructorEmail = 'TBD';
+								
+								if(section.length > 0) {
+									
+									crn = section.crn;
+									type = section.type;
+									if(section.course.length > 0) {
+										courseNum = 'CSC' + section.course[0].number;
+										title = section.course[0].title;
+									}
+									if(section.instructor.length > 0) {
+										//There has got to be a better way than this
+										var length = section.instructor.length;
+										instructorEmail = section.instructor[0].email;
+										if(length > 1) {
+											instructorEmail += ', ' + section.instructor[1].email;
+										}
+									}
+									if(section.sessions.length > 0) {
+										day = section.sessions[0].weekdays;
+										startTime = section.sessions[0].startTime;
+										endTime = section.sessions[0].endTime;
+										building = section.sessions[0].building;
+										room = section.sessions[0].room;
+									}
+								}
+								var secRow = '<tr>';
+								secRow += '<td class="courseNum">' + courseNum + '</td>';
+								secRow += '<td class="type">' + type + '</td>';
+								secRow += '<td class="crn">' + crn + '</td>';
+								secRow += '<td class="days">' + day + '</td>';
+								secRow += '<td class="time">' + startTime + ' - ' + endTime + '</td>';
+								secRow += '<td class="place">' + building + ' ' + room + '</td>';
+								secRow += '<td class="labTA">' + labTA + '</td>';
+								secRow += '<td class="WSL">' + WSL + '</td>';
+								secRow += '<td class="WSSL">' + WSSL + '</td>';
+								secRow += '<td class="lecTA">' + lecTA + '</td>';
+								secRow += '<td class="grader">' + grader + '</td>';
+								secRow += '<td class="hidden instructor-emails">' + instructorEmail + '</td>';
+								secRow += '<td class="hidden courseTitle">' + title + '</td>';
+								secRow += '<td><button data-toggle="modal" data-target="edit-modal" class="btn btn-default edit-section circle"><span class="glyphicon glypphicon-wrench"></span></button></td>';
+								secRow += '</tr>';
+								html.push(secRow);
+							}
+							$('#results').html(html.join(''));
+							
+						}
+					}
+				} else {
+					showError(data.error, $('#alertHolder'));
+				}
+			},
+			function(jqXHR, textStatus, errorMessage) {
+				showError({
+					message: errorMessage
+				}, $('#alertholder'));
+			});
 		});
 	}
 

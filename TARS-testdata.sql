@@ -32,8 +32,7 @@ INSERT INTO `PositionTypes` (`positionName`, `positionTitle`, `responsibilities`
 ('lab', 'Lab TA', 'lab ta respons.', 'lab ta times', 'lab ta comp.'),
 ('wsl', 'Workshop Leader', 'ws respons.', 'ws times', 'ws comp.'),
 ('wssl', 'Workshop Superleader', 'wss respons.', 'wss times', 'wss comp.'),
-('grader', 'Grader', 'g respons.', 'g times', 'g comp.'),
-('lecta', 'Lecture TA', 'lt respons.', 'lt times', 'lt comp.');
+('grader', 'Grader', 'g respons.', 'g times', 'g comp.');
 
 INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SERVER_EXCEPTION', 'crit', 'EventType'),

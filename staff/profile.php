@@ -118,7 +118,7 @@ if ($staff != null) {
 				</div> <!-- End modal-header -->
 				<div class="modal-body">
 					<div id="editPasswordAlertHolder"></div>
-					<form class="change-password-form" data-usertype="<?= STAFF ?>">
+					<form class="change-password-form" id="change-password-form" data-userid="<?= $staff->getID() ?>" data-usertype="<?= STAFF ?>">
 						<div class="row">
 							<div class="col-xs-6">
 								<div class="form-group">
@@ -145,7 +145,7 @@ if ($staff != null) {
 				</div> <!-- End modal-body -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
+					<button type="submit" form="change-password-form" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
 				</div> <!-- End modal-footer -->
 			</div> <!-- End modal-content -->
 		</div> <!-- End modal dialog -->
@@ -218,14 +218,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							</div>	<!-- End Row -->
 						</div> <!-- End panel-body -->
 						<div class="panel-footer">
-							<div class="row">
-								<div class="col-xs-3">
-									<button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= STAFF ?>" data-userid="<?= $staff->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
-								</div> <!-- End column -->
-								<div class="col-xs-3">
-									<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $staff->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
-								</div> <!-- End column -->
-							</div> <!-- End row -->
+							<button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= STAFF ?>" data-userid="<?= $staff->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+							<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $staff->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
 						</div> <!-- End panel-footer -->
 					</div> <!-- End panel panel-primary -->
 				</div> <!-- End container -->

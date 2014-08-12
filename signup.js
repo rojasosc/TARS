@@ -4,9 +4,9 @@ $(document).ready(function () {
 	$('#signupForm').bootstrapValidator({
 		message: 'This value is not valid',
 		feedbackIcons: {
-		valid: 'glyphicon glyphicon-ok',
-		invalid: 'glyphicon glyphicon-remove',
-		validating: 'glyphicon glyphicon-refresh'
+			valid: 'glyphicon glyphicon-ok',
+			invalid: 'glyphicon glyphicon-remove',
+			validating: 'glyphicon glyphicon-refresh'
 		},
 		submitHandler: function(validator, form, submitButton) {
 			// Ajax post(url,data,callback function)
@@ -171,7 +171,7 @@ $(document).ready(function () {
 /*Clears all the fields in the registration form*/
 function clearInput() {
 	$("#signupForm :input").each( function() {
-	   $(this).val('');
+		$(this).val('');
 	});
 }
 /*Removes the form and displays a confirmation message*/
@@ -180,7 +180,7 @@ function displayConfirmation(){
 	$('#signupForm').fadeOut('slow', function () {
 		$('#formBox').html(message).fadeIn('slow');
 	});
-	
+
 }
 
 

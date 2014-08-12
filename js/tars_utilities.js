@@ -11,12 +11,18 @@ $(document).ready(function() {
 			event.preventDefault();
 			searchUsers();
 		});
+		$userSearchForm.on('change', 'input:radio', function() {
+			$userSearchForm.trigger('submit');
+		});
 		$userSearchForm.trigger('submit');
 	}
 
 
 	if ($(".user-search-table").length) {
 		$results = $(".user-search-table");
+		$results.on('click', '.edit-profile', function() {
+			viewUserForm($(this).data("userid"), $(this).data('usertype'));
+		});
 
 	}
 
@@ -25,9 +31,13 @@ $(document).ready(function() {
 		if ($(".edit-profile-form").length) {
 
 			//In case the button is not in a table
-			$(".edit-profile").click(function() {
+			$(".edit-profile").on('click', function() {
 				viewUserForm($(this).data("userid"), $(this).data("usertype"));
+			});
 
+			$(".edit-profile-form").on('submit', function(event) {
+				event.preventDefault();
+				updateUserProfile();
 			});
 		}
 
@@ -44,6 +54,7 @@ $(document).ready(function() {
 	if ($(".password-modal").length) {
 		$passwordModal = $(".password-modal");
 		$passwordForm = $(".change-password-form");
+<<<<<<< HEAD
 		$(".change-password").click(function() {
 			$passwordForm.bootstrapValidator({
 				message: 'This value is not valid',
@@ -87,7 +98,55 @@ $(document).ready(function() {
 				} /* close fields */
 			});
 			viewPasswordForm($(this).data("userid"), $passwordForm.data("usertype"));
+=======
+		$passwordForm.on('submit', function(event) {
+			event.preventDefault();
+			changeUserPassword();
 		});
+		$passwordForm.bootstrapValidator({
+			message: 'This value is not valid',
+			feedbackIcons: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				oldPassword: {
+					validators: {
+						notEmpty: {
+							message: 'You must confirm your old password'
+						}
+					}
+				},
+				newPassword: {
+					message: 'Your password is not valid',
+					validators: {
+						notEmpty: {
+							message: 'Your password is required and cannot be empty'
+						},
+						stringLength: {
+							min: 6,
+							max: 20,
+							message: 'Your password must be between 6 and 20 characters long'
+						}
+					}
+				},
+				confirmPassword: {
+					validators: {
+						notEmpty: {
+							message: 'Passwords do not match'
+						},
+						identical: {
+							field: 'newPassword',
+							message: 'Passwords do not match'
+
+						}
+					}
+				}
+			} /* close fields */
+>>>>>>> Cleaned up the UI for staff edit student specifically, as well as all profile editing code and UI
+		});
+		viewPasswordForm($passwordForm.data("userid"), $passwordForm.data("usertype"));
 	}
 
 	if ($(".comments-modal").length) {
@@ -452,7 +511,6 @@ function searchUsers() {
 }
 
 function viewResults(users, userType) {
-	var userType = parseInt(userType,10);
 	/* Clear any existing results */
 	$results.hide();
 	$results.find("tbody").remove();
@@ -470,17 +528,13 @@ function viewResults(users, userType) {
 		row[++j] = users[key].email;
 		row[++j] = "</td><td>";
 		row[++j] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" +
-					users[key].id + "' data-usertype='" + userType + "'><span class='glyphicon glyphicon-wrench'></span></button>";
+					users[key].id + "' data-usertype='" + users[key].type + "'><span class='glyphicon glyphicon-wrench'></span></button>";
 		row[++j] = "</td></tr>";
-
 	}
 
 	/* Render the appropriate user profile update forms */
 	$results.append(row.join(''));
 	$results.show();
-	$(".edit-profile").click(function() {
-		viewUserForm($(this).data("userid"), userType);
-	});
 
 }
 
@@ -513,6 +567,8 @@ function prepareStudentModal(student) {
 }
 
 function viewPasswordForm(userID, userType) {
+	//console.log('viewpasswordform');
+	//console.log(userID, userType);
 	doAction('fetchUser', {
 		userID: userID,
 	userType: userType
@@ -532,9 +588,12 @@ function viewPasswordForm(userID, userType) {
 function viewUserForm(userID, userType) {
 	var userType = parseInt(userType, 10);
 	$editProfileForm = $("#profileForm" + userType);
-	$editProfileForm.submit(function(event) {
-		event.preventDefault();
-	});
+	// hide all sub-forms
+	$('.edit-profile-form').hide();
+	// show the current sub-form
+	$editProfileForm.show();
+	// set submit button to the current sub-form
+	$(".profile-modal button[type=submit]").attr({form: $editProfileForm.attr('id')});
 	doAction('fetchUser', {
 		userID: userID,
 		userType: userType
@@ -553,20 +612,16 @@ function viewUserForm(userID, userType) {
 
 function preparePasswordForm(user) {
 	$("[name='email']", $passwordForm).val(user.email);
-	$("[type='submit']").click(changeUserPassword);
-	$passwordModal.modal("show");
 }
 
 function prepareUserForm($user, userType) {
 	window.$user = $user;
 	$("#modalHeader").html($user.firstName + " " + $user.lastName);
-	$("[name='firstName']", $editProfileForm).val($user["firstName"]);
-	$("[name='lastName']", $editProfileForm).val($user["lastName"]);
-	$("[name='email']", $editProfileForm).val($user["email"]);
+	$("[name='firstName']", $editProfileForm).val($user.firstName);
+	$("[name='lastName']", $editProfileForm).val($user.lastName);
+	$("[name='email']", $editProfileForm).val($user.email);
 	switch (userType) {
 		case STUDENT:
-			$("#profileForm1").hide();
-			$("#profileForm0").show();
 			$("[name='mobilePhone']", $editProfileForm).val($user.mobilePhone);
 			$("[name='classYear']", $editProfileForm).val($user.classYear);
 			$("[name='major']", $editProfileForm).val($user.major);
@@ -575,19 +630,7 @@ function prepareUserForm($user, userType) {
 			$("[name='aboutMe']", $editProfileForm).val($user.aboutMe);
 			break;
 		case PROFESSOR:
-			$("#profileForm0").hide();
-			$("#profileForm1").show();
-			if ($user.officePhone !== null) {
-				$("[name='officePhone']", $editProfileForm).val($user.officePhone);
-			}
-			if ($user.office !== null) {
-				$("[name='building']", $editProfileForm).val($user.building);
-				$("[name='room']", $editProfileForm).val($user.room);
-			}
-			break;
 		case STAFF:
-			$("#profileForm0").hide();
-			$("#profileForm1").show();
 			if ($user.officePhone !== null) {
 				$("[name='officePhone']", $editProfileForm).val($user.officePhone);
 			}
@@ -602,15 +645,14 @@ function prepareUserForm($user, userType) {
 		default:
 			break;
 	}
-	$("[type='submit']").click(updateUserProfile);
-	$userModal.modal("show");
+	//$userModal.modal("show");
 }
 
 function changeUserPassword() {
 	doAction('changeUserPassword', {
 		oldPassword: $("[name='oldPassword']", $passwordForm).val(),
-	newPassword: $("[name='newPassword']", $passwordForm).val(),
-	confirmPassword: $("[name='confirmPassword']", $passwordForm).val()
+		newPassword: $("[name='newPassword']", $passwordForm).val(),
+		confirmPassword: $("[name='confirmPassword']", $passwordForm).val()
 	}).done(function(data) {
 		if (data.success) {
 			$passwordModal.modal('hide');

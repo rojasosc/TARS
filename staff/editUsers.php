@@ -8,6 +8,27 @@ try {
 } catch (TarsException $ex) {
 	$error = $ex;
 }
+
+function generate_year_options($start_offset, $end_offset) {
+	$current_year = intval(date('Y'));
+	$output = array();
+	for ($i = $current_year + $start_offset; $i <= $current_year + $end_offset; $i++) {
+		$output[] = "<option>$i</output>";
+	}
+	return implode('',$output);
+}
+
+function generate_major_options() {
+	// TODO XXX put in the database?
+	$values = array('CSC' => 'Computer Science', 'PHY' => 'Physics',
+		'MTH' => 'Mathematics', 'ECO' => 'Economics', 'ECE' => 'Electrical & Computer Engineering');
+	$output = array();
+	foreach ($values as $short => $name) {
+		$name = htmlentities($name);
+		$output[] = "<option value=\"$name\">$short</output>";
+	}
+	return implode('',$output);
+}
 ?>
 
 <!DOCTYPE html>
@@ -61,80 +82,77 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<div id="editProfileAlertHolder"></div>
 								<form class="edit-profile-form" id="profileForm<?= STUDENT ?>" data-usertype="<?= STUDENT ?>">
 									<div class="row">
-										<div class="col-md-4">				
-											<div class="form-group"> 				
-												<label class="control-label" for="firstName">First Name</label>
-												<input id="firstName" type="text" class="form-control" name="firstName">									
-											</div> <!-- End form-group -->			
-										</div> <!-- End column -->
-										<div class="col-md-4">
+										<div class="col-xs-6">
 											<div class="form-group">
-												<label class="control-label" for="firstName">Last Name</label>
-												<input id="lastName" type="text" class="form-control" name="lastName">													
-											</div> <!-- End form-group -->	
-										</div>	<!-- End column -->		
+												<label class="control-label" for="firstName">First Name</label>
+												<input id="firstName" type="text" class="form-control" name="firstName">
+											</div> <!-- End form-group -->
+										</div> <!-- End column -->
+										<div class="col-xs-6">
+											<div class="form-group">
+												<label class="control-label" for="lastName">Last Name</label>
+												<input id="lastName" type="text" class="form-control" name="lastName">
+											</div> <!-- End form-group -->
+										</div>	<!-- End column -->
 									</div> <!-- End row -->
 									<div class="row">
-										<div class="col-md-4">
+										<div class="col-xs-6">
 											<div class="form-group">
 												<label class="control-label" for="email">Email</label>
-												<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
-											</div> <!-- End form-group -->	
+												<input id="email" type="email" class="form-control" disabled="disabled" name="email">
+											</div> <!-- End form-group -->
 										</div>	<!-- End column -->
-										<div class="col-md-4">
+										<div class="col-xs-6">
 											<div class="form-group">
 												<label class="control-label" for="mobilePhone">Mobile Phone</label>
-												<input id="mobilePhone" type="tel" class="form-control" name="mobilePhone" placeholder="Mobile Phone">
+												<div class="input-group">
+													<span class="input-group-addon">+1</span>
+													<input type="tel" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="Mobile Phone" maxlength="14" />
+												</div>
 											</div> <!-- End form-group -->
-										</div> <!-- End column -->		
+										</div> <!-- End column -->
 									</div> <!-- End row -->
 									<legend>Academic Information</legend>
 									<div class="row">
-										<div class="col-md-4">
+										<div class="col-xs-6">
 											<div class="form-group">
 												<label class="control-label" for="classYear">Class Year</label>
-												<select id="classYear" name="classYear" class="selectpicker form-control">
-													<option>2014</option>
-													<option>2015</option>
-													<option>2016</option>
-													<option>2017</option>
-													<option>2018</option>
-												</select> <!-- End select -->
+												<input type="text" list="years-list" id="classYear" name="classYear" class="form-control">
+												<datalist id="years-list"><?= generate_year_options(0, 5) ?></datalist>
 											</div> <!-- End form-group -->
 										</div> <!-- End column -->
-										<div class="col-md-4">
+										<div class="col-xs-6">
 											<div class="form-group">
 												<label class="control-label" for="major">Major</label>
-												<select id="major" name="major" class="selectpicker form-control">
-													<option>Accounting</option>
-													<option>Computer Science</option>
-													<option>Physics</option>
-													<option>Mathematics</option>
-													<option>Economics</option>
-												</select> <!-- End select -->	
-											</div> <!-- End form-group -->
-										</div> <!-- End column -->	
-									</div> <!-- End Row -->	
-									<div class="row">
-										<div class="col-md-4">
-											<div class="form-group">
-												<label class="control-label" for="gpa">GPA</label>
-												<input id="gpa" type="text" class="form-control" name="gpa" placeholder="GPA">
+												<input type="text" list="majors-list" id="major" name="major" class="form-control">
+												<datalist id="majors-list"><?= generate_major_options() ?></datalist>
 											</div> <!-- End form-group -->
 										</div> <!-- End column -->
-										<div class="col-md-4">
+									</div> <!-- End Row -->
+									<br />
+									<div class="row">
+										<div class="col-xs-6">
+											<div class="form-group">
+												<label class="control-label" for="gpa">Cumulative GPA</label>
+												<input type="text" id="gpa" name="gpa" class="form-control" maxlength="5">
+											</div> <!-- End form-group -->
+										</div> <!-- End column -->
+										<div class="col-xs-6">
 											<div class="form-group">
 												<label class="control-label" for="universityID">University Student ID</label>
-												<input id="universityID" type="text" class="form-control" name="universityID" placeholder="University Student ID">
+												<input type="text" id="universityID" name="universityID" class="form-control" maxlength="8">
 											</div> <!-- End form-group -->
-										</div> <!-- End column -->	
-									</div> <!-- End row -->	
-									<div class="row">
-										<div class="col-md-8">
-											<label class="control-label" for="aboutMe">About Me</label>
-											<textarea id="aboutMe" class="form-control" name="aboutMe" placeholder="Fill this area with previous experience and relevant qualifications."></textarea>
 										</div> <!-- End column -->
-									</div> <!-- End row -->					
+									</div> <!-- End Row -->
+									<br />
+									<div class="row">
+										<div class="col-xs-12">
+											<div class="form-group">
+												<label class="control-label" for="aboutMe">Qualifications and TA-ing History</label>
+												<textarea id="aboutMe" name="aboutMe" class="form-control"></textarea>
+											</div> <!-- End form-group -->
+										</div> <!-- End column -->
+									</div> <!-- End Row -->
 								</form> <!-- End form -->
 								<form class="edit-profile-form" id="profileForm<?= PROFESSOR ?>" data-usertype="<?= PROFESSOR ?>">
 									<div class="row">

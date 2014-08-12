@@ -52,38 +52,38 @@ function generate_major_options() {
 </head>
 
 <body>
-<!-- BEGIN Edit Profile Modal-->
-<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h1 class="modal-title" id="modalHeader"></h1>
-			</div> <!-- End modal-header -->
-			<div class="modal-body">
-				<div id="editProfileAlertHolder"></div>
-				<form class="edit-profile-form" id="profileForm<?= STUDENT ?>" data-usertype="<?= STUDENT ?>">
+	<!-- BEGIN Edit Profile Modal-->
+	<div class="modal fade profile-modal" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h1 class="modal-title" id="modalHeader"></h1>
+				</div> <!-- End modal-header -->
+				<div class="modal-body">
+					<div id="editProfileAlertHolder"></div>
+					<form class="edit-profile-form" id="profileForm<?= STUDENT ?>" data-usertype="<?= STUDENT ?>">
 						<div class="row">
-							<div class="col-xs-6">				
-								<div class="form-group"> 				
+							<div class="col-xs-6">
+								<div class="form-group">
 									<label class="control-label" for="firstName">First Name</label>
-										<input id="firstName" type="text" class="form-control" name="firstName">																					
-								</div> <!-- End form-group -->											
+									<input id="firstName" type="text" class="form-control" name="firstName">
+								</div> <!-- End form-group -->
 							</div> <!-- End column -->
-								<div class="col-xs-6">
-									<div class="form-group">
-										<label class="control-label" for="lastName">Last Name</label>
-											<input id="lastName" type="text" class="form-control" name="lastName">													
-									</div> <!-- End form-group -->							
-								</div>	<!-- End column -->						
+							<div class="col-xs-6">
+								<div class="form-group">
+									<label class="control-label" for="lastName">Last Name</label>
+									<input id="lastName" type="text" class="form-control" name="lastName">
+								</div> <!-- End form-group -->
+							</div>	<!-- End column -->
 						</div> <!-- End row -->
 						<div class="row">
 							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="email">Email</label>
-									<input id="email" type="email" class="form-control" disabled="disabled" name="email">					
-								</div> <!-- End form-group -->							
-							</div>	<!-- End column -->						
+									<input id="email" type="email" class="form-control" disabled="disabled" name="email">
+								</div> <!-- End form-group -->
+							</div>	<!-- End column -->
 							<div class="col-xs-6">
 								<div class="form-group">
 									<label class="control-label" for="mobilePhone">Mobile Phone</label>
@@ -157,7 +157,7 @@ function generate_major_options() {
 				</div> <!-- End modal-header -->
 				<div class="modal-body">
 					<div id="editPasswordAlertHolder"></div>
-					<form class="change-password-form" data-usertype="<?= STUDENT ?>">
+					<form class="change-password-form" id="change-password-form" data-userid="<?= $student->getID() ?>" data-usertype="<?= STUDENT ?>">
 						<div class="row">
 							<div class="col-xs-6">
 								<div class="form-group">
@@ -184,7 +184,7 @@ function generate_major_options() {
 				</div> <!-- End modal-body -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
+					<button type="submit" form="change-password-form" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Continue</button>
 				</div> <!-- End modal-footer -->			
 			</div> <!-- End modal-content -->
 		</div> <!-- End modal dialog -->
@@ -269,14 +269,8 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 							</div>	<!-- End Row -->
 						</div> <!-- End panel-body -->
 						<div class="panel-footer">
-							<div class="row">
-								<div class="col-xs-3">
-									<button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
-								</div> <!-- End column -->
-								<div class="col-xs-3">
-									<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $student->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
-								</div> <!-- End column -->
-							</div> <!-- End row -->
+							<button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+							<button data-target="#password-modal" data-toggle="modal" data-userid="<?= $student->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
 						</div> <!-- End panel-footer -->
 					</div> <!-- End panel panel-primary -->
 				</div> <!-- End container -->

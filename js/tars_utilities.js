@@ -54,51 +54,6 @@ $(document).ready(function() {
 	if ($(".password-modal").length) {
 		$passwordModal = $(".password-modal");
 		$passwordForm = $(".change-password-form");
-<<<<<<< HEAD
-		$(".change-password").click(function() {
-			$passwordForm.bootstrapValidator({
-				message: 'This value is not valid',
-				feedbackIcons: {
-					valid: 'glyphicon glyphicon-ok',
-					invalid: 'glyphicon glyphicon-remove',
-					validating: 'glyphicon glyphicon-refresh'
-				},
-				fields: {
-					oldPassword: {
-						validators: {
-							notEmpty: {
-								message: 'You must confirm your old password'
-							}
-						}
-					},
-					newPassword: {
-						message: 'Your password is not valid',
-						validators: {
-							notEmpty: {
-								message: 'Your password is required and cannot be empty'
-							},
-							stringLength: {
-								min: 6,
-								max: 20,
-								message: 'Your password must be between 6 and 20 characters long'
-							}
-						}
-					},
-					confirmPassword: {
-						validators: {
-							notEmpty: {
-								message: 'Passwords do not match'
-							},
-							identical: {
-								field: 'newPassword',
-								message: 'Passwords do not match'
-							}
-						}
-					}
-				} /* close fields */
-			});
-			viewPasswordForm($(this).data("userid"), $passwordForm.data("usertype"));
-=======
 		$passwordForm.on('submit', function(event) {
 			event.preventDefault();
 			changeUserPassword();
@@ -144,7 +99,6 @@ $(document).ready(function() {
 					}
 				}
 			} /* close fields */
->>>>>>> Cleaned up the UI for staff edit student specifically, as well as all profile editing code and UI
 		});
 		viewPasswordForm($passwordForm.data("userid"), $passwordForm.data("usertype"));
 	}

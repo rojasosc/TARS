@@ -212,6 +212,7 @@ CREATE TABLE IF NOT EXISTS `Sections` (
   `courseID` bigint(20) NOT NULL,
   `crn` bigint(20) NOT NULL,
   `type` enum('lecture','lab') NOT NULL,
+  `status` enum('ok', 'not-ok') NOT NULL DEFAULT 'not-ok',
   `creatorID` bigint(20) NOT NULL,
   `createTime` timestamp NOT NULL,
 

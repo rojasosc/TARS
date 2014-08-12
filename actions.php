@@ -733,7 +733,9 @@ final class Action {
 		'login' => array('event' => Event::SESSION_LOGIN,
 			'eventLog' => 'always', 'eventDescr' => '%s logged in.',
 			'eventDescrArg' => 'refparam', 'isUserInput' => true, 'noSession' => true,
-			'params' => array('email', 'password')),
+			'params' => array(
+				'email' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'password' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
 		// Action:           logout
 		// Session required: none (handled by code)
 		// Parameters:       none

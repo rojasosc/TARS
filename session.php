@@ -21,7 +21,7 @@ final class Session {
 	**/
 	public static function login($email, $input_password) {
 		if ($user_obj = User::getUserByEmail($email)) {
-			if (password_verify($input_password, $user_obj->getPassword())) {
+			if ($user_obj->getPassword() === null || password_verify($input_password, $user_obj->getPassword())) {
 				return $user_obj;
 			}
 		}

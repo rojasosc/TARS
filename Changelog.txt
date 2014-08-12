@@ -3,6 +3,17 @@
 CHANGELOG
 ****************************************************************
 ================================================================
+================================
+********************************
+Publish v0.8.0
+********************************
+================================
+Date: 11 August, 2014
+
+===General===
+Updates to profile pages on Students and Staff to match the style of Professor page
+Changes to profile pages should now be updated live
+Added pagination to Student Search, Staff Edit Users, Review Applications, and Payroll tables
 
 ================================
 ********************************

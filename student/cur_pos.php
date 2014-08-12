@@ -40,13 +40,11 @@ if ($error == null) { //Error checking
 		<title>TARS</title>
 		<!-- BEGIN CSS -->
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
-		<link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
 		<link href="student.css" rel="stylesheet"/>
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="../js/bootstrap-select.min.js"></script>
 		<script src="../js/tars_utilities.js"></script>
 		<script src="cur_pos.js"></script>
 		<!-- END Scripts -->

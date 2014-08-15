@@ -69,11 +69,10 @@ final class Application {
 				INNER JOIN Sections ON Positions.sectionID = Sections.sectionID
 				INNER JOIN Courses ON Sections.courseID = Courses.courseID
 				$sql_ij_teaches
-				WHERE $sql_where 1
-				ORDER BY Courses.department DESC, Courses.courseNumber ASC, Sections.crn ASC";
-		//echo "<pre>";
-		//print_r($args);
-		//exit($sql);
+				WHERE $sql_where 1";
+		// echo "<pre>";
+		// print_r($args);
+		// exit($sql);
 		return array($sql, $args);
 	}
 
@@ -119,11 +118,15 @@ final class Application {
 	 * General purpose function to get application objects.
 	 *
 	 */
-	public static function findApplications($student = null, $section = null, $professor = null, $term = null, $status = -1, $compensation = null) {
+	public static function findApplications($student = null, $section = null, $professor = null, $term = null, $status = -1, $compensation = null, $pg = null) {
 		list($sql, $args) = Application::findApplicationsGeneral(
 			$student, $section, $professor, $term, $status, $compensation, false);
-		$rows = Database::executeGetAllRows($sql, $args);
-		return array_map(function ($row) { return new Application($row); }, $rows);
+		if($pg != null){
+			return Database::executeGetPage($sql, $args, $pg, function($row) { return new Application($row); });
+		}else{
+			$rows = Database::executeGetAllRows($sql, $args);
+			return array_map(function ($row) { return new Application($row); }, $rows);
+		}
 	}
 
 	public static function insertApplication($position, $comp, $qual, $status, $creatorID, $createTime) {
@@ -178,7 +181,8 @@ final class Application {
 			'id' => intval($this->id),
 			'status' => intval($this->appStatus),
 			'compensation' => $this->compensation,
-			'qualifications' => $this->qualifications);
+			'qualifications' => $this->qualifications,
+			'position' => $this->getPosition()->toArray(false));
 		if ($showEvent) {
 			$data['creator'] = $this->getCreator()->toArray(false);
 			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);

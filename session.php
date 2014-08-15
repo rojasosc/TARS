@@ -1,7 +1,5 @@
 <?php
 
-require_once 'db.php';
-
 /********************
 * SESSION FUNCTIONS *
 ********************/

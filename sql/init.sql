@@ -1,16 +1,30 @@
--- phpMyAdmin SQL Dump
--- version 4.2.0
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Last Modified Time: Jun 28, 2014 at 10:08 PM
+-- TARS Init Script
+-- 
+-- Last Modified Time: Aug 15, 8:42 AM ADT-3:00
 -- Last Modified By: Nate Book
+-- Host: localhost
 -- Server version: 5.6.17
 -- PHP Version: 5.4.28
+-- 
+-- Run this at any time to RESET the database, by removing all tables and
+-- adding them again.
+--
+-- Upgrade scripts are also located in this folder:
+--     sql/upgrade-#.#-to-#.#.sql
+--
+-- When making them, an admin should be able to either:
+--     A) Reset the entire database and remove all data by running init.sql
+-- or:
+--     B) Upgrade a live version from any previous version to any later version
+--        by running one or more upgrade-*.sql scripts.
+--
+-- This means, we do this to allow upgrades to work:
+--     1. Do not remove fields in-use by the previous live version (even if we
+--        intended to move them).
+--     2. Do not change the database on micro version increments (0.8.0 -> 0.8.1)
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
 
 --
 -- Database: `TARS`
@@ -466,4 +480,60 @@ CREATE TABLE IF NOT EXISTS `Configurations` (
   PRIMARY KEY (`configID`),
   FOREIGN KEY (`currentTerm`) REFERENCES `Terms` (`termID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- STRUCTURE-LIKE DATA
+-- default term session types
+INSERT INTO `TermSemesters` (`semesterName`, `semesterIndex`) VALUES
+('spring', 100),
+('fall', 200),
+('summer', 150),
+('winter', 50);
+
+-- default position types
+INSERT INTO `PositionTypes` (`positionName`, `positionTitle`, `responsibilities`, `times`, `compensation`) VALUES
+('lecture', 'TA', '...', '...', '...'),
+('lab', 'Lab TA', 'lab ta respons.', 'lab ta times', 'lab ta comp.'),
+('wsl', 'Workshop Leader', 'ws respons.', 'ws times', 'ws comp.'),
+('wssl', 'Workshop Superleader', 'wss respons.', 'wss times', 'wss comp.'),
+('grader', 'Grader', 'g respons.', 'g times', 'g comp.');
+
+INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
+('SERVER_EXCEPTION', 'crit', 'EventType'),
+('SERVER_DBERROR', 'crit', 'EventType'),
+('ERROR_LOGIN', 'error', 'EventType'),
+('ERROR_PERMISSION', 'error', 'EventType'),
+('ERROR_FORM_FIELD', 'error', 'EventType'),
+('ERROR_FORM_UPLOAD', 'error', 'EventType'),
+('SESSION_LOGIN', 'info', 'User'),
+('SESSION_LOGOUT', 'info', 'User'),
+('SESSION_CONTINUE', 'debug', NULL),
+('USER_CREATE', 'info', 'User'),
+('USER_RESET_PASS', 'info', 'User'),
+('USER_APPLY_TOKEN', 'info', 'User'),
+('USER_IS_EMAIL_AVAIL', 'debug', NULL),
+('USER_GET_OBJECT', 'debug', NULL),
+('USER_GET_VIEW', 'debug', NULL),
+('USER_SET_PROFILE', 'info', 'User'),
+('USER_SET_PASS', 'info', 'User'),
+('STUDENT_APPLY', 'info', 'Application'),
+('STUDENT_CANCEL', 'info', 'Application'),
+('STUDENT_WITHDRAW', 'info', 'Application'),
+('NONSTUDENT_SET_APP', 'info', 'Application'),
+('NONSTUDENT_COMMENT', 'info', 'Comment'),
+('SU_CREATE_USER', 'info', 'User'),
+('SU_RESET_USER_PASS', 'info', 'User'),
+('STAFF_TERM_IMPORT', 'info', 'Term'),
+('ADMIN_CONFIGURE', 'info', 'Configurable');
+
+-- default configuration state
+INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `emailDomain`, `emailLinkBase`, `enableLogin`, `currentTerm`) VALUES
+(NULL, '2014-01-01 00:00:00', 0, 0, 'csug.rochester.edu', 'http://www.csug.rochester.edu/TARS/', 1, NULL);
+
+-- default users
+INSERT INTO `Users` (`email`, `emailVerified`, `password`, `passwordReset`, `firstName`, `lastName`, `creatorID`, `createTime`, `type`) VALUES
+('root', 1, NULL, 1, 'Root', 'User', 1, '2014-01-01 00:00:00', 3),
+('tarsbug@csug.rochester.edu', 1, NULL, 0, 'Bug', 'Reporting', 1, '2014-01-01 00:00:00', 3);
+
+INSERT INTO `ResetTokens` (`token`, `action`, `callbackToken`, `callbackNotif`, `timeoutTime`, `creatorID`, `createTime`) VALUES
+(1234567890, 'reset', NULL, NULL, NULL, 1, '2014-01-01 00:00:00');
 

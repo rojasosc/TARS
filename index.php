@@ -1,7 +1,5 @@
 <?php
-require_once 'db.php';
-require_once 'error.php';
-require_once 'session.php';
+
 require_once 'actions.php';
 
 function strip_excess_git_tags($tags) {

@@ -1,7 +1,6 @@
-<?php  
-require_once '../session.php';
-require_once '../actions.php';
-require_once '../error.php';
+<?php
+
+require_once '../db.php';
 
 $error = null;
 $student = null;
@@ -45,7 +44,7 @@ try {
 		<!-- END CSS -->
 		
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/tars_utilities.js"></script>
 		<script src="search.js"></script>

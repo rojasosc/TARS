@@ -1,4 +1,5 @@
 <?php
+
 require_once "../db.php";
 
 // encloses and escapes the given field if necessary
@@ -35,14 +36,14 @@ echo 'University ID,First Name,Last Name,Email,CRN,Type,Class Year,Compensation,
 foreach($assistants as $assistant){
 	$student = $assistant->getCreator();
 	$position = $assistant->getPosition();
-	$course = $position->getSection();
+	$section = $position->getSection();
 
 	/* Column values */
 	$universityID = $student->getUniversityID();
 	$firstName = $student->getFirstName();
 	$lastName = $student->getLastName();
 	$email = $student->getEmail();
-	$crn = $course->getCRN();
+	$crn = $section->getCRN();
 	$type = $position->getTypeTitle();
 	$classYear = $student->getClassYear();
 	$compensation = $assistant->getCompensation();

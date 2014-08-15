@@ -15,9 +15,7 @@
 // "object" (present depending on action): The returned object
 // "objects" (present depending on action): The returned array of objects
 // "valid" (present depending on action): The returned boolean (for Bootstrap Validator)
-require_once 'session.php';
 require_once 'db.php';
-require_once 'error.php';
 
 /**
  * A function to tell us whether the given array is "associative" (has any string keys)

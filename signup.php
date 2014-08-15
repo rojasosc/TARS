@@ -1,4 +1,5 @@
 <?php
+
 require_once 'db.php';
 
 function generate_year_options($start_offset, $end_offset) {

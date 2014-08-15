@@ -1,8 +1,9 @@
 <?php
 
 require_once 'plugins/password_compat/password.php';
-require_once 'error.php';
+require_once 'email.php';
 require_once 'session.php';
+require_once 'error.php';
 require_once 'common/Place.php';
 require_once 'common/User.php';
 require_once 'common/Student.php';
@@ -19,7 +20,6 @@ require_once 'common/Event.php';
 require_once 'common/Configuration.php';
 require_once 'common/Notification.php';
 require_once 'common/ResetToken.php';
-require_once 'email.php';
 
 /*******************************************
 *TARS- Teacher Assistant Registration System

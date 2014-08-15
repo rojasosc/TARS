@@ -1,12 +1,14 @@
 $(document).ready(function () {
 	var studentID = null;
 	var commenterID = null;
-	$commentModal = $('#commentModal');
-	$commentForm = $('#commentForm');
-	$commentForm.submit(function () { return false; });
-	$('.comment').click(prepareCommentModal);
-	$('#submitCommentButton').click(submitComment);
-	$commentModal.bind('hidden.bs.modal',clearCommentForm);
+	if($("#commentModal").length){
+		$commentModal = $('#commentModal');
+		$commentModal.bind('hidden.bs.modal',clearCommentForm);
+	}
+	if($("#commentForm").length){
+		$commentForm = $('#commentForm');
+		$commentForm.submit(function () { return false; });		
+	}
 });
 
 function submitComment(){

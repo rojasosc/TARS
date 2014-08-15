@@ -514,6 +514,19 @@ final class Action {
 		return $params;
 	}
 	
+	public static function fetchTermApplications($params, $user, &$eventObjectID){
+		if(is_array($params)){
+			$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
+			$pg = array('index' => $params['pgIndex'],
+					   'length' => $params['pgLength'],
+					   'getTotal' => $getTotal);
+			$term = Term::getTermByID($params['termID']);
+			$applications = Application::findApplications(null, null, null, $term, $params['appStatus'], null, $pg);
+			return $applications;
+		}
+		return $params;
+	}
+
 	public static function fetchSections($params, $user, &$eventObjectID) {
 		if(is_array($params)) {
 			//The array $params should contain: crn, course, type, status, pgIndex, pgLength, pgGetTotal
@@ -1010,6 +1023,22 @@ final class Action {
 				'firstName' => array('optional' => true),
 				'lastName' => array('optional' => true),
 				'userType' => array('optional' => true),
+				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
+		// Action: fetchTermApplications
+		// Session required: STAFF
+		// Parameters: 
+		//		appStatus: application status
+		// 		termID: id of term
+		// Returns:
+		// 		application objects 
+		'fetchTermApplications' => array('event' => Event::USER_GET_VIEW, 'userType' => STAFF,
+			'eventDescr' => '%s retrieved an applications view.',
+			'isUserInput' => true,
+			'params' => array(
+				'appStatus' => array('type' => Action::VALIDATE_NUMERIC, 'optional' => true),
+				'termID' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),

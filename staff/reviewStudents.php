@@ -184,7 +184,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 						<h4 class="panel-title panelHeader">Applications</h4>
 					</div> <!-- End panel-heading -->
 					<div class="panel-body">
-						<form class="form-horizontal filter-applications-form" role="form" id="filterApplicationsForm">
+<!-- 						<form class="form-horizontal filter-applications-form" role="form" id="filterApplicationsForm">
 							<fieldset>
 								<legend>Filter by:</legend>
 								<div class="row">
@@ -215,7 +215,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<div class="col-xs-3"></div>
 								</div>
 							</fieldset>
-						</form>
+						</form> -->
 						<hr />
 						<?php
 	$applications = Application::findApplications(null, null, null, $term, PENDING);
@@ -232,60 +232,20 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 	}else{
 						?>
 						<ul class="pagination"></ul>
-						<table class="table table-striped">
+						<table class="table table-striped" id="application-table">
 							<thead>
 								<tr>
 									<th>Name</th>
 									<th>University ID</th>
 									<th>Email</th>
 									<th>Type</th>
+									<th>Course</th>
 									<th>Application</th>
 									<th>Reviews</th>
 								</tr>
 							</thead>
-							<?php
-		/* Insert each application */
-		foreach($applications as $application){
-			$student = $application->getCreator();
-			$position = $application->getPosition();
-			$profileID = "myProfile" . $student->getID();
-							?>
-							<tr>
-								<td>
-									<div class="dropdown actions">
-										<a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
-											<?= $student->getFirstName() . " " . $student->getLastName()?>
-											<span class="caret"></span>
-										</a>
-										<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
-											<li role="presentation"><a class="comment" role="menuitem" data-commenterID="<?= $staff->getID() ?>" data-studentID="<?= $student->getID() ?>" data-toggle="modal" href="#commentModal" tabindex="-1">Review Student</a></li>
-											<li role="presentation"><a data-toggle="modal" role="menuitem" tabindex="-1" data-target="#emailModal">Send Email</a></li>
-										</ul>
-									</div>
-								</td>
-								<td>
-									<?= $student->getUniversityID() ?>
-								</td>
-								<td>
-									<?= $student->getEmail() ?>
-								</td> 
-								<td>
-									<?= $position->getTypeTitle() ?>
-								</td>
-								<td>
-									<button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">
-										<span class="glyphicon glyphicon-file"></span>
-									</button>
-								</td>
-								<td>
-									<button data-toggle="modal" data-target="#commentsModal" data-userID="<?= $student->getID() ?>" class="btn btn-info comments">
-										<span class="glyphicon glyphicon-comment"></span>
-									</button>
-								</td>
-							</tr> 												
-							<?php
-		}
-							?>
+							<tbody>
+							</tbody>
 						</table> <!-- End table -->
 						<ul class="pagination"></ul>
 						<?php		

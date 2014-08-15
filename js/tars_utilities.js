@@ -51,6 +51,11 @@ $(document).ready(function() {
         }
     }
 
+    if($(".comment").length){
+        $('.comment').click(prepareCommentModal);
+        $('#submitCommentButton').click(submitComment);        
+    }
+
     if ($(".password-modal").length) {
         $passwordModal = $(".password-modal");
         $passwordForm = $(".change-password-form");
@@ -237,7 +242,10 @@ $(document).ready(function() {
         });
         $('#fetchSectionsForm').trigger('submit');
     }
-
+        if($("#application-table").length){
+            $appView = $("#application-table");
+            viewApplications();
+        }
 });
 
 function doPaginatedAction(action, data, ajaxDone, ajaxFail) {
@@ -461,14 +469,89 @@ function searchUsers() {
         });
 }
 
+function viewApplications(){
+    doPaginatedAction('fetchTermApplications',
+        {appStatus: 0, termID: 1},
+        function(data){
+            if(data.success){
+                if(data.pg){
+                    handlePagination(data.pg, $(".pagination"));
+                }
+                if(data.objects){
+                    $appView.find("tbody").html("");
+                    var applications = data.objects;
+                    for(var key in applications){
+                        var app = applications[key];
+                        var creator = app['creator'];
+                        var position = app['position'];
+                        var section = position['section'];
+                        var course = section['course'];
+                        var fullName = creator['firstName'] + " " + creator['lastName'];
+                        var universityID = creator['universityID'];
+                        var email = creator['email'];
+                        var type = position['type'].title;
+                        var appButton = "<button data-toggle='modal' data-target='#profile-modal' data-appID='" + app['id'] + "' data-usertype='" + creator['type'] +"' data-userid='" + creator['id'] +"' class='btn btn-info circle profile'>" +
+                                            "<span class='glyphicon glyphicon-file'></span>" +
+                                        "</button>";
+                        var reviewsButton = "<button data-toggle='modal' data-target='#commentsModal' data-userID='" + creator['id'] + "' class='btn btn-info comments'>" +
+                                                "<span class='glyphicon glyphicon-comment'></span>" +
+                                             "</button>";
+                        var row = "";
+                        row += "<tr><td>" +
+                                "<div class='dropdown actions'>" +
+                                "<a class='dropdown-toggle' type='button' id='actionsMenu' data-toggle='dropdown'>" + fullName +
+                                "<span class='caret'></span>" +
+                                "</a>" +
+                                "<ul class='dropdown-menu' role='menu' id='actionsMenu' aria-labelledby='actionsMenu'>" +
+                                    "<li role='presentation'><a class='comment' role='menuitem' data-commenterID='2' data-studentID='" + creator['id'] +"' data-toggle='modal' href='#commentModal' tabindex='1'>Review Student</a></li>" +
+                                    "<li role='presentation'><a data-toggle='modal' role='menuitem' tabindex='-1' data-target='#emailModal'>Send Email</a></li>" +
+                                "</ul>" +
+                                "</div>";
+                        row += "</td><td>" + universityID;
+                        row += "</td><td>" + email;
+                        row += "</td><td>" + type;
+                        row += "</td><td>" + course['department'] + " " + course['number'];
+                        row += "</td><td>" + appButton;
+                        row += "</td><td>" + reviewsButton;
+                        row += "</td></tr>";
+                        $appView.find("tbody").append(row);
+                    }
+                }
+                if ($(".profile").length) {
+                    $userModal = $(".profile-modal");
+                    $(".profile").unbind();
+                    $(".profile").click(viewUserProfile);
+                    if ($(".qualifications").length) {
+                        $qualifications = $(".qualifications");
+                        $(".profile").click(injectQualifications);
+                    }
+                }
+                if ($(".comments-modal").length) {
+                    $(".comments").unbind();
+                    $commentsModal = $(".comments-modal");
+                    $commentsBlock = $(".comments-block");
+                    $(".comments").click(viewUserComments);
+                }
+                $(".comment").unbind();
+                $("#submitCommentButton").unbind();
+                $(".comment").click(prepareCommentModal);
+                $('#submitCommentButton').click(submitComment);                                 
+            }             
+        }, function(jqXHR, textStatus, errorMessage) {
+        showError({
+            message: errorMessage
+        }, $('#profileAlertHolder'));
+    });
+}
+
 function viewResults(users, userType) {
     /* Clear any existing results */
     $results.hide();
     $results.find("tbody").remove();
     /* Associative array of a user */
     /* Render results table */
-    var row = new Array(),
-        j = -1;
+    var row = new Array();
+    var j = -1;
     var size = users.length;
     for (var key = 0; key < size; key++) {
         row[++j] = "<tr><td>";

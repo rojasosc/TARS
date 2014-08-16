@@ -144,13 +144,16 @@ abstract class User {
 	}
 
 	public static function formatPhone($number) {
+		$digits = strlen($number);
 		if (empty($number)) {
 			return '';
-		} elseif (strlen($number) == 7) {
+		} elseif ($digits <= 7) {
+			$number = str_repeat('0', 7 - $digits) . $number;
 			return substr($number, 0, 3).'-'.substr($number, 3);
-		} elseif (strlen($number) == 10) {
+		} elseif ($digits <= 10) {
+			$number = str_repeat('0', 10 - $digits) . $number;
 			return substr($number, 0, 3).'-'.substr($number, 3, 3).'-'.substr($number, 6);
-		} elseif (strlen($number) == 11) {
+		} elseif ($digits == 11) {
 			return '+'.$number[0].'-'.substr($number, 1, 3).'-'.substr($number, 4, 3).'-'.substr($number, 7);
 		} else {
 			return $number;

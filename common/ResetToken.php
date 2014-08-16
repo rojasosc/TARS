@@ -10,8 +10,9 @@ final class ResetToken {
 			return $token;
 		}
 		do {
-			$token_str = openssl_random_pseudo_bytes(8); // 64-bit
-			$token = ResetToken::str2token($token_str);
+			//$token_str = openssl_random_pseudo_bytes(8); // 64-bit
+			//$token = ResetToken::str2token($token_str);
+			$token = mt_rand();
 		} while (ResetToken::isTokenInUse($token));
 		if ($timeoutTime != null) {
 			$timeoutTime = date('Y-m-d H:i:s', $timeoutTime);
@@ -68,11 +69,7 @@ final class ResetToken {
 	// encodeToken(int64 $token):
 	// Returns a URL-safe base64 encoded token, with the 1-character padding (=) removed.
 	public static function encodeToken($token) {
-		$token_str = '';
-		for ($i = 0; $i < 64; $i += 8) {
-			$token_str .= chr(($token >> $i) & 0xff);
-		}
-		$token64 = base64_encode($token_str);
+		$token64 = base64_encode($token);
 		return str_replace(array('+','/','='),array('-','_',''),$token64);
 	}
 
@@ -80,9 +77,6 @@ final class ResetToken {
 	// Returns the 64-bit token represented by this string.
 	// If not a valid 11-character token for any reason, returns NULL instead.
 	public static function decodeToken($enc_token) {
-		if (strlen($enc_token) != 11) {
-			return null;
-		}
 		$token64 = str_replace(array('-','_'),array('+','/'),$enc_token).'=';
 		$token_str = base64_decode($token64);
 		if ($token_str === false) {
@@ -97,11 +91,7 @@ final class ResetToken {
 
 	// common function to convert an 8-byte binary string to a 64-bit number
 	private static function str2token($token_str) {
-		$result = 0;
-		for ($i = 0; $i < 8; $i++) {
-			$result += (ord($token_str[$i]) << ($i * 8));
-		}
-		return $result;
+		return intval($token_str);
 	}
 
 	public function __construct($row) {

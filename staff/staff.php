@@ -37,7 +37,7 @@ if ($error == null) {
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="staff.css" rel="stylesheet"/>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 	</head>
 	<body>
@@ -109,6 +109,5 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			<!--END Page Footer -->
 		</div> 
 		<!-- End page-wrapper -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</body>	
 </html>

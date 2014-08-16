@@ -202,8 +202,8 @@ if ($output == null && $error == null && !empty($email)) {
 			<!-- BEGIN Page Header -->
 			<div id="header">
 
-			</div>		
-			<!--END Page Header -->	  
+			</div>
+			<!--END Page Header -->
 	  
 			<!-- BEGIN Page Content -->
 			<div id="content">
@@ -253,7 +253,7 @@ if ($formMode == 'index') {
 									<label for="password" class="colorWhite">Password</label>
 									<input type="password" id="password" name="password" class="form-control" place-holder="">
 								</div> <!-- End column -->
-							</div> <!-- End row -->	
+							</div> <!-- End row -->
 							<br>
 							<div class="row">
 								<div class="col-md-3">
@@ -273,6 +273,7 @@ if ($formMode == 'index') {
 									</div>
 								</div> <!-- End column -->								
 							</div> <!-- End row -->
+							<br>
 							<div class="row">
 								<div class="col-xs-6">
 									<a href="#bugmodal" data-toggle="modal">Report A Bug</a>
@@ -280,7 +281,7 @@ if ($formMode == 'index') {
 								<div class="col-xs-6">
 									<a href="#contactModal" data-toggle="modal">Contact Us</a>
 								</div>
-							</div> <!-- End row -->							
+							</div> <!-- End row -->
 							<br>
 							<div class="row">
 								<div class="col-xs-12 versionData">
@@ -300,13 +301,13 @@ if ($formMode == 'index') {
 									<label for="password" class="colorWhite">Password</label>
 									<input type="password" id="password" name="password" class="form-control" place-holder="">
 								</div> <!-- End column -->
-							</div> <!-- End row -->	
+							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-12">
 									<label for="password" class="colorWhite">Confirm Password</label>
 									<input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control" place-holder="">
 								</div> <!-- End column -->
-							</div> <!-- End row -->	
+							</div> <!-- End row -->
 							<br>
 							<div class="row">
 								<div class="col-md-6">
@@ -338,7 +339,7 @@ if ($formMode == 'index') {
 		<!-- End page-wrapper -->
 		
 		<!-- BEGIN Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<!-- END Scripts -->
 	</body>

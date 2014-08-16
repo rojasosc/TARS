@@ -527,6 +527,9 @@ final class Action {
 		return $params;
 	}
 
+	/*
+	 * Called for the editTerm page in the staff account. Fetches section information used to populate the page.
+	 */
 	public static function fetchSections($params, $user, &$eventObjectID) {
 		if(is_array($params)) {
 			//The array $params should contain: crn, course, type, status, pgIndex, pgLength, pgGetTotal
@@ -535,6 +538,7 @@ final class Action {
 					   'length' => $params['pgLength'],
 					   'getTotal' => $getTotal);
 			$sectionsFound = Section::fetchSections($params['crn'], $params['course'], $params['type'], $params['status'], $pg);
+			
 			return $sectionsFound;
 		}
 		return $params;

@@ -53,19 +53,46 @@ final class Action {
 	// at the bottom of this class. It's sort of like an interface (i.e. Java)
 	public static function login($params, $user, &$eventObjectID) {
 		$sessionUser = Session::login($params['email'], $params['password']);
-		if ($sessionUser == null) {
+		if ($sessionUser === null) {
 			throw new ActionError('The email or password you entered is incorrect');
 		}
-		if (!$sessionUser->isEmailConfirmed() || $sessionUser->getPassword() == null) {
+		// handle users with unverified email
+		if (!$sessionUser->isEmailConfirmed()) {
+			// create a 'resend' token pointing to the 'signup' callback token
 			$token = ResetToken::getTokenByAction('signup', $sessionUser->getID());
-			$extra = array('allowResendNotif' => true, 'token' => $token,
-				'userID' => $sessionUser->getID());
-			if ($token != null) {
+			$extra = array('token' => $token, 'userID' => $sessionUser->getID());
+			if ($token !== null) {
 				$tokenAction = ResetToken::getActionByToken($token);
 				$extra['notifID'] = $tokenAction->getCallbackNotifID();
+			} else {
+				$extra['notifID'] = null;
 			}
 			throw new ActionError('Your email has not been confirmed yet', $extra);
 		}
+
+		// handle users with verified email but passwordReset = true (reset psasword requested)
+		if ($sessionUser->isPasswordResetRequested()) {
+			$token = ResetToken::getTokenByAction('reset', $sessionUser->getID());
+			// password reset required
+			if ($sessionUser->getPassword() === null) {
+				// give the stored 'reset' token, if any
+				$extra = array('token' => $token, 'userID' => $sessionUser->getID());
+				throw new ActionError('Your password must be set', $extra);
+			// cancel password reset (they logged in with their old password)
+			} else {
+				// throw away tokenAction, result of applyToken()
+				ResetToken::applyToken($token);
+				// User.passwordReset = 0
+				$sessionUser->passwordSet();
+			}
+		}
+
+		// handle users with verified email, passwordReset = false, password = null (reset required, but not allowed)
+		// i.e. tarsbug@csug.rochester.edu: disabled accounts
+		if ($sessionUser->getPassword() === null) {
+			throw new ActionError('That account is disabled');
+		}
+
 		Session::create($sessionUser);
 		$eventObjectID = $sessionUser->getID();
 		return $sessionUser;
@@ -84,11 +111,11 @@ final class Action {
 
 		Session::destroy();
 
-		if ($sessionUser != null) {
+		if ($sessionUser !== null) {
 			$eventObjectID = $sessionUser->getID();
 		}
 
-		if ($delayThrow != null) {
+		if ($delayThrow !== null) {
 			throw $delayThrow;
 		}
 		return null;
@@ -129,11 +156,11 @@ final class Action {
 
 	public static function applyToken($params, $user, &$eventObjectID) {
 		$tokenAction = ResetToken::applyToken($params['token']);
-		if ($tokenAction == null) {
+		if ($tokenAction === null) {
 			throw new ActionError('Invalid token');
 		}
 		$user = $tokenAction->getCreator();
-		if ($user != null) {
+		if ($user !== null) {
 			$eventObjectID = $user->getID();
 			$result = array();
 			switch ($tokenAction->getAction()) {
@@ -173,7 +200,7 @@ final class Action {
 				$cbToken = $tokenAction->getCallbackToken();
 				$cbNotifID = $tokenAction->getCallbackNotifID();
 				$cbNotif = Notification::getNotificationByID($cbNotifID);
-				if ($cbToken == null || $cbNotif == null) {
+				if ($cbToken === null || $cbNotif === null) {
 					throw new ActionError('Malformed token data');
 				}
 
@@ -186,7 +213,7 @@ final class Action {
 			case 'resendCallback':
 				// when a succesful resent email callback happens, act on referenced token
 				$cbToken = $tokenAction->getCallbackToken();
-				if ($cbToken == null) {
+				if ($cbToken === null) {
 					throw new ActionError('Malformed token data');
 				}
 
@@ -205,7 +232,7 @@ final class Action {
 	public static function passRecov($params, $user, &$eventObjectID) {
 		$email = $params['email'];
 		$user = User::getUserByEmail($email);
-		if ($user == null) {
+		if ($user === null) {
 			// it will appear in the event log as (email: $email) did this,
 			// pointing to NULL, so we know what was typed in
 			$eventObjectID = $email; 
@@ -244,7 +271,7 @@ final class Action {
 		foreach ($positions_page['objects'] as $position) {
 			$application = $position->getLatestApplication($student);
 			$appStatus = null;
-			if ($application != null) {
+			if ($application !== null) {
 				$appStatus = $application->getStatus();
 			}
 			$pos = $position->toArray();
@@ -273,12 +300,12 @@ final class Action {
 		$comp = $params['compensation'];
 		$qual = $params['qualifications'];
 		$position = Position::getPositionByID($positionID);
-		if ($position == null) {
+		if ($position === null) {
 			throw new ActionError('Position not found');
 		}
 		$application = $position->getLatestApplication($student);
 		$appStatus = null;
-		if ($application != null) {
+		if ($application !== null) {
 			$appStatus = $application->getStatus();
 		}
 		switch ($appStatus) {
@@ -300,12 +327,12 @@ final class Action {
 	public static function withdraw($params, $student, &$eventObjectID) {
 		$positionID = $params['positionID'];
 		$position = Position::getPositionByID($positionID);
-		if ($position == null) {
+		if ($position === null) {
 			throw new ActionError('Position not found');
 		}
 		$application = $position->getLatestApplication($student);
 		$appStatus = null;
-		if ($application != null) {
+		if ($application !== null) {
 			$appStatus = $application->getStatus();
 		}
 		switch ($appStatus) {
@@ -335,7 +362,7 @@ final class Action {
 		} else {
 			$userToUpdate = $user;
 		}
-		if ($userToUpdate == null) {
+		if ($userToUpdate === null) {
 			throw new ActionError('User not found');
 		}
 		if ($user->getObjectType() != STAFF && $user->getID() != $userToUpdate->getID()) {
@@ -401,7 +428,7 @@ final class Action {
 
 	public static function fetchUser($params, $user, &$eventObjectID) {
 		$user = User::getUserByID($params['userID']);
-		if ($user == null) {
+		if ($user === null) {
 			throw new ActionError('User not found');
 		}
 		return $user;
@@ -412,7 +439,7 @@ final class Action {
 			throw new ActionError('Permission denied (student)');
 		}
 		$application = Application::getApplicationByID($params['appID']);
-		if ($application == null) {
+		if ($application === null) {
 			throw new ActionError('Application not found');
 		}
 		return $application;
@@ -423,7 +450,7 @@ final class Action {
 			throw new ActionError('Permission denied (student)');
 		}
 		$student = User::getUserByID($params['userID'], STUDENT);
-		if ($student == null) {
+		if ($student === null) {
 			throw new ActionError('Student not found');
 		}
 		$comments = $student->getAllComments();
@@ -436,7 +463,7 @@ final class Action {
 		}
 		$decision = $params['decision'];
 		$application = Application::getApplicationByID($params['appID']);
-		if ($application == null) {
+		if ($application === null) {
 			throw new ActionError('Application not found');
 		}
 		if ($user->getObjectType() == PROFESSOR) {
@@ -456,7 +483,7 @@ final class Action {
 			throw new ActionError('Permission denied (student)');
 		}
 		$student = User::getUserByID($params['studentID'], STUDENT);
-		if ($student == null) {
+		if ($student === null) {
 			throw new ActionError('Student not found');
 		}
 		$commentID = $student->saveComment($params['comment'], $user, time());
@@ -1123,7 +1150,7 @@ final class Action {
 			// RUN ACTION
 			try {
 				// if nothing went wrong (session), run the function and get results
-				if ($error == null) {
+				if ($error === null) {
 
 					// VALIDATE PARAMETERS
 					$invalids = Action::validateParameters($input, $action_params);
@@ -1186,9 +1213,13 @@ final class Action {
 				$error = new TarsException(Event::ERROR_FORM_FIELD,
 					$action_event, $ex->getMessage());
 				$extra = $ex->getExtraParameters();
-				if (isset($extra['allowResendNotif']) && $extra['allowResendNotif']) {
+				// extra parameters used to pass back a Reset Token (for resetting your password,
+				// or resending a email verification)
+				if (isset($extra['token'])) {
 					$userID = $extra['userID'];
 					$token = $extra['token'];
+					// if notifID is provided, this is a resend email verification request.
+					// create the token to resend it here.
 					if (isset($extra['notifID'])) {
 						$notifID = $extra['notifID'];
 						
@@ -1197,10 +1228,17 @@ final class Action {
 								$userID, time(), $token, $notifID);
 							$enc_token = ResetToken::encodeToken($newToken);
 							$output['token'] = $enc_token;
+							$output['tokenAction'] = 'resend the email';
 						} catch (PDOException $pdoex) {
 							// SERVER_DBERROR
 							$error = new TarsException(Event::SERVER_DBERROR, $action_event, $pdoex);
 						}
+					// otherwise, this is a password reset request.
+					// send back the token for resetting password
+					} else {
+						$enc_token = ResetToken::encodeToken($token);
+						$output['token'] = $enc_token;
+						$output['tokenAction'] = 'set a new password';
 					}
 				}
 			} catch (PDOException $ex) {
@@ -1215,9 +1253,9 @@ final class Action {
 
 			// LOG EVENT SUCCESS
 			try {
-				if ($error == null && $action_evlog == 'always') {
+				if ($error === null && $action_evlog == 'always') {
 					$source_user = Action::getUserByType($action_evdesc_arg, $event_object, $user);
-					if ($source_user != null && $source_user instanceof User) {
+					if ($source_user !== null && $source_user instanceof User) {
 						$descrarg = $source_user->getName();
 					} elseif (is_string($source_user)) {
 						$descrarg = "(email: $source_user)";
@@ -1241,7 +1279,7 @@ final class Action {
 			}
 
 			// COMMIT TRANSACTION
-			if ($error == null) {
+			if ($error === null) {
 				Database::commitTransaction();
 			}
 		} else {
@@ -1251,7 +1289,7 @@ final class Action {
 		}
 
 		// set the success and error properties here
-		if ($error != null) {
+		if ($error !== null) {
 			$output['success'] = false;
 			$output['error'] = $error->toArray();
 		} else {

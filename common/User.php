@@ -119,7 +119,7 @@ abstract class User {
 	}
 
 	public static function insertUser($email, $password, $firstName, $lastName, $type) {
-		$reset = ($password == null);
+		$reset = ($password === null);
 		$sql = 'INSERT INTO Users
 				(email, emailVerified, password, passwordReset,
 				firstName, lastName, createTime, type) VALUES
@@ -161,6 +161,7 @@ abstract class User {
 		$this->id = $user_row['userID'];
 		$this->email = $user_row['email'];
 		$this->password = $user_row['password'];
+		$this->passwordReset = $user_row['passwordReset'];
 		$this->emailConfirmed = $user_row['emailVerified'];
 		$this->otype = $user_row['type'];
 		$this->firstName = $user_row['firstName'];
@@ -180,6 +181,14 @@ abstract class User {
 		return Database::execute($sql, $args);
 	}
 
+	public function passwordSet() {
+		$sql = 'UPDATE Users
+				SET passwordReset = 0
+				WHERE userID = :id';
+		$args = array(':id' => $this->id);
+		return Database::execute($sql, $args);
+	}
+
 	public function confirmEmail() {
 		$sql = 'UPDATE Users
 				SET emailVerified = 1
@@ -192,6 +201,7 @@ abstract class User {
 	public function getEmail() { return $this->email; }
 	public function getPassword() { return $this->password; }
 	public function isEmailConfirmed() { return $this->emailConfirmed; }
+	public function isPasswordResetRequested() { return $this->passwordReset; }
 	public function getObjectType() { return $this->otype; }
 	public function getFirstName() { return $this->firstName; }
 	public function getLastName() { return $this->lastName; }
@@ -232,6 +242,7 @@ abstract class User {
 	protected $id;
 	protected $email;
 	protected $password;
+	protected $passwordReset;
 	protected $emailConfirmed;
 	protected $otype;
 	protected $firstName;

@@ -227,8 +227,8 @@ if ($output != null) {
 			}
 		}
 	} elseif (isset($output['token'])) {
-		$tokenLink = Email::getLink(ResetToken::decodeToken($output['token']));
-		$tokenLinkText = ' <a class="alert-link" href="'.$tokenLink.'">Click here</a> to resend the email.';
+		$tokenLink = Email::getLink(ResetToken::decodeToken($output['token']), false);
+		$tokenLinkText = ' <a class="alert-link" href="'.$tokenLink.'">Click here</a> to '.$output['tokenAction'].'.';
 		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'].$tokenLinkText, 'warning');
 	} else {
 		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'], 'danger');

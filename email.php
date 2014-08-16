@@ -40,17 +40,21 @@ final class Email {
 	// The below code generates the numeric token and allows you
 	// to encode it in URL-safe base64 and then decode it
 	//
-	// getLink(string $act, int64 $token):
+	// getLink(int64 $token):
 	// Takes the given 64-bit token and produces a callback link for our domain
 	// and the given action.
-	public static function getLink($token) {
+	public static function getLink($token, $prependLinkBase = true) {
 		if ($token != null) {
 			$enc_token = ResetToken::encodeToken($token);
 		} else {
 			$enc_token = '';
 		}
-		$link_base = Configuration::get(Configuration::EMAIL_LINK_BASE);
-		return $link_base.'token.php?token='.$enc_token;
+		$link = 'token.php?token='.$enc_token;
+		if ($prependLinkBase) {
+			$link_base = Configuration::get(Configuration::EMAIL_LINK_BASE);
+			$link = $link_base.$link;
+		}
+		return $link;
 	}
 }
 

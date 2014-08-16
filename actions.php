@@ -175,8 +175,8 @@ final class Action {
 				// reset the user's password, ask for new password on index.php alternate form
 				$newToken = ResetToken::generateToken('resetCallback', $user->getID(), time());
 				$result['resetCallback'] = ResetToken::encodeToken($newToken);
-				$result['userName'] = $user->getFILName();
-				$result['alert'] = array('class' => 'warning', 'title' => 'Success',
+				$result['userName'] = $user->getName();
+				$result['alert'] = array('class' => 'warning', 'title' => 'Notice',
 					'message' => 'You must set a new password to continue');
 				break;
 

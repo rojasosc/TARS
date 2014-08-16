@@ -239,7 +239,7 @@ if ($output != null) {
 <?php
 if ($formMode == 'index') {
 ?>
-					<form action="index.php" method="post">
+					<form action="./" method="post" novalidate="novalidate">
 						<fieldset>
 							<h2 class="center colorWhite">TARS Sign In</h2>
 							<div class="row">

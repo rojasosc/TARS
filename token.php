@@ -4,8 +4,8 @@ require_once 'actions.php';
 
 $output = Action::callAction('applyToken', $_REQUEST);
 
-session_start();
-$_SESSION['callbackResult'] = $output;
+LoginSession::saveDataForRedirect($output);
 
-Header('Location: ./');
+// go to index
+header('Location: ./');
 

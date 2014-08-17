@@ -61,10 +61,6 @@ final class TarsException extends Exception {
 		return Event::getErrorTextFromEventType($error_action);
 	}
 
-	public static function getErrorClassName($class_code) {
-		return Event::getEventTypeName($class_code);
-	}
-
 	/*
 	 * Creates a new exception.
 	 *
@@ -78,8 +74,10 @@ final class TarsException extends Exception {
 		$this->more_data = $more_data;
 		$this->title = TarsException::getTitleFromAction($error_action);
 		$this->message = TarsException::getMessageFromClass($error_class, $more_data);
-		parent::__construct($this->message, $this->class,
-			is_subclass_of($more_data, 'Exception') ? $more_data : null);
+		$ex_msg = $this->message;
+		$ex_code = 1000;
+		$ex_ex = is_subclass_of($more_data, 'Exception') ? $more_data : null;
+		parent::__construct($ex_msg, $ex_code, $ex_ex);
 
 		// create an Event for this
 		try {
@@ -116,8 +114,7 @@ final class TarsException extends Exception {
 	 * Returns the error as an array to be dropped into JSON data.
 	 */
 	public function toArray() {
-		return array('class' => TarsException::getErrorClassName($this->class), 'class_code' => $this->class,
-			'action' => Event::getEventTypeName($this->action), 'action_code' => $this->action,
+		return array('class' => $this->class, 'action' => $this->action,
 			'title' => $this->title, 'message' => $this->message);
 	}
 

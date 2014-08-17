@@ -102,7 +102,7 @@ final class Term {
 	// }
 	public static function importTerm($termYear, $termSemester, $json_object) {
 		try {
-			$creator = Session::getLoggedInUser(STAFF);
+			$creator = LoginSession::getLoggedInUser(STAFF);
 			$createTime = time();
 
 			$termID = Term::insertTerm($termYear, strtolower($termSemester), $creator, $createTime);

@@ -52,15 +52,73 @@ final class Action {
 	// Documentation for these functions is provided with the corresponding $action_map element
 	// at the bottom of this class. It's sort of like an interface (i.e. Java)
 	public static function login($params, $user, &$eventObjectID) {
-		$sessionUser = Session::login($params['email'], $params['password']);
-		if ($sessionUser === null) {
-			throw new ActionError('The email or password you entered is incorrect');
+		// app settings used
+		$adminCreated = intval(Configuration::get(Configuration::ADMIN_CREATED));
+		$loginEnabled = intval(Configuration::get(Configuration::ENABLE_LOGIN));
+
+		// admin setup steps
+		if (isset($params['cfg'])) {
+			if ($adminCreated === 0) {
+				// create User objects:
+				// "Initial Account Email"
+				$rootUserID = User::insertUser($params['email'], null, 'Root', 'User', ADMIN);
+				$rootUser = User::getUserByID($rootUserID, ADMIN);
+				$rootUser->confirmEmail();
+
+				// "Bug Reporting Email"
+				$bugReportUserID = User::insertUser($params['cfg-bug-user'], null, 'Bug', 'Reporting', ADMIN);
+				$bugReportUser = User::getUserByID($bugReportUserID, ADMIN);
+				$bugReportUser->disableAccount();
+
+				// create ResetToken for rootUser
+				ResetToken::generateToken('reset', $rootUserID, time());
+
+				// create initial Configuration
+				Configuration::setMultiple(array(
+					Configuration::LOG_DEBUG => true,
+					Configuration::ADMIN_CREATED => true,
+					Configuration::ENABLE_LOGIN => true,
+					Configuration::ENABLE_SEND_EMAIL => true,
+					Configuration::BUG_REPORT_USER => $rootUserID,
+					Configuration::CURRENT_TERM => null,
+					Configuration::EMAIL_NAME => $params['cfg-email-name'],
+					Configuration::EMAIL_DOMAIN => $params['cfg-email-domain'],
+					Configuration::EMAIL_LINK_BASE => $params['cfg-email-linkbase']),
+				$rootUser, time());
+
+				$adminCreated = 1;
+				// continue to login... will give the root user the ability to set their password
+
+				// XXX silly hack: committing the Action transaction here in order to preserve the
+				// setup configuration, in time for the login code below to ask you to set a password.
+				Database::commitTransaction();
+				Database::beginTransaction();
+			}
 		}
+
+		// find an email and password that matches
+		$sessionUser = LoginSession::login($params['email'], $params['password']);
+		if ($sessionUser === null) {
+			if ($loginEnabled === 0) {
+				// alternate login failed message if logins are disabled
+				throw new ActionError('Account logins are disabled');
+			} else {
+				throw new ActionError('The email or password you entered is incorrect');
+			}
+		}
+
+		// if not admin and logins disabled, stop here
+		if (($adminCreated === 0 || $loginEnabled === 0) && $sessionUser->getObjectType() !== ADMIN) {
+			throw new ActionError('Account logins are disabled');
+		}
+
 		// handle users with unverified email
 		if (!$sessionUser->isEmailConfirmed()) {
 			// create a 'resend' token pointing to the 'signup' callback token
 			$token = ResetToken::getTokenByAction('signup', $sessionUser->getID());
-			$extra = array('token' => $token, 'userID' => $sessionUser->getID());
+			$extra = array();
+			$extra['token'] = $token;
+			$extra['userID'] = $sessionUser->getID();
 			if ($token !== null) {
 				$tokenAction = ResetToken::getActionByToken($token);
 				$extra['notifID'] = $tokenAction->getCallbackNotifID();
@@ -76,7 +134,9 @@ final class Action {
 			// password reset required
 			if ($sessionUser->getPassword() === null) {
 				// give the stored 'reset' token, if any
-				$extra = array('token' => $token, 'userID' => $sessionUser->getID());
+				$extra = array();
+				$extra['token'] = $token;
+				$extra['userID'] = $sessionUser->getID();
 				throw new ActionError('Your password must be set', $extra);
 			// cancel password reset (they logged in with their old password)
 			} else {
@@ -90,26 +150,32 @@ final class Action {
 		// handle users with verified email, passwordReset = false, password = null (reset required, but not allowed)
 		// i.e. tarsbug@csug.rochester.edu: disabled accounts
 		if ($sessionUser->getPassword() === null) {
-			throw new ActionError('That account is disabled');
+			throw new ActionError('This account is disabled');
 		}
 
-		Session::create($sessionUser);
+		// actually create the login session
+		LoginSession::sessionCreate($sessionUser);
+
+		// save the returned user as the ObjectID of the SESSION_LOGIN event
 		$eventObjectID = $sessionUser->getID();
+
+		// return the logged in user's object
 		return $sessionUser;
 	}
 
 	public static function logout($params, $user, &$eventObjectID) {
 		$delayThrow = null;
 		$sessionUser = null;
-		if (session_start()) {
-			try {
-				$sessionUser = Session::getLoggedInUser();
-			} catch (PDOException $ex) {
-				$delayThrow = $ex;
-			}
+		try {
+			LoginSession::start(false, Event::SESSION_LOGOUT);
+			$sessionUser = LoginSession::getLoggedInUser();
+		} catch (PDOException $ex) {
+			$delayThrow = $ex;
+		} catch (TarsException $ex) {
+			$delayThrow = $ex;
 		}
 
-		Session::destroy();
+		LoginSession::sessionDestroy();
 
 		if ($sessionUser !== null) {
 			$eventObjectID = $sessionUser->getID();
@@ -155,6 +221,7 @@ final class Action {
 	}
 
 	public static function applyToken($params, $user, &$eventObjectID) {
+		$time = time();
 		$tokenAction = ResetToken::applyToken($params['token']);
 		if ($tokenAction === null) {
 			throw new ActionError('Invalid token');
@@ -173,7 +240,11 @@ final class Action {
 
 			case 'reset':
 				// reset the user's password, ask for new password on index.php alternate form
-				$newToken = ResetToken::generateToken('resetCallback', $user->getID(), time());
+				// create a token for index.php 'setpass' form:
+				$newToken = ResetToken::generateToken('resetCallback', $user->getID(), $time);
+				// create a token to allow users to reset later:
+				ResetToken::generateToken('reset', $user->getID(), $time);
+				// encode the resetCallback token
 				$result['resetCallback'] = ResetToken::encodeToken($newToken);
 				$result['userName'] = $user->getName();
 				$result['alert'] = array('class' => 'warning', 'title' => 'Notice',
@@ -204,7 +275,7 @@ final class Action {
 					throw new ActionError('Malformed token data');
 				}
 
-				$newToken = ResetToken::generateToken('resendCallback', $user->getID(), time(), $cbToken, $cbNotifID);
+				$newToken = ResetToken::generateToken('resendCallback', $user->getID(), $time, $cbToken, $cbNotifID);
 				$cbNotif->sendEmail(array(':link' => Email::getLink($newToken)), Event::USER_APPLY_TOKEN);
 				$result['alert'] = array('class' => 'warning', 'title' => 'Success',
 					'message' => 'The email has been resent to the associated address');
@@ -599,9 +670,8 @@ final class Action {
 				// intentional fall-through to DEFAULT
 			}
 		default:
-			throw new TarsException(Event::ERROR_FORM_UPLOAD,
-				Event::STAFF_TERM_IMPORT,
-				array($upload_error_message($upload['error'])));
+			$upload_err = $upload_error_message($upload['error']);
+			throw new ActionError("Upload of file failed ($upload_err)");
 		}
 		$eventObjectID = $termID;
 		return null;
@@ -756,9 +826,9 @@ final class Action {
 	//    USAGE: TRUE for signup, search (user input);
 	//    FALSE for apply, emailAvailable (automated input/result of button-like request)
 	// 'noSession' => is a boolean. TRUE allows the action to be performed when not logged in
-	// 'userType' => specifies the user type to pass to Session::start() (i.e. what user
-	//    type the currently logged in user MUST be), don't specify this to accept any
-	//    logged in user
+	// 'userType' => specifies the user type to pass to LoginSession::sessionContinue()
+	//    (i.e. what user type the currently logged in user MUST be), don't specify this
+	//    to accept any logged in user.
 	//    (WARNING: if any logged in user is accepted, 'fn' will receive the logged in
 	//    user's user object, so make sure 'fn' code doesn't request STUDENT-specific
 	//    functions, for example; also 'fn' will receive null if noSession is true and
@@ -776,7 +846,7 @@ final class Action {
 			'eventLog' => 'always', 'eventDescr' => '%s logged in.',
 			'eventDescrArg' => 'refparam', 'isUserInput' => true, 'noSession' => true,
 			'params' => array(
-				'email' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'email' => array('type' => Action::VALIDATE_EMAIL),
 				'password' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
 		// Action:           logout
 		// Session required: none (handled by code)
@@ -1141,7 +1211,7 @@ final class Action {
 				// if a session is required, start it
 				$error = null;
 				try {
-					$user = Session::start($action_utype);
+					$user = LoginSession::sessionContinue($action_utype);
 				} catch (TarsException $ex) {
 					$error = $ex;
 				}

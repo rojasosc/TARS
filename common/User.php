@@ -192,6 +192,22 @@ abstract class User {
 		return Database::execute($sql, $args);
 	}
 
+	public function disableAccount() {
+		$sql = 'UPDATE Users
+				SET passwordReset = 0, password = NULL
+				WHERE userID = :id';
+		$args = array(':id' => $this->id);
+		return Database::execute($sql, $args);
+	}
+
+	public function enableAccount() {
+		$sql = 'UPDATE Users
+				SET passwordReset = 1, password = NULL
+				WHERE userID = :id';
+		$args = array(':id' => $this->id);
+		return Database::execute($sql, $args);
+	}
+
 	public function confirmEmail() {
 		$sql = 'UPDATE Users
 				SET emailVerified = 1

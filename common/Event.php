@@ -39,41 +39,32 @@ final class Event {
 	 * notifyMode=home - No email is sent; the user will see it when they log in.
 	 * notifyMode=both - An email is sent, and it'll appear when they log in.
 	 */
-	const SERVER_EXCEPTION = 1;
-	const SERVER_DBERROR = 2;
-	const ERROR_LOGIN = 3;
-	const ERROR_PERMISSION = 4;
-	const ERROR_FORM_FIELD = 5;
-	const ERROR_FORM_UPLOAD = 6;
-	const SESSION_LOGIN = 7;
-	const SESSION_LOGOUT = 8;
-	const SESSION_CONTINUE = 9;
-	const USER_CREATE = 10;
-	const USER_RESET_PASS = 11;
-	const USER_APPLY_TOKEN = 12;
-	const USER_IS_EMAIL_AVAIL = 13;
-	const USER_GET_OBJECT = 14;
-	const USER_GET_VIEW = 15;
-	const USER_SET_PROFILE = 16;
-	const USER_SET_PASS = 17;
-	const STUDENT_APPLY = 18;
-	const STUDENT_CANCEL = 19;
-	const STUDENT_WITHDRAW = 20;
-	const NONSTUDENT_SET_APP = 21;
-	const NONSTUDENT_COMMENT = 22;
-	const SU_CREATE_USER = 23;
-	const SU_RESET_USER_PASS = 24;
-	const STAFF_TERM_IMPORT = 25;
-	const ADMIN_CONFIGURE = 26;
+	const SERVER_EXCEPTION = 'SERVER_EXCEPTION';
+	const SERVER_DBERROR = 'SERVER_DBERROR';
+	const ERROR_ACTION = 'ERROR_ACTION';
+	const SESSION_LOGIN = 'SESSION_LOGIN';
+	const SESSION_LOGOUT = 'SESSION_LOGOUT';
+	const SESSION_CONTINUE = 'SESSION_CONTINUE';
+	const USER_REPORT_BUG = 'USER_REPORT_BUG';
+	const USER_CREATE = 'USER_CREATE';
+	const USER_RESET_PASS = 'USER_RESET_PASS';
+	const USER_APPLY_TOKEN = 'USER_APPLY_TOKEN';
+	const USER_IS_EMAIL_AVAIL = 'USER_IS_EMAIL_AVAIL';
+	const USER_GET_OBJECT = 'USER_GET_OBJECT';
+	const USER_GET_VIEW = 'USER_GET_VIEW';
+	const USER_SET_PROFILE = 'USER_SET_PROFILE';
+	const USER_SET_PASS = 'USER_SET_PASS';
+	const STUDENT_APPLY = 'STUDENT_APPLY';
+	const STUDENT_CANCEL = 'STUDENT_CANCEL';
+	const STUDENT_WITHDRAW = 'STUDENT_WITHDRAW';
+	const NONSTUDENT_SET_APP = 'NONSTUDENT_SET_APP';
+	const NONSTUDENT_COMMENT = 'NONSTUDENT_COMMENT';
+	const SU_CREATE_USER = 'SU_CREATE_USER';
+	const SU_RESET_USER_PASS = 'SU_RESET_USER_PASS';
+	const STAFF_TERM_IMPORT = 'STAFF_TERM_IMPORT';
+	const ADMIN_CONFIGURE = 'ADMIN_CONFIGURE';
 
 	private static $eventTypeRows = null;
-
-	public static function getEventTypeName($event_type) {
-		$class = new ReflectionClass(__CLASS__);
-		$constants = array_flip($class->getConstants());
-
-		return $constants[$event_type];
-	}
 
 	private static function cacheEventTypeRows() {
 		if (Event::$eventTypeRows == null) {
@@ -84,10 +75,9 @@ final class Event {
 	}
 
 	public static function getEventTypeIDInDatabase($event_type) {
-		$name = Event::getEventTypeName($event_type);
 		Event::cacheEventTypeRows();
 		foreach (Event::$eventTypeRows as $row) {
-			if ($row['eventName'] == $name) {
+			if ($row['eventName'] === $event_type) {
 				return $row['eventTypeID'];
 			}
 		}
@@ -99,13 +89,11 @@ final class Event {
 		default:
 		case Event::SERVER_EXCEPTION:
 		case Event::SERVER_DBERROR:
-		case Event::ERROR_LOGIN:
-		case Event::ERROR_PERMISSION:
-		case Event::ERROR_FORM_FIELD:
-		case Event::ERROR_FORM_UPLOAD: return 'An error occurred';
+		case Event::ERROR_ACTION: return 'An error occurred';
 		case Event::SESSION_LOGIN: return 'Error logging in';
 		case Event::SESSION_LOGOUT: return 'Error logging out';
 		case Event::SESSION_CONTINUE: return 'Error accessing page';
+		case Event::USER_REPORT_BUG: return 'Error reporting a bug';
 		case Event::USER_CREATE: return 'Error creating an account';
 		case Event::USER_RESET_PASS: return 'Error resetting password';
 		case Event::USER_APPLY_TOKEN: return 'Error applying a token';
@@ -152,7 +140,7 @@ final class Event {
 		if ($creator == null) {
 			if (Database::isConnected()) {
 				try {
-					$creator = Session::getLoggedInUser();
+					$creator = LoginSession::getLoggedInUser();
 				} catch (PDOException $ex) {
 					// throw away and leave $creator = null on database error
 				}
@@ -182,7 +170,7 @@ final class Event {
 			} else {
 				$userID = $creator->getID();
 			}
-			$data = array('class' => Event::getEventTypeName($eventType),
+			$data = array('class' => $eventType,
 				'objectID' => $objectID, 'description' => $descr,
 				'ip' => $creatorIP, 'userID' => $userID);
 			$line = 'TARS EVENT (database access error): '.json_encode($data)."\n";

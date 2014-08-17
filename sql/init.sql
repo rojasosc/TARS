@@ -467,18 +467,23 @@ CREATE TABLE IF NOT EXISTS `Events` (
 --
 CREATE TABLE IF NOT EXISTS `Configurations` (
   `configID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creatorID` bigint(20) NULL,
+  `creatorID` bigint(20) NOT NULL,
   `createTime` timestamp NOT NULL,
 
   `logDebug` boolean NOT NULL,
   `adminCreated` boolean NOT NULL,
+  `emailName` varchar(64) NOT NULL,
   `emailDomain` varchar(64) NOT NULL,
   `emailLinkBase` varchar(128) NOT NULL,
+  `enableSendEmail` boolean NOT NULL,
   `enableLogin` boolean NOT NULL,
   `currentTerm` bigint(20) NULL,
+  `bugReportUser` bigint(20) NOT NULL,
 
   PRIMARY KEY (`configID`),
-  FOREIGN KEY (`currentTerm`) REFERENCES `Terms` (`termID`)
+  FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`),
+  FOREIGN KEY (`currentTerm`) REFERENCES `Terms` (`termID`),
+  FOREIGN KEY (`bugReportUser`) REFERENCES `Users` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- STRUCTURE-LIKE DATA
@@ -524,16 +529,4 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('SU_RESET_USER_PASS', 'info', 'User'),
 ('STAFF_TERM_IMPORT', 'info', 'Term'),
 ('ADMIN_CONFIGURE', 'info', 'Configurable');
-
--- default configuration state
-INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `emailDomain`, `emailLinkBase`, `enableLogin`, `currentTerm`) VALUES
-(NULL, '2014-01-01 00:00:00', 0, 0, 'csug.rochester.edu', 'http://www.csug.rochester.edu/TARS/', 1, NULL);
-
--- default users
-INSERT INTO `Users` (`email`, `emailVerified`, `password`, `passwordReset`, `firstName`, `lastName`, `creatorID`, `createTime`, `type`) VALUES
-('root', 1, NULL, 1, 'Root', 'User', 1, '2014-01-01 00:00:00', 3),
-('tarsbug@csug.rochester.edu', 1, NULL, 0, 'Bug', 'Reporting', 1, '2014-01-01 00:00:00', 3);
-
-INSERT INTO `ResetTokens` (`token`, `action`, `callbackToken`, `callbackNotif`, `timeoutTime`, `creatorID`, `createTime`) VALUES
-(1234567890, 'reset', NULL, NULL, NULL, 1, '2014-01-01 00:00:00');
 

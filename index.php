@@ -29,16 +29,28 @@ function show_version() {
 	}
 }
 
-$error = null;
-$output = null;
-session_start();
-if (isset($_SESSION['callbackResult'])) {
-	$output = $_SESSION['callbackResult'];
-	unset($_SESSION['callbackResult']);
+function server_domain() {
+	return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'example.com';
 }
+
+function server_linkbase() {
+	$is_https = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] === 443 : false;
+	$s = $is_https ? 's' : '';
+	$domain = server_domain();
+	$path = dirname(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '/index.php');
+	if (substr($path, -1) !== '/') {
+		$path .= '/';
+	}
+	return "http$s://$domain$path";
+}
+
+$error = null;
+// creates and destroys a session
+$output = LoginSession::retrieveSavedData();
 
 $email = isset($_POST['email']) ? $_POST['email'] : '';
 if ($output == null && $error == null && !empty($email)) {
+	// creates a session
 	$output = Action::callAction('login', $_POST);
 
 	if (isset($output['object'])) {
@@ -60,10 +72,13 @@ if ($output == null && $error == null && !empty($email)) {
 			exit;
 		} else {
 			$error = new TarsException(Event::SERVER_EXCEPTION,
-				Event::SESSION_LOGIN, new Exception('Unknown User type value.'));
+				Event::SESSION_LOGIN, 'Unknown User type value.');
 		}
 	}
 }
+
+$adminCreated = intval(Configuration::get(Configuration::ADMIN_CREATED));
+
 ?>
 
 <!DOCTYPE html>
@@ -165,7 +180,7 @@ if ($output == null && $error == null && !empty($email)) {
 					<div class="modal-body">
 						<div class="container">
 							<div class="row">
-								<div class="col-xs-4">      
+								<div class="col-xs-4">
 									<ul id="contact-us">
 										<li> <br />
 											Oscar Rojas <br />
@@ -212,7 +227,7 @@ if ($output == null && $error == null && !empty($email)) {
 <?php
 $formMode = 'index';
 $token = '';
-if ($output != null) {
+if ($output !== null) {
 	if ($output['success']) {
 		if (isset($output['object'])) {
 			if (isset($output['object']['alert'])) {
@@ -233,79 +248,62 @@ if ($output != null) {
 	} else {
 		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'], 'danger');
 	}
+} elseif ($adminCreated === 0) {
+	$formMode = 'setup';
 }
 ?>
 					</div>
 <?php
-if ($formMode == 'index') {
+if ($formMode === 'index') {
 ?>
-					<form action="./" method="post" novalidate="novalidate">
+					<form action="./" method="post">
 						<fieldset>
 							<h2 class="center colorWhite">TARS Sign In</h2>
 							<div class="row">
 								<div class="col-md-12">
 									<label for="email" class="colorWhite">Email</label>
-									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=$email?>">
+									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=$email?>"/>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-12">
 									<label for="password" class="colorWhite">Password</label>
-									<input type="password" id="password" name="password" class="form-control" place-holder="">
+									<input type="password" id="password" name="password" class="form-control" place-holder=""/>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<br>
 							<div class="row">
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-hand-right"></span> Login</button>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
-							<br>
-							<div class="row">
-								<div class="col-xs-6">
-									<a href="signup.php">Sign Up</a>
-								</div> <!-- End column -->
-								<div class="col-xs-6">
-									<div class="form-group">
-										<a href="#passmodal" data-toggle="modal">
-											Forgot Password?
-										</a>
-									</div>
-								</div> <!-- End column -->								
-							</div> <!-- End row -->
-							<br>
-							<div class="row">
-								<div class="col-xs-6">
-									<a href="#bugmodal" data-toggle="modal">Report A Bug</a>
-								</div> <!-- End column -->
-								<div class="col-xs-6">
-									<a href="#contactModal" data-toggle="modal">Contact Us</a>
-								</div>
-							</div> <!-- End row -->
-							<br>
-							<div class="row">
-								<div class="col-xs-12 versionData">
-									<?php show_version(); ?>
-								</div>
-							</div> <!-- End row -->
 						</fieldset> <!-- End fieldset -->
 					</form> <!-- End form -->
+					<br />
+					<div class="row">
+						<div class="col-xs-6">
+							<a href="#passmodal" data-toggle="modal">Forgot Password?</a>
+						</div> <!-- End column -->
+						<div class="col-xs-6">
+							<a href="signup.php">Sign Up</a>
+						</div> <!-- End column -->
+					</div> <!-- End row -->
 <?php
-} elseif ($formMode == 'setpass') {
+} elseif ($formMode === 'setpass') {
 ?>
 					<form action="token.php?token=<?=$token?>" method="post">
 						<fieldset>
-						<h2 class="center colorWhite"><?=$userName?> Password Reset</h2>
+							<h2 class="center colorWhite"><?=$userName?> Password Reset</h2>
 							<div class="row">
 								<div class="col-md-12">
 									<label for="password" class="colorWhite">Password</label>
-									<input type="password" id="password" name="password" class="form-control" place-holder="">
+									<input type="password" id="password" name="password" class="form-control" place-holder=""/>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-12">
 									<label for="password" class="colorWhite">Confirm Password</label>
-									<input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control" place-holder="">
+									<input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control" place-holder=""/>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<br>
@@ -314,17 +312,84 @@ if ($formMode == 'index') {
 									<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-hand-right"></span> Set Password</button>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
-							<br>
+						</fieldset> <!-- End fieldset -->
+					</form> <!-- End form -->
+					<br />
+					<div class="row">
+						<div class="col-xs-6">
+							<a href="./">Cancel Login</a>
+						</div> <!-- End column -->
+					</div> <!-- End row -->
+<?php
+} elseif ($formMode === 'setup') {
+?>
+					<form action="./" method="post">
+						<input type="hidden" id="password" name="password" value=""/>
+						<input type="hidden" id="cfg" name="cfg" value="1"/>
+						<fieldset>
+							<h2 class="center colorWhite">TARS Setup</h2>
+							<p>TARS has not been setup. These settings may be changed later.</p>
+							<br />
 							<div class="row">
-								<div class="col-xs-12 versionData">
-									<?php show_version(); ?>
-								</div>
+								<div class="col-md-12">
+									<label for="email" class="colorWhite">Initial Account Email</label>
+									<p>Enter the root Admin account name. You will be prompted to provide a password.</p>
+									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=htmlentities($email)?>" />
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-md-12">
+									<label for="cfg-bug-user" class="colorWhite">Bug Reporting Email</label>
+									<p>Enter the bug reporting target user. A disabled account is created as the target of "USER_REPORT_BUG" notifications.</p>
+									<input type="email" id="cfg-buf-user" name="cfg-bug-user" class="form-control" place-holder="" value="tarsbug@<?=htmlentities(server_domain())?>" />
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<label for="cfg-email-name" class="colorWhite">Send Email: User Name</label>
+									<p>Enter the name-part of the outgoing email address, i.e. "cs.rochester.edu". Used to generate a "-f" CLI argument to the sendmail program.</p>
+									<input type="text" id="cfg-email-name" name="cfg-email-name" class="form-control" place-holder="" value="no-reply" />
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-md-12">
+									<label for="cfg-email-domain" class="colorWhite">Send Email: Current Domain</label>
+									<p>Enter the domain-part of the outgoing email address, i.e. "cs.rochester.edu". Used to generate a "-f" CLI argument to the sendmail program.</p>
+									<input type="text" id="cfg-email-domain" name="cfg-email-domain" class="form-control" place-holder="" value="<?=htmlentities(server_domain())?>" />
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<div class="row">
+								<div class="col-md-12">
+									<label for="cfg-email-linkbase" class="colorWhite">Send Email: Current Link-back URL</label>
+									<p>Enter the link base for outgoing email, i.e. "http://www.cs.rochester.edu/tars/". Used to generate a valid link back to this application to put in outgoing emails.</p>
+									<input type="text" id="cfg-email-linkbase" name="cfg-email-linkbase" class="form-control" place-holder="" value="<?=htmlentities(server_linkbase())?>" />
+								</div> <!-- End column -->
+							</div> <!-- End row -->
+							<br />
+							<div class="row">
+								<div class="col-md-4">
+									<button name="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-hand-right"></span> Continue</button>
+								</div> <!-- End column -->
 							</div> <!-- End row -->
 						</fieldset> <!-- End fieldset -->
 					</form> <!-- End form -->
 <?php
 }
 ?>
+					<br />
+					<div class="row">
+						<div class="col-xs-6">
+							<a href="#bugmodal" data-toggle="modal">Report a Bug</a>
+						</div> <!-- End column -->
+						<div class="col-xs-6">
+							<a href="#contactModal" data-toggle="modal">Contact Us</a>
+						</div>
+					</div> <!-- End row -->
+					<br />
+					<div class="row">
+						<div class="col-xs-12"><p><?php show_version(); ?></p></div>
+					</div> <!-- End row -->
 				</div> <!-- End container -->
 			</div>
 			<!-- END Page Content --> 
@@ -341,6 +406,8 @@ if ($formMode == 'index') {
 		<!-- BEGIN Scripts -->
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
+		<script src="js/tars_utilities.js"></script>
+		<script src="index.js"></script>
 		<!-- END Scripts -->
 	</body>
 </html>

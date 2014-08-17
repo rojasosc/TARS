@@ -75,7 +75,8 @@ body {
 .colorWhite {
     color: white;
 }
-.versionData {
+p {
+	margin: 0;
 	color: #ddd;
 	font-style: italic;
 	font-size: 0.8em;

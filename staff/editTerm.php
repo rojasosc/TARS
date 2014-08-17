@@ -5,7 +5,7 @@ require_once '../db.php';
 $error = null;
 $staff = null;
 try {
-	$staff = Session::start(STAFF);
+	$staff = LoginSession::sessionContinue(STAFF);
 } catch (TarsException $ex) {
 	$error = $ex;
 }

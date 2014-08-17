@@ -124,7 +124,7 @@ final class Database {
 
 		/* fetch result: return first row, or null */
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
-		if ($result === null) {
+		if ($result === false) {
 			/* empty result set */
 			return null;
 		}

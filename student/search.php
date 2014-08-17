@@ -8,7 +8,7 @@ $terms = array();
 $currentTermID = null;
 $positionTypes = array();
 try {
-	$student = Session::start(STUDENT);
+	$student = LoginSession::sessionContinue(STUDENT);
 	// get all terms for the dropdown
 	$terms = Term::getAllTerms();
 	// get App CURRENT_TERM value

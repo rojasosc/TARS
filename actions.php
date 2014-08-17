@@ -867,6 +867,21 @@ final class Action {
 		'emailAvailable' => array('event' => Event::USER_IS_EMAIL_AVAIL,
 			'eventDescr' => 'A user checked for the availability of an email address.',
 			'noSession' => true, 'params' => array('email')),
+		// Action:           sendBugReport
+		// Session required: none
+		// Parameters:
+		//     bugrepemail:  User email
+		//     bugreppass:   User password
+		//     bugreport:    Report text
+		// Returns:
+		//     success and error: Action status
+		'sendBugReport' => array('event' => Event::USER_REPORT_BUG,
+			'eventLog' => 'always', 'eventDescr' => '%s sent a bug report.',
+			'eventDescrArg' => 'refparam',
+			'isUserInput' => true, 'params' => array(
+				'bugrepemail' => array('type' => Action::VALIDATE_EMAIL),
+				'bugreppass' => array('type' => Action::VALIDATE_NOTEMPTY),
+				'bugreport' => array('type' => Action::VALIDATE_NOTEMPTY))),
 		// Action:           signup 
 		// Session required: none
 		// Parameters:       all user fields

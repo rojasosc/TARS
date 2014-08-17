@@ -111,7 +111,7 @@ $adminCreated = intval(Configuration::get(Configuration::ADMIN_CREATED));
 						<form action="passrecov.php" method="post" id="passrecov">
 							<fieldset>
 								<div class="row">
-									<div class="col-xs-12">
+									<div class="col-xs-6">
 										<label for="passrecovemail">Email</label>
 										<input type="email" id="passrecovemail" name="email" class="form-control" size="64"/>
 									</div>
@@ -136,26 +136,27 @@ $adminCreated = intval(Configuration::get(Configuration::ADMIN_CREATED));
 						<h1 class="modal-title">Bug Report</h1>
 					</div>
 					<div class="modal-body">
+						<div id="bugAlertHolder"></div>
 						<p>
 							Enter your information so we can verify your identity.<br/>
 							In the space provided, detail the bug that you have encountered as clearly and concisely as you can muster.
 						</p>
-						<form action="bugrep.php" method="post" id="bugrep">
+						<form action="#" method="post" id="bugReport">
 							<fieldset>
 								<div class="row">
-									<div class="col-xs-5 col-xs-offset-1">
+									<div class="col-xs-6">
 										<label for="bugrepemail">Email</label>
-										<input class="form-control" type="email" id="bugrepemail" name="bugrep" size="32"/>
+										<input class="form-control" type="email" id="bugrepemail" name="bugrepemail" size="64"/>
 									</div>
-									<div class="col-xs-5">
+									<div class="col-xs-6">
 										<label for="bugreppass">Password</label>
-										<input class="form-control" type="password" id="bugreppass" name="bugreppass" size="32"/>
+										<input class="form-control" type="password" id="bugreppass" name="bugreppass" size="64"/>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-xs-10 col-xs-offset-1">
-										<label for="bugrepdata">Comments</label>
-										<textarea class="form-control" id="bugrepdata" name="bugrepdata" rows="4" cols="64"></textarea>
+									<div class="col-xs-12">
+										<label for="bugreport">Report Body</label>
+										<textarea class="form-control" id="bugreport" name="bugreport" rows="4" cols="64"></textarea>
 									</div>
 								</div>
 							</fieldset>
@@ -163,7 +164,7 @@ $adminCreated = intval(Configuration::get(Configuration::ADMIN_CREATED));
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary" form="bugrep" value="Submit">Submit</button>
+						<button type="submit" class="btn btn-primary" form="bugReport" value="Submit">Submit</button>
 					</div>
 				</div>
 			</div>

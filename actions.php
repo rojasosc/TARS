@@ -197,16 +197,19 @@ final class Action {
 		$password = $params['bugreppass'];
 		$report = $params['bugreport'];
 
-		$user = Session::login($email, $password);
+		$user = LoginSession::login($email, $password);
 		if ($user === null) {
 			throw new ActionError('The email or password you entered is incorrect');
 		}
 
 		$time = time();
+		$bugReportUserID = Configuration::get(Configuration::BUG_REPORT_USER);
+		if ($bugReportUserID === null || User::getUserByID($bugReportUserID) === null) {
+			throw new ActionError('Bug reporting is not configured');
+		}
 		// TODO: use constants or something for the below text
-		$notifID = Notification::insertNotification(
-			Configuration::get(Configuration::BUG_REPORT_USER), true, false,
-			'Bug Report', null,
+		$notifID = Notification::insertNotification($bugReportUserID,
+			true, false, 'Bug Report', null,
 			"A bug has been reported by :type :user (:email):\r\n\r\n:report",
 			$time);
 		$notif = Notification::getNotificationByID($notifID);
@@ -905,7 +908,7 @@ final class Action {
 		//     success and error: Action status
 		'sendBugReport' => array('event' => Event::USER_REPORT_BUG,
 			'eventLog' => 'always', 'eventDescr' => '%s sent a bug report.',
-			'eventDescrArg' => 'refparam',
+			'eventDescrArg' => 'refparam', 'noSession' => true,
 			'isUserInput' => true, 'params' => array(
 				'bugrepemail' => array('type' => Action::VALIDATE_EMAIL),
 				'bugreppass' => array('type' => Action::VALIDATE_NOTEMPTY),

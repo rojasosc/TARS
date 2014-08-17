@@ -205,7 +205,7 @@ final class Action {
 		$time = time();
 		// TODO: use constants or something for the below text
 		$notifID = Notification::insertNotification(
-			Configuration::get(Configuration::BUG_REPORT_USER, true, false,
+			Configuration::get(Configuration::BUG_REPORT_USER), true, false,
 			'Bug Report', null,
 			"A bug has been reported by :type :user (:email):\r\n\r\n:report",
 			$time);

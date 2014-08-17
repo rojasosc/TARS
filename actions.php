@@ -192,6 +192,34 @@ final class Action {
 		return User::checkEmailAvailable($email);
 	}
 
+	public static function sendBugReport($params, $user, &$eventObjectID) {
+		$email = $params['bugrepemail'];
+		$password = $params['bugreppass'];
+		$report = $params['bugreport'];
+
+		$user = Session::login($email, $password);
+		if ($user === null) {
+			throw new ActionError('The email or password you entered is incorrect');
+		}
+
+		$time = time();
+		// TODO: use constants or something for the below text
+		$notifID = Notification::insertNotification(
+			Configuration::get(Configuration::BUG_REPORT_USER, true, false,
+			'Bug Report', null,
+			"A bug has been reported by :type :user (:email):\r\n\r\n:report",
+			$time);
+		$notif = Notification::getNotificationByID($notifID);
+		switch ($user->getObjectType()) {
+		default: $type ='UNKNOWNTYPE';
+		case STUDENT: $type = 'STUDENT';
+		case PROFESSOR: $type = 'PROFESSOR';
+		case STAFF: $type = 'STAFF';
+		case ADMIN: $type = 'ADMIN';
+		}
+		$notif->sendEmail(array(':user' => $user->getName(), ':type' => $type, ':email' => $user->getEmail(), ':report' => $report), Event::USER_CREATE);
+	}
+
 	public static function signup($params, $user, &$eventObjectID) {
 		$email = $params['email']; $password = $params['password'];
 		$firstName = $params['firstName']; $lastName = $params['lastName'];

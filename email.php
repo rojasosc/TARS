@@ -22,8 +22,8 @@ final class Email {
 		$body_wrap = Template::evaluate(Email::$template_body, $args);
 		$body = sprintf($body_wrap, $body_text);
 		$mailTo = Template::evaluate('":name" <:email>', $args);
-		$mailSubject = $subject;
-		$mailBody = $body;
+		$mailSubject = htmlentities($subject);
+		$mailBody = htmlentities($body);
 		$mailHeaders = array(
 			//'From' => $mailFrom
 		);

@@ -788,12 +788,12 @@ final class Action {
 	//            Assumes the array only contains objects
 	//            The objects MUST have a toArray() function.
 	//            EXAMPLE USE CASES: fetchApplications, fetchPositions, fetchUsers, fetchBuildings, fetchRooms
-	//        If the value is a string, an ERROR_FORM_FIELD is produced with the given string
+	//        If the value is a string, an ERROR_ACTION is produced with the given string
 	//            USE CASE: the given positionID doesn't exist or was not provided
 	//
 	// 'event' => (REQUIRED) is the Event constant that will be used on failure
 	// 'params' => is an array of the parameters.
-	//    If one is not provided correctly, an ERROR_FORM_FIELD is thrown
+	//    If one is not provided correctly, an ERROR_ACTION is thrown
 	//    Format:
 	//        1. array of $key => $definition pairs, giving rules for the $definition
 	//            The $definition array has the following elements:
@@ -1278,10 +1278,9 @@ final class Action {
 					}
 				}
 			} catch (ActionError $ex) {
-				// ERROR_FORM_FIELD with replacement message
+				// ERROR_ACTION with replacement message
 				Database::rollbackTransaction();
-				$error = new TarsException(Event::ERROR_FORM_FIELD,
-					$action_event, $ex->getMessage());
+				$error = new TarsException(Event::ERROR_ACTION, $action_event, $ex->getMessage());
 				$extra = $ex->getExtraParameters();
 				// extra parameters used to pass back a Reset Token (for resetting your password,
 				// or resending a email verification)
@@ -1316,7 +1315,7 @@ final class Action {
 				Database::rollbackTransaction();
 				$error = new TarsException(Event::SERVER_DBERROR, $action_event, $ex);
 			} catch (TarsException $ex) {
-				// non-ERROR_FORM_FIELDs thrown by Actions
+				// non-ERROR_ACTION thrown by Actions
 				// Transaction rolled back by TarsException
 				$error = $ex;
 			}
@@ -1354,8 +1353,8 @@ final class Action {
 			}
 		} else {
 			// unknown action
-			$error = new TarsException(Event::ERROR_FORM_FIELD,
-				Event::ERROR_FORM_FIELD, 'Unknown action');
+			$error = new TarsException(Event::ERROR_ACTION,
+				Event::ERROR_ACTION, 'Unknown action');
 		}
 
 		// set the success and error properties here

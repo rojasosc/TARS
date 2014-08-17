@@ -1,10 +1,10 @@
-$(document).ready(function() {
-    window.STUDENT = 0;
-    window.PROFESSOR = 1;
-    window.STAFF = 2;
-    window.ADMIN = 3;
-    window.actionsUrl = "../actions.php";
+window.STUDENT = 0;
+window.PROFESSOR = 1;
+window.STAFF = 2;
+window.ADMIN = 3;
+window.actionsUrl = "../actions.php";
 
+$(document).ready(function() {
     if ($(".search-users-form").length) {
         $userSearchForm = $(".search-users-form");
         $userSearchForm.on('submit', function(event) {

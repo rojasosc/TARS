@@ -7,9 +7,7 @@
  * A TarsException is sort of an informal subclass of Event that handles the following Events:
  * - SERVER_EXCEPTION (fatal internal error)
  * - SERVER_DBERROR (SQL/database error)
- * - ERROR_LOGIN ("The email or password you entered is incorrect")
- * - ERROR_PERMISSION ("Permission was denied")
- * - ERROR_FORM_FIELD ("Fields have invalid input", also usable for generic user input error)
+ * - ERROR_ACTION (all external errors, "Action" refers to the Actions API, actions.php)
  *
  * Constructor syntax: new TarsException($class, $action, $more_data)
  *
@@ -28,17 +26,8 @@ final class TarsException extends Exception {
 		case Event::SERVER_DBERROR:
 			$message = 'An internal error has occurred';
 			break;
-		case Event::ERROR_LOGIN:
-			$message = 'The email or password you entered is incorrect';
-			break;
-		case Event::ERROR_PERMISSION:
-			$message = 'Permission was denied';
-			break;
-		case Event::ERROR_FORM_FIELD:
+		case Event::ERROR_ACTION:
 			$message = 'Invalid input in fields. Please fix these fields and try again';
-			break;
-		case Event::ERROR_FORM_UPLOAD:
-			$message = 'Upload of file failed';
 			break;
 		}
 		// exceptions in parens
@@ -50,7 +39,7 @@ final class TarsException extends Exception {
 			$parr = implode(', ', $more_data);
 			$message .= " ($parr)";
 		}
-		// string replaces message (USE CASE: ERROR_FORM_FIELD with better reason field)
+		// string replaces message (USE CASE: ERROR_ACTION with better reason field)
 		if (is_string($more_data)) {
 			$message = $more_data;
 		}

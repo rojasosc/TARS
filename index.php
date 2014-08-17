@@ -329,19 +329,19 @@ if ($formMode === 'index') {
 						<input type="hidden" id="cfg" name="cfg" value="1"/>
 						<fieldset>
 							<h2 class="center colorWhite">TARS Setup</h2>
-							<p>TARS has not been setup. These settings may be changed later.</p>
+							<p class="light">TARS has not been setup. These settings may be changed later.</p>
 							<br />
 							<div class="row">
 								<div class="col-md-12">
 									<label for="email" class="colorWhite">Initial Account Email</label>
-									<p>Enter the root Admin account name. You will be prompted to provide a password.</p>
+									<p class="light">Enter the root Admin account name. You will be prompted to provide a password.</p>
 									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=htmlentities($email)?>" />
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-12">
 									<label for="cfg-bug-user" class="colorWhite">Bug Reporting Email</label>
-									<p>Enter the bug reporting target user. A disabled account is created as the target of "USER_REPORT_BUG" notifications.</p>
+									<p class="light">Enter the bug reporting target user. A disabled account is created as the target of "USER_REPORT_BUG" notifications.</p>
 									<input type="email" id="cfg-buf-user" name="cfg-bug-user" class="form-control" place-holder="" value="tarsbug@<?=htmlentities(server_domain())?>" />
 								</div> <!-- End column -->
 							</div> <!-- End row -->
@@ -349,21 +349,21 @@ if ($formMode === 'index') {
 							<div class="row">
 								<div class="col-md-12">
 									<label for="cfg-email-name" class="colorWhite">Send Email: User Name</label>
-									<p>Enter the name-part of the outgoing email address, i.e. "cs.rochester.edu". Used to generate a "-f" CLI argument to the sendmail program.</p>
+									<p class="light">Enter the name-part of the outgoing email address, i.e. "cs.rochester.edu". Used to generate a "-f" CLI argument to the sendmail program.</p>
 									<input type="text" id="cfg-email-name" name="cfg-email-name" class="form-control" place-holder="" value="no-reply" />
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-12">
 									<label for="cfg-email-domain" class="colorWhite">Send Email: Current Domain</label>
-									<p>Enter the domain-part of the outgoing email address, i.e. "cs.rochester.edu". Used to generate a "-f" CLI argument to the sendmail program.</p>
+									<p class="light">Enter the domain-part of the outgoing email address, i.e. "cs.rochester.edu". Used to generate a "-f" CLI argument to the sendmail program.</p>
 									<input type="text" id="cfg-email-domain" name="cfg-email-domain" class="form-control" place-holder="" value="<?=htmlentities(server_domain())?>" />
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
 								<div class="col-md-12">
 									<label for="cfg-email-linkbase" class="colorWhite">Send Email: Current Link-back URL</label>
-									<p>Enter the link base for outgoing email, i.e. "http://www.cs.rochester.edu/tars/". Used to generate a valid link back to this application to put in outgoing emails.</p>
+									<p class="light">Enter the link base for outgoing email, i.e. "http://www.cs.rochester.edu/tars/". Used to generate a valid link back to this application to put in outgoing emails.</p>
 									<input type="text" id="cfg-email-linkbase" name="cfg-email-linkbase" class="form-control" place-holder="" value="<?=htmlentities(server_linkbase())?>" />
 								</div> <!-- End column -->
 							</div> <!-- End row -->
@@ -389,7 +389,7 @@ if ($formMode === 'index') {
 					</div> <!-- End row -->
 					<br />
 					<div class="row">
-						<div class="col-xs-12"><p><?php show_version(); ?></p></div>
+						<div class="col-xs-12"><p class="light"><?php show_version(); ?></p></div>
 					</div> <!-- End row -->
 				</div> <!-- End container -->
 			</div>

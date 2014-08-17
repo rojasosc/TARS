@@ -75,7 +75,7 @@ body {
 .colorWhite {
     color: white;
 }
-p {
+p.light {
 	margin: 0;
 	color: #ddd;
 	font-style: italic;

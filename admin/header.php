@@ -18,7 +18,7 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 	    
 							<div class="collapse navbar-collapse" id="navigationbar">
 								<ul class="nav navbar-nav">
-									<li<?php if ($header_active == 'home') { echo ' class="active"'; } ?>><a href="staff.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+									<li<?php if ($header_active == 'home') { echo ' class="active"'; } ?>><a href="admin.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 									<li class="dropdown <?php if ($header_active == 'manage') { echo ' active'; } ?>" style="cursor:pointer">
 										<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-book"></span> Manage<b class="caret"></b></a>
 										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">

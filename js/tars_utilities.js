@@ -160,10 +160,13 @@ $(document).ready(function() {
             };
             doPaginatedAction('fetchSections', input, function(data) {
                     if (data.success) {
+						alert('data success');
                         if (data.pg) {
                             handlePagination(data.pg, $('.pagination'));
                         }
                         if (data.objects) {
+							alert('data objectsd');
+							alert(JSON.stringify(data.objects));
                             if (data.objects.length == 0) {
                                 $('thead tr').hide();
                                 $('#results').html('<em>No results</em>');

@@ -665,7 +665,38 @@ final class Action {
 					   'length' => $params['pgLength'],
 					   'getTotal' => $getTotal);
 			$sectionsFound = Section::fetchSections($params['crn'], $params['course'], $params['type'], $params['status'], $pg);
-			
+			//THIS DOESN'T WORK JUST YET TT_TT
+			$countBuffer = array();
+			foreach($sectionsFound as $section) {
+				$profs = $section->getAllProfessors();
+				$labTACount = $section->getTotalPositionsByType($profs[0], 1);
+				if(!$labTACount) {
+					$labTACount = 0;
+				}
+				$wsTACount = $section->getTotalPositionsByType($profs[0], 2);
+				if(!$wsTACount) {
+					$wsTACount = 0;
+				}
+				$wsslCount = $section->getTotalPositionsByType($profs[0], 3);
+				if(!$wsslCount) {
+					$wsslCount = 0;
+				}
+				$lecTACount = $section->getTotalPositionsByType($profs[0], 5);
+				if(!$lecTACount) {
+					$lecTACount = 0;
+				}
+				$graderCount = $section->getTotalPositionsByType($profs[0], 4);
+				if(!$graderCount) {
+					$graderCount = 0;
+				}
+				$countPack = array('labTACount' => $labTACount, 'wsTACount' => $wsTACount, 'wsslCount' => $wsslCount, 'lecTACount' => $lecTACount, 'graderCount' => $graderCount);
+				array_push($countBuffer, $countPack);
+			}
+			$TACounts = array('TACounts' => countBuffer);
+			$sectionsFound[] = $TACounts;
+			//Loop through each section and for each section get the 5 TA counts, placed in a very specific
+			//order in an array, then put each array into a TACounts array in the order of the sections
+			//the put both the sections information and the TA counts into a wrapper array and return that.
 			return $sectionsFound;
 		}
 		return $params;

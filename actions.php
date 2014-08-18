@@ -608,10 +608,7 @@ final class Action {
 		} else {
 			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
 		}
-		//TODO: If we don't have dropdowns then we can guarantee that we will find a placeID
-		//We can display an error message to the user, but that won't be very helpful unless 
-		//we allow a blank/null value for building or room. 
-		$place = Place::getPlaceByBuildingAndRoom($params['building'], $params['room']);
+		$place = Place::getOrCreatePlace($params['building'], $params['room']);
 		$userID = Professor::registerProfessor(
 			$params['email'], $params['firstName'], $params['lastName'],
 			$place->getPlaceID(), $officePhone);

@@ -87,6 +87,7 @@ final class Action {
 				$rootUser, time());
 
 				$adminCreated = 1;
+				$loginEnabled = 1;
 				// continue to login... will give the root user the ability to set their password
 
 				// XXX silly hack: committing the Action transaction here in order to preserve the

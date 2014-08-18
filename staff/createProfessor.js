@@ -63,18 +63,6 @@ $(document).ready(function() {
 					}
 				}
 			},
-			emailConfirm: {
-				validators: {
-					notEmpty: {
-						message: 'You must retype the email address'
-					},
-					identical: {
-						field: 'email',
-						message: 'You must retype the email address'
-						
-					}					
-				}
-			},
 			officePhone: {
 				message: 'The office phone number is not valid',
 				validators: {
@@ -96,7 +84,6 @@ function createProfessor(){
 		firstName: $("[name='firstName']",$professorForm).val(),
 		lastName: $("[name='lastName']",$professorForm).val(),
 		email: $("[name='email']",$professorForm).val(),
-		emailConfirm: $("[name='emailConfirm']",$professorForm).val(),
 		officePhone: $("[name='officePhone']",$professorForm).val(),
 		building: $("[name='building']",$professorForm).val(),
 		room: $("[name='room']",$professorForm).val(),

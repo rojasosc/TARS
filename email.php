@@ -7,8 +7,9 @@ final class Email {
 	private static $template_mailfrom = 'no-reply';
 
 	public static function send($targetUser, $subjectV, $bodyT, $eventType, $extraParams = array()) {
-		if ($targetUser == null) {
-			throw new TarsException(Event::SERVER_EXCEPTION, $eventType, new Exception('No email target'));
+		$sendEmailEnabled = intval(Configuration::get(Configuration::ENABLE_SEND_EMAIL));
+		if ($targetUser === null) {
+			throw new TarsException(Event::SERVER_EXCEPTION, $eventType, 'No email target');
 		}
 		$args = array(
 			':name' => $targetUser->getName(),
@@ -32,7 +33,17 @@ final class Email {
 			':mfrom' => Email::$template_mailfrom,
 			':mdom' => Configuration::get(Configuration::EMAIL_DOMAIN));
 		$sendmailCLI = Template::evaluate('-f :mfrom@:mdom -F ":mname"', $sendmailArgs);
-		mail($mailTo, $mailSubject, $mailBody, '', $sendmailCLI);
+		if ($sendEmailEnabled === 0) {
+			// TODO: do something other than fail when EMAIL_SEND_ENABLED=false
+			// When this exception is thrown, anything that relies on sending emails will be rolled back
+			// and cancelled (signup, reset password, bug reporting, ...)
+			$f = fopen('mail_out.txt', 'a');
+			fwrite($f, "To: $mailTo\r\nSubject: $mailSubject\r\n$mailBody\r\n\r\n");
+			fclose($f);
+			throw new TarsException(Event::SERVER_EXCEPTION, $eventType, 'Outgoing emails disabled');
+		} else {
+			mail($mailTo, $mailSubject, $mailBody, '', $sendmailCLI);
+		}
 	}
 
 	// a 64-bit (8-byte) token produces an 11-character base64 string

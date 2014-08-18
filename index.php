@@ -49,7 +49,7 @@ $error = null;
 $output = LoginSession::retrieveSavedData();
 
 $email = isset($_POST['email']) ? $_POST['email'] : '';
-if ($output == null && $error == null && !empty($email)) {
+if ($output === null && $error === null && !empty($email)) {
 	// creates a session
 	$output = Action::callAction('login', $_POST);
 
@@ -58,16 +58,16 @@ if ($output == null && $error == null && !empty($email)) {
 		/* User type */
 		$type = $user_obj['type'];
 		
-		if ($type == STUDENT) {
+		if ($type === STUDENT) {
 			header('Location: student/student.php');
 			exit;
-		} elseif ($type == PROFESSOR) {
+		} elseif ($type === PROFESSOR) {
 			header('Location: professor/professor.php');
 			exit;
-		} elseif ($type == STAFF) {
+		} elseif ($type === STAFF) {
 			header('Location: staff/staff.php');
 			exit;
-		} elseif ($type == ADMIN) {
+		} elseif ($type === ADMIN) {
 			header('Location: admin/admin.php');
 			exit;
 		} else {

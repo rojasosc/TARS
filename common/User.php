@@ -111,7 +111,7 @@ abstract class User {
 			$args[':lastName'] = $lastName;
 		}
 		if ($check_type >= 0) {
-			$sql .= 'type = :type AND ';
+			$sql .= '(type & :type) = :type AND ';
 			$args[':type'] = $check_type;
 		}
 		$sql .= '1 ORDER BY lastName DESC, firstName DESC';

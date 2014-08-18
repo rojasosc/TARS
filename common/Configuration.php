@@ -3,8 +3,8 @@
 final class Configuration {
 	const LOG_DEBUG = 'logDebug'; // TODO unused
 	const ADMIN_CREATED = 'adminCreated';
-	const ENABLE_LOGIN = 'enableLogin'; // TODO unused
-	const ENABLE_SEND_EMAIL = 'enableSendEmail'; // TODO unused
+	const ENABLE_LOGIN = 'enableLogin';
+	const ENABLE_SEND_EMAIL = 'enableSendEmail';
 	const BUG_REPORT_USER = 'bugReportUser';
 	const CURRENT_TERM = 'currentTerm';
 	const EMAIL_NAME = 'emailName';

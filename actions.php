@@ -475,6 +475,10 @@ final class Action {
 		}
 		switch ($userToUpdate->getObjectType()) {
 		case STUDENT:
+			if (!isset($params['mobilePhone']) || !isset($params['classYear']) ||
+				!isset($params['major']) || !isset($params['universityID']) || !isset($params['aboutMe'])) {
+				throw new ActionError('Missing parameter');
+			}
 			// filter non-digits
 			$mobilePhone = preg_replace('/([^\d]+)/', '', $params['mobilePhone']);
 			$userToUpdate->updateProfile(
@@ -498,9 +502,10 @@ final class Action {
 				$officeBuilding = strtoupper($params['building']);
 				$officeRoom = strtoupper($params['room']);
 			}
+			$place = Place::getOrCreatePlace($officeBuilding, $officeRoom);
 			$userToUpdate->updateProfile(
 				$params['firstName'], $params['lastName'],
-				$officePhone, $officeBuilding, $officeRoom);
+				$place->getPlaceID(), $officeRoom);
 			break;
 		case ADMIN:
 			$userToUpdate->updateProfile(
@@ -544,9 +549,6 @@ final class Action {
 	}
 
 	public static function fetchApplication($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() === STUDENT) {
-			throw new ActionError('Permission denied');
-		}
 		$application = Application::getApplicationByID($params['appID']);
 		if ($application === null) {
 			throw new ActionError('Application not found');
@@ -555,9 +557,6 @@ final class Action {
 	}
 
 	public static function fetchComments($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() === STUDENT) {
-			throw new ActionError('Permission denied');
-		}
 		$student = User::getUserByID($params['userID'], STUDENT);
 		if ($student === null) {
 			throw new ActionError('Student not found');
@@ -567,9 +566,6 @@ final class Action {
 	}
 
 	public static function setAppStatus($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() == STUDENT) {
-			throw new ActionError('Permission denied (student)');
-		}
 		$decision = $params['decision'];
 		$application = Application::getApplicationByID($params['appID']);
 		if ($application === null) {
@@ -579,7 +575,7 @@ final class Action {
 			$position = $application->getPosition();
 			$section = $position->getSection();
 			if (!$section->isTaughtBy($user)) {
-				throw new ActionError('Permission denied (not owner)');
+				throw new ActionError('Permission denied');
 			}
 		}
 		$application->setApplicationStatus($params['decision']);
@@ -588,9 +584,6 @@ final class Action {
 	}
 
 	public static function createComment($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() == STUDENT) {
-			throw new ActionError('Permission denied (student)');
-		}
 		$student = User::getUserByID($params['studentID'], STUDENT);
 		if ($student === null) {
 			throw new ActionError('Student not found');
@@ -601,26 +594,64 @@ final class Action {
 	}
 
 	public static function createUser($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() !== STAFF && $user->getObjectType() !== ADMIN) {
+		$userType = intval($params['userType']);
+		if ($user->getObjectType() === STAFF && $userType !== PROFESSOR) {
 			throw new ActionError('Permission denied');
 		}
-		
-		// filter non-digits
-		if (empty($params['officePhone'])) {
-			$officePhone = null;
-		} else {
-			$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
+		$email = $params['email'];
+		$firstName = $params['firstName']; $lastName = $params['lastName'];
+		switch ($userType) {
+		case STUDENT:
+			if (!isset($params['mobilePhone']) || !isset($params['classYear']) ||
+				!isset($params['major']) || !isset($params['universityID']) || !isset($params['aboutMe'])) {
+				throw new ActionError('Missing parameter');
+			}
+			// filter non-digits
+			$mobilePhone = preg_replace('/([^\d]+)/', '', $params['mobilePhone']);
+			$classYear = $params['classYear'];
+			$major = $params['major']; $gpa = $params['gpa'];
+			$universityID = $params['universityID']; $aboutMe = $params['aboutMe'];
+
+			$userID = Student::registerStudent(
+				$email, null, $firstName, $lastName,
+				$mobilePhone, $classYear, $major, $gpa, $universityID, $aboutMe);
+			break;
+		case PROFESSOR:
+		case STAFF:
+			// filter non-digits
+			if (empty($params['officePhone'])) {
+				$officePhone = null;
+			} else {
+				$officePhone = preg_replace('/([^\d]+)/', '', $params['officePhone']);
+			}
+			if (empty($params['building']) || empty($params['room'])) {
+				$officeBuilding = null;
+				$officeRoom = null;
+			} else {
+				$officeBuilding = strtoupper($params['building']);
+				$officeRoom = strtoupper($params['room']);
+			}
+			$place = Place::getOrCreatePlace($officeBuilding, $officeRoom);
+			if ($userType === PROFESSOR) {
+				$userID = Professor::registerProfessor(
+					$email, $firstName, $lastName,
+					$place->getPlaceID(), $officePhone);
+			} else {
+				$userID = Staff::registerStaff(
+					$email, $firstName, $lastName,
+					$place->getPlaceID(), $officePhone);
+			}
+			break;
+		default:
+		case ADMIN:
+			throw new ActionError('User create not supported for that user type');
 		}
-		$place = Place::getOrCreatePlace($params['building'], $params['room']);
-		$userID = Professor::registerProfessor(
-			$params['email'], $params['firstName'], $params['lastName'],
-			$place->getPlaceID(), $officePhone);
 
 		$time = time();
 		// TODO: use constants or something for the below text
 		$notifID = Notification::insertNotification($userID, true, false,
 			'Confirm Your Email', null,
-			"An administrator has created a new professor account on the TA Registration System (TARS) using this email address. Click the following link to confirm your email address and set your password:\r\n\r\n:link\r\n\r\nYou may then login using this account to confirm TA applicants. Thank you for using TARS.",
+			"An administrator has created a new account on the TA Registration System (TARS) using your email address. Click the following link to confirm your email address and set your password:\r\n\r\n:link\r\n\r\nYou may then login using this account to confirm TA applicants. Thank you for using TARS.",
 			$time);
 		$signupToken = ResetToken::generateToken('reset', $userID, $time, null, $notifID);
 
@@ -1169,14 +1200,12 @@ final class Action {
 		//     firstName, lastName, email, emailConfirm, officePhone, building, room
 		// Returns:
 		//     success and error: Action status
-		'createUser' => array('event' => Event::SU_CREATE_USER, 'userType' => USERMASK_NONSTUDENT,
+		'createUser' => array('event' => Event::SU_CREATE_USER, 'userType' => USERMASK_STAFF,
 			'eventLog' => 'always', 'eventDescr' => '%s created a new user.',
 			'isUserInput' => true, 'params' => array(
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'email' => array('type' => Action::VALIDATE_EMAIL),
-				'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
-					'field' => 'email'),
 				'type' => array('type' => Action::VALIDATE_NUMERIC),
 				'officePhone' => array('type' => Action::VALIDATE_NUMSTR,
 					'optional' => true, 'min_length' => 10, 'max_length' => 10),
@@ -1190,7 +1219,7 @@ final class Action {
 		//     email: email field
 		//     firstName: first name field
 		//     lastName: last name field
-		//     userTypes: STUDENT, PROFESSOR or -1 for either
+		//     userTypes: user type mask
 		// Returns:
 		//     objects: The users in this set
 		//     success and error: Action status

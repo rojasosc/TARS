@@ -66,36 +66,21 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="firstName">First Name</label>
-														<input type="text" class="form-control" name="firstName" placeholder="First Name"/>														
-													</div> <!-- End form-group -->							
+														<input type="text" class="form-control" name="firstName" placeholder="First Name"/>
+													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="firstName">Last Name</label>
-														<input type="text" class="form-control" name="lastName" placeholder="Last Name"/>													
-													</div> <!-- End form-group -->							
-												</div>	<!-- End column -->						
+														<input type="text" class="form-control" name="lastName" placeholder="Last Name"/>
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->
 											</div> <!-- End row -->
 											<div class="row">
 												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label" for="email">Email</label>
-														<input type="email" class="form-control" name="email" placeholder="Email"/>					
-													</div> <!-- End form-group -->							
-												</div> <!-- End column -->
-												<div class="col-md-4">
-													<div class="form-group">
-														<label class="control-label" for="emailConfirm">Re-Enter Email</label>
-														<input type="email" class="form-control" name="emailConfirm" placeholder="Email"/>
-																		
-													</div> <!-- End form-group -->							
-												</div>	<!-- End column -->						
-											</div> <!-- End row -->
-											<div class="row">
-												<div class="col-md-4">
-													<div class="form-group">
-														<label class="control-label" for="homePhone">Office Phone</label>
-														<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
+														<input type="email" class="form-control" name="email" placeholder="Email"/>
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 											</div> <!-- End row -->
@@ -116,6 +101,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 													</div> <!-- End form-group -->
 												</div> <!-- End column -->
 											</div> <!-- End row -->
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label" for="homePhone">Office Phone</label>
+														<input type="tel" class="form-control" name="officePhone" placeholder="Office Phone"/>
+													</div> <!-- End form-group -->
+												</div> <!-- End column -->
+											</div> <!-- End row -->
 										</fieldset> <!-- End fieldset -->
 									</form> <!-- End form-horizontal -->
 								</div> <!-- End panel-body -->
@@ -125,10 +118,10 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<div class="col-md-3">
 										<button type="submit" name="submitButton" form="professorForm" class="btn btn-success btn-block"><span class="glyphicon glyphicon-thumbs-up"></span> Create Account</button>
 									</div> <!-- End column -->
-								</div> <!-- End row -->	
+								</div> <!-- End row -->
 						
-							</div> <!-- End panel-footer -->	
-						</div> <!-- End panel panel-success -->						
+							</div> <!-- End panel-footer -->
+						</div> <!-- End panel panel-success -->
 				</div> <!-- End container -->
 <?php
 }

@@ -37,24 +37,6 @@ final class LoginSession {
 		$_SESSION['userID'] = $user_obj->getID();
 	}
 
-	/* Function LoginSession::start([$regenerate], [$eventTypeID])
-	*  Purpose: Calls session_start() and checks for errors
-	*  Throws: TarsException(SERVER_EXCEPTION) if session_start or session_regenerate_id fail.
-	**/
-	public static function start($regenerate = false, $eventTypeID = Event::SESSION_CONTINUE) {
-		// begin the session
-		if (!session_start()) {
-			throw new TarsException(Event::SERVER_EXCEPTION, $eventTypeID, 'session_start() failed');
-		}
-
-		if ($regenerate) {
-			// regenerate a new session id on each log in
-			if (!session_regenerate_id(true)) {
-				throw new TarsException(Event::SERVER_EXCEPTION, $eventTypeID, 'session_regenerate_id() failed');
-			}
-		}
-	}
-
 	/* Function LoginSession::sessionContinue($user_type)
 	 * Purpose: Continue an existing session on this page.
 	 *			If one does not exist, a TarsException is thrown.
@@ -105,9 +87,27 @@ final class LoginSession {
 		}
 
 		// Finally, destroy the session.
-		session_destroy();
+		@session_destroy();
 
 		/**************************************/
+	}
+
+	/* Function LoginSession::start([$regenerate], [$eventTypeID])
+	*  Purpose: Calls session_start() and checks for errors
+	*  Throws: TarsException(SERVER_EXCEPTION) if session_start or session_regenerate_id fail.
+	**/
+	public static function start($regenerate = false, $eventTypeID = Event::SESSION_CONTINUE) {
+		// begin the session
+		if (!@session_start()) {
+			throw new TarsException(Event::SERVER_EXCEPTION, $eventTypeID, 'session_start() failed');
+		}
+
+		if ($regenerate) {
+			// regenerate a new session id on each log in
+			if (!@session_regenerate_id(true)) {
+				throw new TarsException(Event::SERVER_EXCEPTION, $eventTypeID, 'session_regenerate_id() failed');
+			}
+		}
 	}
 
 
@@ -164,7 +164,11 @@ final class LoginSession {
 		if (isset($_SESSION['callbackResult'])) {
 			$output = $_SESSION['callbackResult'];
 		}
-		LoginSession::sessionDestroy();
+		try {
+			LoginSession::sessionDestroy();
+		} catch (TarsException $ex) {
+			return null;
+		}
 		return $output;
 	}
 

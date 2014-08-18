@@ -34,18 +34,14 @@ final class Professor extends User {
 		return array_map(function ($row) { return new Professor($row); }, $rows );
 	}
 		
-	public function updateProfile($firstName, $lastName, $officePhone, $building, $room) {
-		$building = strtoupper($building);
-		$room = strtoupper($room);
-
+	public function updateProfile($firstName, $lastName, $officePhone, $officeID) {
 		$sql = 'UPDATE Professors
 				INNER JOIN Users ON Users.userID = Professors.userID
 				SET firstName = :firstName, lastName = :lastName,
 					officeID = :officeID, officePhone = :officePhone
 				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':officeID' => Place::getOrCreatePlace($building, $room),
-			':officePhone' => $officePhone);
+			':officeID' => $officeID, ':officePhone' => $officePhone);
 		Database::execute($sql, $args);
 	}
 

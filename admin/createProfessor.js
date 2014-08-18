@@ -96,11 +96,10 @@ function createProfessor(){
 		firstName: $("[name='firstName']",$professorForm).val(),
 		lastName: $("[name='lastName']",$professorForm).val(),
 		email: $("[name='email']",$professorForm).val(),
-		emailConfirm: $("[name='emailConfirm']",$professorForm).val(),
 		officePhone: $("[name='officePhone']",$professorForm).val(),
 		building: $("[name='building']",$professorForm).val(),
 		room: $("[name='room']",$professorForm).val(),
-		type: PROFESSOR
+		type: $("[name='userType']",$professorForm).val()
 	}).done(function (data) {
 		if (data.success) {
 			showAlert({message: 'Successfully created a professor. They will receive an email to confirm their account.'}, $('#alertHolder'), 'success');

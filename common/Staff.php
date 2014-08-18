@@ -26,17 +26,14 @@ final class Staff extends User {
 		}
 	}
 
-	public function updateProfile($firstName, $lastName, $officePhone, $building, $room) {
-		$building = strtoupper($building);
-		$room = strtoupper($room);
-
+	public function updateProfile($firstName, $lastName, $officePhone, $officeID) {
 		$sql = 'UPDATE Staff
 				INNER JOIN Users ON Users.userID = Staff.userID
 				SET firstName = :firstName, lastName = :lastName,
 					officeID = :officeID, officePhone = :officePhone
 				WHERE Users.userID = :id';
 		$args = array(':id'=>$this->id, ':firstName'=>$firstName, ':lastName'=>$lastName,
-			':officeID' => Place::getOrCreatePlace($building, $room),
+			':officeID' => $officeID,
 			':officePhone' => $officePhone);
 		Database::execute($sql, $args);
 	}

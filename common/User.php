@@ -19,7 +19,7 @@ abstract class User {
 		$sql = 'SELECT * FROM Users WHERE userID = :id';
 		$args = array(':id' => $id);
 		if ($check_type >= 0) {
-			$sql .= ' AND type = :type';
+			$sql .= ' AND (type & :type) = :type';
 			$args[':type'] = $check_type;
 		}
 		$user_row = Database::executeGetRow($sql, $args);
@@ -56,7 +56,7 @@ abstract class User {
 		$sql = 'SELECT * FROM Users WHERE email = :email';
 		$args = array(':email' => $email);
 		if ($check_type >= 0) {
-			$sql .= ' AND type = :type';
+			$sql .= ' AND (type & :type) = :type';
 			$args[':type'] = $check_type;
 		}
 		$user_row = Database::executeGetRow($sql, $args);

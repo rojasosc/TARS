@@ -1,7 +1,7 @@
-window.STUDENT = 0;
-window.PROFESSOR = 1;
-window.STAFF = 2;
-window.ADMIN = 3;
+window.STUDENT = 1;
+window.PROFESSOR = 2;
+window.STAFF = 4;
+window.ADMIN = 8;
 window.actionsUrl = "../actions.php";
 
 $(document).ready(function() {

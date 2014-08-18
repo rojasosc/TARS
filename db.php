@@ -38,10 +38,13 @@ const DATABASE_NAME = 'TARS';
 const DATABASE_TYPE = 'mysql';
 
 /*Account Types*/
-const STUDENT = 0;
-const PROFESSOR = 1;
-const STAFF = 2;
-const ADMIN = 3;
+const STUDENT = 1;
+const PROFESSOR = 2;
+const STAFF = 4;
+const ADMIN = 8;
+
+const USERMASK_NONSTUDENT = 14;
+const USERMASK_STAFF = 12;
 
 /*Application Statuses*/
 const PENDING = 0;

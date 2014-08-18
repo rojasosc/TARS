@@ -467,7 +467,9 @@ final class Action {
 		if ($userToUpdate === null) {
 			throw new ActionError('User not found');
 		}
-		if ($user->getObjectType() != STAFF && $user->getID() != $userToUpdate->getID()) {
+		if ($user->getObjectType() !== STAFF &&
+			$user->getObjectType() !== ADMIN &&
+			$user->getID() !== $userToUpdate->getID()) {
 			throw new ActionError('Permission denied');
 		}
 		switch ($userToUpdate->getObjectType()) {
@@ -541,8 +543,8 @@ final class Action {
 	}
 
 	public static function fetchApplication($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() == STUDENT) {
-			throw new ActionError('Permission denied (student)');
+		if ($user->getObjectType() === STUDENT) {
+			throw new ActionError('Permission denied');
 		}
 		$application = Application::getApplicationByID($params['appID']);
 		if ($application === null) {
@@ -552,8 +554,8 @@ final class Action {
 	}
 
 	public static function fetchComments($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() == STUDENT) {
-			throw new ActionError('Permission denied (student)');
+		if ($user->getObjectType() === STUDENT) {
+			throw new ActionError('Permission denied');
 		}
 		$student = User::getUserByID($params['userID'], STUDENT);
 		if ($student === null) {
@@ -598,8 +600,8 @@ final class Action {
 	}
 
 	public static function createUser($params, $user, &$eventObjectID) {
-		if ($user->getObjectType() != STAFF) {
-			throw new ActionError('Permission denied (not staff)');
+		if ($user->getObjectType() !== STAFF && $user->getObjectType() !== ADMIN) {
+			throw new ActionError('Permission denied');
 		}
 		
 		// filter non-digits
@@ -1043,7 +1045,7 @@ final class Action {
 			'eventLog' => 'always', 'eventDescr' => '%s withdrew an application.',
 			'isUserInput' => true, 'params' => array('positionID')),
 		// Action:           updateProfile
-		// Session required: STUDENT, PROFESSOR, STAFF
+		// Session required: required
 		// Parameters:       all user fields (varies with session user type)
 		//     userID:       If provided, we are updating this profile, not self
 		//     firstName, lastName, mobilePhone, classYear, major,
@@ -1078,7 +1080,7 @@ final class Action {
 				'room' => array('type' => Action::VALIDATE_NOTEMPTY,
 					'optional' => true))),
 		// Action:           changeUserPassword
-		// Session required: logged in
+		// Session required: required
 		// Parameters:
 		//     oldPassword, newPassword, confirmPassword
 		// Returns:
@@ -1109,64 +1111,64 @@ final class Action {
 			'eventDescr' => '%s retrieved building room list.',
 			'params' => array('building')),
 		// Action:           fetchUser
-		// Session required: logged in
+		// Session required: not STUDENT
 		// Parameters:
 		//     userID: The user's ID
 		//     userType: The expected user type (pass -1 for any)
 		// Returns:
 		//     object: The user's data
 		//     success and error: Action status
-		'fetchUser' => array('event' => Event::USER_GET_OBJECT,
+		'fetchUser' => array('event' => Event::USER_GET_OBJECT, 'userType' => USERMASK_NONSTUDENT,
 			'eventDescr' => '%s retrieved user object.',
 			'params' => array('userID', 'userType')),
 		// Action:           fetchApplication
-		// Session required: logged in (not STUDENT)
+		// Session required: not STUDENT
 		// Parameters:
 		//     appID: The application ID
 		// Returns:
 		//     object: The application data
 		//     success and error: Action status
-		'fetchApplication' => array('event' => Event::USER_GET_OBJECT,
+		'fetchApplication' => array('event' => Event::USER_GET_OBJECT, 'userType' => USERMASK_NONSTUDENT,
 			'eventDescr' => '%s retrieved application object.',
 			'params' => array('appID')),
 		// Action:           fetchComments
-		// Session required: logged in (not STUDENT)
+		// Session required: not STUDENT
 		// Parameters:
 		//     userID: The user ID
 		// Returns:
 		//     objects: The comments
 		//     success and error: Action status
-		'fetchComments' => array('event' => Event::USER_GET_VIEW,
+		'fetchComments' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_NONSTUDENT,
 			'eventDescr' => '%s retrieved comments view.',
 			'params' => array('userID')),
 		// Action:           setAppStatus
-		// Session required: logged in (not STUDENT)
+		// Session required: not STUDENT
 		// Parameters:
 		//     appID: The app ID
 		//     decision: The new app status
 		// Returns:
 		//     success and error: Action status
-		'setAppStatus' => array('event' => Event::NONSTUDENT_SET_APP,
+		'setAppStatus' => array('event' => Event::NONSTUDENT_SET_APP, 'userType' => USERMASK_NONSTUDENT,
 			'eventLog' => 'always', 'eventDescr' => '%s updated the status of an application.',
 			'params' => array('appID', 'decision')),
 		// Action:           createComment
-		// Session required: logged in (not STUDENT)
+		// Session required: not STUDENT
 		// Parameters:
 		//     studentID: referred-to student
 		//     comment: comment text
 		// Returns:
 		//     success and error: Action status
-		'createComment' => array('event' => Event::NONSTUDENT_COMMENT,
+		'createComment' => array('event' => Event::NONSTUDENT_COMMENT, 'userType' => USERMASK_NONSTUDENT,
 			'eventLog' => 'always', 'eventDescr' => '%s created a comment.',
 			'isUserInput' => true, 'params' => array('studentID', 'comment')),
 		// Action:           createUser
-		// Session required: logged in (not STUDENT)
+		// Session required: not STUDENT
 		// Parameters:
 		//     type: the given user type is checked or permission denied is thrown
 		//     firstName, lastName, email, emailConfirm, officePhone, building, room
 		// Returns:
 		//     success and error: Action status
-		'createUser' => array('event' => Event::SU_CREATE_USER,
+		'createUser' => array('event' => Event::SU_CREATE_USER, 'userType' => USERMASK_NONSTUDENT,
 			'eventLog' => 'always', 'eventDescr' => '%s created a new user.',
 			'isUserInput' => true, 'params' => array(
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
@@ -1182,7 +1184,7 @@ final class Action {
 				'room' => array('type' => Action::VALIDATE_NOTEMPTY,
 					'optional' => true))),
 		// Action:           searchForUsers
-		// Session required: STAFF
+		// Session required: STAFF, ADMIN
 		// Parameters:
 		//     email: email field
 		//     firstName: first name field
@@ -1191,8 +1193,7 @@ final class Action {
 		// Returns:
 		//     objects: The users in this set
 		//     success and error: Action status
-		// TODO paginate here
-		'searchForUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => STAFF,
+		'searchForUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_STAFF,
 			'eventDescr' => '%s retrieved positions view.',
 			'isUserInput' => true,
 			'params' => array(
@@ -1204,13 +1205,13 @@ final class Action {
 				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
 		// Action: fetchTermApplications
-		// Session required: STAFF
+		// Session required: STAFF, ADMIN
 		// Parameters: 
 		//		appStatus: application status
 		// 		termID: id of term
 		// Returns:
 		// 		application objects 
-		'fetchTermApplications' => array('event' => Event::USER_GET_VIEW, 'userType' => STAFF,
+		'fetchTermApplications' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_STAFF,
 			'eventDescr' => '%s retrieved an applications view.',
 			'isUserInput' => true,
 			'params' => array(
@@ -1220,7 +1221,7 @@ final class Action {
 				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
 		// Action:           uploadTerm
-		// Session required: STAFF
+		// Session required: STAFF, ADMIN
 		// Parameters:
 		//     termYear: year field
 		//     termSemester: semester field
@@ -1228,7 +1229,7 @@ final class Action {
 		// Returns:
 		//     success and error: Action status
 		// Only available via calling this script; not by Action::callAction()
-		'uploadTerm' => array('event' => Event::STAFF_TERM_IMPORT, 'userType' => STAFF,
+		'uploadTerm' => array('event' => Event::STAFF_TERM_IMPORT, 'userType' => USERMASK_STAFF,
 			'eventLog' => 'always', 'eventDescr' => '%s uploaded a term.',
 			'isUserInput' => true, 'params' => array(
 				'termYear' => array('type' => Action::VALIDATE_NUMSTR,
@@ -1246,7 +1247,7 @@ final class Action {
 		//		success and error: Action status
 		'fetchSections' => array(
 			'event' => Event::USER_GET_OBJECT,
-			'userType' => STAFF,
+			'userType' => USERMASK_STAFF,
 			'eventDescr' => '%s retrieved sections view.',
 			'isUserInput' => true,
 			'params' => array(

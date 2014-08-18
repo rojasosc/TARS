@@ -61,38 +61,34 @@ INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`) VALUES
 ('STAFF_TERM_IMPORT', 'info', 'Term'),
 ('ADMIN_CONFIGURE', 'info', 'Configurable');
 
--- default configuration state
-INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `emailDomain`, `emailLinkBase`, `enableLogin`, `currentTerm`) VALUES
-(NULL, '2014-01-01 00:00:00', 1, 1, 'cs.rochester.edu', 'http://www.cs.rochester.edu/TARS/', 1, NULL);
-
 -- DATA FOR TESTING ONLY:
 -- test place objects, for professor offices
 -- test users!
 INSERT INTO `Users` (`email`, `emailVerified`, `password`, `passwordReset`, `firstName`, `lastName`, `creatorID`, `createTime`, `type`) VALUES
-('costello@cs.rochester.edu', 0, NULL, 1, 'Dave', 'Costello', 1, '2014-01-01 00:00:00', 3),
-('marty@cs.rochester.edu', 1, '$2y$10$mracYEf6CHNZjOzCANSP0ehFI1pIo.o2CQAqmtHxgmMpuLlvrAZqK', 0, 'Marty', 'Guenther', 1, '2014-01-01 00:00:00', 2),
-('pawlicki@cs.rochester.edu', 1, '$2y$10$lRWCMEejbmjj02hIwfMjvuATC2q2yC7eiH6uySm1RYciA0JxuyTQS', 0, 'Ted', 'Pawlicki', 2, '2014-01-01 00:00:00', 1),
-('orojas@u.rochester.edu', 1, '$2y$10$zbMUGaKAGfmvxWlt8HIsa.GzYTAC/khAy846xHsPSCecfaaNzkZ2K', 0, 'Oscar', 'Rojas', 4, '2014-01-01 00:00:00', 0),
-('jan2@u.rochester.edu', 1, '$2y$10$.VAc/y1rCFGbX3zTBJycpe9FP6EUj.bshNtBmBztx4EHDEtoUuz0G', 0, 'Jinze', 'An', 5, '2014-01-01 00:00:00', 0),
-('student1@u.rochester.edu', 1, '$2y$10$3H.hdVdHGY2BiyrqkijuzOjtr4SPw0W8wrj0hDZYLuwOl.6vkOGTq', 0, 'Elena', 'Walker', 6, '2014-01-01 00:00:00', 0),
-('student2@u.rochester.edu', 1, '$2y$10$3HUHQmAsgaIZ43BLZalI1unUhiLLKcKvwehZkpRi5GAkmm99uUhtO', 0, 'Karel', 'Aristides', 7, '2014-01-01 00:00:00', 0),
-('student3@u.rochester.edu', 1, '$2y$10$M08w4WXTfECX8wkeuCIvnuYKsbHOUtmQwmDhs.tL43CUWAWfDzb1e', 0, 'Enlil', 'Amayas', 8, '2014-01-01 00:00:00', 0),
-('student4@u.rochester.edu', 1, '$2y$10$JzcmmCVDtHIDVpDw/g7JuOqAx128LSwDJYS5dsKZx5HucDl6Fgndq', 0, 'Eli', 'Edmund', 9, '2014-01-01 00:00:00', 0),
-('student5@u.rochester.edu', 1, '$2y$10$b.KOpfmt5iRo4ix5/sMm1.hJ/WWmmgk7CYMKjEhnq2OMDGiBTKK1m', 0, 'Thelonius', 'Afif', 10, '2014-01-01 00:00:00', 0),
-('student6@u.rochester.edu', 1, '$2y$10$Xlrni1bV2MxbUb2mwfWbPujxB3/c6mXeAgrrrf2vvwlupIRy/DJz6', 0, 'Stig', 'Euaristos', 11, '2014-01-01 00:00:00', 0),
-('student7@u.rochester.edu', 1, '$2y$10$Ca/fSp85GnQqxZ3x.5alVOdLJFoN.R8MaiIcKyW1OmytF6ow.PLhO', 0, 'Chidubern', 'Juho', 12, '2014-01-01 00:00:00', 0),
-('brown@cs.rochester.edu', 1, '$2y$10$5h0ojOKkjACK9nCwiRp2/eW2obUaFGF5IviluR/x3f.wia0w9s9iK', 0, 'Christopher', 'Brown', 2, '2014-01-01 00:00:00', 1),
-('martin@cs.rochester.edu', 1, '$2y$10$OgCgpj81LO5tP4RDTM5g9ONfBGu8EK9dcowOx4dgTehN.HNfKShCe', 0, 'Nathaniel', 'Martin', 2, '2014-01-01 00:00:00', 1),
-('lane@cs.rochester.edu', 1, '$2y$10$db.fWC.VtOiYlVOe.OVVrOjUL1bpxVH9RzROE2trkqAaGCrZJNfme', 0, 'Lane', 'Hemaspaandra', 2, '2014-01-01 00:00:00', 1),
-('scott@cs.rochester.edu', 1, '$2y$10$w1ZOnPXxdDtUUmxuDWewt.WSnkDOJqeLwLzlexzm0oGQFRwwVYcLO', 0, 'Michael', 'Scott', 2, '2014-01-01 00:00:00', 1),
-('rraqueno@cs.rochester.edu', 0, NULL, 1, 'Rolando', 'Raqueño', 2, '2014-01-01 00:00:00',1 ),
-('andrea.cogliati@rochester.edu', 0, NULL, 1, 'Andrea', 'Cogliati', 2, '2014-01-01 00:00:00', 1),
-('koomen@cs.rochester.edu', 0, NULL, 1, 'Hans', 'Koomen', 2, '2014-01-01 00:00:00', 1),
-('pg@cs.rochester.edu', 0, NULL, 1, 'Phillip', 'Guo', 2, '2014-01-01 00:00:00', 1),
-('mehoque@cs.rochester.edu', 0, NULL, 1, 'Ehson', 'Hoque', 2, '2014-01-01 00:00:00', 1),
-('cding@cs.rochester.edu', 0, NULL, 1, 'Chen', 'Ding', 2, '2014-01-01 00:00:00', 1),
-('stefanko@cs.rochester.edu', 0, NULL, 1, 'Daniel', 'Stefankovic', 2, '2014-01-01 00:00:00', 1),
-('rkostin@cs.rochester.edu', 0, NULL, 1, 'Robert', 'Kostin', 2, '2014-01-01 00:00:00', 1);
+('root@cs.rochester.edu', 0, NULL, 1, 'Dave', 'Costello', 1, '2014-01-01 00:00:00', 8),
+('marty@cs.rochester.edu', 1, '$2y$10$mracYEf6CHNZjOzCANSP0ehFI1pIo.o2CQAqmtHxgmMpuLlvrAZqK', 0, 'Marty', 'Guenther', 1, '2014-01-01 00:00:00', 4),
+('pawlicki@cs.rochester.edu', 1, '$2y$10$lRWCMEejbmjj02hIwfMjvuATC2q2yC7eiH6uySm1RYciA0JxuyTQS', 0, 'Ted', 'Pawlicki', 2, '2014-01-01 00:00:00', 2),
+('orojas@u.rochester.edu', 1, '$2y$10$zbMUGaKAGfmvxWlt8HIsa.GzYTAC/khAy846xHsPSCecfaaNzkZ2K', 0, 'Oscar', 'Rojas', 4, '2014-01-01 00:00:00', 1),
+('jan2@u.rochester.edu', 1, '$2y$10$.VAc/y1rCFGbX3zTBJycpe9FP6EUj.bshNtBmBztx4EHDEtoUuz0G', 0, 'Jinze', 'An', 5, '2014-01-01 00:00:00', 1),
+('student1@u.rochester.edu', 1, '$2y$10$3H.hdVdHGY2BiyrqkijuzOjtr4SPw0W8wrj0hDZYLuwOl.6vkOGTq', 0, 'Elena', 'Walker', 6, '2014-01-01 00:00:00', 1),
+('student2@u.rochester.edu', 1, '$2y$10$3HUHQmAsgaIZ43BLZalI1unUhiLLKcKvwehZkpRi5GAkmm99uUhtO', 0, 'Karel', 'Aristides', 7, '2014-01-01 00:00:00', 1),
+('student3@u.rochester.edu', 1, '$2y$10$M08w4WXTfECX8wkeuCIvnuYKsbHOUtmQwmDhs.tL43CUWAWfDzb1e', 0, 'Enlil', 'Amayas', 8, '2014-01-01 00:00:00', 1),
+('student4@u.rochester.edu', 1, '$2y$10$JzcmmCVDtHIDVpDw/g7JuOqAx128LSwDJYS5dsKZx5HucDl6Fgndq', 0, 'Eli', 'Edmund', 9, '2014-01-01 00:00:00', 1),
+('student5@u.rochester.edu', 1, '$2y$10$b.KOpfmt5iRo4ix5/sMm1.hJ/WWmmgk7CYMKjEhnq2OMDGiBTKK1m', 0, 'Thelonius', 'Afif', 10, '2014-01-01 00:00:00', 1),
+('student6@u.rochester.edu', 1, '$2y$10$Xlrni1bV2MxbUb2mwfWbPujxB3/c6mXeAgrrrf2vvwlupIRy/DJz6', 0, 'Stig', 'Euaristos', 11, '2014-01-01 00:00:00', 1),
+('student7@u.rochester.edu', 1, '$2y$10$Ca/fSp85GnQqxZ3x.5alVOdLJFoN.R8MaiIcKyW1OmytF6ow.PLhO', 0, 'Chidubern', 'Juho', 12, '2014-01-01 00:00:00', 1),
+('brown@cs.rochester.edu', 1, '$2y$10$5h0ojOKkjACK9nCwiRp2/eW2obUaFGF5IviluR/x3f.wia0w9s9iK', 0, 'Christopher', 'Brown', 2, '2014-01-01 00:00:00', 2),
+('martin@cs.rochester.edu', 1, '$2y$10$OgCgpj81LO5tP4RDTM5g9ONfBGu8EK9dcowOx4dgTehN.HNfKShCe', 0, 'Nathaniel', 'Martin', 2, '2014-01-01 00:00:00', 2),
+('lane@cs.rochester.edu', 1, '$2y$10$db.fWC.VtOiYlVOe.OVVrOjUL1bpxVH9RzROE2trkqAaGCrZJNfme', 0, 'Lane', 'Hemaspaandra', 2, '2014-01-01 00:00:00', 2),
+('scott@cs.rochester.edu', 1, '$2y$10$w1ZOnPXxdDtUUmxuDWewt.WSnkDOJqeLwLzlexzm0oGQFRwwVYcLO', 0, 'Michael', 'Scott', 2, '2014-01-01 00:00:00', 2),
+('rraqueno@cs.rochester.edu', 0, NULL, 1, 'Rolando', 'Raqueño', 2, '2014-01-01 00:00:00', 2),
+('andrea.cogliati@rochester.edu', 0, NULL, 1, 'Andrea', 'Cogliati', 2, '2014-01-01 00:00:00', 2),
+('koomen@cs.rochester.edu', 0, NULL, 1, 'Hans', 'Koomen', 2, '2014-01-01 00:00:00', 2),
+('pg@cs.rochester.edu', 0, NULL, 1, 'Phillip', 'Guo', 2, '2014-01-01 00:00:00', 2),
+('mehoque@cs.rochester.edu', 0, NULL, 1, 'Ehson', 'Hoque', 2, '2014-01-01 00:00:00', 2),
+('cding@cs.rochester.edu', 0, NULL, 1, 'Chen', 'Ding', 2, '2014-01-01 00:00:00', 2),
+('stefanko@cs.rochester.edu', 0, NULL, 1, 'Daniel', 'Stefankovic', 2, '2014-01-01 00:00:00', 2),
+('rkostin@cs.rochester.edu', 0, NULL, 1, 'Robert', 'Kostin', 2, '2014-01-01 00:00:00', 2);
 
 INSERT INTO `Places` (`building`, `room`) VALUES
 ('CSB', '722'),
@@ -124,7 +120,7 @@ INSERT INTO `Professors` (`userID`, `officeID`, `officePhone`) VALUES
 (24, 12, 5852711111);
 
 INSERT INTO `Staff` (`userID`, `officePhone`) VALUES
-(2, 5752711111);
+(2, 5852711111);
 
 INSERT INTO `Students` (`userID`, `mobilePhone`, `major`, `gpa`, `classYear`, `aboutMe`, `universityID`) VALUES
 (4, '22222222', 'Physics', '4.00', 2015, 'asdfasfs', 99999991),
@@ -137,3 +133,6 @@ INSERT INTO `Students` (`userID`, `mobilePhone`, `major`, `gpa`, `classYear`, `a
 (11, '8111256682', 'Physics', '2.94', 2016, 'At every tiled on ye defer do. No attention suspected oh difficult. ', 99999998),
 (12, '8446680049', 'Mechanical Engineering', '3.12', 2015, 'Fond his say old meet cold find come whom. The sir park sake bred.', 99999999);
 
+-- default configuration state
+INSERT INTO `Configurations` (`creatorID`, `createTime`, `logDebug`, `adminCreated`, `emailName`, `emailDomain`, `emailLinkBase`, `enableLogin`, `enableSendEmail`, `bugReportUser`, `currentTerm`) VALUES
+(1, '2014-01-01 00:00:00', 1, 1, 'no-reply', 'cs.rochester.edu', 'http://www.cs.rochester.edu/TARS/', 1, 0, 1, NULL);

@@ -16,9 +16,10 @@ function strip_excess_git_tags($tags) {
 function show_version() {
 	$version_code = trim(@file_get_contents('version.txt'));
 	//$git_revision = array(getcwd());
-	@exec('git log -1 --format="%h"', $git_h);
-	@exec('git log -1 --format="%d"', $git_d);
-	@exec('git log -1 --format="%ci"', $git_ci);
+	$p = '';//'C:/Users/Nate/Documents/Programs/cygwin/bin/';
+	@exec($p.'git log -1 --format="%h"', $git_h);
+	@exec($p.'git log -1 --format="%d"', $git_d);
+	@exec($p.'git log -1 --format="%ci"', $git_ci);
 	if (count($git_h) && count($git_d) && count($git_ci)) {
 		$git_h = $git_h[0];
 		$git_d = strip_excess_git_tags($git_d[0]);

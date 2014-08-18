@@ -499,6 +499,10 @@ final class Action {
 				$params['firstName'], $params['lastName'],
 				$officePhone, $officeBuilding, $officeRoom);
 			break;
+		case ADMIN:
+			$userToUpdate->updateProfile(
+				$params['firstName'], $params['lastName']);
+			break;
 		}
 		$eventObjectID = $user->getID();
 		// re-retrieve user object since ->updateProfile doesn't update the fields

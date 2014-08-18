@@ -10,8 +10,8 @@ v_xfile="$flags 0700"
 
 # primary app perms
 chmod $v_file *
-chmod $v_dir . sql common css fonts images js plugins plugins/password_compat professor staff student
-chmod $v_file sql/* common/* css/* fonts/* images/* js/* professor/* staff/* student/* plugins/password_compat/*
+chmod $v_dir . sql common css fonts images js plugins plugins/password_compat admin professor staff student
+chmod $v_file sql/* common/* css/* fonts/* images/* js/* admin/* professor/* staff/* student/* plugins/password_compat/*
 # git version perms
 chmod $v_file .git/*
 chmod $v_dir .git/branches .git/hooks .git/info .git/logs .git/objects .git/refs

@@ -724,7 +724,7 @@ function updateUserProfile() {
                 gpa: $("[name='gpa']", $editProfileForm).val(),
                 universityID: $("[name='universityID']", $editProfileForm).val(),
                 aboutMe: $("[name='aboutMe']", $editProfileForm).val()
-            }
+            };
             break;
         case PROFESSOR:
         case STAFF:
@@ -736,9 +736,14 @@ function updateUserProfile() {
                 officePhone: $("[name='officePhone']", $editProfileForm).val(),
                 building: $("[name='building']", $editProfileForm).val(),
                 room: $("[name='room']", $editProfileForm).val()
-            }
+            };
             break;
         case ADMIN:
+            input = {
+                userID: $user.id,
+                firstName: $("[name='firstName']", $editProfileForm).val(),
+                lastName: $("[name='lastName']", $editProfileForm).val()
+			};
             break;
     }
 

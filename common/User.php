@@ -23,24 +23,10 @@ abstract class User {
 			$args[':type'] = $check_type;
 		}
 		$user_row = Database::executeGetRow($sql, $args);
-		if ($user_row == null) {
+		if ($user_row === null) {
 			return null;
 		}
 		return User::getUserSubclassObject($user_row);
-	}
-
-	public static function getUserByResetToken($token) {
-		if ($token != null) {
-			$sql = 'SELECT * FROM Users WHERE resetToken = :token';
-			$args = array(':token' => $token);
-			$row = Database::executeGetRow($sql, $args);
-			if ($row == null) {
-				return null;
-			}
-			return User::getUserSubclassObject($row);
-		} else {
-			return null;
-		}
 	}
 
 	/**

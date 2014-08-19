@@ -54,7 +54,7 @@ function generate_major_options() {
 		<div id="page-wrapper">
 <?php
 // Display header for Manage
-$header_active = 'profile';
+$header_active = 'manage';
 require 'header.php';
 ?>
 			<!-- BEGIN Page Content -->

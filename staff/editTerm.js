@@ -1,117 +1,35 @@
-$(document).ready(function () {
-	$term = $('#selectTerm');
-	$updateCourseContainer = $('#updateCourseContainer');
-	$course = $('#selectCourse');
-	$professor = $('#selectProfessor');
-		
-	/* bind components */	
-	$term.bind('change',displayTerm);
-	$course.bind('change',showCourse);
-	$course.bind('change',showProfessors);
-	$professor.bind('change',showCourse);
-	
-	/* prevent a page redirection */
-	$('#updateCourseForm').submit(function (){ return false; });
-	$('#newCourseForm').submit(function (){ return false; });
+$(document).ready(function() {
+//CONDEMNED. I THINK. MAYBE NOT.
+    $('.coursePanel').on('hidden.bs.collapse', function() {
+        var sectionTitle = $(this).find('h2');
+        var sectionTitleHTML = sectionTitle.html();
+		//TODO: Somehow use .data('sectionType');
+		var sectionForm = $(this).find('form');
+		var sectionType = sectionForm.attr('data-sectionType');
+		var sectionCRN = sectionForm.find('.CRN').val();
+		var sectionDays = sectionForm.find('.day').val();
+		var sectionStartTime = sectionForm.find('.startTime').val();
+		var sectionEndTime = sectionForm.find('.endTime').val();
+		var sectionBuilding = sectionForm.find('.building').val();
+		var sectionRoom = sectionForm.find('.room').val();
+		var sectionCourseNumber = sectionForm.find('.courseNum').val();
+		var sectionLabTACount = sectionForm.find('.labTACount').val();
+		var sectionWSTACount = sectionForm.find('.wsTACount').val();
+		var sectionSLTACount = sectionForm.find('.wsslCount').val();
+		var sectionLecTACount = sectionForm.find('.lecTACount').val();
+		var sectionGraderCount = sectionForm.find('.graderCount').val();
+		//FIND A BETTER WAY TO DISPLAY THIS
+		sectionTitle.html(sectionCourseNumber + ' ' + sectionType + ' | ' + sectionCRN + ' | ' + sectionDays + ' | ' + sectionStartTime + ' - ' + sectionEndTime + ' | ' + sectionBuilding + ' ' + sectionRoom + ' | ' +  sectionLabTACount + ' ' + sectionWSTACount + ' ' + sectionSLTACount + ' ' + sectionLecTACount + ' ' + sectionGraderCount);
+        //sectionTitle.addClass('summary'); DO WE NEED THIS?
+    });
 
-	$('#updateCourseButton').bind('click',updateCourse);
-	$('#newCourseButton').bind('click',newCourse);
-	
-	showTerm();
-	
-}); /* End of onload event*/
-
-
-/* Makes an AJAX POST request to update a course */
-function updateCourse(){
-	
-	
-	
-}
-/* Makes an AJAX POST request to create a course */
-function newCourse(){
-	
-	
-	
-} 
-
-function getCourses(){
-	
-}
-
-function showCourses(){
-	
-}
-
-function getProfessors(){
-	
-}
-
-function showProfessors(){
-	
-}
-
-function showCourse(){
-	
-	/*hide the current course form */
-	
-	$updateCourseContainer.fadeOut(200);
-	
-	/*obtain the course via ajax get request */
-	
-	
-	$updateCourseContainer.fadeIn(200);
-	
-}
-
-
-
-function showProfessors(){
-	
-	/* remove current professor drop table */
-	$professor.prev().hide();
-	$professor.hide();
-	
-	//hideCourseForm(); /* in case a course form was already opened */
-	
-	/* show the professors once the course has been selected */
-	
-	/* AJAX get request to retrieve professors who teach this course */
-	
-	
-	/*build options based on the results obtained */
-	$professor.prev().show(200);
-	$professor.show(300); /* display professors retrieved from ajax get request */
-	
-	
-	
-}
-
-function displayTerm(){
-	
-	/* hide the term if one is displayed */
-	
-	hideTerm();
-	
-	termHeader = $(this).val(); /* the selected term */
-	
-	/* AJAX Request for term selected */
-	
-	
-	/* display term */
-	
-	showTerm();
-	
-}
-
-function hideTerm(){
-	
-	$('#termOverview').fadeOut(500);
-	
-}
-
-function showTerm(){
-	var termHeader = $term.val();
-	$('.termHeader').text(termHeader);
-	$('#termOverview').fadeIn(500);
-}
+    $('.coursePanel').on('shown.bs.collapse', function() {
+		var sectionTitle = $(this).find('h2');
+		var sectionForm = $(this).find('form');
+		var sectionType = sectionForm.attr('data-sectionType');
+		var sectionCourseNumber = sectionForm.find('.courseNum').val();
+		var sectionCourseTitle = sectionForm.find('.courseTitle').val();
+		//sectionTitle.removeClass('summary'); DO WE NEED THIS?
+		sectionTitle.html('[' + sectionType + '] CSC ' + sectionCourseNumber + '<span class="hidden-xs">: ' + sectionCourseTitle + '</span>');
+    });
+});

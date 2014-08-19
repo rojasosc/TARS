@@ -5,19 +5,18 @@
 -- Host: localhost
 -- Server version: 5.6.17
 -- PHP Version: 5.4.28
--- 
 
 -- update configurations table
 ALTER TABLE `Configurations`
 MODIFY `creatorID` bigint(20) NOT NULL DEFAULT 1; -- for old schemas: default hopefully root
 ALTER TABLE `Configurations`
-ADD `emailName` varchar(64) NOT NULL DEFAULT 'no-reply' AFTER `adminCreated`;
+MODIFY `emailName` varchar(64) NOT NULL DEFAULT 'no-reply' AFTER `adminCreated`;
 ALTER TABLE `Configurations`
-ADD `enableSendEmail` boolean NOT NULL DEFAULT 0 AFTER `enableLogin`; -- for old schemas: default off
+MODIFY `enableSendEmail` boolean NOT NULL DEFAULT 0 AFTER `enableLogin`; -- for old schemas: default off
 ALTER TABLE `Configurations`
-ADD `bugReportUser` bigint(20) NOT NULL DEFAULT 1 AFTER `currentTerm`, -- for old schemas: default hopefully root
+MODIFY `bugReportUser` bigint(20) NOT NULL DEFAULT 1 AFTER `currentTerm`; -- for old schemas: default hopefully root
 ALTER TABLE `Configurations`
-ADD FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`),
+ADD FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`);
 ALTER TABLE `Configurations`
 ADD FOREIGN KEY (`bugReportUser`) REFERENCES `Users` (`userID`);
 
@@ -32,11 +31,11 @@ UPDATE `Users`
 SET `type` = 1 WHERE `type` = 0;
 
 -- add lecture TA
-INSERT INTO `PositionTypes` (`positionName`, `positionTitle`, `compensation`, `qualifications`, `times`)
+INSERT INTO `PositionTypes` (`positionName`, `positionTitle`, `compensation`, `responsibilities`, `times`)
 VALUES ('lecture', 'TA', '...', '...', '...');
 
 -- update error types
-SET ERROR_ACITON_ID = INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`)
+SET ERROR_ACTION_ID = INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`)
 VALUES ('ERROR_ACITON', 'error', 'EventType');
 
 UPDATE `Events`
@@ -47,4 +46,3 @@ WHERE `eventTypeID` IN
 
 DELETE FROM `EventTypes`
 WHERE `eventName` LIKE 'ERROR_%' AND NOT `eventName` = 'ERROR_ACTION';
-

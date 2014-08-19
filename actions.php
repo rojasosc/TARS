@@ -1310,6 +1310,13 @@ final class Action {
 			$action_evdesc = isset($action_def['eventDescr']) ? $action_def['eventDescr'] : '%s did something.';
 			$action_evdesc_arg = isset($action_def['eventDescrArg']) ? $action_def['eventDescrArg'] : 'session';
 
+			//Simple check for XSS attacks
+			if($action_userinput){
+				foreach ($input as $key => $value) {
+					$input[$key] = htmlentities($value);
+				}
+			}
+
 			// BEGIN TRANSACTION
 			Database::beginTransaction();
 

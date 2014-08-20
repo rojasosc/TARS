@@ -55,7 +55,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
 				<div class="alert alert-warning hidden-lg" role="alert">
 					<p>
-						<strong>Warning!</strong> This page is meant only to be viewed on a computer screen.
+						<strong>Warning!</strong> This page is meant to be viewed on a higher resolution.
 					</p>
 				</div>
 				<div class="panel panel-primary">

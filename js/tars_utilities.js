@@ -12,11 +12,6 @@ $(document).ready(function() {
             searchUsers();
         });
         $userSearchForm.on('change', 'input:radio', function() {
-            if ($('input[name="userType"]:checked').val() == STUDENT) {
-                $('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Class Year</th><th>Profile</th></tr>');
-            } else if ($('input[name="userType"]:checked').val() == PROFESSOR) {
-				$('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Profile</th></tr>');
-            }
             $userSearchForm.trigger('submit');
         });
         $userSearchForm.trigger('submit');
@@ -56,9 +51,9 @@ $(document).ready(function() {
         }
     }
 
-    if ($(".comment").length) {
+    if($(".comment").length){
         $('.comment').click(prepareCommentModal);
-        $('#submitCommentButton').click(submitComment);
+        $('#submitCommentButton').click(submitComment);        
     }
 
     if ($(".password-modal").length) {
@@ -165,13 +160,13 @@ $(document).ready(function() {
             };
             doPaginatedAction('fetchSections', input, function(data) {
                     if (data.success) {
-                        alert('data success');
+						alert('data success');
                         if (data.pg) {
                             handlePagination(data.pg, $('.pagination'));
                         }
                         if (data.objects) {
-                            alert('data objectsd');
-                            alert(JSON.stringify(data.objects));
+							alert('data objectsd');
+							alert(JSON.stringify(data.objects));
                             if (data.objects.length == 0) {
                                 $('thead tr').hide();
                                 $('#results').html('<em>No results</em>');
@@ -250,10 +245,10 @@ $(document).ready(function() {
         });
         $('#fetchSectionsForm').trigger('submit');
     }
-    if ($("#application-table").length) {
-        $appView = $("#application-table");
-        viewApplications();
-    }
+        if($("#application-table").length){
+            $appView = $("#application-table");
+            viewApplications();
+        }
 });
 
 function doPaginatedAction(action, data, ajaxDone, ajaxFail) {
@@ -447,6 +442,9 @@ function searchUsers() {
         lastName: $("[name='lN']", $userSearchForm).val(),
         email: $("[name='emailSearch']", $userSearchForm).val(),
         userType: $("input[type='radio']:checked", $userSearchForm).val(),
+        pgIndex: 1,
+        pgLength: 15,
+        pgGetTotal: true
     };
     doPaginatedAction('searchForUsers', input,
         function(data) {
@@ -474,20 +472,18 @@ function searchUsers() {
         });
 }
 
-function viewApplications() {
-    doPaginatedAction('fetchTermApplications', {
-            appStatus: 0,
-            termID: 1
-        },
-        function(data) {
-            if (data.success) {
-                if (data.pg) {
+function viewApplications(){
+    doPaginatedAction('fetchTermApplications',
+        {appStatus: 0, termID: 1},
+        function(data){
+            if(data.success){
+                if(data.pg){
                     handlePagination(data.pg, $(".pagination"));
                 }
-                if (data.objects) {
+                if(data.objects){
                     $appView.find("tbody").html("");
                     var applications = data.objects;
-                    for (var key in applications) {
+                    for(var key in applications){
                         var app = applications[key];
                         var creator = app['creator'];
                         var position = app['position'];
@@ -497,23 +493,23 @@ function viewApplications() {
                         var universityID = creator['universityID'];
                         var email = creator['email'];
                         var type = position['type'].title;
-                        var appButton = "<button data-toggle='modal' data-target='#profile-modal' data-appID='" + app['id'] + "' data-usertype='" + creator['type'] + "' data-userid='" + creator['id'] + "' class='btn btn-info circle profile'>" +
-                            "<span class='glyphicon glyphicon-file'></span>" +
-                            "</button>";
+                        var appButton = "<button data-toggle='modal' data-target='#profile-modal' data-appID='" + app['id'] + "' data-usertype='" + creator['type'] +"' data-userid='" + creator['id'] +"' class='btn btn-info circle profile'>" +
+                                            "<span class='glyphicon glyphicon-file'></span>" +
+                                        "</button>";
                         var reviewsButton = "<button data-toggle='modal' data-target='#commentsModal' data-userID='" + creator['id'] + "' class='btn btn-info comments'>" +
-                            "<span class='glyphicon glyphicon-comment'></span>" +
-                            "</button>";
+                                                "<span class='glyphicon glyphicon-comment'></span>" +
+                                             "</button>";
                         var row = "";
                         row += "<tr><td>" +
-                            "<div class='dropdown actions'>" +
-                            "<a class='dropdown-toggle' type='button' id='actionsMenu' data-toggle='dropdown'>" + fullName +
-                            "<span class='caret'></span>" +
-                            "</a>" +
-                            "<ul class='dropdown-menu' role='menu' id='actionsMenu' aria-labelledby='actionsMenu'>" +
-                            "<li role='presentation'><a class='comment' role='menuitem' data-commenterID='2' data-studentID='" + creator['id'] + "' data-toggle='modal' href='#commentModal' tabindex='1'>Review Student</a></li>" +
-                            "<li role='presentation'><a data-toggle='modal' role='menuitem' tabindex='-1' data-target='#emailModal'>Send Email</a></li>" +
-                            "</ul>" +
-                            "</div>";
+                                "<div class='dropdown actions'>" +
+                                "<a class='dropdown-toggle' type='button' id='actionsMenu' data-toggle='dropdown'>" + fullName +
+                                "<span class='caret'></span>" +
+                                "</a>" +
+                                "<ul class='dropdown-menu' role='menu' id='actionsMenu' aria-labelledby='actionsMenu'>" +
+                                    "<li role='presentation'><a class='comment' role='menuitem' data-commenterID='2' data-studentID='" + creator['id'] +"' data-toggle='modal' href='#commentModal' tabindex='1'>Review Student</a></li>" +
+                                    "<li role='presentation'><a data-toggle='modal' role='menuitem' tabindex='-1' data-target='#emailModal'>Send Email</a></li>" +
+                                "</ul>" +
+                                "</div>";
                         row += "</td><td>" + universityID;
                         row += "</td><td>" + email;
                         row += "</td><td>" + type;
@@ -542,13 +538,13 @@ function viewApplications() {
                 $(".comment").unbind();
                 $("#submitCommentButton").unbind();
                 $(".comment").click(prepareCommentModal);
-                $('#submitCommentButton').click(submitComment);
-            }
+                $('#submitCommentButton').click(submitComment);                                 
+            }             
         }, function(jqXHR, textStatus, errorMessage) {
-            showError({
-                message: errorMessage
-            }, $('#profileAlertHolder'));
-        });
+        showError({
+            message: errorMessage
+        }, $('#profileAlertHolder'));
+    });
 }
 
 function viewResults(users, userType) {
@@ -568,10 +564,6 @@ function viewResults(users, userType) {
         row[++j] = "</td><td>";
         row[++j] = users[key].email;
         row[++j] = "</td><td>";
-        if (users[key].type == 1) {
-            row[++j] = users[key].classYear;
-            row[++j] = "</td><td>";
-        }
         row[++j] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" +
             users[key].id + "' data-usertype='" + users[key].type + "'><span class='glyphicon glyphicon-wrench'></span></button>";
         row[++j] = "</td></tr>";
@@ -751,7 +743,7 @@ function updateUserProfile() {
                 userID: $user.id,
                 firstName: $("[name='firstName']", $editProfileForm).val(),
                 lastName: $("[name='lastName']", $editProfileForm).val()
-            };
+			};
             break;
     }
 

@@ -701,7 +701,7 @@ final class Action {
 					   'getTotal' => $getTotal);
 			$sectionsFound = Section::fetchSections($params['crn'], $params['course'], $params['type'], $params['status'], $pg);
 			//THIS DOESN'T WORK JUST YET TT_TT
-	/*		$countBuffer = array();
+			$countBuffer = array();
 			foreach($sectionsFound as $section) {
 				$profs = $section->getAllProfessors();
 				$labTACount = $section->getTotalPositionsByType($profs[0], 1);
@@ -728,7 +728,7 @@ final class Action {
 				array_push($countBuffer, $countPack);
 			}
 			$TACounts = array('TACounts' => countBuffer);
-			$sectionsFound[] = $TACounts; */
+			$sectionsFound[] = $TACounts;
 			//Loop through each section and for each section get the 5 TA counts, placed in a very specific
 			//order in an array, then put each array into a TACounts array in the order of the sections
 			//the put both the sections information and the TA counts into a wrapper array and return that.
@@ -1309,6 +1309,13 @@ final class Action {
 			$action_evlog = isset($action_def['eventLog']) ? $action_def['eventLog'] : 'debug';
 			$action_evdesc = isset($action_def['eventDescr']) ? $action_def['eventDescr'] : '%s did something.';
 			$action_evdesc_arg = isset($action_def['eventDescrArg']) ? $action_def['eventDescrArg'] : 'session';
+
+			//Simple check for XSS attacks
+			if($action_userinput){
+				foreach ($input as $key => $value) {
+					$input[$key] = htmlentities($value);
+				}
+			}
 
 			// BEGIN TRANSACTION
 			Database::beginTransaction();

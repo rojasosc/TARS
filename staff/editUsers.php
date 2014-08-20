@@ -261,7 +261,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<table class="table table-striped user-search-table">
 									<thead>
 										<tr>
-											<th>First Name</th><th>Last Name</th><th>E-mail</th><th>Class Year</th><th>Profile</th>
+											<th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th>
 										</tr>
 									</thead>
 									<tbody id="results">

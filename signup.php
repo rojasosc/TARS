@@ -36,6 +36,7 @@ function generate_major_options() {
 		<link href="css/bootstrap.min.css" rel="stylesheet"/>
 		<link rel="stylesheet" href="css/bootstrap-validator.min.css"/>
 		<link href="signup.css" rel="stylesheet"/>
+		<link href="favicon.ico" rel="shortcut icon"/>
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap-validator.min.js"></script>
 		<script src="signup.js"></script>

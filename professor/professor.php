@@ -35,6 +35,7 @@ $unfilledPositions = false; /*TODO: Check for the existence of vacant positions 
 		<title>Home</title>		
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="professor.css" rel="stylesheet"/>
+		<link href="../favicon.ico" rel="shortcut icon"/>
 		<script src="../js/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 	</head> 

@@ -27,6 +27,7 @@ if ($professor != null) {
 		<link href="../css/bootstrap.min.css" rel="stylesheet" />
 		<link href="../css/bootstrap-validator.min.css" rel="stylesheet" />
 		<link href="professor.css" rel="stylesheet" />
+		<link href="../favicon.ico" rel="shortcut icon"/>
 		<script src="../js/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/bootstrap-validator.min.js"></script>		

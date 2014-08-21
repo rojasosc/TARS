@@ -102,6 +102,7 @@ $adminCreated = intval(Configuration::get(Configuration::ADMIN_CREATED));
 		
 		<link href="css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="index.css" rel="stylesheet"/>
+		<link href="favicon.ico" rel="shortcut icon"/>
 
 	</head>
   

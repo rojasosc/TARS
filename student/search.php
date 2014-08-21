@@ -41,6 +41,7 @@ try {
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="student.css" rel="stylesheet"/>
 		<link href="search.css" rel="stylesheet"/>
+		<link href="../favicon.ico" rel="shortcut icon"/>
 		<!-- END CSS -->
 		
 		<!-- BEGIN Scripts -->

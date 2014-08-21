@@ -23,6 +23,7 @@ try {
 		
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="student.css" rel="stylesheet"/>
+		<link href="../favicon.ico" rel="shortcut icon"/>
 
 	</head>
   

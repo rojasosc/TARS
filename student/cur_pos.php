@@ -42,6 +42,7 @@ if ($error == null) { //Error checking
 		<!-- BEGIN CSS -->
 		<link href="../css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="student.css" rel="stylesheet"/>
+		<link href="../favicon.ico" rel="shortcut icon"/>
 		<!-- END CSS -->
 		<!-- BEGIN Scripts -->
 		<script src="../js/jquery.min.js"></script>

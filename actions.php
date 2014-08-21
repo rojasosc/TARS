@@ -407,6 +407,13 @@ final class Action {
 		if ($position === null) {
 			throw new ActionError('Position not found');
 		}
+		$posTerm = null;
+		if (($section = $position->getSection()) !== null) {
+			$posTerm = $section->getCourseTerm();
+		}
+		if ($student->getPendingApplicationCount($posTerm) >= 3) {
+			throw new ActionError('You have already applied to three positions this term');
+		}
 		$application = $position->getLatestApplication($student);
 		$appStatus = null;
 		if ($application !== null) {

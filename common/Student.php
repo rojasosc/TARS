@@ -35,9 +35,20 @@ final class Student extends User {
 	public function findApplications($term, $status) {
 		return Application::findApplications($this, null, null, $term, $status);
 	}
-	
-	// TODO move this to Position object
-	// TODO create notification
+
+	public function getPendingApplicationCount($term = null) {
+		$args = array(':id' => $this->id, ':cancelled' => CANCELLED);
+		$sql = 'SELECT COUNT(*) FROM Applications
+				INNER JOIN Positions ON Positions.positionID = Applications.positionID
+				INNER JOIN Sections ON Sections.sectionID = Positions.sectionID
+				INNER JOIN Courses ON Courses.courseID = Sections.courseID
+				WHERE Applications.creatorID = :id AND appStatus != :cancelled';
+		if ($term !== null) {
+			$sql .= ' AND termID = :term';
+			$args[':term'] = $term->getID();
+		}
+		return intval(Database::executeGetScalar($sql, $args));
+	}
 	
 	public function getAllComments(){
 		$sql = 'SELECT * FROM Comments

@@ -31,14 +31,21 @@ function show_version() {
 }
 
 function server_domain() {
-	return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'example.com';
+	$dom = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'example.com';
+	if (substr($dom, 0, 4) === 'www.') {
+		$dom = substr($dom, 4);
+	}
+	return $dom;
 }
 
 function server_linkbase() {
 	$is_https = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] === 443 : false;
 	$s = $is_https ? 's' : '';
 	$domain = server_domain();
-	$path = dirname(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '/index.php');
+	$path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/index.php';
+	if (substr($path, -1) !== '/') {
+		$path = dirname($path);
+	}
 	if (substr($path, -1) !== '/') {
 		$path .= '/';
 	}

@@ -59,8 +59,8 @@ $(document).ready(function() {
 		event.preventDefault();
 		var data = {
 			q: $('#q').val(),
-		termID: $('#term').val(),
-		typeID: $('#type').val()
+			termID: $('#term').val(),
+			typeID: $('#type').val()
 		};
 		doPaginatedAction('fetchPositions', data, function(data) {
 			if (data.success) {
@@ -77,6 +77,8 @@ $(document).ready(function() {
 						var html = [];
 						for (var key in data.objects) {
 							var position = data.objects[key];
+							var courseNum = position.section.course.department + ' ' +
+									position.section.course.number;
 							var instructors = 'TBD';
 							if (position.section.instructors.length > 0) {
 								instructors = position.section.instructors.map(function(i) {
@@ -92,24 +94,21 @@ $(document).ready(function() {
 								sessionP = position.section.sessions[0].building + ' ' + position.section.sessions[0].room;
 							}
 
-							var posRow = '<tr>';
-							posRow += '<td class="hidden positionID">' + position.id + '</td>';
-							posRow += '<td class="courseNum">' + position.section.course.department + ' ' + position.section.course.number + '</td>';
-							posRow += '<td class="hidden-xs hidden-sm courseTitle">' + position.section.course.title + '</td>';
-							posRow += '<td class="instructor">' + instructors + '</td>';
-							posRow += '<td class="posType">' + position.type.title + '</td>';
-							posRow += '<td class="days">' + sessionD + '</td>';
-							posRow += '<td class="time">' + sessionT + '</td>';
-							posRow += '<td class="place">' + sessionP + '</td>';
-							posRow += '<td>';
+							var posRow = $('<tr/>');
+							posRow.append($('<td class="hidden positionID"/>').text(position.id));
+							posRow.append($('<td class="courseNum"/>').text(courseNum));
+							posRow.append($('<td class="hidden-xs hidden-sm courseTitle"/>').text(position.section.course.title));
+							posRow.append($('<td class="instructor"/>').text(instructors));
+							posRow.append($('<td class="posType"/>').text(position.type.title));
+							posRow.append($('<td class="days"/>').text(sessionD));
+							posRow.append($('<td class="time"/>').text(sessionT));
+							posRow.append($('<td class="place"/>').text(sessionP));
 							if (position.disableApplyText === '') {
-								posRow += '<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>';
+								posRow.append('<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>');
 							} else {
-								posRow += '<button class="btn btn-default" disabled="disabled">' + position.disableApplyText + '</button>';
+								posRow.append($('<button class="btn btn-default" disabled="disabled"/>').text(position.disableApplyText));
 							}
-							posRow += '</td>';
-							posRow += '</tr>';
-							html.push(posRow);
+							html.push(posRow[0].outerHTML);
 						}
 						$('#results').html(html.join(''));
 					}

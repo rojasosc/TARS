@@ -66,13 +66,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 												<div class="col-xs-8">
 													<div class="btn-group" id="userType" data-toggle="buttons">
 														<label class="btn btn-primary">
-															<input type="radio" value="<?= STUDENT ?>" name="userType" checked> Student
+															<input type="radio" value="<?= STUDENT ?>" name="userType"> Student
 														</label>
 														<label class="btn btn-primary">
 															<input type="radio" value="<?= PROFESSOR ?>" name="userType"> Professor
 														</label>
 														<label class="btn btn-primary active">
-															<input type="radio" value="<?= STAFF ?>" name="userType"> Staff
+															<input type="radio" value="<?= STAFF ?>" name="userType" checked> Staff
 														</label>
 													</div>
 												</div> <!-- End column -->

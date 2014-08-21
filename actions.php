@@ -272,6 +272,7 @@ final class Action {
 
 			case 'reset':
 				// reset the user's password, ask for new password on index.php alternate form
+				$user->confirmEmail();
 				// create a token for index.php 'setpass' form:
 				$newToken = ResetToken::generateToken('resetCallback', $user->getID(), $time);
 				// create a token to allow users to reset later:
@@ -635,11 +636,11 @@ final class Action {
 			if ($userType === PROFESSOR) {
 				$userID = Professor::registerProfessor(
 					$email, $firstName, $lastName,
-					$place->getPlaceID(), $officePhone);
+					$place, $officePhone);
 			} else {
 				$userID = Staff::registerStaff(
 					$email, $firstName, $lastName,
-					$place->getPlaceID(), $officePhone);
+					$place, $officePhone);
 			}
 			break;
 		default:
@@ -1230,7 +1231,7 @@ final class Action {
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'email' => array('type' => Action::VALIDATE_EMAIL),
-				'type' => array('type' => Action::VALIDATE_NUMERIC),
+				'userType' => array('type' => Action::VALIDATE_NUMERIC),
 				'officePhone' => array('type' => Action::VALIDATE_NUMSTR,
 					'optional' => true, 'min_length' => 10, 'max_length' => 10),
 				'building' => array('type' => Action::VALIDATE_NOTEMPTY,

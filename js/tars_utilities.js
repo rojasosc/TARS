@@ -364,6 +364,14 @@ function showError(errorObj, element) {
     showAlert(errorObj, element, 'danger');
 }
 
+function clearAlert(element) {
+	element.children().fadeOut('slow');
+	// do not call element.empty() here because the fadeout might not be done when
+	// another alert appears and we don't want to remove that one
+}
+
+var clearError = clearAlert;
+
 function showAlert(alertObj, element, level) {
     if (!('title' in alertObj)) {
         switch (level) {
@@ -388,6 +396,7 @@ function showAlert(alertObj, element, level) {
 }
 
 function submitDecision() {
+	clearError($('#alertHolder'));
     doAction('setAppStatus', {
         appID: $(this).parent().data('applicationid'),
         decision: $(this).data('decision')
@@ -408,6 +417,7 @@ function submitDecision() {
 }
 
 function injectQualifications() {
+	clearError($('#profileAlertHolder'));
     doAction('fetchApplication', {
         appID: $(this).data('appid')
     }).done(function(data) {
@@ -424,6 +434,7 @@ function injectQualifications() {
 }
 
 function viewUserComments() {
+	clearError($('#commentsAlertHolder'));
     doAction('fetchComments', {
         userID: $(this).data('userid')
     }).done(function(data) {
@@ -451,6 +462,7 @@ function viewUserComments() {
 }
 
 function searchUsers() {
+	clearError($('#alertHolder'));
     var input = {
         firstName: $("[name='fN']", $userSearchForm).val(),
         lastName: $("[name='lN']", $userSearchForm).val(),
@@ -485,6 +497,7 @@ function searchUsers() {
 }
 
 function filterEvents() {
+	clearError($('#alertHolder'));
     var input = {
         userFilter: $("[name='user']", $filterEventsForm).is(':checked'),
 		sevCrit: $("[name='sevCrit']", $filterEventsForm).is(':checked'),
@@ -547,6 +560,7 @@ function filterEvents() {
 }
 
 function viewApplications() {
+	clearError($('#alertHolder'));
     doPaginatedAction('fetchTermApplications', {
             appStatus: 0,
             termID: 1
@@ -615,11 +629,11 @@ function viewApplications() {
                 $("#submitCommentButton").unbind();
                 $(".comment").click(prepareCommentModal);
                 $('#submitCommentButton').click(submitComment);
-            }
+            } else {
+				showError(data.error, $('#alertHolder'));
+			}
         }, function(jqXHR, textStatus, errorMessage) {
-            showError({
-                message: errorMessage
-            }, $('#profileAlertHolder'));
+            showError({message: errorMessage}, $('#alertHolder'));
         });
 }
 
@@ -656,6 +670,7 @@ function viewResults(users, userType) {
 }
 
 function viewUserProfile() {
+	clearError($('#profileAlertHolder'));
     doAction('fetchUser', {
         userID: $(this).data('userid'),
         userType: $(this).data('usertype')
@@ -686,6 +701,7 @@ function prepareStudentModal(student) {
 function viewPasswordForm(userID, userType) {
     //console.log('viewpasswordform');
     //console.log(userID, userType);
+	clearError($('#editPasswordAlertHolder'));
     doAction('fetchUser', {
         userID: userID,
         userType: userType
@@ -703,6 +719,7 @@ function viewPasswordForm(userID, userType) {
 }
 
 function viewUserForm(userID, userType) {
+	clearError($('#editProfileAlertHolder'));
     var userType = parseInt(userType, 10);
     $editProfileForm = $("#profileForm" + userType);
     // hide all sub-forms
@@ -768,6 +785,8 @@ function prepareUserForm($user, userType) {
 }
 
 function changeUserPassword() {
+	clearError($('#editPasswordAlertHolder'));
+	clearError($('#alertHolder'));
     doAction('changeUserPassword', {
         oldPassword: $("[name='oldPassword']", $passwordForm).val(),
         newPassword: $("[name='newPassword']", $passwordForm).val(),
@@ -826,6 +845,8 @@ function updateUserProfile() {
             };
             break;
     }
+	clearError($('#editProfileAlertHolder'));
+	clearError($('#alertHolder'));
 
     doAction('updateProfile', input).done(function(data) {
         if (data.success) {
@@ -858,6 +879,7 @@ function updateUserProfileCard(data, userType) {
 }
 
 function prepareBuildingsDropdown() {
+	clearError($('#alertHolder'));
     doAction('fetchBuildings', {}).done(function(data) {
         if (data.success) {
             var buildings = data.objects;
@@ -876,6 +898,7 @@ function prepareBuildingsDropdown() {
 }
 
 function prepareRoomsDropdown() {
+	clearError($('#alertHolder'));
     clearDropdown($roomsDropdown);
     if ($(this).val() !== '') {
         doAction('fetchRooms', {

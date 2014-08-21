@@ -12,9 +12,6 @@ $(document).ready(function() {
 			validating: 'glyphicon glyphicon-refresh'
 			
 		},
-		submitHandler: function(validator, form, submitButton) {
-				createProfessor();
-		},
 		fields: {
 			firstName: {
 				message: 'The first name is not valid',
@@ -75,11 +72,15 @@ $(document).ready(function() {
 		} /* END Fields */				
     }); /* END bootstrapValidator */
 
-	$professorForm.submit(function(event){ return false; });
+	$professorForm.submit(function(event){
+		event.preventDefault();
+		createProfessor();
+	});
 
 });
 
 function createProfessor(){
+	clearError($('#alertHolder'));
 	doAction('createUser', {
 		firstName: $("[name='firstName']",$professorForm).val(),
 		lastName: $("[name='lastName']",$professorForm).val(),
@@ -87,10 +88,10 @@ function createProfessor(){
 		officePhone: $("[name='officePhone']",$professorForm).val(),
 		building: $("[name='building']",$professorForm).val(),
 		room: $("[name='room']",$professorForm).val(),
-		type: PROFESSOR
+		userType: PROFESSOR
 	}).done(function (data) {
 		if (data.success) {
-			showAlert({message: 'Successfully created a professor. They will receive an email to confirm their account.'}, $('#alertHolder'), 'success');
+			showAlert({message: 'Successfully created a user. They will receive an email to confirm their account.'}, $('#alertHolder'), 'success');
 		} else {
 			showError(data.error, $('#alertHolder'));
 		}

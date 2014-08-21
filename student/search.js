@@ -95,12 +95,12 @@ $(document).ready(function() {
 							var posRow = '<tr>';
 							posRow += '<td class="hidden positionID">' + position.id + '</td>';
 							posRow += '<td class="courseNum">' + position.section.course.department + ' ' + position.section.course.number + '</td>';
-							posRow += '<td class="hidden-xs hidden-sm">' + position.section.course.title + '</td>';
-							posRow += '<td>' + instructors + '</td>';
-							posRow += '<td>' + position.type.title + '</td>';
-							posRow += '<td>' + sessionD + '</td>';
-							posRow += '<td>' + sessionT + '</td>';
-							posRow += '<td>' + sessionP + '</td>';
+							posRow += '<td class="hidden-xs hidden-sm courseTitle">' + position.section.course.title + '</td>';
+							posRow += '<td class="instructor">' + instructors + '</td>';
+							posRow += '<td class="posType">' + position.type.title + '</td>';
+							posRow += '<td class="days">' + sessionD + '</td>';
+							posRow += '<td class="time">' + sessionT + '</td>';
+							posRow += '<td class="place">' + sessionP + '</td>';
 							posRow += '<td>';
 							if (position.disableApplyText === '') {
 								posRow += '<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>';

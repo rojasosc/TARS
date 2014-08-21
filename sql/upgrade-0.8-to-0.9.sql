@@ -36,7 +36,7 @@ VALUES ('lecture', 'TA', '...', '...', '...');
 
 -- update error types
 SET ERROR_ACTION_ID = INSERT INTO `EventTypes` (`eventName`, `severity`, `objectType`)
-VALUES ('ERROR_ACITON', 'error', 'EventType');
+VALUES ('ERROR_ACTION', 'error', 'EventType');
 
 UPDATE `Events`
 SET `eventTypeID` = ERROR_ACTION_ID

@@ -947,10 +947,6 @@ final class Action {
 	// 'eventDescrArg' => The location to get the user who did the action argument:
 	//    'session' (DEFAULT): Uses the user who is logged in
 	//    'refparam': Uses the value of $eventObjectID as the user, if it is a User object
-	// 'isUserInput' => is a boolean. TRUE returns the 'Invalid input in fields' error;
-	//    FALSE returns the 'Invalid parameter' error.
-	//    USAGE: TRUE for signup, search (user input);
-	//    FALSE for apply, emailAvailable (automated input/result of button-like request)
 	// 'noSession' => is a boolean. TRUE allows the action to be performed when not logged in
 	// 'userType' => specifies the user type to pass to LoginSession::sessionContinue()
 	//    (i.e. what user type the currently logged in user MUST be), don't specify this
@@ -970,7 +966,7 @@ final class Action {
 		//     success and error: Action status
 		'login' => array('event' => Event::SESSION_LOGIN,
 			'eventLog' => 'always', 'eventDescr' => '%s logged in.',
-			'eventDescrArg' => 'refparam', 'isUserInput' => true, 'noSession' => true,
+			'eventDescrArg' => 'refparam', 'noSession' => true,
 			'params' => array(
 				'email' => array('type' => Action::VALIDATE_EMAIL),
 				'password' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
@@ -1004,7 +1000,7 @@ final class Action {
 		'sendBugReport' => array('event' => Event::USER_REPORT_BUG,
 			'eventLog' => 'always', 'eventDescr' => '%s sent a bug report.',
 			'eventDescrArg' => 'refparam', 'noSession' => true,
-			'isUserInput' => true, 'params' => array(
+			'params' => array(
 				'bugrepemail' => array('type' => Action::VALIDATE_EMAIL),
 				'bugreppass' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'bugreport' => array('type' => Action::VALIDATE_NOTEMPTY))),
@@ -1019,7 +1015,7 @@ final class Action {
 		'signup' => array('event' => Event::USER_CREATE, 'noSession' => true,
 			'eventLog' => 'always', 'eventDescr' => '%s created a STUDENT account.',
 			'eventDescrArg' => 'refparam',
-			'isUserInput' => true, 'params' => array(
+			'params' => array(
 				'email' => array('type' => Action::VALIDATE_EMAIL),
 				'emailConfirm' => array('type' => Action::VALIDATE_OTHERFIELD,
 					'field' => 'email'),
@@ -1093,7 +1089,7 @@ final class Action {
 		//     success and error: Action status
 		'apply' => array('event' => Event::STUDENT_APPLY, 'userType' => STUDENT,
 			'eventLog' => 'always', 'eventDescr' => '%s created an application.',
-			'isUserInput' => true, 'params' => array('positionID','compensation','qualifications')),
+			'params' => array('positionID','compensation','qualifications')),
 		// Action:           withdraw
 		// Session required: STUDENT
 		// Parameters:
@@ -1104,7 +1100,7 @@ final class Action {
 		//     success and error: Action status
 		'withdraw' => array('event' => Event::STUDENT_WITHDRAW, 'userType' => STUDENT,
 			'eventLog' => 'always', 'eventDescr' => '%s withdrew an application.',
-			'isUserInput' => true, 'params' => array('positionID')),
+			'params' => array('positionID')),
 		// Action:           updateProfile
 		// Session required: required
 		// Parameters:       all user fields (varies with session user type)
@@ -1117,7 +1113,7 @@ final class Action {
 		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
 			'eventLog' => 'always', 'eventDescr' => 'Profile of %s was updated.',
 			'eventDescrArg' => 'refparam',
-			'isUserInput' => true, 'params' => array(
+			'params' => array(
 				'userID' => array('type' => Action::VALIDATE_NUMERIC,
 					'optional' => true),
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
@@ -1148,7 +1144,7 @@ final class Action {
 		//     success and error: Action status
 		'changeUserPassword' => array('event' => Event::USER_SET_PASS,
 			'eventLog' => 'always', 'eventDescr' => '%s changed their password.',
-			'isUserInput' => true, 'params' => array(
+			'params' => array(
 					'oldPassword' => array('type' => Action::VALIDATE_NOTEMPTY),
 					'newPassword' => array('type' => Action::VALIDATE_NOTEMPTY),
 					'confirmPassword' => array('type' => Action::VALIDATE_OTHERFIELD,
@@ -1221,7 +1217,7 @@ final class Action {
 		//     success and error: Action status
 		'createComment' => array('event' => Event::NONSTUDENT_COMMENT, 'userType' => USERMASK_NONSTUDENT,
 			'eventLog' => 'always', 'eventDescr' => '%s created a comment.',
-			'isUserInput' => true, 'params' => array('studentID', 'comment')),
+			'params' => array('studentID', 'comment')),
 		// Action:           createUser
 		// Session required: not STUDENT
 		// Parameters:
@@ -1231,7 +1227,7 @@ final class Action {
 		//     success and error: Action status
 		'createUser' => array('event' => Event::SU_CREATE_USER, 'userType' => USERMASK_STAFF,
 			'eventLog' => 'always', 'eventDescr' => '%s created a new user.',
-			'isUserInput' => true, 'params' => array(
+			'params' => array(
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'email' => array('type' => Action::VALIDATE_EMAIL),
@@ -1254,7 +1250,6 @@ final class Action {
 		//     success and error: Action status
 		'searchForUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_STAFF,
 			'eventDescr' => '%s retrieved positions view.',
-			'isUserInput' => true,
 			'params' => array(
 				'email' => array('optional' => true),
 				'firstName' => array('optional' => true),
@@ -1273,7 +1268,6 @@ final class Action {
 		//     success and error: Action status
 		'findEvents' => array('event' => Event::USER_GET_VIEW, 'userType' => ADMIN,
 			'eventDescr' => '%s retrieved events view.',
-			'isUserInput' => true,
 			'params' => array(
 				'userFilter' => array('optional' => true),
 				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
@@ -1288,7 +1282,6 @@ final class Action {
 		// 		application objects 
 		'fetchTermApplications' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_STAFF,
 			'eventDescr' => '%s retrieved an applications view.',
-			'isUserInput' => true,
 			'params' => array(
 				'appStatus' => array('type' => Action::VALIDATE_NUMERIC, 'optional' => true),
 				'termID' => array('type' => Action::VALIDATE_NUMERIC),
@@ -1306,7 +1299,7 @@ final class Action {
 		// Only available via calling this script; not by Action::callAction()
 		'uploadTerm' => array('event' => Event::STAFF_TERM_IMPORT, 'userType' => USERMASK_STAFF,
 			'eventLog' => 'always', 'eventDescr' => '%s uploaded a term.',
-			'isUserInput' => true, 'params' => array(
+			'params' => array(
 				'termYear' => array('type' => Action::VALIDATE_NUMSTR,
 					'min_length' => 4, 'max_length' => 4),
 				'termSemester' => Action::VALIDATE_NOTEMPTY,
@@ -1324,7 +1317,6 @@ final class Action {
 			'event' => Event::USER_GET_OBJECT,
 			'userType' => USERMASK_STAFF,
 			'eventDescr' => '%s retrieved sections view.',
-			'isUserInput' => true,
 			'params' => array(
 				'crn' => array('optional' => true),
 				'course' => array('optional' => true),
@@ -1350,17 +1342,9 @@ final class Action {
 			// get the parameters
 			$action_params = isset($action_def['params']) ? $action_def['params'] : array();
 			// get whether errors should be "Invalid form field" or "Invalid parameter"
-			$action_userinput = isset($action_def['isUserInput']) ? $action_def['isUserInput'] : false;
 			$action_evlog = isset($action_def['eventLog']) ? $action_def['eventLog'] : 'debug';
 			$action_evdesc = isset($action_def['eventDescr']) ? $action_def['eventDescr'] : '%s did something.';
 			$action_evdesc_arg = isset($action_def['eventDescrArg']) ? $action_def['eventDescrArg'] : 'session';
-
-			//Simple check for XSS attacks
-			if($action_userinput){
-				foreach ($input as $key => $value) {
-					$input[$key] = htmlentities($value);
-				}
-			}
 
 			// BEGIN TRANSACTION
 			Database::beginTransaction();
@@ -1389,11 +1373,7 @@ final class Action {
 					if (count($invalids) > 0) {
 						$s = (count($invalids) == 1) ? '' : 's';
 						$i = implode(', ', $invalids);
-						if ($action_userinput) {
-							throw new ActionError("Invalid input in field$s. Please fix these fields and try again ($i)");
-						} else {
-							throw new ActionError("Invalid parameter$s ($i)");
-						}
+						throw new ActionError("Invalid input in field$s. Please fix these fields and try again ($i)");
 					} else {
 						// successful
 						$event_object = null;

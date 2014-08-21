@@ -224,44 +224,44 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 									<legend>Personal Details</legend>
 									<div class="row">
 										<div class="col-xs-6">
-										First Name: <strong id="cur-firstName"><?= $student->getFirstName() ?></strong>
+										First Name: <strong id="cur-firstName"><?= htmlentities($student->getFirstName()) ?></strong>
 										</div> <!-- End column -->
 										<div class="col-xs-6">
-										Last Name: <strong id="cur-lastName"><?= $student->getLastName() ?></strong>
+										Last Name: <strong id="cur-lastName"><?= htmlentities($student->getLastName()) ?></strong>
 										</div> <!-- End column -->						
 									</div> <!-- End row -->
 									<br>
 									<div class="row">
 										<div class="col-xs-6">
-										Email: <strong id="cur-email"><?= $student->getEmail() ?></strong>
+										Email: <strong id="cur-email"><?= htmlentities($student->getEmail()) ?></strong>
 										</div> <!-- End column -->
 										<div class="col-xs-6">
-										Mobile Phone: <strong id="cur-mobilePhone"><?= $student->getMobilePhoneDisplay() ?></strong>
+										Mobile Phone: <strong id="cur-mobilePhone"><?= htmlentities($student->getMobilePhoneDisplay()) ?></strong>
 										</div>
 									</div>
 									<br>
 									<legend>Academic Information</legend>
 									<div class="row">
 										<div class="col-xs-6">
-										Class Year: <strong id="cur-classYear"><?= $student->getClassYear() ?></strong>
+										Class Year: <strong id="cur-classYear"><?= htmlentities($student->getClassYear()) ?></strong>
 										</div> <!-- End column -->
 										<div class="col-xs-6">
-										Major: <strong id="cur-major"><?= $student->getMajor() ?></strong>
+										Major: <strong id="cur-major"><?= htmlentities($student->getMajor()) ?></strong>
 										</div> <!-- End column -->	
 									</div> <!-- End row -->
 									<br>
 									<div class="row">
 										<div class="col-xs-6">
-										Cumulative GPA: <strong id="cur-classYear"><?= $student->getGPA() ?></strong>
+										Cumulative GPA: <strong id="cur-classYear"><?= htmlentities($student->getGPA()) ?></strong>
 										</div> <!-- End column -->
 										<div class="col-xs-6">
-										University Student ID: <strong id="cur-universityID"><?= $student->getUniversityID() ?></strong>
+										University Student ID: <strong id="cur-universityID"><?= htmlentities($student->getUniversityID()) ?></strong>
 										</div> <!-- End column -->	
 									</div> <!-- End row -->
 									<br>
 									<div class="row">
 										<div class="col-xs-12">
-										Qualifications and TA-ing History:<p><strong style="white-space: pre" id="cur-aboutMe"><?= $student->getAboutMe() ?></strong></p>
+										Qualifications and TA-ing History:<p><strong style="white-space: pre" id="cur-aboutMe"><?= htmlentities($student->getAboutMe()) ?></strong></p>
 										</div> <!-- End column -->
 									</div> <!-- End row -->
 								</div> <!-- End column -->

@@ -167,8 +167,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<th>Course Number</th>
 								<th class="hidden-xs">Course Name</th>
 								<th>Type</th>
-								<th>Location</th>
+								<th>Day</th>
 								<th>Time</th>
+								<th>Place</th>
 								<th class="hidden-xs">Compensation</th>
 								<th>Withdraw</th>
 							</tr>
@@ -176,14 +177,24 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 		foreach($positions as $row) {
 			$position = $row->getPosition();
 			$section = $position->getSection();
+			$appSectionSessions = $section->getAllSessions();
+			$days = "";
+			$time = "";
+			$place = "";
+			foreach($appSectionSessions as $sectionSession) {
+				$days .= $sectionSession->getWeekdays();
+				$time = $sectionSession->getStartTime()." - ".$sectionSession->getEndTime();
+				$place = htmlentities($sectionSession->getPlaceBuilding())." ".htmlentities($sectionSession->getPlaceRoom());
+			}
 							?>
 							<tr>
 								<td class="positionID hidden"><?= $position->getID()?></td>
 								<td><?= $section->getCourseName()?></td>
-								<td class="hidden-xs"><?= $section->getCourseTitle()?></td>
-								<td><?= $position->getTypeTitle()?></td>
-								<td><?= "TBD"?></td>
-								<td><?= "TBD"?></td>
+								<td class="hidden-xs"><?= htmlentities($section->getCourseTitle())?></td>
+								<td><?= htmlentities($position->getTypeTitle())?></td>
+								<td><?= $days?></td>
+								<td><?= $time?></td>
+								<td><?= $place?></td>
 								<td class="hidden-xs"><?= $row->getCompensation()?></td>
 								<td><a class="btn btn-default releaseButton" href="#releaseModal" data-toggle="modal"><span class="glyphicon glyphicon-remove"></span></a></td>
 							</tr>
@@ -223,14 +234,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 			foreach($appSectionSessions as $sectionSession) {
 				$days .= $sectionSession->getWeekdays();
 				$time = $sectionSession->getStartTime()." - ".$sectionSession->getEndTime();
-				$place = $sectionSession->getPlaceBuilding()." ".$sectionSession->getPlaceRoom();
+				$place = htmlentities($sectionSession->getPlaceBuilding())." ".htmlentities($sectionSession->getPlaceRoom());
 			}
 							?>
 							<tr>
 								<td class="positionID hidden"><?= $appPosition->getID()?></td>
 								<td><?= $appSection->getCourseName()?></td>
-								<td class="hidden-xs"><?= $appSection->getCourseTitle()?></td>
-								<td><?= $appPosition->getTypeTitle()?></td>
+								<td class="hidden-xs"><?= htmlentities($appSection->getCourseTitle())?></td>
+								<td><?= htmlentities($appPosition->getTypeTitle())?></td>
 								<td><?= $days?></td>
 								<td><?= $time?></td>
 								<td><?= $place?></td>

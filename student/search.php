@@ -190,7 +190,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($terms as $term_opt) {
 										?>
-											<option value="<?=$term_opt->getID()?>"><?=$term_opt->getName()?></option>
+											<option value="<?=$term_opt->getID()?>"><?=htmlentities($term_opt->getName())?></option>
 										<?php
 										}
 										?>
@@ -202,7 +202,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 										<?php
 										foreach ($positionTypes as $index => $type_opt) {
 										?>
-											<option value="<?=$index?>"><?=$type_opt?></option>
+											<option value="<?=$index?>"><?=htmlentities($type_opt)?></option>
 										<?php
 										}
 										?>

@@ -541,8 +541,12 @@ final class Action {
 		}, $places);
 	}
 
-	public static function fetchUser($params, $user, &$eventObjectID) {
+	public static function fetchUser($params, $sessionUser, &$eventObjectID) {
 		$user = User::getUserByID($params['userID']);
+		if (($user === null || $user->getID() !== $sessionUser->getID()) &&
+			$sessionUser->getObjectType() === STUDENT) {
+			throw new ActionError('Permission denied');
+		}
 		if ($user === null) {
 			throw new ActionError('User not found');
 		}
@@ -1168,14 +1172,14 @@ final class Action {
 			'eventDescr' => '%s retrieved building room list.',
 			'params' => array('building')),
 		// Action:           fetchUser
-		// Session required: not STUDENT
+		// Session required: logged in
 		// Parameters:
 		//     userID: The user's ID
 		//     userType: The expected user type (pass -1 for any)
 		// Returns:
 		//     object: The user's data
 		//     success and error: Action status
-		'fetchUser' => array('event' => Event::USER_GET_OBJECT, 'userType' => USERMASK_NONSTUDENT,
+		'fetchUser' => array('event' => Event::USER_GET_OBJECT,
 			'eventDescr' => '%s retrieved user object.',
 			'params' => array('userID', 'userType')),
 		// Action:           fetchApplication

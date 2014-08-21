@@ -155,15 +155,15 @@ abstract class User {
 	}
 
 	protected function __construct($user_row) {
-		$this->id = $user_row['userID'];
+		$this->id = intval($user_row['userID']);
 		$this->email = $user_row['email'];
 		$this->password = $user_row['password'];
-		$this->passwordReset = $user_row['passwordReset'];
-		$this->emailConfirmed = $user_row['emailVerified'];
-		$this->otype = $user_row['type'];
+		$this->passwordReset = intval($user_row['passwordReset']);
+		$this->emailConfirmed = intval($user_row['emailVerified']);
+		$this->otype = intval($user_row['type']);
 		$this->firstName = $user_row['firstName'];
 		$this->lastName = $user_row['lastName'];
-		$this->creatorID = $user_row['creatorID'];
+		$this->creatorID = intval($user_row['creatorID']);
 		$this->creator = null;
 		$this->createTime = strtotime($user_row['createTime']);
 	}
@@ -238,8 +238,8 @@ abstract class User {
 
 	public function toArray($showEvent = false) {
 		$data = array(
-			'id' => intval($this->id),
-			'type' => intval($this->otype),
+			'id' => $this->id,
+			'type' => $this->otype,
 			'email' => $this->email,
 			'firstName' => $this->firstName,
 			'lastName' => $this->lastName,

@@ -676,6 +676,25 @@ final class Action {
 		return $params;
 	}
 	
+	public static function findEvents($params, $user, &$eventObjectID) {
+		if (is_array($params)) {
+			//The array $params should contain: email, firstName, lastName, pgIndex, pgLength, pgGetTotal
+			$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
+			$pg = array('index' => $params['pgIndex'],
+					   'length' => $params['pgLength'],
+					   'getTotal' => $getTotal);
+			$eventTypes = array(
+				'crit' => ($params['sevCrit'] !== 'false' && !empty($params['sevCrit'])),
+				'error' => ($params['sevError'] !== 'false' && !empty($params['sevError'])),
+				'notice' => ($params['sevNotice'] !== 'false' && !empty($params['sevNotice'])),
+				'info' => ($params['sevInfo'] !== 'false' && !empty($params['sevInfo'])),
+				'debug' => ($params['sevDebug'] !== 'false' && !empty($params['sevDebug'])));
+			$eventsFound = Event::findEvents($params['userFilter'], $eventTypes, $pg);
+			return $eventsFound;
+		}
+		return $params;
+	}
+
 	public static function fetchTermApplications($params, $user, &$eventObjectID){
 		if(is_array($params)){
 			$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
@@ -1234,6 +1253,21 @@ final class Action {
 				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
+		// Action:           findEvents
+		// Session required: ADMIN
+		// Parameters:
+		//     userFilter: filter text
+		// Returns:
+		//     objects: The users in this set
+		//     success and error: Action status
+		'findEvents' => array('event' => Event::USER_GET_VIEW, 'userType' => ADMIN,
+			'eventDescr' => '%s retrieved events view.',
+			'isUserInput' => true,
+			'params' => array(
+				'userFilter' => array('optional' => true),
+				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
+				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
 		// Action: fetchTermApplications
 		// Session required: STAFF, ADMIN
 		// Parameters: 
@@ -1438,7 +1472,7 @@ final class Action {
 
 			// LOG EVENT SUCCESS
 			try {
-				if ($error === null && $action_evlog == 'always') {
+				if ($error === null) {
 					$source_user = Action::getUserByType($action_evdesc_arg, $event_object, $user);
 					if ($source_user !== null && $source_user instanceof User) {
 						$descrarg = $source_user->getName();
@@ -1469,7 +1503,7 @@ final class Action {
 			}
 		} else {
 			// unknown action
-			$error = new TarsException(Event::ERROR_ACTION,
+			$error = new TarsException(Event::SERVER_EXCEPTION,
 				Event::ERROR_ACTION, 'Unknown action');
 		}
 

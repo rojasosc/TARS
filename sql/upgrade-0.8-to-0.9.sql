@@ -44,5 +44,9 @@ WHERE `eventTypeID` IN
 	(SELECT `eventTypeID` FROM `EventTypes`
 	WHERE `eventName` LIKE 'ERROR_%') AS SUBQ;
 
+UPDATE `EventTypes`
+SET `severity` = 'notice'
+WHERE `eventName` LIKE 'SESSION_LOG%';
+
 DELETE FROM `EventTypes`
 WHERE `eventName` LIKE 'ERROR_%' AND NOT `eventName` = 'ERROR_ACTION';

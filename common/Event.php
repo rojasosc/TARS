@@ -84,6 +84,16 @@ final class Event {
 		return null;
 	}
 
+	public static function getEventTypeNameInDatabase($event_type_id) {
+		Event::cacheEventTypeRows();
+		foreach (Event::$eventTypeRows as $row) {
+			if ($row['eventTypeID'] === $event_type_id) {
+				return $row['eventName'];
+			}
+		}
+		return null;
+	}
+
 	public static function getErrorTextFromEventType($event_type) {
 		switch ($event_type) {
 		default:
@@ -184,5 +194,112 @@ final class Event {
 			}
 		}
 	}
+
+	public static function findEvents($userFilter, $eventSeverities, $pg) {
+		$sql = 'SELECT eventID, eventName, severity, Events.eventTypeID,
+				objectType, objectID, description, Events.creatorID, Events.createTime, Events.creatorIP
+				FROM Events
+				INNER JOIN EventTypes ON EventTypes.eventTypeID = Events.eventTypeID
+				LEFT JOIN Users ON Users.userID = Events.creatorID
+				WHERE ';
+		$args = array();
+		//if (!empty($userFilter) && strlen($userFilter) > 0) {
+		//	$sql .= '(INSTR(Users.email, :user) OR INSTR(CONCAT(Users.firstName, \' \', Users.lastName), :user)) AND ';
+		//	$args[':user'] = $userFilter;
+		//}
+
+		// severity filter:
+		$sql .= '(';
+		$sevCount = 0;
+		foreach ($eventSeverities as $severity => $enabled) {
+			if ($enabled) {
+				$sql .= "EventTypes.severity = '$severity' OR ";
+				$sevCount++;
+			}
+		}
+		if ($sevCount === 0) {
+			$sql .= '1) AND ';
+		} else {
+			$sql .= '0) AND ';
+		}
+
+		// end query
+		$sql .= '1';
+		return Database::executeGetPage($sql, $args, $pg, function($row) {return new Event($row);});
+	}
+
+	public function __construct($row) {
+		$this->id = $row['eventID'];
+		$this->eventType = $row['eventName'];
+		$this->severity = $row['severity'];
+		$this->objectType = $row['objectType'];
+		$this->objectID = $row['objectID'];
+		$this->objectValue = null;
+		$this->descr = $row['description'];
+		$this->creatorID = $row['creatorID'];
+		$this->creator = null;
+		$this->createTime = strtotime($row['createTime']);
+		$this->creatorIP = inet_ntop($row['creatorIP']);
+	}
+
+	public function getID() { return $this->id; }
+	public function getEventType() { return $this->eventType; }
+	public function getSeverity() { return $this->severity; }
+	public function getObjectType() { return $this->objectType; }
+	public function getDescription() { return $this->descr; }
+
+	public function getObject() {
+		if ($this->objectValue === null) {
+			switch ($this->objectType) {
+			case 'User': $this->objectValue = User::getUserByID($this->objectID); break;
+			case 'EventType': $this->objectValue = Event::getEventTypeNameInDatabase($this->objectID); break;
+			case 'Application': $this->objectValue = Application::getApplicationByID($this->objectID); break;
+			case 'Term': $this->objectValue = Term::getTermByID($this->objectID); break;
+			case 'Comment': $this->objectValue = Comment::getCommentByID($this->objectID); break;
+			case 'Configuration': break; // TODO: NYI
+			}
+		}
+		return $this->objectValue;
+	}
+	public function getCreator() {
+		if ($this->creator == null && $this->creatorID != null) {
+			$this->creator = User::getUserByID($this->creatorID);
+		}
+		return $this->creator;
+	}
+	public function getCreateTime() { return $this->createTime; }
+	public function getCreatorIP() { return $this->creatorIP; }
+
+	public function toArray($showEvent = true) {
+		$data = array(
+			'id' => intval($this->id),
+			'type' => $this->eventType,
+			'severity' => $this->severity,
+			'description' => $this->descr,
+			'objectType' => $this->objectType);
+		if ($showEvent) {
+			$object = $this->getObject();
+			if (is_object($object)) {
+				$object = $object->toArray();
+			}
+			$creator = $this->getCreator();
+			$data['object'] = $object === null ? null : $object;
+			$data['creator'] = $creator === null ? null : $creator->toArray(false);
+			$data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+			$data['creatorIP'] = $this->creatorIP;
+		}
+		return $data;
+	}
+
+	private $id;
+	private $eventType;
+	private $severity;
+	private $objectType;
+	private $objectID;
+	private $descr;
+	private $creatorID;
+	private $creator;
+	private $createTime;
+	private $creatorIP;
 }
 

@@ -27,14 +27,16 @@ if (!isset($error) || $error == null || $error->getAction() != Event::SESSION_CO
 												<li><a href="createProfessor.php">User</a></li>
 											<li role="presentation" class="divider"></li>
 											<li role="presentation" class="dropdown-header">Edit</li>
+												<li><a href="editConfig.php">Configuration</a></li>
 												<li><a href="editTerm.php">Term</a></li>
 												<li><a href="editUsers.php">User</a></li>
 											<li role="presentation" class="divider"></li>
 											<li role="presentation" class="dropdown-header">Review</li>
+												<li><a href="viewEvents.php">Events</a></li>
 												<li><a href="reviewStudents.php">Applications</a></li>
+												<li><a href="payroll.php">Payroll</a></li>
 										</ul>
 									</li> <!-- End dropdown list item -->
-									<li<?php if ($header_active == 'payroll') { echo ' class="active"'; } ?>><a href="payroll.php"><span class="glyphicon glyphicon-usd"></span> Payroll</a></li>
 								</ul> <!-- End navbar unordered list -->
 								<ul class="nav navbar-nav navbar-right">
 									<li><a href="../logout.php"><span class="glyphicon glyphicon-off"></span> Logout</a></li>

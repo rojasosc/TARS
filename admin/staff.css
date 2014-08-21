@@ -140,6 +140,16 @@ table th{
 	color: black;
 }
 
+table {
+	table-layout:fixed;
+}
+
+table td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 #search{
 	float:left;
 	width: 25%;

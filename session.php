@@ -163,6 +163,9 @@ final class LoginSession {
 		$output = null;
 		if (isset($_SESSION['callbackResult'])) {
 			$output = $_SESSION['callbackResult'];
+		} else {
+			// if nothing stored, don't destroy potentially active session
+			return null;
 		}
 		try {
 			LoginSession::sessionDestroy();

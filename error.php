@@ -77,7 +77,8 @@ final class TarsException extends Exception {
 			}
 			// log the event
 			Event::insertEventGeneral($this->class, $this->title.': '.
-				$this->message, $this->action, null, null, null, $useDB);
+				$this->message, Event::getEventTypeIDInDatabase($this->action),
+				null, null, null, $useDB);
 		} catch (PDOException $ex) {
 			// we have an error condition on writing an error to the database.
 			// this means our database connection probably failed...

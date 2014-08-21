@@ -31,6 +31,15 @@ $(document).ready(function() {
 
     }
 
+    if ($(".filter-events-form").length) {
+        $filterEventsForm = $(".filter-events-form");
+        $filterEventsForm.on('submit', function(event) {
+            event.preventDefault();
+            filterEvents();
+        });
+        $filterEventsForm.trigger('submit');
+    }
+
     if ($(".profile-modal").length) {
         $userModal = $(".profile-modal");
         if ($(".edit-profile-form").length) {
@@ -457,10 +466,72 @@ function searchUsers() {
                 if (data.objects) {
                     if (data.objects.length === 0) {
                         $('thead tr').hide();
-                        $results.find('tbody').html('<em>No results</em');
+                        $results.find('tbody').html('<em>No results</em>');
                     } else {
                         $('thead tr').show();
                         viewResults(data.objects, $("input[type='radio']:checked", $userSearchForm).val());
+                    }
+                }
+            } else {
+                showError(data.error, $('#alertHolder'));
+            }
+        },
+        function(jqXHR, textStatus, errorMessage) {
+            showError({
+                message: errorMessage
+            }, $('#alertHolder'));
+        });
+}
+
+function filterEvents() {
+    var input = {
+        userFilter: $("[name='user']", $filterEventsForm).is(':checked'),
+		sevCrit: $("[name='sevCrit']", $filterEventsForm).is(':checked'),
+		sevError: $("[name='sevError']", $filterEventsForm).is(':checked'),
+		sevNotice: $("[name='sevNotice']", $filterEventsForm).is(':checked'),
+		sevInfo: $("[name='sevInfo']", $filterEventsForm).is(':checked'),
+		sevDebug: $("[name='sevDebug']", $filterEventsForm).is(':checked')
+    };
+    doPaginatedAction('findEvents', input,
+        function(data) {
+            if (data.success) {
+                if (data.pg) {
+                    handlePagination(data.pg, $('.pagination'));
+                }
+                if (data.objects) {
+                    if (data.objects.length === 0) {
+                        $('#results thead tr').hide();
+                        $('#results tbody').html('<em>No results</em>');
+                    } else {
+                        $('#results thead tr').show();
+						var output = '';
+						for (var i = 0; i < data.objects.length; i++) {
+							var eventObj = data.objects[i];
+							var icon = 'exclamation-sign';
+							var color = 'black';
+							switch (eventObj.severity) {
+								case 'crit': icon = 'warning-sign'; color = 'red'; break;
+								case 'error': icon = 'warning-sign'; color = 'black'; break;
+								case 'notice': icon = 'info-sign'; color = 'black'; break;
+								case 'info': icon = 'info-sign'; color = 'blue'; break;
+								case 'debug': icon = 'question-sign'; color = 'orange'; break;
+
+							}
+							var tr = $('<tr/>');
+							tr.append($('<td class="hidden"/>').text(eventObj.id));
+							tr.append($('<td/>').text(eventObj.createTime));
+							if (eventObj.creator === null) {
+								tr.append('<td><em>not logged in</em></tr>');
+							} else {
+								tr.append($('<td/>').text(eventObj.creator.firstName + ' ' + eventObj.creator.lastName));
+							}
+							tr.append($('<td/>').text(eventObj.creatorIP));
+							tr.append($('<td style="text-align:left"/>').html('<span class="glyphicon glyphicon-' + icon + '" style="color: ' + color + '" title="' + eventObj.severity + '"></span> ' + $('<span/>').text(eventObj.type).text()));
+							tr.append($('<td/>').text(eventObj.description));
+							tr.append($('<td/>').text(eventObj.objectType + ': ' + eventObj.object));
+							output += tr[0].outerHTML;
+						}
+						$('#results tbody').html(output);
                     }
                 }
             } else {

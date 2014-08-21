@@ -685,8 +685,9 @@ final class Action {
 			//The array $params should contain: email, firstName, lastName, pgIndex, pgLength, pgGetTotal
 			$getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
 			$pg = array('index' => $params['pgIndex'],
-					   'length' => $params['pgLength'],
-					   'getTotal' => $getTotal);
+						'length' => $params['pgLength'],
+						'order' => array('createTime'),
+ 					   'getTotal' => $getTotal);
 			$eventTypes = array(
 				'crit' => ($params['sevCrit'] !== 'false' && !empty($params['sevCrit'])),
 				'error' => ($params['sevError'] !== 'false' && !empty($params['sevError'])),

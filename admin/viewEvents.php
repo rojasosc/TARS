@@ -94,7 +94,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 								<table class="table table-condensed table-striped user-search-table" id="results">
 									<thead>
 										<tr>
-											<th class="hidden">ID</th><th class="col-xs-3 col-md-1">Time</th><th class="col-xs-3 col-md-1">User</th><th class="col-xs-3 col-md-1">User IP</th><th class="col-xs-3 col-md-1">Event Type</th><th class="col-xs-hidden col-md-4">Event Description</th><th class="col-xs-hidden col-md-1">Referenced Object</th>
+											<th class="hidden">ID</th><th class="col-xs-3 col-md-2">Time</th><th class="col-xs-3 col-md-1">User</th><th class="col-xs-3 col-md-1">User IP</th><th class="col-xs-3 col-md-1">Event Type</th><th class="col-xs-hidden col-md-4">Event Description</th><th class="col-xs-hidden col-md-1">Referenced Object</th>
 										</tr>
 									</thead>
 									<tbody>

@@ -221,18 +221,22 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 					<div class="panel-body">
 						<form class="form-horizontal search-users-form" novalidate="novalidate" role="form" id="userSearchForm">
 							<div class="row">
-								<div class="col-xs-3">
+								<div class="col-xs-12 col-sm-6 col-md-3">
 									<label class="control-label" for="emailSearch">Email</label>
 									<input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email">
 								</div> <!-- End column -->
-								<div class="col-xs-3">
+								<div class="col-xs-12 col-sm-6 col-md-3">
 									<label class="control-label" for="fN">First Name</label>
 									<input id="fN" type="text" class="form-control" name="fN" placeholder="First Name">	
 								</div> <!-- End column -->
-								<div class="col-xs-3">
+								<div class="col-xs-12 col-sm-6 col-md-3">
 									<label class="control-label" for="lN">Last Name</label>
 									<input id="lN" type="text" class="form-control" name="lN" placeholder="Last Name">
 								</div> <!-- End column -->
+								<div class="col-xs-12 col-sm-6 col-md-3">
+									<label class="control-label" for="classYear">Class Year</label>
+									<input id="classYear" type="text" class="form-control" name="classYear" placeholder="e.g. 2016">
+								</div>
 							</div> <!-- End row -->
 							<br/>
 							<div class="row">

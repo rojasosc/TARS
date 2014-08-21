@@ -669,8 +669,12 @@ final class Action {
 			$pg = array('index' => $params['pgIndex'],
 					   'length' => $params['pgLength'],
 					   'getTotal' => $getTotal);
-			$usersFound = User::findUsers($params['email'],$params['firstName'],
-				$params['lastName'], $params['userType'], $pg);
+			if($params['userType'] == STUDENT) {
+				$usersFound = User::findUsers($params['email'],$params['firstName'], $params['lastName'], $params['userType'], $params['classYear'], $pg);
+
+			} else if($params['userType'] == PROFESSOR) {
+				$usersFound = User::findUsers($params['email'], $params['firstName'], $params['lastName'], $params['userType'], null, $pg);
+			}
 			return $usersFound;
 		}
 		return $params;
@@ -1250,6 +1254,7 @@ final class Action {
 				'firstName' => array('optional' => true),
 				'lastName' => array('optional' => true),
 				'userType' => array('optional' => true),
+				'clasYear' =>array('optional' => true),
 				'pgIndex' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgLength' => array('type' => Action::VALIDATE_NUMERIC),
 				'pgGetTotal' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),

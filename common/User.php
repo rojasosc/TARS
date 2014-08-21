@@ -80,10 +80,17 @@ abstract class User {
 		return null;
 	}
 
-	public static function findUsers($email, $firstName, $lastName, $check_type = -1, $pg) {
-		$sql = 'SELECT * FROM Users
-				WHERE ';
+	public static function findUsers($email, $firstName, $lastName, $check_type = -1, $classYear = null, $pg) {
+		$sql = 'SELECT Users.userID, email, password, passwordReset, emailVerified, type, firstName, lastName, creatorID, createTime FROM Users ';
+		if ($check_type == STUDENT) {
+			$sql .= 'INNER JOIN Students ON Users.userID = Students.userID ';
+		}
+		$sql .= 'WHERE ';
 		$args = array();
+		if ($check_type == STUDENT && !empty($classYear)) {
+			$sql .= 'classYear = :classYear AND ';
+			$args[':classYear'] = $classYear;
+		}
 		if (!empty($email)) {
 			$sql .= 'INSTR(email, :email) AND ';
 			$args[':email'] = $email;
@@ -96,6 +103,7 @@ abstract class User {
 			$sql .= 'INSTR(lastName, :lastName) AND ';
 			$args[':lastName'] = $lastName;
 		}
+		
 		if ($check_type >= 0) {
 			$sql .= '(type & :type) != 0 AND ';
 			$args[':type'] = $check_type;

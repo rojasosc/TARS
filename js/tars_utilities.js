@@ -455,7 +455,8 @@ function searchUsers() {
         firstName: $("[name='fN']", $userSearchForm).val(),
         lastName: $("[name='lN']", $userSearchForm).val(),
         email: $("[name='emailSearch']", $userSearchForm).val(),
-        userType: $("input[type='radio']:checked", $userSearchForm).val(),
+		classYear: $("[name='classYear']", $userSearchForm).val(),
+        userType: $("input[type='radio']:checked", $userSearchForm).val()
     };
     doPaginatedAction('searchForUsers', input,
         function(data) {

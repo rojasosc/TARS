@@ -90,11 +90,19 @@ final class TarsException extends Exception {
 
 	/*
 	 * Returns the error as a Bootstrap component to be dropped into the page.
+	 *
+	 * HTML-entity-encodes the title and message
 	 */
 	public function toHTML() {
-		return TarsException::makeAlert($this->title, $this->message, 'danger');
+		return TarsException::makeAlert(htmlentities($this->title),
+			htmlentities($this->message), 'danger');
 	}
 
+	/*
+	 * Makes a general alert to be printed (Bootstrap component)
+	 *
+	 * Does not encode HTML entities.
+	 */
 	public static function makeAlert($title, $message, $alert_level) {
 
 		return '<div class="alert alert-'.$alert_level.'" role="alert"><strong>'.$title.'!</strong> '.$message.'</div';

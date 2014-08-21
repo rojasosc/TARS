@@ -24,10 +24,11 @@ function show_version() {
 		$git_h = $git_h[0];
 		$git_d = strip_excess_git_tags($git_d[0]);
 		$git_ci = $git_ci[0];
-		echo "$version_code: $git_h ($git_d) $git_ci";
+		$v = "$version_code: $git_h ($git_d) $git_ci";
 	} else {
-		echo $version_code;
+		$v = $version_code;
 	}
+	echo htmlentities($v);
 }
 
 function server_domain() {
@@ -241,8 +242,8 @@ if ($output !== null) {
 		if (isset($output['object'])) {
 			if (isset($output['object']['alert'])) {
 				$alert = $output['object']['alert'];
-				echo TarsException::makeAlert($alert['title'],
-					$alert['message'].'.', $alert['class']);
+				echo TarsException::makeAlert(htmlentities($alert['title']),
+					htmlentities($alert['message']).'.', htmlentities($alert['class']));
 			}
 			if (isset($output['object']['resetCallback'])) {
 				$formMode = 'setpass';
@@ -252,10 +253,10 @@ if ($output !== null) {
 		}
 	} elseif (isset($output['token'])) {
 		$tokenLink = Email::getLink(ResetToken::decodeToken($output['token']), false);
-		$tokenLinkText = ' <a class="alert-link" href="'.$tokenLink.'">Click here</a> to '.$output['tokenAction'].'.';
-		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'].$tokenLinkText, 'warning');
+		$tokenLinkText = ' <a class="alert-link" href="'.htmlentities($tokenLink).'">Click here</a> to '.$output['tokenAction'].'.';
+		echo TarsException::makeAlert(htmlentities($output['error']['title']), htmlentities($output['error']['message']).$tokenLinkText, 'warning');
 	} else {
-		echo TarsException::makeAlert($output['error']['title'], $output['error']['message'], 'danger');
+		echo TarsException::makeAlert(htmlentities($output['error']['title']), htmlentities($output['error']['message']), 'danger');
 	}
 } elseif ($adminCreated === 0) {
 	$formMode = 'setup';
@@ -271,7 +272,7 @@ if ($formMode === 'index') {
 							<div class="row">
 								<div class="col-md-12">
 									<label for="email" class="colorWhite">Email</label>
-									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=$email?>"/>
+									<input type="email" id="email" name="email" class="form-control" place-holder="" value="<?=htmlentities($email)?>"/>
 								</div> <!-- End column -->
 							</div> <!-- End row -->
 							<div class="row">
@@ -300,9 +301,9 @@ if ($formMode === 'index') {
 <?php
 } elseif ($formMode === 'setpass') {
 ?>
-					<form action="token.php?token=<?=$token?>" method="post">
+					<form action="token.php?token=<?=htmlentities($token)?>" method="post">
 						<fieldset>
-							<h2 class="center colorWhite"><?=$userName?> Password Reset</h2>
+							<h2 class="center colorWhite"><?=htmlentities($userName)?> Password Reset</h2>
 							<div class="row">
 								<div class="col-md-12">
 									<label for="password" class="colorWhite">Password</label>

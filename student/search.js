@@ -104,9 +104,9 @@ $(document).ready(function() {
 							posRow.append($('<td class="time"/>').text(sessionT));
 							posRow.append($('<td class="place"/>').text(sessionP));
 							if (position.disableApplyText === '') {
-								posRow.append('<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>');
+								posRow.append($('<td/>').html('<button class="btn btn-default applyButton" data-toggle="modal" data-target="#applyModal"><span class="glyphicon glyphicon-pencil"></span> Apply</button>'));
 							} else {
-								posRow.append($('<button class="btn btn-default" disabled="disabled"/>').text(position.disableApplyText));
+								posRow.append($('<td/>').html($('<button class="btn btn-default" disabled="disabled"/>').text(position.disableApplyText)[0].outerHTML));
 							}
 							html.push(posRow[0].outerHTML);
 						}

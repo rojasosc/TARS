@@ -97,9 +97,12 @@ final class LoginSession {
 	*  Throws: TarsException(SERVER_EXCEPTION) if session_start or session_regenerate_id fail.
 	**/
 	public static function start($regenerate = false, $eventTypeID = Event::SESSION_CONTINUE) {
-		// begin the session
-		if (!@session_start()) {
-			throw new TarsException(Event::SERVER_EXCEPTION, $eventTypeID, 'session_start() failed');
+		// session started already
+		if (session_id() === '') {
+			// begin the session
+			if (!@session_start()) {
+				throw new TarsException(Event::SERVER_EXCEPTION, $eventTypeID, 'session_start() failed');
+			}
 		}
 
 		if ($regenerate) {
@@ -163,14 +166,7 @@ final class LoginSession {
 		$output = null;
 		if (isset($_SESSION['callbackResult'])) {
 			$output = $_SESSION['callbackResult'];
-		} else {
-			// if nothing stored, don't destroy potentially active session
-			return null;
-		}
-		try {
-			LoginSession::sessionDestroy();
-		} catch (TarsException $ex) {
-			return null;
+			unset($_SESSION['callbackResult']);
 		}
 		return $output;
 	}

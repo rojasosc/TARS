@@ -222,7 +222,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                 <th>Time</th>
                                 <th>Place</th>
                                 <th class="hidden-xs">Compensation</th>
-                                <th>Withdraw</th>
+                                <th>Cancel</th>
                             </tr>
                             <?php
         foreach($currentApps as $app) {

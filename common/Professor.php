@@ -20,7 +20,7 @@ final class Professor extends User {
         parent::__construct($user_row);
 
         if ($professor_row) {
-            $this->officeID = $professor_row['officeID'];
+            $this->officeID = intval($professor_row['officeID']);
             $this->office = null;
             $this->officePhone = $professor_row['officePhone'];
         }
@@ -96,9 +96,9 @@ final class Professor extends User {
         $office = $this->getOffice();
         $parent = parent::toArray($showEvent);
         $subclass = array(
-            'officePhone' => $this->officePhone == null ? null : $this->getOfficePhoneDisplay(),
-            'building' => $office == null ? null : $office->getBuilding(),
-            'room' => $office == null ? null : $office->getRoom());
+            'officePhone' => $this->officePhone === null ? null : $this->getOfficePhoneDisplay(),
+            'building' => $office === null ? null : $office->getBuilding(),
+            'room' => $office === null ? null : $office->getRoom());
         return array_merge($parent, $subclass);
     }
 

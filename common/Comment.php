@@ -5,7 +5,7 @@ final class Comment {
         $sql = "SELECT * FROM Comments WHERE commentID = :commentID";
         $args = array('commentID' => $commentID);
         $row = Database::executeGetRow($sql, $args);
-        if ($row == null) {
+        if ($row === null) {
             return null;
         }
         return new Comment($row);
@@ -20,11 +20,11 @@ final class Comment {
     }
 
     public function __construct($row){
-        $this->id = $row['commentID'];
+        $this->id = intval($row['commentID']);
         $this->commentText = $row['commentText'];
-        $this->studentID = $row['studentID'];
+        $this->studentID = intval($row['studentID']);
         $this->student = null;
-        $this->creatorID = $row['creatorID'];
+        $this->creatorID = intval($row['creatorID']);
         $this->creator = null;
         $this->createTime = strtotime($row['createTime']);
     }
@@ -32,13 +32,13 @@ final class Comment {
     public function getID(){ return $this->id; }
     public function getComment(){ return $this->commentText; }
     public function getStudent(){
-        if ($this->student == null) {
+        if ($this->student === null) {
             $this->student = User::getUserByID($this->studentID, STUDENT);
         }
         return $this->student;
     }
     public function getCreator() {
-        if ($this->creator == null) {
+        if ($this->creator === null) {
             $this->creator = User::getUserByID($this->creatorID);
         }
         return $this->creator;
@@ -47,7 +47,7 @@ final class Comment {
 
     public function toArray($showEvent = true) {
         $data = array(
-            'id' => intval($this->id),
+            'id' => $this->id,
             'comment' => $this->commentText,
             'student' => $this->getStudent()->toArray(false)
         );

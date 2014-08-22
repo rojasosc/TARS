@@ -163,7 +163,7 @@ final class Event {
                 ':createip' => inet_pton($creatorIP));
 
             $creatorID_field = ''; $creatorID_param = '';
-            if ($creator != null) {
+            if ($creator !== null) {
                 $creatorID_field = ', creatorID';
                 $creatorID_param = ', :createid';
                 $args[':createid'] = $creator->getID();
@@ -229,14 +229,14 @@ final class Event {
     }
 
     public function __construct($row) {
-        $this->id = $row['eventID'];
+        $this->id = intval($row['eventID']);
         $this->eventType = $row['eventName'];
         $this->severity = $row['severity'];
         $this->objectType = $row['objectType'];
-        $this->objectID = $row['objectID'];
+        $this->objectID = $row['objectID'] === null ? null : intval($row['objectID']);
         $this->objectValue = null;
         $this->descr = $row['description'];
-        $this->creatorID = $row['creatorID'];
+        $this->creatorID = $row['creatorID'] === null ? null : intval($row['creatorID']);
         $this->creator = null;
         $this->createTime = strtotime($row['createTime']);
         $this->creatorIP = inet_ntop($row['creatorIP']);
@@ -249,7 +249,7 @@ final class Event {
     public function getDescription() { return $this->descr; }
 
     public function getObject() {
-        if ($this->objectValue === null) {
+        if ($this->objectValue === null && $this->objectID !== null) {
             switch ($this->objectType) {
             case 'User': $this->objectValue = User::getUserByID($this->objectID); break;
             case 'EventType': $this->objectValue = Event::getEventTypeNameInDatabase($this->objectID); break;
@@ -262,7 +262,7 @@ final class Event {
         return $this->objectValue;
     }
     public function getCreator() {
-        if ($this->creator == null && $this->creatorID != null) {
+        if ($this->creator === null && $this->creatorID !== null) {
             $this->creator = User::getUserByID($this->creatorID);
         }
         return $this->creator;
@@ -272,7 +272,7 @@ final class Event {
 
     public function toArray($showEvent = true) {
         $data = array(
-            'id' => intval($this->id),
+            'id' => $this->id,
             'type' => $this->eventType,
             'severity' => $this->severity,
             'description' => $this->descr,

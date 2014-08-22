@@ -20,7 +20,7 @@ final class Staff extends User {
         parent::__construct($user_row);
 
         if ($staff_row) {
-            $this->officeID = $staff_row['officeID'];
+            $this->officeID = intval($staff_row['officeID']);
             $this->office = null;
             $this->officePhone = $staff_row['officePhone'];
         }
@@ -53,9 +53,9 @@ final class Staff extends User {
         $office = $this->getOffice();
         $parent = parent::toArray($showEvent);
         $subclass = array(
-            'officePhone' => $this->officePhone == null ? null : $this->getOfficePhoneDisplay(),
-            'building' => $office == null ? null : $office->getBuilding(),
-            'room' => $office == null ? null : $office->getRoom());
+            'officePhone' => $this->officePhone === null ? null : $this->getOfficePhoneDisplay(),
+            'building' => $office === null ? null : $office->getBuilding(),
+            'room' => $office === null ? null : $office->getRoom());
         return array_merge($parent, $subclass);
     }
 

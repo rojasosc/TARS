@@ -105,17 +105,17 @@ final class Section {
     }
 
     public function __construct($row) {
-        $this->id = $row['sectionID'];
-        $this->crn = $row['crn'];
+        $this->id = intval($row['sectionID']);
+        $this->crn = intval($row['crn']);
         $this->sectionType = $row['type'];
-        $this->courseID = $row['courseID'];
+        $this->courseID = intval($row['courseID']);
         $this->courseDepartment = $row['department'];
         $this->courseNumber = $row['courseNumber'];
         $this->courseTitle = $row['courseTitle'];
-        $this->courseTermID = $row['termID'];
+        $this->courseTermID = intval($row['termID']);
         $this->courseTerm = null;
         $this->status = $row['status'];
-        $this->creatorID = $row['creatorID'];
+        $this->creatorID = intval($row['creatorID']);
         $this->creator = null;
         $this->createTime = strtotime($row['createTime']);
     }
@@ -219,11 +219,11 @@ final class Section {
 
     public function toArray($showEvent = false) {
         $data = array(
-            'id' => intval($this->id),
-            'crn' => intval($this->crn),
+            'id' => $this->id,
+            'crn' => $this->crn,
             'type' => $this->sectionType,
             'course' => array(
-                'id' => intval($this->courseID),
+                'id' => $this->courseID,
                 'department' => $this->courseDepartment,
                 'number' => $this->courseNumber,
                 'title' => $this->courseTitle,

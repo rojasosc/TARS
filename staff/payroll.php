@@ -10,7 +10,7 @@ try {
     $error = $ex;
 }
 
-$termID = isset($_GET['term']) ? $_GET['term'] : null;
+$termID = isset($_GET['term']) ? intval($_GET['term']) : null;
 $terms = array();
 $thisTerm = null;
 $assistants = array();
@@ -18,13 +18,13 @@ if ($error == null) {
     try {
         $terms = Term::getAllTerms();
         foreach ($terms as $term) {
-            if ($termID != null && $term->getID() == $termID) {
+            if ($termID !== null && $term->getID() === $termID) {
                 $thisTerm = $term;
             }
         }
-        if ($thisTerm == null) {
+        if ($thisTerm === null) {
             $thisTermID = Configuration::get(Configuration::CURRENT_TERM);
-            if ($thisTermID != null) {
+            if ($thisTermID !== null) {
                 $thisTerm = Term::getTermByID($thisTermID);
             }
         }
@@ -89,7 +89,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                                 <?php
     foreach ($terms as $term) {
         $sel = ($thisTerm != null && $term->getID() == $thisTerm->getID()) ? ' selected="selected"' : '';
-        echo '<option value="'.$term->getID().'"'.$sel.'>'.$term->getName().'</option>';
+        echo '<option value="'.$term->getID().'"'.$sel.'>'.htmlentities($term->getName()).'</option>';
     }
                                                 ?>
                                             </select> <!-- End select -->
@@ -122,14 +122,14 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
         $section = $position->getSection();
                                             ?>
                                             <tr>
-                                                <td><?= $student->getUniversityID() ?></td>
-                                                <td><?= $student->getFirstName() ?></td>
-                                                <td><?= $student->getLastName() ?></td>
-                                                <td><?= $student->getEmail() ?></td>
-                                                <td><?= $section->getCourseName() ?></td>
-                                                <td><?= $position->getTypeTitle() ?></td>
-                                                <td><?= $student->getClassYear() ?></td>
-                                                <td><?= $assistant->getCompensation() ?></td>
+                                                <td><?= htmlentities($student->getUniversityID()) ?></td>
+                                                <td><?= htmlentities($student->getFirstName()) ?></td>
+                                                <td><?= htmlentities($student->getLastName()) ?></td>
+                                                <td><?= htmlentitieS($student->getEmail()) ?></td>
+                                                <td><?= htmlentitieS($section->getCourseName()) ?></td>
+                                                <td><?= htmlentities($position->getTypeTitle()) ?></td>
+                                                <td><?= htmlentities($student->getClassYear()) ?></td>
+                                                <td><?= htmlentitieS($assistant->getCompensation()) ?></td>
                                             </tr>
                                             <?php
 

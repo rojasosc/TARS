@@ -19,7 +19,7 @@ final class Application {
                 LIMIT 1';
         $args = array(':position' => $position->getID(), ':student' => $student->getID());
         $row = Database::executeGetRow($sql, $args);
-        if ($row == null) {
+        if ($row === null) {
             return null;
         }
         return new Application($row);
@@ -30,20 +30,20 @@ final class Application {
         $sql_ij_t = false;
         $sql_ij_teaches = '';
         $args = array();
-        if ($section != null) {
+        if ($section !== null) {
             $sql_where .= 'Positions.sectionID = :section AND ';
             $args[':section'] = $section->getID();
         }
-        if ($student != null) {
+        if ($student !== null) {
             $sql_where .= 'Applications.creatorID = :student AND ';
             $args[':student'] = $student->getID();
         }
-        if ($professor != null) {
+        if ($professor !== null) {
             $sql_where .= 'Teaches.professorID = :professor AND ';
             $sql_ij_t = true;
             $args[':professor'] = $professor->getID();
         }
-        if ($term != null) {
+        if ($term !== null) {
             $sql_where .= 'Courses.termID = :term AND ';
             $args[':term'] = $term->getID();
         }
@@ -51,7 +51,7 @@ final class Application {
             $sql_where .= 'Applications.appStatus = :status AND ';
             $args[':status'] = $status;
         }
-        if ($compensation != null) {
+        if ($compensation !== null) {
             $sql_where .= 'Applications.compensation = :compensation AND ';
             $args[':compensation'] = $compensation;
         }
@@ -121,7 +121,7 @@ final class Application {
     public static function findApplications($student = null, $section = null, $professor = null, $term = null, $status = -1, $compensation = null, $pg = null) {
         list($sql, $args) = Application::findApplicationsGeneral(
             $student, $section, $professor, $term, $status, $compensation, false);
-        if($pg != null){
+        if($pg !== null){
             return Database::executeGetPage($sql, $args, $pg, function($row) { return new Application($row); });
         }else{
             $rows = Database::executeGetAllRows($sql, $args);
@@ -140,20 +140,20 @@ final class Application {
     }
 
     public function __construct($row) {
-        $this->id = $row['appID'];
-        $this->positionID = $row['positionID'];
+        $this->id = intval($row['appID']);
+        $this->positionID = intval($row['positionID']);
         $this->position = null;
         $this->compensation = $row['compensation'];
-        $this->appStatus = $row['appStatus'];
+        $this->appStatus = intval($row['appStatus']);
         $this->qualifications = $row['qualifications'];
-        $this->creatorID = $row['creatorID'];
+        $this->creatorID = intval($row['creatorID']);
         $this->creator = null;
         $this->createTime = strtotime($row['createTime']);
     }
 
     public function getID() { return $this->id; }
     public function getPosition() {
-        if ($this->position == null) {
+        if ($this->position === null) {
             $this->position = Position::getPositionByID($this->positionID);
         }
         return $this->position;
@@ -162,7 +162,7 @@ final class Application {
     public function getStatus() { return $this->appStatus; }
     public function getQualifications() { return $this->qualifications; }
     public function getCreator() {
-        if ($this->creator == null) {
+        if ($this->creator === null) {
             $this->creator = User::getUserByID($this->creatorID);
         }
         return $this->creator;
@@ -178,8 +178,8 @@ final class Application {
 
     public function toArray($showEvent = true) {
         $data = array(
-            'id' => intval($this->id),
-            'status' => intval($this->appStatus),
+            'id' => $this->id,
+            'status' => $this->appStatus,
             'compensation' => $this->compensation,
             'qualifications' => $this->qualifications,
             'position' => $this->getPosition()->toArray(false));

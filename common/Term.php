@@ -259,12 +259,12 @@ final class Term {
     }
 
     public function __construct($row) {
-        $this->id = $row['termID'];
-        $this->year = $row['year']; // Term.year
+        $this->id = intval($row['termID']);
+        $this->year = intval($row['year']); // Term.year
         $this->semester = $row['semesterName'];
-        $this->semesterID = $row['semesterID'];
-        $this->semesterIndex = $row['semesterIndex'];
-        $this->creatorID = $row['creatorID'];
+        $this->semesterID = intval($row['semesterID']);
+        $this->semesterIndex = intval($row['semesterIndex']);
+        $this->creatorID = intval($row['creatorID']);
         $this->creator = null;
         $this->createTime = strtotime($row['createTime']);
     }
@@ -287,8 +287,8 @@ final class Term {
 
     public function toArray($showEvent = false) {
         $data = array(
-            'id' => intval($this->id),
-            'year' => intval($this->year),
+            'id' => $this->id,
+            'year' => $this->year,
             'semester' => $this->semester);
         if ($showEvent) {
             $data['creator'] = $this->getCreator()->toArray(false);

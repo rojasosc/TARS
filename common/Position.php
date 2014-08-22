@@ -90,17 +90,17 @@ final class Position {
 
 
     private function __construct($row) {
-        $this->id = $row['positionID'];
-        $this->sectionID = $row['sectionID'];
+        $this->id = intval($row['positionID']);
+        $this->sectionID = intval($row['sectionID']);
         $this->section = null;
-        $this->maximumAccepted = $row['maximumAccepted'];
-        $this->type = $row['positionTypeID'];
+        $this->maximumAccepted = intval($row['maximumAccepted']);
+        $this->type = intval($row['positionTypeID']);
         $this->typeName = $row['positionName'];
         $this->typeTitle = $row['positionTitle'];
         $this->typeResp = $row['responsibilities'];
         $this->typeTimes = $row['times'];
         $this->typeComp = $row['compensation'];
-        $this->creatorID = $row['creatorID'];
+        $this->creatorID = intval($row['creatorID']);
         $this->creator = null;
         $this->createTime = strtotime($row['createTime']);
     }
@@ -139,10 +139,10 @@ final class Position {
 
     public function toArray($showEvent = false) {
         $data = array(
-            'id' => intval($this->id),
-            'max' => intval($this->maximumAccepted),
+            'id' => $this->id,
+            'max' => $this->maximumAccepted,
             'type' => array(
-                'id' => intval($this->type),
+                'id' => $this->type,
                 'name' => $this->typeName,
                 'title' => $this->typeTitle),
             'section' => $this->getSection()->toArray(false));

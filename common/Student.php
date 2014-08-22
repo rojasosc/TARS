@@ -24,9 +24,9 @@ final class Student extends User {
 
         if ($student_row) {
             $this->mobilePhone = $student_row['mobilePhone'];
-            $this->classYear = $student_row['classYear'];
+            $this->classYear = intval($student_row['classYear']);
             $this->major = $student_row['major'];
-            $this->gpa = $student_row['gpa'];
+            $this->gpa = floatval($student_row['gpa']);
             $this->universityID = $student_row['universityID'];
             $this->aboutMe = $student_row['aboutMe'];
         }
@@ -96,8 +96,8 @@ final class Student extends User {
         $subclass = array(
             'mobilePhone' => $this->getMobilePhoneDisplay(),
             'major' => $this->major,
-            'gpa' => floatval($this->gpa),
-            'classYear' => intval($this->classYear),
+            'gpa' => $this->gpa,
+            'classYear' => $this->classYear,
             'aboutMe' => $this->aboutMe,
             'universityID' => $this->universityID);
         return array_merge($parent, $subclass);

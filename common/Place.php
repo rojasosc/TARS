@@ -64,7 +64,7 @@ final class Place {
     }
 
     private function __construct($row) {
-        $this->id = $row['placeID'];
+        $this->id = intval($row['placeID']);
         $this->building = $row['building'];
         $this->room = $row['room'];
     }

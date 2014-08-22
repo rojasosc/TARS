@@ -61,13 +61,13 @@ final class SectionSession {
     }
 
     public function __construct($row) {
-        $this->id = $row['sessionID'];
-        $this->sectionID = $row['sectionID'];
+        $this->id = intval($row['sessionID']);
+        $this->sectionID = intval($row['sectionID']);
         $this->section = null;
         $this->weekdays = $row['weekday'];
         $this->startTime = substr($row['startTime'], 0, 5);
         $this->endTime = substr($row['endTime'], 0, 5);
-        $this->placeID = $row['placeID'];
+        $this->placeID = intval($row['placeID']);
         $this->placeBuilding = $row['building'];
         $this->placeRoom = $row['room'];
     }
@@ -90,7 +90,7 @@ final class SectionSession {
 
     public function toArray() {
         return array(
-            'id' => intval($this->id),
+            'id' => $this->id,
             'weekdays' => $this->weekdays,
             'startTime' => $this->startTime,
             'endTime' => $this->endTime,

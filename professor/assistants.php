@@ -185,17 +185,18 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                 </div> <!-- End row -->
                 <div class="container">
                 <?php
+                    // TODO upgrade to Actions API
                     foreach($courses as $course) {
                         $sections = $professor->getSectionsByCourseID($course['courseID']);
                         $applications = Application::getAssistantsByCourseID($course['courseID'],$professor);
-                        $panelHeading = $course['department'] . " " . $course['courseNumber'] . " " . $course['courseTitle'];
-                        $panelID = "course".$course['courseNumber'];
+                        $panelHeading = "$course[department] $course[courseNumber] $course[courseTitle]";
+                        $panelID = "course$course[courseNumber]";
                         ?>
                         <div class="panel panel-primary">
-                            <div class="panel-heading" data-toggle="collapse" data-target="#<?= $panelID ?>">
-                                <h4 class="panel-title panelHeader"><?= $panelHeading ?> <span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
+                            <div class="panel-heading" data-toggle="collapse" data-target="#<?= htmlentities($panelID) ?>">
+                                <h4 class="panel-title panelHeader"><?= htmlentities($panelHeading) ?> <span class="glyphicon glyphicon-chevron-right pull-right"></span></h4>
                             </div> <!-- End panel-heading -->
-                            <div class="collapse panel-collapse" id="<?= $panelID ?>">
+                            <div class="collapse panel-collapse" id="<?= htmlentities($panelID) ?>">
                                 <div class="panel-body">
 
                         <?php
@@ -247,7 +248,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                             <div class="row">
                                                 <!-- Section description -->
                                                 <div class="col-xs-2">
-                                                    <legend><?= ucfirst($section->getSectionType()) ?></legend>
+                                                    <legend><?= htmlentities(ucfirst($section->getSectionType())) ?></legend>
 
                                                             <?php
                                                                 $location = '';
@@ -258,13 +259,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                                                     $room = $session->getPlaceRoom();
                                                                     $location = $building . " " . $room;
                                                                 ?>
-                                                                    <p><small><?= $days . " " . $time ?></small></p>
+                                                                    <p><small><?= htmlentities($days . " " . $time) ?></small></p>
 
                                                             <?php
 
                                                                 }
                                                             ?>
-                                                            <p><small><?= $location ?></small></p>
+                                                            <p><small><?= htmlentities($location) ?></small></p>
 
 
                                                 </div> <!-- End column -->
@@ -306,7 +307,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                                         <td>
                                                             <div class="dropdown actions">
                                                                 <a class="dropdown-toggle" type="button" id="actionsMenu" data-toggle="dropdown">
-                                                                <?= $student->getFirstName() . " " . $student->getLastName()?>
+                                                                <?= htmlentities($student->getFirstName() . " " . $student->getLastName())?>
                                                                 <span class="caret"></span>
                                                                 </a>
                                                                 <ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">
@@ -316,13 +317,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <?= $student->getUniversityID() ?>
+                                                            <?= htmlentities($student->getUniversityID()) ?>
                                                         </td>
                                                         <td>
-                                                            <?= $student->getEmail() ?>
+                                                            <?= htmlentities($student->getEmail()) ?>
                                                         </td>
                                                         <td>
-                                                            <?= $position->getTypeTitle() ?>
+                                                            <?= htmlentities($position->getTypeTitle()) ?>
                                                         </td>
                                                         <td>
                                                             <button data-toggle="modal" data-target="#profile-modal" data-appID="<?= $application->getID() ?>" data-usertype="<?= STUDENT ?>" data-userid="<?= $student->getID() ?>" class="btn btn-info circle profile">

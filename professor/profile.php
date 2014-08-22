@@ -186,32 +186,32 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                     <legend>Personal Details</legend>
                                     <div class="row">
                                         <div class="col-xs-6">
-                                        First Name: <strong id="cur-firstName"><?= $professor->getFirstName() ?></strong>
+                                        First Name: <strong id="cur-firstName"><?= htmlentities($professor->getFirstName()) ?></strong>
                                         </div> <!-- End column -->
                                         <div class="col-xs-6">
-                                        Last Name: <strong id="cur-lastName"><?= $professor->getLastName() ?></strong>
+                                        Last Name: <strong id="cur-lastName"><?= htmlentities($professor->getLastName()) ?></strong>
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
                                     <br>
                                     <div class="row">
                                         <div class="col-xs-6">
-                                        Email: <strong id="cur-email"><?= $professor->getEmail() ?></strong>
+                                        Email: <strong id="cur-email"><?= htmlentities($professor->getEmail()) ?></strong>
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
                                     <br>
                                     <legend>Office</legend>
                                     <div class="row">
                                         <div class="col-xs-6">
-                                        Building: <strong id="cur-building"><?php if ($office != null) { echo $office->getBuilding(); } ?></strong>
+                                        Building: <strong id="cur-building"><?php if ($office != null) { echo htmlentities($office->getBuilding()); } ?></strong>
                                         </div> <!-- End column -->
                                         <div class="col-xs-6">
-                                        Room: <strong id="cur-room"><?php if ($office != null) { echo $office->getRoom(); } ?></strong>
+                                        Room: <strong id="cur-room"><?php if ($office != null) { echo htmlentities($office->getRoom()); } ?></strong>
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
                                     <br>
                                     <div class="row">
                                         <div class="col-xs-6">
-                                        Office Phone: <strong id="cur-officePhone"><?= $professor->getOfficePhoneDisplay() ?></strong>
+                                        Office Phone: <strong id="cur-officePhone"><?= htmlentities($professor->getOfficePhoneDisplay()) ?></strong>
                                         </div>
                                     </div>
                                 </div> <!-- End column -->

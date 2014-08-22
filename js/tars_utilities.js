@@ -52,10 +52,9 @@ $(document).ready(function() {
 
         if ($(".profile").length) {
             $userModal = $(".profile-modal");
-            $(".profile").click(viewUserProfile);
             if ($(".qualifications").length) {
                 $qualifications = $(".qualifications");
-                $(".profile").click(injectQualifications);
+                $(".profile").on('click', injectQualifications);
             }
         }
     }
@@ -699,13 +698,13 @@ function viewUserProfile() {
 }
 
 function prepareStudentModal(student) {
-    $("#studentModalTitle").html(student.firstName + " " + student.lastName);
-    $("#studentMajor").html("Major: " + student.major);
-    $("#studentGPA").html("GPA: " + student.gpa);
-    $("#studentEmail").html("Email: " + student.email);
-    $("#studentMobilePhone").html("Mobile Phone: " + student.mobilePhone);
-    $("#studentAboutMe").html(student.aboutMe);
-    $("#studentClassYear").html("Class Year: " + student.classYear);
+    $("#studentModalTitle").text(student.firstName + " " + student.lastName);
+    $("#studentMajor").text("Major: " + student.major);
+    $("#studentGPA").text("GPA: " + student.gpa);
+    $("#studentEmail").text("Email: " + student.email);
+    $("#studentMobilePhone").text("Mobile Phone: " + student.mobilePhone);
+    $("#studentAboutMe").text(student.aboutMe);
+    $("#studentClassYear").text("Class Year: " + student.classYear);
 
 }
 
@@ -763,7 +762,7 @@ function preparePasswordForm(user) {
 
 function prepareUserForm($user, userType) {
     window.$user = $user;
-    $("#modalHeader").html($user.firstName + " " + $user.lastName);
+    $("#modalHeader").text($user.firstName + " " + $user.lastName);
     $("[name='firstName']", $editProfileForm).val($user.firstName);
     $("[name='lastName']", $editProfileForm).val($user.lastName);
     $("[name='email']", $editProfileForm).val($user.email);

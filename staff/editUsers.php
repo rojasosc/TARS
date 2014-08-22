@@ -46,7 +46,6 @@ function generate_major_options() {
 		<script src="../js/jquery.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>	
 		<script src="../js/tars_utilities.js"></script>
-		<script type="text/javascript" src="editUsers.js"></script>
 	</head>
 	<body>
 		<!-- BEGIN page-wrapper -->

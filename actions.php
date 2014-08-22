@@ -511,9 +511,10 @@ final class Action {
 				$officeRoom = strtoupper($params['room']);
 			}
 			$place = Place::getOrCreatePlace($officeBuilding, $officeRoom);
+			$place = Place::getPlaceByID($place);
 			$userToUpdate->updateProfile(
 				$params['firstName'], $params['lastName'],
-				$place->getPlaceID(), $officeRoom);
+				$officePhone, $place->getPlaceID());
 			break;
 		case ADMIN:
 			$userToUpdate->updateProfile(
@@ -1117,32 +1118,66 @@ final class Action {
 		// Returns:
 		//     object:       The new user object
 		//     success and error: Action status
-		'updateProfile' => array('event' => Event::USER_SET_PROFILE,
-			'eventLog' => 'always', 'eventDescr' => 'Profile of %s was updated.',
+		'updateProfile' => array(
+			'event' => Event::USER_SET_PROFILE,
+			'eventLog' => 'always',
+			'eventDescr' => 'Profile of %s was updated.',
 			'eventDescrArg' => 'refparam',
 			'params' => array(
-				'userID' => array('type' => Action::VALIDATE_NUMERIC,
-					'optional' => true),
+				'userID' => array(
+					'type' => Action::VALIDATE_NUMERIC,
+					'optional' => true
+				),
 				'firstName' => array('type' => Action::VALIDATE_NOTEMPTY),
 				'lastName' => array('type' => Action::VALIDATE_NOTEMPTY),
-				'mobilePhone' => array('type' => Action::VALIDATE_NUMSTR,
-					'optional' => true, 'min_length' => 10, 'max_length' => 10),
-				'classYear' => array('type' => Action::VALIDATE_NUMSTR,
-					'optional' => true, 'min_length' => 4, 'max_length' => 4),
-				'major' => array('type' => Action::VALIDATE_NOTEMPTY,
-					'optional' => true),
-				'gpa' => array('type' => Action::VALIDATE_NUMERIC,
-					'optional' => true, 'min_range' => 0, 'max_range' => 4),
-				'universityID' => array('type' => Action::VALIDATE_NUMSTR,
-					'optional' => true, 'min_length' => 8, 'max_length' => 8),
-				'aboutMe' => array('type' => Action::VALIDATE_NOTEMPTY,
-					'optional' => true),
-				'officePhone' => array('type' => Action::VALIDATE_NUMSTR,
-					'optional' => true, 'min_length' => 10, 'max_length' => 10),
-				'building' => array('type' => Action::VALIDATE_NOTEMPTY,
-					'optional' => true),
-				'room' => array('type' => Action::VALIDATE_NOTEMPTY,
-					'optional' => true))),
+				'mobilePhone' => array(
+					'type' => Action::VALIDATE_NUMSTR,
+					'optional' => true,
+					'min_length' => 10,
+					'max_length' => 10
+				),
+				'classYear' => array(
+					'type' => Action::VALIDATE_NUMSTR,
+					'optional' => true,
+					'min_length' => 4,
+					'max_length' => 4
+				),
+				'major' => array(
+					'type' => Action::VALIDATE_NOTEMPTY,
+					'optional' => true
+				),
+				'gpa' => array(
+					'type' => Action::VALIDATE_NUMERIC,
+					'optional' => true,
+					'min_range' => 0,
+					'max_range' => 4
+				),
+				'universityID' => array(
+					'type' => Action::VALIDATE_NUMSTR,
+					'optional' => true,
+					'min_length' => 8,
+					'max_length' => 8
+				),
+				'aboutMe' => array(
+					'type' => Action::VALIDATE_NOTEMPTY,
+					'optional' => true
+				),
+				'officePhone' => array(
+					'type' => Action::VALIDATE_NUMSTR,
+					'optional' => true,
+					'min_length' => 10,
+					'max_length' => 10
+				),
+				'building' => array(
+					'type' => Action::VALIDATE_NOTEMPTY,
+					'optional' => true
+				),
+				'room' => array(
+					'type' => Action::VALIDATE_NOTEMPTY,
+					'optional' => true
+				)
+			)
+		),
 		// Action:           changeUserPassword
 		// Session required: required
 		// Parameters:

@@ -15,7 +15,7 @@ $(document).ready(function() {
             if ($('input[name="userType"]:checked').val() == STUDENT) {
                 $('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Class Year</th><th>Profile</th></tr>');
             } else if ($('input[name="userType"]:checked').val() == PROFESSOR) {
-				$('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Profile</th></tr>');
+                $('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Profile</th></tr>');
             }
             $userSearchForm.trigger('submit');
         });
@@ -365,9 +365,9 @@ function showError(errorObj, element) {
 }
 
 function clearAlert(element) {
-	element.children().fadeOut('slow');
-	// do not call element.empty() here because the fadeout might not be done when
-	// another alert appears and we don't want to remove that one
+    element.children().fadeOut('slow');
+    // do not call element.empty() here because the fadeout might not be done when
+    // another alert appears and we don't want to remove that one
 }
 
 var clearError = clearAlert;
@@ -396,7 +396,7 @@ function showAlert(alertObj, element, level) {
 }
 
 function submitDecision() {
-	clearError($('#alertHolder'));
+    clearError($('#alertHolder'));
     doAction('setAppStatus', {
         appID: $(this).parent().data('applicationid'),
         decision: $(this).data('decision')
@@ -417,7 +417,7 @@ function submitDecision() {
 }
 
 function injectQualifications() {
-	clearError($('#profileAlertHolder'));
+    clearError($('#profileAlertHolder'));
     doAction('fetchApplication', {
         appID: $(this).data('appid')
     }).done(function(data) {
@@ -434,7 +434,7 @@ function injectQualifications() {
 }
 
 function viewUserComments() {
-	clearError($('#commentsAlertHolder'));
+    clearError($('#commentsAlertHolder'));
     doAction('fetchComments', {
         userID: $(this).data('userid')
     }).done(function(data) {
@@ -462,12 +462,12 @@ function viewUserComments() {
 }
 
 function searchUsers() {
-	clearError($('#alertHolder'));
+    clearError($('#alertHolder'));
     var input = {
         firstName: $("[name='fN']", $userSearchForm).val(),
         lastName: $("[name='lN']", $userSearchForm).val(),
         email: $("[name='emailSearch']", $userSearchForm).val(),
-		classYear: $("[name='classYear']", $userSearchForm).val(),
+        classYear: $("[name='classYear']", $userSearchForm).val(),
         userType: $("input[type='radio']:checked", $userSearchForm).val()
     };
     doPaginatedAction('searchForUsers', input,
@@ -497,14 +497,14 @@ function searchUsers() {
 }
 
 function filterEvents() {
-	clearError($('#alertHolder'));
+    clearError($('#alertHolder'));
     var input = {
         userFilter: $("[name='user']", $filterEventsForm).is(':checked'),
-		sevCrit: $("[name='sevCrit']", $filterEventsForm).is(':checked'),
-		sevError: $("[name='sevError']", $filterEventsForm).is(':checked'),
-		sevNotice: $("[name='sevNotice']", $filterEventsForm).is(':checked'),
-		sevInfo: $("[name='sevInfo']", $filterEventsForm).is(':checked'),
-		sevDebug: $("[name='sevDebug']", $filterEventsForm).is(':checked')
+        sevCrit: $("[name='sevCrit']", $filterEventsForm).is(':checked'),
+        sevError: $("[name='sevError']", $filterEventsForm).is(':checked'),
+        sevNotice: $("[name='sevNotice']", $filterEventsForm).is(':checked'),
+        sevInfo: $("[name='sevInfo']", $filterEventsForm).is(':checked'),
+        sevDebug: $("[name='sevDebug']", $filterEventsForm).is(':checked')
     };
     doPaginatedAction('findEvents', input,
         function(data) {
@@ -518,34 +518,49 @@ function filterEvents() {
                         $('#results tbody').html('<em>No results</em>');
                     } else {
                         $('#results thead tr').show();
-						var output = '';
-						for (var i = 0; i < data.objects.length; i++) {
-							var eventObj = data.objects[i];
-							var icon = 'exclamation-sign';
-							var color = 'black';
-							switch (eventObj.severity) {
-								case 'crit': icon = 'warning-sign'; color = 'red'; break;
-								case 'error': icon = 'warning-sign'; color = 'black'; break;
-								case 'notice': icon = 'info-sign'; color = 'black'; break;
-								case 'info': icon = 'info-sign'; color = 'blue'; break;
-								case 'debug': icon = 'question-sign'; color = 'orange'; break;
+                        var output = '';
+                        for (var i = 0; i < data.objects.length; i++) {
+                            var eventObj = data.objects[i];
+                            var icon = 'exclamation-sign';
+                            var color = 'black';
+                            switch (eventObj.severity) {
+                                case 'crit':
+                                    icon = 'warning-sign';
+                                    color = 'red';
+                                    break;
+                                case 'error':
+                                    icon = 'warning-sign';
+                                    color = 'black';
+                                    break;
+                                case 'notice':
+                                    icon = 'info-sign';
+                                    color = 'black';
+                                    break;
+                                case 'info':
+                                    icon = 'info-sign';
+                                    color = 'blue';
+                                    break;
+                                case 'debug':
+                                    icon = 'question-sign';
+                                    color = 'orange';
+                                    break;
 
-							}
-							var tr = $('<tr/>');
-							tr.append($('<td class="hidden"/>').text(eventObj.id));
-							tr.append($('<td/>').text(eventObj.createTime));
-							if (eventObj.creator === null) {
-								tr.append('<td><em>not logged in</em></tr>');
-							} else {
-								tr.append($('<td/>').text(eventObj.creator.firstName + ' ' + eventObj.creator.lastName));
-							}
-							tr.append($('<td/>').text(eventObj.creatorIP));
-							tr.append($('<td style="text-align:left"/>').html('<span class="glyphicon glyphicon-' + icon + '" style="color: ' + color + '" title="' + eventObj.severity + '"></span> ' + $('<span/>').text(eventObj.type).text()));
-							tr.append($('<td/>').text(eventObj.description));
-							tr.append($('<td/>').text(eventObj.objectType + ': ' + eventObj.object));
-							output += tr[0].outerHTML;
-						}
-						$('#results tbody').html(output);
+                            }
+                            var tr = $('<tr/>');
+                            tr.append($('<td class="hidden"/>').text(eventObj.id));
+                            tr.append($('<td/>').text(eventObj.createTime));
+                            if (eventObj.creator === null) {
+                                tr.append('<td><em>not logged in</em></tr>');
+                            } else {
+                                tr.append($('<td/>').text(eventObj.creator.firstName + ' ' + eventObj.creator.lastName));
+                            }
+                            tr.append($('<td/>').text(eventObj.creatorIP));
+                            tr.append($('<td style="text-align:left"/>').html('<span class="glyphicon glyphicon-' + icon + '" style="color: ' + color + '" title="' + eventObj.severity + '"></span> ' + $('<span/>').text(eventObj.type).text()));
+                            tr.append($('<td/>').text(eventObj.description));
+                            tr.append($('<td/>').text(eventObj.objectType + ': ' + eventObj.object));
+                            output += tr[0].outerHTML;
+                        }
+                        $('#results tbody').html(output);
                     }
                 }
             } else {
@@ -560,7 +575,7 @@ function filterEvents() {
 }
 
 function viewApplications() {
-	clearError($('#alertHolder'));
+    clearError($('#alertHolder'));
     doPaginatedAction('fetchTermApplications', {
             appStatus: 0,
             termID: 1
@@ -630,10 +645,12 @@ function viewApplications() {
                 $(".comment").click(prepareCommentModal);
                 $('#submitCommentButton').click(submitComment);
             } else {
-				showError(data.error, $('#alertHolder'));
-			}
+                showError(data.error, $('#alertHolder'));
+            }
         }, function(jqXHR, textStatus, errorMessage) {
-            showError({message: errorMessage}, $('#alertHolder'));
+            showError({
+                message: errorMessage
+            }, $('#alertHolder'));
         });
 }
 
@@ -670,7 +687,7 @@ function viewResults(users, userType) {
 }
 
 function viewUserProfile() {
-	clearError($('#profileAlertHolder'));
+    clearError($('#profileAlertHolder'));
     doAction('fetchUser', {
         userID: $(this).data('userid'),
         userType: $(this).data('usertype')
@@ -701,7 +718,7 @@ function prepareStudentModal(student) {
 function viewPasswordForm(userID, userType) {
     //console.log('viewpasswordform');
     //console.log(userID, userType);
-	clearError($('#editPasswordAlertHolder'));
+    clearError($('#editPasswordAlertHolder'));
     doAction('fetchUser', {
         userID: userID,
         userType: userType
@@ -719,7 +736,7 @@ function viewPasswordForm(userID, userType) {
 }
 
 function viewUserForm(userID, userType) {
-	clearError($('#editProfileAlertHolder'));
+    clearError($('#editProfileAlertHolder'));
     var userType = parseInt(userType, 10);
     $editProfileForm = $("#profileForm" + userType);
     // hide all sub-forms
@@ -785,8 +802,8 @@ function prepareUserForm($user, userType) {
 }
 
 function changeUserPassword() {
-	clearError($('#editPasswordAlertHolder'));
-	clearError($('#alertHolder'));
+    clearError($('#editPasswordAlertHolder'));
+    clearError($('#alertHolder'));
     doAction('changeUserPassword', {
         oldPassword: $("[name='oldPassword']", $passwordForm).val(),
         newPassword: $("[name='newPassword']", $passwordForm).val(),
@@ -845,8 +862,8 @@ function updateUserProfile() {
             };
             break;
     }
-	clearError($('#editProfileAlertHolder'));
-	clearError($('#alertHolder'));
+    clearError($('#editProfileAlertHolder'));
+    clearError($('#alertHolder'));
 
     doAction('updateProfile', input).done(function(data) {
         if (data.success) {
@@ -879,7 +896,7 @@ function updateUserProfileCard(data, userType) {
 }
 
 function prepareBuildingsDropdown() {
-	clearError($('#alertHolder'));
+    clearError($('#alertHolder'));
     doAction('fetchBuildings', {}).done(function(data) {
         if (data.success) {
             var buildings = data.objects;
@@ -898,7 +915,7 @@ function prepareBuildingsDropdown() {
 }
 
 function prepareRoomsDropdown() {
-	clearError($('#alertHolder'));
+    clearError($('#alertHolder'));
     clearDropdown($roomsDropdown);
     if ($(this).val() !== '') {
         doAction('fetchRooms', {

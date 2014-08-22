@@ -102,7 +102,7 @@ final class Student extends User {
 			'universityID' => $this->universityID);
 		return array_merge($parent, $subclass);
 	}
-
+	
 	private $mobilePhone;
 	private $major;
 	private $gpa;

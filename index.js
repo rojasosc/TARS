@@ -5,7 +5,7 @@ $(document).ready(function () {
 		).done(function (data) {
 			if (data.success) {
 				showAlert({message: 'Bug report sent'}, $('#alertHolder'), 'success');
-				$('#bugmodal').modal('close');
+				$('#bugmodal').modal('hide');
 			} else {
 				showError(data.error, $('#bugAlertHolder'));
 			}	

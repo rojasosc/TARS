@@ -135,6 +135,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
         //    print_r($section);
         //    print_r($sessions);
         //    print_r($profs);
+        if (count($profs)) {
         $labTACount = $section->getTotalPositionsByType($profs[0], 1);
         if(!$labTACount) {
             $labTACount = 0;
@@ -154,6 +155,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
         $graderCount = $section->getTotalPositionsByType($profs[0], 4);
         if(!$graderCount) {
             $graderCount = 0;
+        }
+        } else {
+            $labTACount=$wsTACount=$wsslCount=$lecTACount=$graderCount=0;
         }
         // TODO normalize (multiple professors here would require string parsing to find separate email addresses)
         $profName = implode(', ', array_map(function ($prof) { return $prof->getEmail(); }, $profs));

@@ -11,12 +11,7 @@ $(document).ready(function() {
             event.preventDefault();
             searchUsers();
         });
-        $userSearchForm.on('change', 'input:radio', function() {
-            if ($('input[name="userType"]:checked').val() == STUDENT) {
-                $('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Class Year</th><th>Profile</th></tr>');
-            } else if ($('input[name="userType"]:checked').val() == PROFESSOR) {
-                $('.user-search-table thead').html('<tr><th>First Name</th><th>Last Name</th><th>E-mail</th><th>Profile</th></tr>');
-            }
+        $userSearchForm.on('click', 'input[type=checkbox]', function() {
             $userSearchForm.trigger('submit');
         });
         $userSearchForm.trigger('submit');
@@ -468,9 +463,15 @@ function searchUsers() {
         lastName: $("[name='lN']", $userSearchForm).val(),
         email: $("[name='emailSearch']", $userSearchForm).val(),
         classYear: $("[name='classYear']", $userSearchForm).val(),
-        userType: $("input[type='radio']:checked", $userSearchForm).val()
+        userType: (function () {
+            var total = 0;
+            $("input[type='checkbox']:checked", $userSearchForm).each(function(el){
+                total += +$(this).val();
+            });
+            return total;
+        })()
     };
-    doPaginatedAction('searchForUsers', input,
+    doPaginatedAction('findUsers', input,
         function(data) {
             if (data.success) {
                 if (data.pg) {
@@ -478,11 +479,36 @@ function searchUsers() {
                 }
                 if (data.objects) {
                     if (data.objects.length === 0) {
-                        $('thead tr').hide();
-                        $results.find('tbody').html('<em>No results</em>');
+                        $('#results thead tr').hide();
+                        $('#results tbody').html('<em>No results</em>');
                     } else {
-                        $('thead tr').show();
-                        viewResults(data.objects, $("input[type='radio']:checked", $userSearchForm).val());
+                        $('#results thead tr').show();
+                        // if students in results, show the column
+                        var showClassYear = (input.userType & STUDENT) !== 0;
+                        if (showClassYear) {
+                            $('#classYearHeader').show();
+                        } else {
+                            $('#classYearHeader').hide();
+                        }
+                        var classYearClass = showClassYear ? '' : 'hidden';
+                        var output = [];
+                        for (var i = 0; i < data.objects.length; i++) {
+                            var userObj = data.objects[i];
+                            var tr = $('<tr/>');
+                            tr.append($('<td class="hidden"/>').text(userObj.id));
+                            tr.append($('<td/>').text(userObj.firstName));
+                            tr.append($('<td/>').text(userObj.lastName));
+                            tr.append($('<td/>').text(userObj.email));
+                            if (userObj.type !== STUDENT) {
+                                tr.append('<td class="' + classYearClass + '"><em>N/A</em></tr>');
+                            } else {
+                                tr.append($('<td class="' + classYearClass + '"/>').text(userObj.classYear));
+                            }
+                            tr.append('<td><button data-toggle="modal" data-target="#profile-modal" class="btn btn-default edit-profile circle" data-userid="' +
+                                userObj.id + '" data-usertype="' + userObj.type + '"><span class="glyphicon glyphicon-wrench"></span></button></td>');
+                            output.push(tr[0].outerHTML);
+                        }
+                        $('#results tbody').html(output.join(''));
                     }
                 }
             } else {
@@ -652,38 +678,6 @@ function viewApplications() {
                 message: errorMessage
             }, $('#alertHolder'));
         });
-}
-
-function viewResults(users, userType) {
-    /* Clear any existing results */
-    $results.hide();
-    $results.find("tbody").remove();
-    /* Associative array of a user */
-    /* Render results table */
-    var row = new Array();
-    var j = -1;
-    var size = users.length;
-    for (var key = 0; key < size; key++) {
-        row[++j] = "<tr><td>";
-        row[++j] = users[key].firstName;
-        row[++j] = "</td><td>";
-        row[++j] = users[key].lastName;
-        row[++j] = "</td><td>";
-        row[++j] = users[key].email;
-        row[++j] = "</td><td>";
-        if (users[key].type == 1) {
-            row[++j] = users[key].classYear;
-            row[++j] = "</td><td>";
-        }
-        row[++j] = "<button data-toggle='modal' data-target='#profile-modal' class='btn btn-default edit-profile circle' data-userid='" +
-            users[key].id + "' data-usertype='" + users[key].type + "'><span class='glyphicon glyphicon-wrench'></span></button>";
-        row[++j] = "</td></tr>";
-    }
-
-    /* Render the appropriate user profile update forms */
-    $results.append(row.join(''));
-    $results.show();
-
 }
 
 function viewUserProfile() {

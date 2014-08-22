@@ -271,10 +271,10 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                 <div class="col-xs-3">
                                     <div class="btn-group" data-toggle="buttons">
                                         <label class="btn btn-primary active">
-                                            <input type="radio" value="<?= STUDENT ?>" name="userType" checked> Students
+                                            <input type="checkbox" value="<?= STUDENT ?>" name="userType<?= STUDENT ?>" checked> Students
                                         </label>
                                         <label class="btn btn-primary">
-                                            <input type="radio" value="<?= PROFESSOR ?>" name="userType"> Professors
+                                            <input type="checkbox" value="<?= PROFESSOR ?>" name="userType<?= PROFESSOR ?>"> Professors
                                         </label>
                                     </div>
                                 </div> <!-- End column -->
@@ -290,13 +290,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                         <!-- End Pagination -->
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-striped user-search-table">
+                                <table class="table table-striped user-search-table" id="results">
                                     <thead>
                                         <tr>
-                                            <th>First Name</th><th>Last Name</th><th>E-mail</th><th>Class Year</th><th>Profile</th>
+                                            <th>First Name</th><th>Last Name</th><th>E-mail</th><th id="classYearHeader">Class Year</th><th>Profile</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="results">
+                                    <tbody>
                                     </tbody>
                                 </table> <!-- End table table-striped -->
                             </div> <!-- End column -->

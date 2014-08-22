@@ -674,19 +674,20 @@ final class Action {
         return null;
     }
 
-    public static function searchForUsers($params, $user, &$eventObjectID) {
+    public static function findUsers($params, $user, &$eventObjectID) {
         if (is_array($params)) {
+            $userType = intval($params['userType']);
             //The array $params should contain: email, firstName, lastName, pgIndex, pgLength, pgGetTotal
             $getTotal = isset($params['pgGetTotal']) && $params['pgGetTotal'] !== 'false' && !empty($params['pgGetTotal']);
             $pg = array('index' => $params['pgIndex'],
-                       'length' => $params['pgLength'],
+                        'length' => $params['pgLength'],
+                        'order' => array('lastName','firstName'),
                        'getTotal' => $getTotal);
-            if($params['userType'] == STUDENT) {
-                $usersFound = User::findUsers($params['email'],$params['firstName'], $params['lastName'], $params['userType'], $params['classYear'], $pg);
-
-            } else if($params['userType'] == PROFESSOR) {
-                $usersFound = User::findUsers($params['email'], $params['firstName'], $params['lastName'], $params['userType'], null, $pg);
+            // do not allow STAFF to get userTypes other than STUDENT, PROFESSOR
+            if ($user->getObjectType() === STAFF) {
+                $userType &= (STUDENT | PROFESSOR);
             }
+            $usersFound = User::findUsers($params['email'],$params['firstName'], $params['lastName'], $pg, $userType, $params['classYear']);
             return $usersFound;
         }
         return $params;
@@ -1245,7 +1246,7 @@ final class Action {
                     'optional' => true),
                 'room' => array('type' => Action::VALIDATE_NOTEMPTY,
                     'optional' => true))),
-        // Action:           searchForUsers
+        // Action:           findUsers
         // Session required: STAFF, ADMIN
         // Parameters:
         //     email: email field
@@ -1255,7 +1256,7 @@ final class Action {
         // Returns:
         //     objects: The users in this set
         //     success and error: Action status
-        'searchForUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_STAFF,
+        'findUsers' => array('event' => Event::USER_GET_VIEW, 'userType' => USERMASK_STAFF,
             'eventDescr' => '%s retrieved positions view.',
             'params' => array(
                 'email' => array('optional' => true),

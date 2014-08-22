@@ -6,9 +6,13 @@ $error = null;
 $staff = null;
 try {
     $staff = LoginSession::sessionContinue(ADMIN);
+    $sections = Section::getAllSections();
 } catch (TarsException $ex) {
     $error = $ex;
 }
+//TODO: Display everything via tables, be sure to include hidden data in each row.
+//TODO: Create a modal for editing purposes
+//TODO: Functional paginated search [Do this one first, lelz]
 ?>
 
 <!DOCTYPE html>
@@ -21,91 +25,15 @@ try {
         <title>Edit Term</title>
 
         <link href="../css/bootstrap.min.css" rel="stylesheet"/>
-        <link href="../css/bootstrap-select.min.css" rel="stylesheet"/>
         <link href="staff.css" rel="stylesheet"/>
         <link href="../favicon.ico" rel="shortcut icon"/>
+
         <script src="../js/jquery.min.js"></script>
         <script src="../js/bootstrap.min.js"></script>
-        <script src="../js/bootstrap-select.min.js"></script>
         <script src="../js/tars_utilities.js"></script>
-        <script src="editTerm.js"></script>
+        <script type="text/javascript" src="editTerm.js"></script>
     </head>
     <body>
-        <!-- BEGIN Positions Modal-->
-        <div class="modal fade" id="positionsModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h1 class="modal-title">New Positions</h1>
-                    </div> <!-- End modal-header -->
-                    <div class="modal-body">
-                            <form action="#" method="post" id="newPositionsForm" class="form-horizontal">
-                                <fieldset>
-                                    <legend>General</legend>
-                                    <div class="row">
-                                        <div class="col-xs-10">
-                                        <label class="control-label" for="positionType">Position Type</label>
-                                            <select id="positionType" name="positionType" class="selectpicker form-control">
-                                                <option>Grader</option>
-                                                <option>Workshop Leader</option>
-                                                <option>Lab TA</option>
-                                            </select> <!-- End select -->
-                                        </div> <!-- End column -->
-                                        <div class="col-xs-2">
-                                            <label class="control-label" for="quantity">Number</label>
-                                            <input type="text" name="quantity" class="form-control" placeholder="">
-                                        </div> <!-- End column -->
-                                    </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="startTime">Start Time</label>
-                                                    <input type="time" name="startTime" class="form-control">
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="endTime">End Time</label>
-                                                    <input type="time" name="endTime" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="days">Days</label>
-                                                    <select name="days" class="selectpicker form-control" multiple>
-                                                        <option>Monday</option>
-                                                        <option>Tuesday</option>
-                                                        <option>Wednesday</option>
-                                                        <option>Thrusday</option>
-                                                        <option>Friday</option>
-                                                        <option>Saturday</option>
-                                                        <option>Sunday</option>
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <legend>Location</legend>
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="building">Building</label>
-                                                    <select name="building" class="selectpicker form-control" placeholder="Building">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="rooms">Room</label>
-                                                    <select name="room" class="selectpicker form-control" placeholder="Room">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End Row -->
-                                </fieldset> <!-- End comment fieldset -->
-                            </form> <!-- End comment form -->
-                    </div> <!-- End modal-body -->
-                    <div class="modal-footer">
-                        <button class="btn btn-danger" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary" name="submitComment" id="submitCommentButton">Add Comment</button>
-                    </div> <!-- End modal-footer -->
-                </div> <!-- End modal-content -->
-            </div> <!-- End modal-dialog -->
-        </div> <!-- End modal fade -->
-        <!-- END Positions Modal-->
-
         <!-- BEGIN page-wrapper -->
 
         <div id="page-wrapper">
@@ -126,295 +54,194 @@ if ($error != null) {
 <?php
 if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 ?>
-                <div class="container" id="termContainer">
-                    <div class="row">
-                        <h1>Edit Term</h1>
-                        <h2 class="termHeader"></h2>
-                    </div> <!-- End row -->
-                    <div class="container" id="navTabs">
-                        <form action="#" class="form-horizontal" id="newTermForm" method="post">
-                            <div class="row">
-                                <div class="col-xs-8">
-                                    <label class="control-label" for="termName">Select Term</label>
-                                        <select id="selectTerm" name="termName" class="selectpicker form-control">
-                                            <option>Summer-2014</option>
-                                            <option>Fall-2014</option>
-                                            <option>Spring-2015</option>
-                                            <option>Summer-2015</option>
-                                            <option>Fall-2015</option>
-                                        </select> <!-- End select -->
-                                </div> <!-- End column -->
-                            </div> <!-- End row -->
-                        </form> <!-- End form -->
-                        <div class="row">
-                            <div class="col-xs-8">
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-stacked">
-                                    <li class="active"><a href="#term" data-toggle="tab">Term Overview</a></li>
-                                    <li><a href="#manageCourses" data-toggle="tab">Manage Courses</a></li>
-                                    <li><a href="#managePositions" data-toggle="tab">Manage Positions</a></li>
-                                </ul>
-                                <!-- End Nav tabs -->
-                            </div> <!-- End column -->
-                        </div> <!-- End Row -->
-                    </div> <!-- End container -->
-                    <div id="termPanes">
-                        <div class="tab-content">
-                            <!-- Begin Term Overview Pane -->
-                            <div class="tab-pane fade in active" id="term">
+                <div class="alert alert-warning hidden-lg" role="alert">
+                    <p>
+                        <strong>Warning!</strong> This page is meant to be viewed on a higher resolution.
+                    </p>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">Edit Term</h1>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal fetch-sections-form" role="form" id="fetchSectionsForm">
+                            <fieldset>
+                                <legend>Filter by:</legend>
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                        <label class="control-label" for="CRNFilter">CRN:</label>
+                                        <input id="CRNFilter" name="CRNFilter" type="text" class="form-control" placeholder="e.g. 12345">
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                        <label class="control-label" for="courseFilter">Course:</label>
+                                        <input id="courseFilter" name="courseFilter" type="text" class="form-control" placeholder="e.g. CSC 171">
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                        <label class="control-label" for="typeFilter">Type: </label>
+                                        <input id="typeFilter" name="typeFilter" type="text" class="form-control" placeholder="e.g. lab, lecture">
+                                    </div>
+                                </div>
                                 <br>
-                                <div class="container">
-                                </div> <!-- End container -->
-                                <div class="container" id="termOverview">
-                                    <h4>Number of Courses: (Number)</h4>
-                                    <h4>Number of Positions: (Number)</h4>
-                                    <h4>Number of Locations: (Number)</h4>
-                                    <h4>Last Edited: (date)</h4>
-                                </div> <!-- End container -->
-                            </div> <!-- end tab-pane -->
-                            <!-- End Term Overview Pane -->
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <div class="btn-group" data-toggle="buttons">
+                                            <label class="btn btn-primary active">
+                                                <input type="radio" value="all" name="all" checked> All
+                                            </label>
+                                            <label class="btn btn-primary">
+                                                <input type="radio" value="ok" name="ok"> OK
+                                            </label>
+                                            <label class="btn btn-primary">
+                                                <input type="radio" value="not-ok" name="notOk"> Not OK
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+                                </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                        <hr />
+                        <ul class="pagination">
+                        </ul>
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Type</th>
+                                    <th>CRN</th>
+                                    <th>Day</th>
+                                    <th>Time</th>
+                                    <th>Place</th>
+                                    <th>Lab TAs</th>
+                                    <th>WS Leaders</th>
+                                    <th>Super Leaders</th>
+                                    <th>Lec TAs</th>
+                                    <th>Graders</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results">
+                            </tbody>
+                        </table>
+                        <ul class="pagination">
+                        </ul>
+                        <?php
+    foreach($sections as $section) {
+        $sessions = $section->getAllSessions();
+        $sessions = SectionSession::combineSessions($sessions);
+        $profs = $section->getAllProfessors();
+        //    print_r($section);
+        //    print_r($sessions);
+        //    print_r($profs);
+        $labTACount = $section->getTotalPositionsByType($profs[0], 1);
+        if(!$labTACount) {
+            $labTACount = 0;
+        }
+        $wsTACount = $section->getTotalPositionsByType($profs[0], 2);
+        if(!$wsTACount) {
+            $wsTACount = 0;
+        }
+        $wsslCount = $section->getTotalPositionsByType($profs[0], 3);
+        if(!$wsslCount) {
+            $wsslCount = 0;
+        }
+        $lecTACount = $section->getTotalPositionsByType($profs[0], 5);
+        if(!$lecTACount) {
+            $lecTACount = 0;
+        }
+        $graderCount = $section->getTotalPositionsByType($profs[0], 4);
+        if(!$graderCount) {
+            $graderCount = 0;
+        }
+        // TODO normalize (multiple professors here would require string parsing to find separate email addresses)
+        $profName = implode(', ', array_map(function ($prof) { return $prof->getEmail(); }, $profs));
 
-                            <!-- BEGIN Manage Courses Pane -->
-                            <div class="tab-pane fade in" id="manageCourses">
-                                <div class="row">
-                                    <div class="col-xs-4">
-                                        <!-- Nav tabs -->
-                                        <ul class="nav nav-pills">
-                                            <li class="active"><a href="#newCourse" data-toggle="tab">New Course</a></li>
-                                            <li><a href="#editCourse" data-toggle="tab">Edit Course</a></li>
-                                        </ul> <!-- End Nav tabs -->
-                                    </div> <!-- End column -->
-                                </div> <!-- End row -->
-                                <div class="tab-content">
-                                    <div class="tab-pane fade in active" id="newCourse">
-                                        <form class="form-horizontal" method="post" action="#" id="newCourseForm">
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="courseCRN">Course CRN</label>
-                                                    <input type="text" name="courseCRN" placeholder="Course CRN" class="form-control">
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="courseTitle">Course Title</label>
-                                                        <input type="text" name="courseTitle" placeholder="e.g. The Science of Data Structures" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="professor">Professor</label>
-                                                    <select name="professor" class="selectpicker form-control all-professors">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="websiteURL">Website</label>
-                                                    <input type="url" name="websiteURL" placeholder="" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="startTime">Start Time</label>
-                                                    <input type="time" name="startTime" class="form-control">
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="endTime">End Time</label>
-                                                    <input type="time" name="endTime" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="days">Days</label>
-                                                    <select name="days" class="selectpicker form-control" multiple>
-                                                        <option>Monday</option>
-                                                        <option>Tuesday</option>
-                                                        <option>Wednesday</option>
-                                                        <option>Thrusday</option>
-                                                        <option>Friday</option>
-                                                        <option>Saturday</option>
-                                                        <option>Sunday</option>
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <legend>Location</legend>
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="buildings">Building</label>
-                                                    <select name="building" class="selectpicker form-control buildings" placeholder="Building">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="room">Room</label>
-                                                    <select name="room" class="form-control rooms" placeholder="Room">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End Row -->
-                                            <br>
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <button id="newCourseButton" type="submit"  name="newCourseButton" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Create New Course</button>
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <br>
-                                        </form> <!-- End form -->
-                                    </div> <!-- End tab-pane new course -->
-                                    <div class="tab-pane fade" id="editCourse">
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="course">Select Course</label>
-                                                        <select name="course" class="selectpicker form-control courses" placeholder="Courses">
-                                                        </select> <!-- End select -->
-                                                    </div> <!-- End form-group -->
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4" id="professorColumn">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="professor">Select Professor</label>
-                                                        <select name="professor" class="selectpicker form-control professors" placeholder="Professors">
-                                                        </select> <!-- End select -->
-                                                    </div> <!-- End form-group -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                        <form class="form-horizontal" method="post" action="#" id="newCourseForm">
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="courseCRN">Course CRN</label>
-                                                    <input type="text" name="courseCRN" placeholder="Course CRN" class="form-control">
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="courseTitle">Course Title</label>
-                                                        <input type="text" name="courseTitle" placeholder="e.g. The Science of Data Structures" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="professor">Professor</label>
-                                                    <select name="professor" class="selectpicker form-control all-professors">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="websiteURL">Website</label>
-                                                    <input type="url" name="websiteURL" placeholder="" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="startTime">Start Time</label>
-                                                    <input type="time" name="startTime" class="form-control">
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="endTime">End Time</label>
-                                                    <input type="time" name="endTime" class="form-control">
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="days">Days</label>
-                                                    <select name="days" class="selectpicker form-control" multiple>
-                                                        <option>Monday</option>
-                                                        <option>Tuesday</option>
-                                                        <option>Wednesday</option>
-                                                        <option>Thrusday</option>
-                                                        <option>Friday</option>
-                                                        <option>Saturday</option>
-                                                        <option>Sunday</option>
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <legend>Location</legend>
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="buildings">Building</label>
-                                                    <select name="buildings" class="selectpicker form-control buildings" placeholder="Building">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                                <div class="col-xs-4">
-                                                    <label class="control-label" for="rooms">Room</label>
-                                                    <select name="rooms" class="selectpicker form-control rooms" placeholder="Room">
-                                                    </select> <!-- End select -->
-                                                </div> <!-- End column -->
-                                            </div> <!-- End Row -->
-                                            <br>
-                                            <div class="row">
-                                                <div class="col-xs-4">
-                                                    <button id="updateCourseButton" type="submit"  name="newCourseButton" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Update</button>
-                                                </div> <!-- End column -->
-                                            </div> <!-- End row -->
-                                            <br>
-                                        </form> <!-- End form -->
-                                    </div> <!-- End tab-pane edit course -->
-                                </div> <!-- End tab-content manage courses -->
-                            </div>
-                            <!-- END tab-pane Manage Courses -->
+        // TODO normalize (multiple sessions at different times cannot be put)
+        if(count($sessions) != 0) {
+            $session = $sessions[0];
+        } else {
+            $session = SectionSession::emptySession();
+        }
+                        ?>
 
-                            <!-- BEGIN tab-pane Mange Positions -->
-                            <div class="tab-pane fade" id="managePositions">
-                                <form class="form-horizontal" method="post" action="#">
-                                    <div class="row">
-                                        <div class="col-xs-4">
-                                            <label class="control-label" for="course">Select Course</label>
-                                            <select name="course" class="selectpicker form-control courses">
-                                            </select> <!-- End select -->
-                                        </div> <!-- End column -->
-                                        <div class="col-xs-4" id="professorColumn">
-                                            <label class="control-label" for="professor">Select Professor</label>
-                                            <select name="professor" class="selectpicker form-control professors">
-                                            </select> <!-- End select -->
-                                        </div> <!-- End column -->
-                                    </div> <!-- End row -->
-                                </form> <!-- End form manage positions -->
-                                <div class="row">
-                                    <div class="col-xs-4">
-                                        <h3>Current Assistants</h3>
-                                    </div> <!-- End column -->
-                                </div> <!-- End row -->
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>First Name</th>
-                                                <th>Last Name</th>
-                                                <th>Email</th>
-                                                <th>Course</th>
-                                                <th>Type</th>
-                                                <th>GPA</th>
-                                                <th>Profile</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <!--TODO: Render each row dynamically using the Course and Professor -->
-                                            <tr>
-                                                <td>3</td>
-                                                <td>Jinze</td>
-                                                <td>Ahn</td>
-                                                <td>jan2@u.rochester.edu</td>
-                                                <td>CSC171</td>
-                                                <td>Lab TA</td>
-                                                <td>4.00</td>
-                                                <td>
-                                                    <button data-toggle="modal" data-target="#studentProfileModal" class="btn btn-default circle profile">
-                                                        <span class="glyphicon glyphicon-user"></span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    </div> <!-- End column -->
-                                </div> <!-- End row -->
-                                <div class="row">
-                                    <div class="col-xs-4">
-                                        <button id="addPositions" data-toggle="modal" data-target="#positionsModal" name="addPositions" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Positions</button>
-                                    </div> <!-- End column -->
-                                    <div class="col-xs-4">
-                                        <button id="removePositions" data-toggle="modal" data-target="#" name="removePositions" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Remove Positions</button>
-                                    </div> <!-- End column -->
-                                </div> <!-- End row -->
+                        <div class="panel panel-info coursePanel">
+                            <div class="panel-heading">
+                                <h2 class="panel-title" data-toggle="collapse" data-target="#<?=$section->getCRN()?>Panel"><?='['.$section->getSectionType().'] '.$section->getCourseDepartment().' '.$section->getCourseNumber()?><span class="hidden-xs"><?=': '.$section->getCourseTitle()?></span></h2>
                             </div>
-                        </div>    <!-- end tab-content -->
-                    </div> <!-- End termPanes -->
-                </div> <!-- End container -->
-<?php
+                            <div class="panel-collapse collapse in sectionPanel" id="<?=$section->getCRN()?>Panel">
+                                <div class="panel-body" >
+                                    <div class="container-fluid">
+                                        <form role="form" action="#" method="post" id="<?=$section->getCRN()?>Form" data-sectionType="<?=$section->getSectionType()?>">
+                                            <div class="row">
+                                                <h3>Course Info</h3><br />
+                                                <div class="col-xs-6 col-sm-2">
+                                                    CRN: <input type="text" class="form-control CRN" value="<?=$section->getCRN()?>"/>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-2">
+                                                    Course #: <input type="text" class="form-control courseNum" value="<?=$section->getCourseNumber()?>"/>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-4">
+                                                    Course Title: <input type="text" class="form-control courseTitle" value="<?=$section->getCourseTitle()?>"/>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-2">
+                                                    Building: <input type="text" class="form-control building" value="<?=$session->getPlaceBuilding()?>"/>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-2">
+                                                    Room: <input type="text" class="form-control room" value="<?=$session->getPlaceRoom()?>"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-4">
+                                                    Instructor: <input type="text" class="form-control instructor" value="<?=$profName?>"/>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-2">
+                                                    Day: <input type="text" class="form-control day" value="<?=$session->getWeekdays()?>"/>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-2">
+                                                    Start: <input type="text" class="form-control startTime" value="<?=$session->getStartTime()?>"/>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-2">
+                                                    End: <input type="text" class="form-control endTime" value="<?=$session->getEndTime()?>"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <h3>TA Counts</h3><br />
+                                                <div class="col-xs-2">
+                                                    Lab: <input type="text" class="form-control labTACount" value="<?=$labTACount?>"/>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    W<span class="hidden-xs hidden-sm">o</span>rksh<span class="hidden-xs hidden-sm">o</span>p: <input type="text" class="form-control wsTACount" value="<?=$wsTACount?>"/>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Super <span class="hidden-xs hidden-sm">Leader</span>: <input type="text" class="form-control wsslCount" value="<?=$wsslCount?>"/>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Lecture: <input type="text" class="form-control lecTACount" value="<?=$lecTACount?>"/>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Grader: <input type="text" class="form-control graderCount" value="<?=$graderCount?>"/>
+                                                </div>
+                                            </div> <br/>
+                                            <div class="row">
+                                                <div class="col-xs-4 col-sm-3 col-md-2">
+                                                    <button type="submit" value="Submit" class="form-control btn btn-success">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+    }
+                        ?>
+                    </div>
+                </div>
+                <?php
 }
-?>
+                ?>
             </div>
             <!-- END Page Content -->
 

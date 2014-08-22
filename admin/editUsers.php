@@ -47,7 +47,6 @@ function generate_major_options() {
         <script src="../js/jquery.min.js"></script>
         <script src="../js/bootstrap.min.js"></script>
         <script src="../js/tars_utilities.js"></script>
-        <script type="text/javascript" src="editUsers.js"></script>
     </head>
     <body>
         <!-- BEGIN page-wrapper -->
@@ -55,7 +54,7 @@ function generate_major_options() {
         <div id="page-wrapper">
 <?php
 // Display header for Manage
-$header_active = 'profile';
+$header_active = 'manage';
 require 'header.php';
 ?>
             <!-- BEGIN Page Content -->
@@ -206,6 +205,82 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
                                 </form> <!-- End form -->
+                                <form class="edit-profile-form" id="profileForm<?= STAFF ?>" data-usertype="<?= STAFF ?>">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="firstName">First Name</label>
+                                                <input id="firstName" type="text" class="form-control" name="firstName">
+                                            </div> <!-- End form-group -->
+                                        </div> <!-- End column -->
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="lastName">Last Name</label>
+                                                <input id="lastName" type="text" class="form-control" name="lastName">
+                                            </div> <!-- End form-group -->
+                                        </div>    <!-- End column -->
+                                    </div> <!-- End row -->
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="email">Email</label>
+                                                <input id="email" type="email" class="form-control" disabled="disabled" name="email">
+                                            </div> <!-- End form-group -->
+                                        </div>    <!-- End column -->
+                                    </div> <!-- End row -->
+                                    <legend>Office</legend>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="building">Building</label>
+                                                <input type="text" list="buildings-list" id="building" name="building" class="form-control">
+                                                <datalist id="buildings-list" class="buildings"></datalist>
+                                            </div> <!-- End form-group -->
+                                        </div> <!-- End column -->
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="room">Room</label>
+                                                <input type="text" list="rooms-list" id="room" name="room" class="form-control">
+                                                <datalist id="rooms-list" class="rooms"></datalist>
+                                            </div> <!-- End form-group -->
+                                        </div> <!-- End column -->
+                                    </div> <!-- End Row -->
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="officePhone">Office Phone</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">+1</span>
+                                                    <input type="tel" class="form-control"id="officePhone" name="officePhone" placeholder="Office Phone" maxlength="14" />
+                                                </div>
+                                            </div> <!-- End form-group -->
+                                        </div> <!-- End column -->
+                                    </div> <!-- End row -->
+                                </form> <!-- End form -->
+                                <form class="edit-profile-form" id="profileForm<?= ADMIN ?>" data-usertype="<?= ADMIN ?>">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="firstName">First Name</label>
+                                                <input id="firstName" type="text" class="form-control" name="firstName">
+                                            </div> <!-- End form-group -->
+                                        </div> <!-- End column -->
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="lastName">Last Name</label>
+                                                <input id="lastName" type="text" class="form-control" name="lastName">
+                                            </div> <!-- End form-group -->
+                                        </div>    <!-- End column -->
+                                    </div> <!-- End row -->
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="email">Email</label>
+                                                <input id="email" type="email" class="form-control" disabled="disabled" name="email">
+                                            </div> <!-- End form-group -->
+                                        </div>    <!-- End column -->
+                                    </div> <!-- End row -->
+                                </form> <!-- End form -->
                             </div> <!-- End modal-body -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -222,28 +297,38 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                     <div class="panel-body">
                         <form class="form-horizontal search-users-form" novalidate="novalidate" role="form" id="userSearchForm">
                             <div class="row">
-                                <div class="col-xs-3">
+                                <div class="col-xs-12 col-sm-6 col-md-3">
                                     <label class="control-label" for="emailSearch">Email</label>
                                     <input id="emailSearch" type="email" class="form-control" name="emailSearch" placeholder="Email">
                                 </div> <!-- End column -->
-                                <div class="col-xs-3">
+                                <div class="col-xs-12 col-sm-6 col-md-3">
                                     <label class="control-label" for="fN">First Name</label>
                                     <input id="fN" type="text" class="form-control" name="fN" placeholder="First Name">
                                 </div> <!-- End column -->
-                                <div class="col-xs-3">
+                                <div class="col-xs-12 col-sm-6 col-md-3">
                                     <label class="control-label" for="lN">Last Name</label>
                                     <input id="lN" type="text" class="form-control" name="lN" placeholder="Last Name">
                                 </div> <!-- End column -->
+                                <div class="col-xs-12 col-sm-6 col-md-3">
+                                    <label class="control-label" for="classYear">Class Year</label>
+                                    <input id="classYear" type="text" class="form-control" name="classYear" placeholder="e.g. 2016">
+                                </div>
                             </div> <!-- End row -->
                             <br/>
                             <div class="row">
                                 <div class="col-xs-3">
                                     <div class="btn-group" data-toggle="buttons">
                                         <label class="btn btn-primary active">
-                                            <input type="radio" value="<?= STUDENT ?>" name="userType" checked> Students
+                                            <input type="checkbox" value="<?= STUDENT ?>" name="userType<?= STUDENT ?>" checked> Students
                                         </label>
                                         <label class="btn btn-primary">
-                                            <input type="radio" value="<?= PROFESSOR ?>" name="userType"> Professors
+                                            <input type="checkbox" value="<?= PROFESSOR ?>" name="userType<?= PROFESSOR ?>"> Professors
+                                        </label>
+                                        <label class="btn btn-primary">
+                                            <input type="checkbox" value="<?= STAFF ?>" name="userType<?= STAFF ?>"> Staff
+                                        </label>
+                                        <label class="btn btn-primary">
+                                            <input type="checkbox" value="<?= ADMIN ?>" name="userType<?= ADMIN ?>"> Admins
                                         </label>
                                     </div>
                                 </div> <!-- End column -->
@@ -259,13 +344,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                         <!-- End Pagination -->
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-striped user-search-table">
+                                <table class="table table-striped user-search-table" id="results">
                                     <thead>
                                         <tr>
-                                            <th>First Name</th><th>Last Name</th><th>email</th><th>Profile</th>
+                                            <th>First Name</th><th>Last Name</th><th>E-mail</th><th id="classYearHeader">Class Year</th><th>Profile</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="results">
+                                    <tbody>
                                     </tbody>
                                 </table> <!-- End table table-striped -->
                             </div> <!-- End column -->

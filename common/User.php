@@ -80,14 +80,14 @@ abstract class User {
         return null;
     }
 
-    public static function findUsers($email, $firstName, $lastName, $check_type = -1, $classYear = null, $pg) {
+    public static function findUsers($email, $firstName, $lastName, $pg, $check_type = -1, $classYear = null) {
         $sql = 'SELECT Users.userID, email, password, passwordReset, emailVerified, type, firstName, lastName, creatorID, createTime FROM Users ';
-        if ($check_type == STUDENT) {
-            $sql .= 'INNER JOIN Students ON Users.userID = Students.userID ';
+        if ($check_type & STUDENT) {
+            $sql .= 'LEFT JOIN Students ON Users.userID = Students.userID ';
         }
         $sql .= 'WHERE ';
         $args = array();
-        if ($check_type == STUDENT && !empty($classYear)) {
+        if (($check_type & STUDENT) && !empty($classYear)) {
             $sql .= 'classYear = :classYear AND ';
             $args[':classYear'] = $classYear;
         }
@@ -108,7 +108,7 @@ abstract class User {
             $sql .= '(type & :type) != 0 AND ';
             $args[':type'] = $check_type;
         }
-        $sql .= '1 ORDER BY lastName DESC, firstName DESC';
+        $sql .= '1';
         return Database::executeGetPage($sql, $args, $pg, function($row) {return User::getUserSubclassObject($row);});
     }
 

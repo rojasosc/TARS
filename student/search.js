@@ -62,7 +62,7 @@ $(document).ready(function() {
             termID: $('#term').val(),
             typeID: $('#type').val()
         };
-        doPaginatedAction('fetchPositions', data, function(data) {
+        doPaginatedAction('findPositions', data, function(data) {
             if (data.success) {
                 if (data.pg) {
                     handlePagination(data.pg, $('.pagination'));

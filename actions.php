@@ -358,7 +358,7 @@ final class Action {
         return null;
     }
 
-    public static function fetchPositions($params, $student, &$eventObjectID) {
+    public static function findPositions($params, $student, &$eventObjectID) {
         $q = isset($params['q']) ? $params['q'] : '';
         $termID = $params['termID'];
         $typeID = $params['typeID'];
@@ -921,7 +921,7 @@ final class Action {
     //        If the value is an array, the object contains "objects": array
     //            Assumes the array only contains objects
     //            The objects MUST have a toArray() function.
-    //            EXAMPLE USE CASES: fetchApplications, fetchPositions, fetchUsers, fetchBuildings, fetchRooms
+    //            EXAMPLE USE CASES: findApplications, findPositions, findUsers, findEvents, fetchBuildings, fetchRooms
     //        If the value is a string, an ERROR_ACTION is produced with the given string
     //            USE CASE: the given positionID doesn't exist or was not provided
     //
@@ -1064,7 +1064,7 @@ final class Action {
             'noSession' => true, 'eventLog' => 'always',
             'eventDescr' => '%s requested a password reset.',
             'eventDescrArg' => 'refparam', 'params' => array('email')),
-        // Action:           fetchPositions
+        // Action:           findPositions
         // Session required: STUDENT
         // Parameters:
         //     q: Plain text query string
@@ -1078,7 +1078,7 @@ final class Action {
         //     pg.index: Actual page index
         //     pg.total: Total number of pages (if requested)
         //     success and error: Action status
-        'fetchPositions' => array('event' => Event::USER_GET_VIEW, 'userType' => STUDENT,
+        'findPositions' => array('event' => Event::USER_GET_VIEW, 'userType' => STUDENT,
             'eventDescr' => '%s searched for positions.',
             'params' => array(
                 'q' => array('type'=>Action::VALIDATE_NOTEMPTY,'optional'=>true),

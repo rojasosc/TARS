@@ -11,16 +11,16 @@ function encode_csv_field($string) {
     return $string;
 }
 try {
-	$currentTermID = Configuration::get(Configuration::CURRENT_TERM);
-	if($currentTermID) {
-		$term = Term::getTermByID($currentTermID);
-		if($term) {
-			$fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.csv";
-			$assistants = Application::findApplications(null, null, null, $term, APPROVED, 'pay');
-		}
-	}
+    $currentTermID = Configuration::get(Configuration::CURRENT_TERM);
+    if($currentTermID) {
+        $term = Term::getTermByID($currentTermID);
+        if($term) {
+            $fileName = "payroll-{$term->getYear()}-{$term->getSemester()}.csv";
+            $assistants = Application::findApplications(null, null, null, $term, APPROVED, 'pay');
+        }
+    }
 } catch (PDOException $ex) {
-	//TODO: Error Handling
+    //TODO: Error Handling
 }
 
 
@@ -34,24 +34,24 @@ echo 'University ID,First Name,Last Name,Email,CRN,Type,Class Year,Compensation,
 
 /* Insert each position into the spreadsheet */
 foreach($assistants as $assistant){
-	$student = $assistant->getCreator();
-	$position = $assistant->getPosition();
-	$section = $position->getSection();
+    $student = $assistant->getCreator();
+    $position = $assistant->getPosition();
+    $section = $position->getSection();
 
-	/* Column values */
-	$universityID = $student->getUniversityID();
-	$firstName = $student->getFirstName();
-	$lastName = $student->getLastName();
-	$email = $student->getEmail();
-	$crn = $section->getCRN();
-	$type = $position->getTypeTitle();
-	$classYear = $student->getClassYear();
-	$compensation = $assistant->getCompensation();
+    /* Column values */
+    $universityID = $student->getUniversityID();
+    $firstName = $student->getFirstName();
+    $lastName = $student->getLastName();
+    $email = $student->getEmail();
+    $crn = $section->getCRN();
+    $type = $position->getTypeTitle();
+    $classYear = $student->getClassYear();
+    $compensation = $assistant->getCompensation();
 
-	/* Echo each column value */
-	echo implode(',',
-		array_map(function ($field) {
-			return encode_csv_field($field);
-		}, array($universityID, $firstName, $lastName, $email, $crn, $type, $classYear, $compensation,'')))."\r\n";
+    /* Echo each column value */
+    echo implode(',',
+        array_map(function ($field) {
+            return encode_csv_field($field);
+        }, array($universityID, $firstName, $lastName, $email, $crn, $type, $classYear, $compensation,'')))."\r\n";
 }
 

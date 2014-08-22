@@ -134,9 +134,7 @@ final class Term {
 					}
 				}
 			}
-
-			Configuration::set(Configuration::CURRENT_TERM, $termID,
-				$creator, $createTime);
+			Configuration::set(Configuration::CURRENT_TERM, $termID, $creator, $createTime);
 		} catch (PDOException $ex) {
 			throw $ex;
 		}

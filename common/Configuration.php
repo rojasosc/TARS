@@ -47,7 +47,7 @@ final class Configuration {
 	}
 
 	public static function set($key, $value, $user, $time) {
-		return Configuration::setMultiple(array($key, $value), $user, $time);
+		return Configuration::setMultiple(array($key => $value), $user, $time);
 	}
 
 	public static function setMultiple($configSet, $user, $time) {

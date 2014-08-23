@@ -87,7 +87,7 @@ final class Event {
     public static function getEventTypeNameInDatabase($event_type_id) {
         Event::cacheEventTypeRows();
         foreach (Event::$eventTypeRows as $row) {
-            if ($row['eventTypeID'] === $event_type_id) {
+            if (intval($row['eventTypeID']) === $event_type_id) {
                 return $row['eventName'];
             }
         }
@@ -203,10 +203,10 @@ final class Event {
                 LEFT JOIN Users ON Users.userID = Events.creatorID
                 WHERE ';
         $args = array();
-        //if (!empty($userFilter) && strlen($userFilter) > 0) {
-        //    $sql .= '(INSTR(Users.email, :user) OR INSTR(CONCAT(Users.firstName, \' \', Users.lastName), :user)) AND ';
-        //    $args[':user'] = $userFilter;
-        //}
+        if (!empty($userFilter) && strlen($userFilter) > 0) {
+            $sql .= '(INSTR(Users.email, :user) > 0 OR INSTR(CONCAT_WS(\' \', Users.firstName, Users.lastName), :user) > 0) AND ';
+            $args[':user'] = $userFilter;
+        }
 
         // severity filter:
         $sql .= '(';
@@ -285,7 +285,7 @@ final class Event {
             $creator = $this->getCreator();
             $data['object'] = $object === null ? null : $object;
             $data['creator'] = $creator === null ? null : $creator->toArray(false);
-            $data['createTime'] = date('g:i:sa \o\n Y/m/d', $this->createTime);
+            $data['createTime'] = date('Y-m-d j:i:s', $this->createTime);
             $data['creatorIP'] = $this->creatorIP;
         }
         return $data;

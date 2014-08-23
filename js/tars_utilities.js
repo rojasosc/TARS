@@ -576,7 +576,7 @@ function searchUsers() {
 function filterEvents() {
     clearError($('#alertHolder'));
     var input = {
-        userFilter: $("[name='user']", $filterEventsForm).is(':checked'),
+        userFilter: $("[name='user']", $filterEventsForm).val(),
         sevCrit: $("[name='sevCrit']", $filterEventsForm).is(':checked'),
         sevError: $("[name='sevError']", $filterEventsForm).is(':checked'),
         sevNotice: $("[name='sevNotice']", $filterEventsForm).is(':checked'),
@@ -628,7 +628,7 @@ function filterEvents() {
                             if (eventObj.creator === null) {
                                 tr.append('<td><em>not logged in</em></tr>');
                             } else {
-                                tr.append($('<td/>').text(eventObj.creator.firstName + ' ' + eventObj.creator.lastName));
+                                tr.append($('<td/>').text(eventObj.creator.firstName + ' ' + eventObj.creator.lastName + ' (' + eventObj.creator.email + ')'));
                             }
                             tr.append($('<td/>').text(eventObj.creatorIP));
                             tr.append($('<td style="text-align:left"/>').html('<span class="glyphicon glyphicon-' + icon + '" style="color: ' + color + '" title="' + $.encode(eventObj.severity) + '"></span> ' + $.encode(eventObj.type)));

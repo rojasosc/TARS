@@ -8,17 +8,15 @@
 
 -- update configurations table
 ALTER TABLE `Configurations`
-MODIFY `creatorID` bigint(20) NOT NULL DEFAULT 1; -- for old schemas: default hopefully root
-ALTER TABLE `Configurations`
-MODIFY `emailName` varchar(64) NOT NULL DEFAULT 'no-reply' AFTER `adminCreated`;
-ALTER TABLE `Configurations`
-MODIFY `enableSendEmail` boolean NOT NULL DEFAULT 0 AFTER `enableLogin`; -- for old schemas: default off
-ALTER TABLE `Configurations`
-MODIFY `bugReportUser` bigint(20) NOT NULL DEFAULT 1 AFTER `currentTerm`; -- for old schemas: default hopefully root
-ALTER TABLE `Configurations`
-ADD FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`);
-ALTER TABLE `Configurations`
+MODIFY `creatorID` bigint(20) NOT NULL DEFAULT 1, -- for old schemas: default hopefully root
+MODIFY `emailName` varchar(64) NOT NULL DEFAULT 'no-reply' AFTER `adminCreated`,
+MODIFY `enableSendEmail` boolean NOT NULL DEFAULT 0 AFTER `enableLogin`, -- for old schemas: default off
+MODIFY `bugReportUser` bigint(20) NOT NULL DEFAULT 1 AFTER `currentTerm`, -- for old schemas: default hopefully root
+ADD FOREIGN KEY (`creatorID`) REFERENCES `Users` (`userID`),
 ADD FOREIGN KEY (`bugReportUser`) REFERENCES `Users` (`userID`);
+
+-- fix IPv4 storage
+ALTER TABLE `Events` MODIFY `creatorIP` varbinary(16) NOT NULL;
 
 -- update old Users.types
 UPDATE `Users`

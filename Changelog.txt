@@ -5,6 +5,28 @@ CHANGELOG
 ================================================================
 ================================
 ********************************
+Publish v0.9.0
+********************************
+================================
+Date: 22 August, 2014
+
+===General===
+Completed a lot of the deployment/setup stuff, as well as XSS-protection
+This should be the last version to require running init.sql (upgrade-#-to-#.sql after now will be tested)
+index.php: Bug Reporting now works (uses the Notification system)
+Extensive XSS patches
+===Student===
+===Professor===
+===Staff===
+Edit Term page (WIP)
+===Admin===
+The setup step page (pre-Configuration) should now work, uses the local domain, port, and path as defaults
+Admin now has pages!
+They are the Staff pages, plus Review/Events (WIP), and Edit/Config (NYI)
+
+
+================================
+********************************
 Publish v0.8.1
 ********************************
 ================================

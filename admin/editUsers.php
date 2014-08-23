@@ -148,10 +148,24 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label class="control-label" for="aboutMe">Qualifications and TA-ing History</label>
-                                                <textarea id="aboutMe" name="aboutMe" class="form-control"></textarea>
+                                                <textarea id="aboutMe" name="aboutMe" class="form-control" rows="5"></textarea>
                                             </div> <!-- End form-group -->
                                         </div> <!-- End column -->
                                     </div> <!-- End Row -->
+                                    <legend>Account Management</legend>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <label class="control-label" for="enable-disable-account">Enable/Disable Account</label>
+                                            <br>
+                                            <div class="btn-group enable-disable-account" data-toggle="buttons" name="enable-disable-account">
+                                                <label class="btn btn-primary active">
+                                                    <input type="radio" value="enable" name="accStatus<?= STUDENT ?>" checked> Enabled </label>
+                                                <label class="btn btn-primary">
+                                                    <input type="radio" value="disable" name="accStatus<?= STUDENT ?>"> Disabled
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form> <!-- End form -->
                                 <form class="edit-profile-form" id="profileForm<?= PROFESSOR ?>" data-usertype="<?= PROFESSOR ?>">
                                     <div class="row">
@@ -204,6 +218,20 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                             </div> <!-- End form-group -->
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
+                                    <legend>Account Management</legend>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <label class="control-label" for="enable-disable-account">Enable/Disable Account</label>
+                                            <br>
+                                            <div class="btn-group enable-disable-account" data-toggle="buttons" name="enable-disable-account">
+                                                <label class="btn btn-primary active">
+                                                    <input type="radio" value="enable" name="accStatus<?= PROFESSOR ?>" checked> Enabled </label>
+                                                <label class="btn btn-primary">
+                                                    <input type="radio" value="disable" name="accStatus<?= PROFESSOR ?>"> Disabled
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form> <!-- End form -->
                                 <form class="edit-profile-form" id="profileForm<?= STAFF ?>" data-usertype="<?= STAFF ?>">
                                     <div class="row">

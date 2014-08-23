@@ -125,7 +125,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                     foreach($courses as $course) {
                         $sections = $professor->getSectionsByCourseID($course['courseID']);
                         $applications = Application::getApplicationsByCourseID($course['courseID'],$professor);
-                        $panelHeading = "$course[department] $course[courseNumber] $course[courseTitle]");
+                        $panelHeading = "$course[department] $course[courseNumber] $course[courseTitle]";
                         $panelID = "course$course[courseNumber]";
                         ?>
                         <div class="panel panel-primary">

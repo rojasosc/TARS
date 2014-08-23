@@ -41,7 +41,7 @@ try {
                 </div> <!-- End modal-header -->
                 <div class="modal-body">
                     <div id="editProfileAlertHolder"></div>
-                    <form class="edit-profile-form" id="profileForm<?= STAFF ?>" data-usertype="<?= STAFF ?>">
+                    <form class="edit-profile-form" id="profileForm<?= ADMIN ?>" data-usertype="<?= ADMIN ?>">
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
@@ -86,7 +86,7 @@ try {
                 </div> <!-- End modal-header -->
                 <div class="modal-body">
                     <div id="editPasswordAlertHolder"></div>
-                    <form class="change-password-form" id="change-password-form" data-userid="<?= $staff->getID() ?>" data-usertype="<?= STAFF ?>">
+                    <form class="change-password-form" id="change-password-form" data-userid="<?= $staff->getID() ?>" data-usertype="<?= ADMIN ?>">
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
@@ -154,23 +154,23 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                     <legend>Personal Details</legend>
                                     <div class="row">
                                         <div class="col-xs-6">
-                                        First Name: <strong id="cur-firstName"><?= $staff->getFirstName() ?></strong>
+                                        First Name: <strong id="cur-firstName"><?= htmlentities($staff->getFirstName()) ?></strong>
                                         </div> <!-- End column -->
                                         <div class="col-xs-6">
-                                        Last Name: <strong id="cur-lastName"><?= $staff->getLastName() ?></strong>
+                                        Last Name: <strong id="cur-lastName"><?= htmlentities($staff->getLastName()) ?></strong>
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
                                     <br>
                                     <div class="row">
                                         <div class="col-xs-6">
-                                        Email: <strong id="cur-email"><?= $staff->getEmail() ?></strong>
+                                        Email: <strong id="cur-email"><?= htmlentities($staff->getEmail()) ?></strong>
                                         </div> <!-- End column -->
                                     </div> <!-- End row -->
                                 </div> <!-- End column -->
                             </div>    <!-- End Row -->
                         </div> <!-- End panel-body -->
                         <div class="panel-footer">
-                            <button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= STAFF ?>" data-userid="<?= $staff->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
+                            <button data-target="#profile-modal" data-toggle="modal" data-usertype="<?= ADMIN ?>" data-userid="<?= $staff->getID() ?>" name="editProfileButton" class="btn btn-success edit-profile"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</button>
                             <button data-target="#password-modal" data-toggle="modal" data-userid="<?= $staff->getID() ?>" id="changePasswordButton" name="changePasswordButton" class="btn btn-danger change-password"><span class="glyphicon glyphicon-wrench"></span> Change Password</button>
                         </div> <!-- End panel-footer -->
                     </div> <!-- End panel panel-primary -->

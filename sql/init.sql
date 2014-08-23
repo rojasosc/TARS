@@ -448,7 +448,7 @@ CREATE TABLE IF NOT EXISTS `Events` (
   `objectID` bigint(20) NULL,
   `creatorID` bigint(20) NULL,
   `createTime` timestamp NOT NULL,
-  `creatorIP` binary(16) NOT NULL, -- support ipv6, just in case
+  `creatorIP` varbinary(16) NOT NULL, -- support ipv6, just in case
 
   PRIMARY KEY (`eventID`),
   FOREIGN KEY (`eventTypeID`) REFERENCES `EventTypes` (`eventTypeID`),

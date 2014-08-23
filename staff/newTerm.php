@@ -79,7 +79,7 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
 <?php
 $termSemesters = Term::getAllTermSemesters();
 foreach ($termSemesters as $termSemester) {
-    echo "<option value=\"$termSemester\">".ucfirst($termSemester).'</option>';
+    echo "<option value=\"$termSemester\">".htmlentities(ucfirst($termSemester)).'</option>';
 }
 ?>
                                         </select> <!-- End select -->

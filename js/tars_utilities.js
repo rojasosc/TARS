@@ -5,6 +5,9 @@ window.ADMIN = 8;
 window.actionsUrl = "../actions.php";
 
 $(document).ready(function() {
+    // make $.encode() == encode entities here
+    $.encode = function (rawText) { return $('<div/>').text(rawText).html(); };
+
     if ($(".search-users-form").length) {
         $userSearchForm = $(".search-users-form");
         $userSearchForm.on('submit', function(event) {
@@ -53,7 +56,6 @@ $(document).ready(function() {
         if ($(".profile").length) {
             $userModal = $(".profile-modal");
             if ($(".qualifications").length) {
-                $qualifications = $(".qualifications");
                 $(".profile").on('click', injectQualifications);
             }
         }
@@ -146,11 +148,18 @@ $(document).ready(function() {
         $(".pagination").on('click', 'a', function(event) {
             event.preventDefault();
             if (!$(this).parent().hasClass('active')) {
-                data = $pgData;
+                var data = $pgData;
+                var action = $pgAction;
                 data.pgIndex = $(this).data('target');
-                data.pgLength = 10; // XXX here is the number of rows per page requested
+                data.pgLength = $pgLength;
                 data.pgGetTotal = false;
-                doAction($pgAction, data).done($pgAjaxDone).fail($pgAjaxFail);
+                var deferred = doAction(action, data);
+                if ($pgAjaxDone !== null) {
+                    deferred.done($pgAjaxDone);
+                }
+                if ($pgAjaxFail !== null) {
+                    deferred.fail($pgAjaxFail);
+                }
             }
         });
     }
@@ -166,13 +175,14 @@ $(document).ready(function() {
                 type: $("[name='typeFilter']", $filterSectionsForm).val(),
                 status: $("input[type='radio']:checked", $filterSectionsForm).val()
             };
-            doPaginatedAction('fetchSections', input, function(data) {
+            doPaginatedAction('fetchSections', input, {length: 10}).done(
+                function(data) {
                     if (data.success) {
                         alert('data success');
-                        if (data.pg) {
+                        if ('pg' in data) {
                             handlePagination(data.pg, $('.pagination'));
                         }
-                        if (data.objects) {
+                        if ('objects' in data) {
                             alert('data objectsd');
                             alert(JSON.stringify(data.objects));
                             if (data.objects.length == 0) {
@@ -180,6 +190,7 @@ $(document).ready(function() {
                                 $('#results').html('<em>No results</em>');
                             } else {
                                 $('thead tr').show();
+                                // TODO $.encode
                                 var resultHTML = [];
                                 for (var key in data.objects) {
                                     var section = data.objects[key];
@@ -244,7 +255,7 @@ $(document).ready(function() {
                     } else {
                         showError(data.error, $('#alertHolder'));
                     }
-                },
+                }).fail(
                 function(jqXHR, textStatus, errorMessage) {
                     showError({
                         message: errorMessage
@@ -253,41 +264,81 @@ $(document).ready(function() {
         });
         $('#fetchSectionsForm').trigger('submit');
     }
-    if ($("#application-table").length) {
-        $appView = $("#application-table");
+    if ($(".applications-review-table").length) {
         viewApplications();
+        $(".applications-review-table").on('click', '.profile', function (event) {
+            viewUserProfile.call(this);
+            injectQualifications.call(this);
+        });
+        $(".applications-review-table").on('click', '.comments', viewUserComments);
+        $(".applications-review-table").on('click', '.comment', prepareCommentModal);
+        $("#submitCommentButton").on('click', submitComment);
     }
 });
 
-function doPaginatedAction(action, data, ajaxDone, ajaxFail) {
-    var sameQuery = true;
-    if (typeof $pgData != 'undefined') {
-        for (var key in data) {
-            if ($pgData[key] != data[key]) {
-                sameQuery = false;
-            }
-        }
-    } else {
-        sameQuery = false;
-    }
+function doPaginatedAction(action, data, pg) {
     $pgAction = action;
     $pgData = data;
-    $pgAjaxDone = ajaxDone;
-    $pgAjaxFail = ajaxFail;
-    data.pgIndex = 1;
-    data.pgLength = 10; // XXX: here is the number of rows per page requested
-    data.pgGetTotal = !sameQuery;
-    return doAction($pgAction, data).done(ajaxDone).fail(ajaxFail);
+    // set these options by passing in {index:#, length:#, getPage:bool} into 3rd arg
+    $pgIndex = 1;
+    $pgLength = 20; // here is the default number of rows per page requested
+    $pgGetTotal = true;
+    if ('index' in pg) {
+        $pgIndex = pg.index;
+    }
+    if ('length' in pg) {
+        $pgLength = pg.length;
+    }
+    if ('getTotal' in pg) {
+        $pgGetTotal = pg.getTotal;
+    }
+    data.pgIndex = $pgIndex;
+    data.pgLength = $pgLength;
+    data.pgGetTotal = $pgGetTotal;
+
+    // reterns the skeleton of a "fake" deferred object that wraps the real
+    // callbacks for doAction... so that you get the illusion that:
+    // doAction() == doPaginatedAction() throughout the app
+    $pgDeferred = doAction(action, data);
+    $pgAjaxDone = null;
+    $pgAjaxFail = null;
+    return {
+        done: function (handler) {
+            $pgAjaxDone = handler;
+            $pgDeferred.done(handler);
+            return this;
+        },
+        fail: function (handler) {
+            $pgAjaxFail = handler;
+            $pgDeferred.fail(handler);
+            return this;
+        }
+    };
 }
 
+// takes in the pg object returned by pagination-enabled actions
+// and displays/updates the given DOM element(s) with a page-changer
+// in the correct state
 function handlePagination(pg, listDOM) {
-    if (pg.getTotal) {
+    // store pg.total (if requested) for rendering page changer, code below
+    if ('getTotal' in pg && pg.getTotal) {
         $pgTotal = pg.total;
     }
+    // store pg.length for future page requests
+    if ('length' in pg && pg.length > 0) {
+        $pgLength = parseInt(pg.length);
+    }
+    if ('index' in pg) {
+        $pgIndex = parseInt(pg.index);
+    } else {
+        $pgIndex = 1;
+    }
     //console.log(pg);
+    // pages is an array of objects representing the page-changer elements to render
     var pages = [];
     if ($pgTotal > 1) {
-        if (pg.index > 4) {
+        // if there'll be 5+ pages to the left, render a First Page element
+        if ($pgIndex > 4) {
             pages.push({
                 target: 1,
                 title: 'First Page',
@@ -295,17 +346,19 @@ function handlePagination(pg, listDOM) {
                 active: false
             });
         }
-        for (var i = Math.max(1, pg.index - 3); i <= Math.min($pgTotal, pg.index + 3); i++) {
+        // foreach page (-3,-2,-1,[0],1,2,3), render an element
+        for (var i = Math.max(1, $pgIndex - 3); i <= Math.min($pgTotal, $pgIndex + 3); i++) {
             pages.push({
-                target: i,
+                target: i.toString(),
                 title: 'Page ' + i.toString(),
                 text: i.toString(),
-                active: i == pg.index
+                active: i === $pgIndex
             });
         }
-        if (pg.index + 3 < $pgTotal) {
+        // if there'll be 5+ pages to the right, render a Last Page element
+        if ($pgIndex + 3 < $pgTotal) {
             pages.push({
-                target: $pgTotal,
+                target: $pgTotal.toString(),
                 title: 'Last Page',
                 text: '&raquo;',
                 active: false
@@ -313,15 +366,16 @@ function handlePagination(pg, listDOM) {
         }
     }
 
-    var html = '';
+    // render the page-changer in the specified element's HTML
+    var html = [];
     for (var idx in pages) {
         var active = '';
         if (pages[idx].active) {
             active = ' class="active"';
         }
-        html += '<li' + active + '><a href="#" title="' + pages[idx].title + '" data-target="' + pages[idx].target + '">' + pages[idx].text + '</a></li>';
+        html.push('<li' + active + '><a href="#" title="' + pages[idx].title + '" data-target="' + pages[idx].target + '">' + pages[idx].text + '</a></li>');
     }
-    listDOM.html(html);
+    listDOM.html(html.join(''));
 }
 
 function doAction(action, params, altUrl) {
@@ -384,9 +438,8 @@ function showAlert(alertObj, element, level) {
                 break;
         }
     }
-    element.hide();
-    element.html('<div class="alert alert-' + level + '"><strong>' + alertObj.title + '!</strong> ' + alertObj.message + '</div>');
-    element.fadeIn('slow');
+    element.html('<div class="alert alert-' + $.encode(level) + '"><strong>' + $.encode(alertObj.title) + '!</strong> ' + $.encode(alertObj.message) + '</div>');
+    element.children().hide().fadeIn('slow');
 }
 
 function submitDecision() {
@@ -416,7 +469,7 @@ function injectQualifications() {
         appID: $(this).data('appid')
     }).done(function(data) {
         if (data.success) {
-            $qualifications.html(data.object.qualifications);
+            $('.qualifications').text(data.object.qualifications);
         } else {
             showError(data.error, $('#profileAlertHolder'));
         }
@@ -436,11 +489,11 @@ function viewUserComments() {
             var comments = data.objects;
             for (var i = comments.length - 1; i >= 0; i--) {
                 $comment = comments[i];
-                $commentsBlock.append("<p class='commentDate'>" + $comment.createTime + "</p><blockquote><p class='commentContent'>" +
-                    $comment.comment + "</p><footer>" + $comment.creator.firstName + ' ' + $comment.creator.lastName + "</footer></blockquote></div><!-- End column --></div> <!-- End row --><br>");
+                $commentsBlock.append("<p class='commentDate'>" + $.encode($comment.createTime) + "</p><blockquote><p class='commentContent'>" +
+                    $.encode($comment.comment) + "</p><footer>" + $.encode($comment.creator.firstName + ' ' + $comment.creator.lastName) + "</footer></blockquote></div><!-- End column --></div> <!-- End row --><br>");
             }
             if (!comments.length) {
-                $commentsBlock.html("There are no reviews available for this student.");
+                $commentsBlock.html("<em>There are no reviews available for this student.</em>");
             }
         } else {
             showError(data.error, $('#commentsAlertHolder'));
@@ -451,7 +504,7 @@ function viewUserComments() {
         }, $('#commentsAlertHolder'));
     });
     $commentsModal.bind("hidden.bs.modal", function() {
-        $commentsBlock.html("");
+        $commentsBlock.text("");
     });
 }
 
@@ -470,13 +523,13 @@ function searchUsers() {
             return total;
         })()
     };
-    doPaginatedAction('findUsers', input,
+    doPaginatedAction('findUsers', input, {length: 15}).done(
         function(data) {
             if (data.success) {
-                if (data.pg) {
+                if ('pg' in data) {
                     handlePagination(data.pg, $('.pagination'));
                 }
-                if (data.objects) {
+                if ('objects' in data) {
                     if (data.objects.length === 0) {
                         $('#results thead tr').hide();
                         $('#results tbody').html('<em>No results</em>');
@@ -494,7 +547,6 @@ function searchUsers() {
                         for (var i = 0; i < data.objects.length; i++) {
                             var userObj = data.objects[i];
                             var tr = $('<tr/>');
-                            tr.append($('<td class="hidden"/>').text(userObj.id));
                             tr.append($('<td/>').text(userObj.firstName));
                             tr.append($('<td/>').text(userObj.lastName));
                             tr.append($('<td/>').text(userObj.email));
@@ -504,7 +556,7 @@ function searchUsers() {
                                 tr.append($('<td class="' + classYearClass + '"/>').text(userObj.classYear));
                             }
                             tr.append('<td><button data-toggle="modal" data-target="#profile-modal" class="btn btn-default edit-profile circle" data-userid="' +
-                                userObj.id + '" data-usertype="' + userObj.type + '"><span class="glyphicon glyphicon-wrench"></span></button></td>');
+                                $.encode(userObj.id) + '" data-usertype="' + $.encode(userObj.type) + '"><span class="glyphicon glyphicon-wrench"></span></button></td>');
                             output.push(tr[0].outerHTML);
                         }
                         $('#results tbody').html(output.join(''));
@@ -513,7 +565,7 @@ function searchUsers() {
             } else {
                 showError(data.error, $('#alertHolder'));
             }
-        },
+        }).fail(
         function(jqXHR, textStatus, errorMessage) {
             showError({
                 message: errorMessage
@@ -531,13 +583,13 @@ function filterEvents() {
         sevInfo: $("[name='sevInfo']", $filterEventsForm).is(':checked'),
         sevDebug: $("[name='sevDebug']", $filterEventsForm).is(':checked')
     };
-    doPaginatedAction('findEvents', input,
+    doPaginatedAction('findEvents', input, {length: 25}).done(
         function(data) {
             if (data.success) {
-                if (data.pg) {
+                if ('pg' in data) {
                     handlePagination(data.pg, $('.pagination'));
                 }
-                if (data.objects) {
+                if ('objects' in data) {
                     if (data.objects.length === 0) {
                         $('#results thead tr').hide();
                         $('#results tbody').html('<em>No results</em>');
@@ -572,7 +624,6 @@ function filterEvents() {
 
                             }
                             var tr = $('<tr/>');
-                            tr.append($('<td class="hidden"/>').text(eventObj.id));
                             tr.append($('<td/>').text(eventObj.createTime));
                             if (eventObj.creator === null) {
                                 tr.append('<td><em>not logged in</em></tr>');
@@ -580,7 +631,7 @@ function filterEvents() {
                                 tr.append($('<td/>').text(eventObj.creator.firstName + ' ' + eventObj.creator.lastName));
                             }
                             tr.append($('<td/>').text(eventObj.creatorIP));
-                            tr.append($('<td style="text-align:left"/>').html('<span class="glyphicon glyphicon-' + icon + '" style="color: ' + color + '" title="' + eventObj.severity + '"></span> ' + $('<span/>').text(eventObj.type).text()));
+                            tr.append($('<td style="text-align:left"/>').html('<span class="glyphicon glyphicon-' + icon + '" style="color: ' + color + '" title="' + $.encode(eventObj.severity) + '"></span> ' + $.encode(eventObj.type)));
                             tr.append($('<td/>').text(eventObj.description));
                             tr.append($('<td/>').text(eventObj.objectType + ': ' + eventObj.object));
                             output += tr[0].outerHTML;
@@ -591,7 +642,7 @@ function filterEvents() {
             } else {
                 showError(data.error, $('#alertHolder'));
             }
-        },
+        }).fail(
         function(jqXHR, textStatus, errorMessage) {
             showError({
                 message: errorMessage
@@ -601,78 +652,64 @@ function filterEvents() {
 
 function viewApplications() {
     clearError($('#alertHolder'));
-    doPaginatedAction('fetchTermApplications', {
-            appStatus: 0,
-            termID: 1
-        },
+    var input = { appStatus: 0, termID: 1};
+    doPaginatedAction('fetchTermApplications', input, {length: 15}).done(
         function(data) {
             if (data.success) {
-                if (data.pg) {
+                if ('pg' in data) {
                     handlePagination(data.pg, $(".pagination"));
                 }
-                if (data.objects) {
-                    $appView.find("tbody").html("");
-                    var applications = data.objects;
-                    for (var key in applications) {
-                        var app = applications[key];
-                        var creator = app['creator'];
-                        var position = app['position'];
-                        var section = position['section'];
-                        var course = section['course'];
-                        var fullName = creator['firstName'] + " " + creator['lastName'];
-                        var universityID = creator['universityID'];
-                        var email = creator['email'];
-                        var type = position['type'].title;
-                        var appButton = "<button data-toggle='modal' data-target='#profile-modal' data-appID='" + app['id'] + "' data-usertype='" + creator['type'] + "' data-userid='" + creator['id'] + "' class='btn btn-info circle profile'>" +
-                            "<span class='glyphicon glyphicon-file'></span>" +
-                            "</button>";
-                        var reviewsButton = "<button data-toggle='modal' data-target='#commentsModal' data-userID='" + creator['id'] + "' class='btn btn-info comments'>" +
-                            "<span class='glyphicon glyphicon-comment'></span>" +
-                            "</button>";
-                        var row = "";
-                        row += "<tr><td>" +
-                            "<div class='dropdown actions'>" +
-                            "<a class='dropdown-toggle' type='button' id='actionsMenu' data-toggle='dropdown'>" + fullName +
-                            "<span class='caret'></span>" +
-                            "</a>" +
-                            "<ul class='dropdown-menu' role='menu' id='actionsMenu' aria-labelledby='actionsMenu'>" +
-                            "<li role='presentation'><a class='comment' role='menuitem' data-commenterID='2' data-studentID='" + creator['id'] + "' data-toggle='modal' href='#commentModal' tabindex='1'>Review Student</a></li>" +
-                            "<li role='presentation'><a data-toggle='modal' role='menuitem' tabindex='-1' data-target='#emailModal'>Send Email</a></li>" +
-                            "</ul>" +
-                            "</div>";
-                        row += "</td><td>" + universityID;
-                        row += "</td><td>" + email;
-                        row += "</td><td>" + type;
-                        row += "</td><td>" + course['department'] + " " + course['number'];
-                        row += "</td><td>" + appButton;
-                        row += "</td><td>" + reviewsButton;
-                        row += "</td></tr>";
-                        $appView.find("tbody").append(row);
+                if ('objects' in data) {
+                    if (data.objects.length === 0) {
+                        $('#results thead tr').hide();
+                        $('#results tbody').html('<em>No results</em>');
+                    } else {
+                        $('#results thead tr').show();
+                        var output = [];
+                        for (var i = 0; i < data.objects.length; i++) {
+                            var appObj = data.objects[i];
+                            var creator = appObj.creator;
+                            var position = appObj.position;
+                            var section = position.section;
+                            var course = section.course;
+                            var tr = $('<tr/>');
+                            tr.append($('<td/>').html(
+                                '<div class="dropdown actions">' +
+                                '<a class="dropdown toggle" type="button" id="actionsMenu" data-toggle="dropdown">' +
+                                $.encode(creator.firstName + ' ' + creator.lastName) +
+                                '<span class="caret"></span></a>' +
+                                '<ul class="dropdown-menu" role="menu" id="actionsMenu" aria-labelledby="actionsMenu">' +
+                                '<li role="presentation"><a class="comment" role="menuitem" data-studentID="' + $.encode(creator.id) + '" data-toggle="modal" href="#commentModal" tabindex="1">Review Student</li>' +
+                                '<li role="presentation"><a role="menuitem" data-studentID="' + $.encode(creator.id) + '" data-toggle="modal" href="#emailModal" tabindex="1">Send Email</li>' +
+                                '</ul></div>'));
+                            tr.append($('<td/>').text(creator.email));
+                            tr.append($('<td/>').text(creator.universityID));
+                            tr.append($('<td/>').text(position.type.title));
+                            tr.append($('<td/>').text(course.department + ' ' + course.number));
+                            tr.append($('<td/>').html('<button data-toggle="modal" ' +
+                                'data-target="#profile-modal" ' +
+                                'data-appid="' + $.encode(appObj.id) + '" ' +
+                                'data-usertype="' + $.encode(creator.type) + '" ' +
+                                'data-userid="' + $.encode(creator.id) + '" ' +
+                                'class="btn btn-info circle profile">' +
+                                '<span class="glyphicon glyphicon-file"></span>' +
+                                '</button>'));
+                            tr.append($('<td/>').html('<button data-toggle="modal" ' +
+                                'data-target="#commentsModal" ' +
+                                'data-userid="' + $.encode(creator.id) + '" ' +
+                                'class="btn btn-info comments">' +
+                                '<span class="glyphicon glyphicon-comment"></span>' +
+                                '</button>'));
+                            output.push(tr[0].outerHTML);
+                        }
+                        $('#results tbody').html(output.join(''));
                     }
                 }
-                if ($(".profile").length) {
-                    $userModal = $(".profile-modal");
-                    $(".profile").unbind();
-                    $(".profile").click(viewUserProfile);
-                    if ($(".qualifications").length) {
-                        $qualifications = $(".qualifications");
-                        $(".profile").click(injectQualifications);
-                    }
-                }
-                if ($(".comments-modal").length) {
-                    $(".comments").unbind();
-                    $commentsModal = $(".comments-modal");
-                    $commentsBlock = $(".comments-block");
-                    $(".comments").click(viewUserComments);
-                }
-                $(".comment").unbind();
-                $("#submitCommentButton").unbind();
-                $(".comment").click(prepareCommentModal);
-                $('#submitCommentButton').click(submitComment);
             } else {
                 showError(data.error, $('#alertHolder'));
             }
-        }, function(jqXHR, textStatus, errorMessage) {
+        }).fail(
+        function(jqXHR, textStatus, errorMessage) {
             showError({
                 message: errorMessage
             }, $('#alertHolder'));

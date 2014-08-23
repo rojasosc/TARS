@@ -223,7 +223,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th class="hidden">#</th>
                                             <th>Course Number</th>
                                             <th class="hidden-xs hidden-sm">Course Title</th>
                                             <th>Professor</th>

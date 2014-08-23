@@ -219,27 +219,13 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                             </fieldset>
                         </form> -->
                         <hr />
-                        <?php
-    $applications = Application::findApplications(null, null, null, $term, PENDING);
-    if(!$applications){
-                        ?>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <div class="alert alert-info" role="alert">
-                                    <p>There are currently no available applications for this term.</p>
-                                </div>
-                            </div> <!-- End column -->
-                        </div> <!-- End row -->
-                        <?php
-    }else{
-                        ?>
                         <ul class="pagination"></ul>
-                        <table class="table table-striped" id="application-table">
+                        <table class="table table-striped applications-review-table" id="results">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>University ID</th>
                                     <th>Email</th>
+                                    <th>University ID</th>
                                     <th>Type</th>
                                     <th>Course</th>
                                     <th>Application</th>
@@ -250,9 +236,6 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                             </tbody>
                         </table> <!-- End table -->
                         <ul class="pagination"></ul>
-                        <?php
-    }
-                        ?>
                     </div> <!-- End panel-body -->
                 </div> <!-- End panel panel-primary -->
                 <?php

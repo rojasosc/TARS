@@ -1,13 +1,14 @@
 $(document).ready(function () {
     var studentID = null;
-    var commenterID = null;
     if($("#commentModal").length){
         $commentModal = $('#commentModal');
         $commentModal.bind('hidden.bs.modal',clearCommentForm);
     }
     if($("#commentForm").length){
         $commentForm = $('#commentForm');
-        $commentForm.submit(function () { return false; });
+        $commentForm.on('submit', function (event) {
+            event.preventDefault();
+        });
     }
 });
 
@@ -31,7 +32,6 @@ function submitComment(){
 
 function prepareCommentModal(){
     studentID = $(this).data('studentid');
-    commenterID = $(this).data('commenterid');
     $commentModal.modal('show');
 }
 

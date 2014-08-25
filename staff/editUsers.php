@@ -159,9 +159,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                             <br>
                                             <div class="btn-group enable-disable-account" data-toggle="buttons" name="enable-disable-account">
                                                 <label class="btn btn-primary active">
-                                                    <input type="radio" value="enable" name="accStatus<?= STUDENT ?>" checked> Enabled </label>
+                                                    <input type="radio" value="enable" name="accStatus" checked> Enabled </label>
                                                 <label class="btn btn-primary">
-                                                    <input type="radio" value="disable" name="accStatus<?= STUDENT ?>"> Disabled
+                                                    <input type="radio" value="disable" name="accStatus"> Disabled
                                                 </label>
                                             </div>
                                         </div>
@@ -225,9 +225,9 @@ if ($error == null || $error->getAction() != Event::SESSION_CONTINUE) {
                                             <br>
                                             <div class="btn-group enable-disable-account" data-toggle="buttons" name="enable-disable-account">
                                                 <label class="btn btn-primary active">
-                                                    <input type="radio" value="enable" name="accStatus<?= PROFESSOR ?>" checked> Enabled </label>
+                                                    <input type="radio" value="enable" name="accStatus" checked> Enabled </label>
                                                 <label class="btn btn-primary">
-                                                    <input type="radio" value="disable" name="accStatus<?= PROFESSOR ?>"> Disabled
+                                                    <input type="radio" value="disable" name="accStatus"> Disabled
                                                 </label>
                                             </div>
                                         </div>

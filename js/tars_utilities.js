@@ -6,7 +6,9 @@ window.actionsUrl = "../actions.php";
 
 $(document).ready(function() {
     // make $.encode() == encode entities here
-    $.encode = function (rawText) { return $('<div/>').text(rawText).html(); };
+    $.encode = function(rawText) {
+        return $('<div/>').text(rawText).html();
+    };
 
     if ($(".search-users-form").length) {
         $userSearchForm = $(".search-users-form");
@@ -48,8 +50,16 @@ $(document).ready(function() {
             });
 
             $(".edit-profile-form").on('submit', function(event) {
+                alert('no statusrinos');
                 event.preventDefault();
-                updateUserProfile();
+                updateUserProfile(false);
+            });
+            $("input[type='radio'][name='accStatus']").change(function() {
+               $(".edit-profile-form").on('submit', function(event) {
+                   alert('yes statusrinos');
+                   event.preventDefault();
+                   updateUserProfile(true);
+               });
             });
         }
 
@@ -175,7 +185,9 @@ $(document).ready(function() {
                 type: $("[name='typeFilter']", $filterSectionsForm).val(),
                 status: $("input[type='radio']:checked", $filterSectionsForm).val()
             };
-            doPaginatedAction('fetchSections', input, {length: 10}).done(
+            doPaginatedAction('fetchSections', input, {
+                length: 10
+            }).done(
                 function(data) {
                     if (data.success) {
                         alert('data success');
@@ -266,7 +278,7 @@ $(document).ready(function() {
     }
     if ($(".applications-review-table").length) {
         viewApplications();
-        $(".applications-review-table").on('click', '.profile', function (event) {
+        $(".applications-review-table").on('click', '.profile', function(event) {
             viewUserProfile.call(this);
             injectQualifications.call(this);
         });
@@ -303,12 +315,12 @@ function doPaginatedAction(action, data, pg) {
     $pgAjaxDone = null;
     $pgAjaxFail = null;
     return {
-        done: function (handler) {
+        done: function(handler) {
             $pgAjaxDone = handler;
             $pgDeferred.done(handler);
             return this;
         },
-        fail: function (handler) {
+        fail: function(handler) {
             $pgAjaxFail = handler;
             $pgDeferred.fail(handler);
             return this;
@@ -515,15 +527,17 @@ function searchUsers() {
         lastName: $("[name='lN']", $userSearchForm).val(),
         email: $("[name='emailSearch']", $userSearchForm).val(),
         classYear: $("[name='classYear']", $userSearchForm).val(),
-        userType: (function () {
+        userType: (function() {
             var total = 0;
-            $("input[type='checkbox']:checked", $userSearchForm).each(function(el){
+            $("input[type='checkbox']:checked", $userSearchForm).each(function(el) {
                 total += +$(this).val();
             });
             return total;
         })()
     };
-    doPaginatedAction('findUsers', input, {length: 15}).done(
+    doPaginatedAction('findUsers', input, {
+        length: 15
+    }).done(
         function(data) {
             if (data.success) {
                 if ('pg' in data) {
@@ -583,7 +597,9 @@ function filterEvents() {
         sevInfo: $("[name='sevInfo']", $filterEventsForm).is(':checked'),
         sevDebug: $("[name='sevDebug']", $filterEventsForm).is(':checked')
     };
-    doPaginatedAction('findEvents', input, {length: 25}).done(
+    doPaginatedAction('findEvents', input, {
+        length: 25
+    }).done(
         function(data) {
             if (data.success) {
                 if ('pg' in data) {
@@ -652,8 +668,13 @@ function filterEvents() {
 
 function viewApplications() {
     clearError($('#alertHolder'));
-    var input = { appStatus: 0, termID: 1};
-    doPaginatedAction('fetchTermApplications', input, {length: 15}).done(
+    var input = {
+        appStatus: 0,
+        termID: 1
+    };
+    doPaginatedAction('fetchTermApplications', input, {
+        length: 15
+    }).done(
         function(data) {
             if (data.success) {
                 if ('pg' in data) {
@@ -854,25 +875,62 @@ function changeUserPassword() {
     });
 }
 
-function updateUserProfile() {
+function updateUserProfile($accStatusChange) {
     var action = "";
     var input = {};
     switch ($user.type) {
         case STUDENT:
             /* Select the input fields in the context of the update form. */
-            input = {
-                userID: $user.id,
-                firstName: $("[name='firstName']", $editProfileForm).val(),
-                lastName: $("[name='lastName']", $editProfileForm).val(),
-                mobilePhone: $("[name='mobilePhone']", $editProfileForm).val(),
-                classYear: $("[name='classYear']", $editProfileForm).val(),
-                major: $("[name='major']", $editProfileForm).val(),
-                gpa: $("[name='gpa']", $editProfileForm).val(),
-                universityID: $("[name='universityID']", $editProfileForm).val(),
-                aboutMe: $("[name='aboutMe']", $editProfileForm).val()
-            };
+            if($accStatusChange) {
+                input = {
+                    userID: $user.id,
+                    firstName: $("[name='firstName']", $editProfileForm).val(),
+                    lastName: $("[name='lastName']", $editProfileForm).val(),
+                    mobilePhone: $("[name='mobilePhone']", $editProfileForm).val(),
+                    classYear: $("[name='classYear']", $editProfileForm).val(),
+                    major: $("[name='major']", $editProfileForm).val(),
+                    gpa: $("[name='gpa']", $editProfileForm).val(),
+                    universityID: $("[name='universityID']", $editProfileForm).val(),
+                    aboutMe: $("[name='aboutMe']", $editProfileForm).val(),
+                    accStatus: $("input:radio[name='accStatus']:checked", $editProfileForm).val()
+                };
+            } else {
+                input = {
+                    userID: $user.id,
+                    firstName: $("[name='firstName']", $editProfileForm).val(),
+                    lastName: $("[name='lastName']", $editProfileForm).val(),
+                    mobilePhone: $("[name='mobilePhone']", $editProfileForm).val(),
+                    classYear: $("[name='classYear']", $editProfileForm).val(),
+                    major: $("[name='major']", $editProfileForm).val(),
+                    gpa: $("[name='gpa']", $editProfileForm).val(),
+                    universityID: $("[name='universityID']", $editProfileForm).val(),
+                    aboutMe: $("[name='aboutMe']", $editProfileForm).val(),
+                };
+            }
+            
             break;
         case PROFESSOR:
+            if($accStatusChange) {
+                input = {
+                    userID: $user.id,
+                    firstName: $("[name='firstName']", $editProfileForm).val(),
+                    lastName: $("[name='lastName']", $editProfileForm).val(),
+                    officePhone: $("[name='officePhone']", $editProfileForm).val(),
+                    building: $("[name='building']", $editProfileForm).val(),
+                    room: $("[name='room']", $editProfileForm).val(),
+                    accStatus: $("input:radio[name='accStatus']:checked", $editProfileForm).val()
+                };
+            } else {
+                input = {
+                    userID: $user.id,
+                    firstName: $("[name='firstName']", $editProfileForm).val(),
+                    lastName: $("[name='lastName']", $editProfileForm).val(),
+                    officePhone: $("[name='officePhone']", $editProfileForm).val(),
+                    building: $("[name='building']", $editProfileForm).val(),
+                    room: $("[name='room']", $editProfileForm).val(),
+                };
+            }
+            break;
         case STAFF:
             /* Select the input fields in the context of the update form. */
             input = {
@@ -881,7 +939,7 @@ function updateUserProfile() {
                 lastName: $("[name='lastName']", $editProfileForm).val(),
                 officePhone: $("[name='officePhone']", $editProfileForm).val(),
                 building: $("[name='building']", $editProfileForm).val(),
-                room: $("[name='room']", $editProfileForm).val()
+                room: $("[name='room']", $editProfileForm).val(),
             };
             break;
         case ADMIN:

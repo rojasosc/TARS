@@ -481,6 +481,14 @@ final class Action {
             $user->getID() !== $userToUpdate->getID()) {
             throw new ActionError('Permission denied');
         }
+        if(!isset($params['accStatus'])) {
+            if($params['accStats'] == 'disable') {
+                $userToUpdate->disableAccount();
+            }
+            if($params['accStatus'] == 'enable') {
+                $userToUpdate->enableAccount();
+            }
+        }
         switch ($userToUpdate->getObjectType()) {
         case STUDENT:
             if (!isset($params['mobilePhone']) || !isset($params['classYear']) ||
@@ -1143,7 +1151,8 @@ final class Action {
                 'building' => array('type' => Action::VALIDATE_NOTEMPTY,
                     'optional' => true),
                 'room' => array('type' => Action::VALIDATE_NOTEMPTY,
-                    'optional' => true))),
+                    'optional' => true),
+                'accStatus' => array('type' => Action::VALIDATE_NOTEMPTY, 'optional' => true))),
         // Action:           changeUserPassword
         // Session required: required
         // Parameters:

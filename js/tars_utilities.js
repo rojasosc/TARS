@@ -50,16 +50,8 @@ $(document).ready(function() {
             });
 
             $(".edit-profile-form").on('submit', function(event) {
-                alert('no statusrinos');
                 event.preventDefault();
-                updateUserProfile(false);
-            });
-            $("input[type='radio'][name='accStatus']").change(function() {
-               $(".edit-profile-form").on('submit', function(event) {
-                   alert('yes statusrinos');
-                   event.preventDefault();
-                   updateUserProfile(true);
-               });
+                updateUserProfile();
             });
         }
 
@@ -190,13 +182,10 @@ $(document).ready(function() {
             }).done(
                 function(data) {
                     if (data.success) {
-                        alert('data success');
                         if ('pg' in data) {
                             handlePagination(data.pg, $('.pagination'));
                         }
                         if ('objects' in data) {
-                            alert('data objectsd');
-                            alert(JSON.stringify(data.objects));
                             if (data.objects.length == 0) {
                                 $('thead tr').hide();
                                 $('#results').html('<em>No results</em>');
@@ -875,62 +864,25 @@ function changeUserPassword() {
     });
 }
 
-function updateUserProfile($accStatusChange) {
+function updateUserProfile() {
     var action = "";
     var input = {};
     switch ($user.type) {
         case STUDENT:
             /* Select the input fields in the context of the update form. */
-            if($accStatusChange) {
-                input = {
-                    userID: $user.id,
-                    firstName: $("[name='firstName']", $editProfileForm).val(),
-                    lastName: $("[name='lastName']", $editProfileForm).val(),
-                    mobilePhone: $("[name='mobilePhone']", $editProfileForm).val(),
-                    classYear: $("[name='classYear']", $editProfileForm).val(),
-                    major: $("[name='major']", $editProfileForm).val(),
-                    gpa: $("[name='gpa']", $editProfileForm).val(),
-                    universityID: $("[name='universityID']", $editProfileForm).val(),
-                    aboutMe: $("[name='aboutMe']", $editProfileForm).val(),
-                    accStatus: $("input:radio[name='accStatus']:checked", $editProfileForm).val()
-                };
-            } else {
-                input = {
-                    userID: $user.id,
-                    firstName: $("[name='firstName']", $editProfileForm).val(),
-                    lastName: $("[name='lastName']", $editProfileForm).val(),
-                    mobilePhone: $("[name='mobilePhone']", $editProfileForm).val(),
-                    classYear: $("[name='classYear']", $editProfileForm).val(),
-                    major: $("[name='major']", $editProfileForm).val(),
-                    gpa: $("[name='gpa']", $editProfileForm).val(),
-                    universityID: $("[name='universityID']", $editProfileForm).val(),
-                    aboutMe: $("[name='aboutMe']", $editProfileForm).val(),
-                };
+            input = {
+                userID: $user.id,
+                firstName: $("[name='firstName']", $editProfileForm).val(),
+                lastName: $("[name='lastName']", $editProfileForm).val(),
+                mobilePhone: $("[name='mobilePhone']", $editProfileForm).val(),
+                classYear: $("[name='classYear']", $editProfileForm).val(),
+                major: $("[name='major']", $editProfileForm).val(),
+                gpa: $("[name='gpa']", $editProfileForm).val(),
+                universityID: $("[name='universityID']", $editProfileForm).val(),
+                aboutMe: $("[name='aboutMe']", $editProfileForm).val(),
             }
-            
             break;
         case PROFESSOR:
-            if($accStatusChange) {
-                input = {
-                    userID: $user.id,
-                    firstName: $("[name='firstName']", $editProfileForm).val(),
-                    lastName: $("[name='lastName']", $editProfileForm).val(),
-                    officePhone: $("[name='officePhone']", $editProfileForm).val(),
-                    building: $("[name='building']", $editProfileForm).val(),
-                    room: $("[name='room']", $editProfileForm).val(),
-                    accStatus: $("input:radio[name='accStatus']:checked", $editProfileForm).val()
-                };
-            } else {
-                input = {
-                    userID: $user.id,
-                    firstName: $("[name='firstName']", $editProfileForm).val(),
-                    lastName: $("[name='lastName']", $editProfileForm).val(),
-                    officePhone: $("[name='officePhone']", $editProfileForm).val(),
-                    building: $("[name='building']", $editProfileForm).val(),
-                    room: $("[name='room']", $editProfileForm).val(),
-                };
-            }
-            break;
         case STAFF:
             /* Select the input fields in the context of the update form. */
             input = {
